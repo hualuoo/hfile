@@ -32,9 +32,11 @@ The answer:
 The 下载 button of the site's pages (the file list, the viewers) opens the link with dl=1 added (not
 signed: signing ignores parameters it doesn't know). A GET with it that starts the download (no Range, or
 one from the first byte) sends download_clicked once the file is served or the redirect made: the links
-app writes the download log from it (页面下载). A resumed download, a download manager's later parts and
-HEAD don't. Answers to links with dl=1 say no-store, so that the next click comes here again rather than
-to the browser's cache. The gallery, the players, the viewers' reads and copied links don't say dl=1.
+app writes the download log from it (页面下载; one row per file, IP and user in ten minutes: a download
+manager that takes the download over from the browser asks from the first byte again). A resumed download,
+a download manager's later parts and HEAD don't send it. Answers to links with dl=1 say no-store, so that
+the next click comes here again rather than to the browser's cache. The gallery, the players, the viewers'
+reads and copied links don't say dl=1.
 """
 
 from __future__ import annotations

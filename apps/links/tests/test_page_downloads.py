@@ -1,16 +1,18 @@
 """页面下载 (D54): a download from the 下载 button of the site's pages (dl=1 on a /pd/ link) goes into the
-download log, with who was logged in. The rest of what /pd/ answers (the gallery, the players, copied links,
-resumed downloads, a download manager's later parts, HEAD) doesn't."""
+download log, with who was logged in, once per file, IP and user in ten minutes (a download manager taking the
+download over from the browser asks from the first byte again). The rest of what /pd/ answers (the gallery, the
+players, copied links, resumed downloads, a download manager's later parts, HEAD) doesn't."""
 
 from __future__ import annotations
 
+import time
 from unittest import mock
 
 from django.db import DatabaseError
 
 from apps.files import download, signing
 
-from .. import delivery
+from .. import delivery, service
 from ..models import DownloadLog
 from .helpers import LinksTestCase
 
@@ -49,10 +51,31 @@ class PageDownloadTests(LinksTestCase):
         for later in ("bytes=2-", "bytes=1-3", "bytes=-2", "bytes=0-1,3-4", "bytes=x"):
             self.fetch(self.url, HTTP_RANGE=later)  # resumed, a later part, the end, several, nonsense
         self.assertFalse(DownloadLog.objects.exists())
-        for start in ("bytes=0-", "bytes=00-2"):
-            response, body = self.fetch(self.url, HTTP_RANGE=start)
+        for n, start in enumerate(("bytes=0-", "bytes=00-2")):  # an address each: one address's would be one download
+            response, body = self.fetch(self.url, HTTP_RANGE=start, REMOTE_ADDR=f"203.0.113.{n + 1}")
             self.assertEqual(response.status_code, 206)
         self.assertEqual(DownloadLog.objects.count(), 2)
+
+    def test_a_download_manager_taking_over_is_the_same_download(self):
+        # IDM takes a download over from the browser, which has asked for the file already: it asks for it from the
+        # first byte again, and for the later parts on connections of its own. One row; another address, another
+        # user, another file, and the same ten minutes later are other downloads.
+        self.login()
+        self.assertEqual(self.fetch(self.url)[0].status_code, 200)  # the browser
+        self.assertEqual(self.fetch(self.url)[0].status_code, 200)  # the download manager
+        self.assertEqual(self.fetch(self.url, HTTP_RANGE="bytes=0-")[0].status_code, 206)  # a tool that asks so
+        self.assertEqual(self.fetch(self.url, HTTP_RANGE="bytes=3-")[0].status_code, 206)  # a later part
+        self.fetch(self.url, REMOTE_ADDR="203.0.113.9")
+        b"".join(self.visitor().get(self.url).streaming_content)  # nobody logged in, at the same address
+        self.fetch(signing.sign(self.storage, "/docs/b.txt", lifetime=600) + "&dl=1")
+        with mock.patch("time.monotonic", return_value=time.monotonic() + service.TARGET_LIFETIME - 5):
+            self.fetch(self.url)
+        with mock.patch("time.monotonic", return_value=time.monotonic() + service.TARGET_LIFETIME + 5):
+            self.fetch(self.url)
+        self.assertEqual(list(DownloadLog.objects.order_by("id").values_list("ip", "username", "path")),
+                         [("127.0.0.1", "alice", "/docs/a.txt"), ("203.0.113.9", "alice", "/docs/a.txt"),
+                          ("127.0.0.1", "", "/docs/a.txt"), ("127.0.0.1", "alice", "/docs/b.txt"),
+                          ("127.0.0.1", "alice", "/docs/a.txt")])
 
     def test_not_for_refusals_and_failures_or_when_off(self):
         missing = signing.sign(self.storage, "/docs/missing.txt", lifetime=600) + "&dl=1"
@@ -66,6 +89,9 @@ class PageDownloadTests(LinksTestCase):
         self.site(record_download_log=False)
         self.assertEqual(self.fetch(self.url)[0].status_code, 200)
         self.assertFalse(DownloadLog.objects.exists())
+        self.site(record_download_log=True)
+        self.fetch(self.url)  # the one while it was off didn't count
+        self.assertEqual(DownloadLog.objects.count(), 1)
 
     def test_a_failing_log_doesnt_stop_the_download(self):
         with mock.patch.object(DownloadLog.objects, "create", side_effect=DatabaseError("x")), \
@@ -74,7 +100,7 @@ class PageDownloadTests(LinksTestCase):
         self.assertEqual((response.status_code, body), (200, b"hello"))
         with mock.patch.object(delivery, "record", side_effect=RuntimeError("a bug")), \
                 self.assertLogs("django.dispatch", "ERROR"):
-            response, body = self.fetch(self.url)
+            response, body = self.fetch(self.url, REMOTE_ADDR="203.0.113.9")  # not the same download again
         self.assertEqual((response.status_code, body), (200, b"hello"))
         self.assertFalse(DownloadLog.objects.exists())
 

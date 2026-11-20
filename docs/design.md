@@ -133,7 +133,7 @@
     WhiteNoise 把 `.mjs` 发成 `text/javascript`、`.wasm` 发成 `application/wasm`；单文件程序靠 build.sh 的 `--collect-data preview` 带上这些文件。
   - `apps/preview/sources.py` 是 files 的签名和种类的适配层：两个接口只收本站的 `/pd/` 路径（`apps.files.signing.verify_url()`，多出来的参数不管，比如 kkFileView 加的 `fullfilename`），错误码 `link_invalid`、`link_expired`，然后用 `check_served()` 再查一遍。
   - `/components/preview/selftest/`（只在调试模式下）：在浏览器里测 srt 转 WebVTT、编码识别、highlight.js 结果的检查和 Markdown 的改写。
-- **直链和短链**（`apps/links/`）：打开两种链接走同一条路（`apps/links/delivery.py`）：频率限制 → Referer → 开关 → 访问决定（`apps/links/service.py`，全部交给 `apps.storages.access`）→ 跳转或 m3u8 → 下载日志。「下载」按钮经过 `/pd/` 的下载也写进下载日志（`delivery.page_download()` 接收 files 的 `download_clicked`）；每一条都记下当时登录着的账号。
+- **直链和短链**（`apps/links/`）：打开两种链接走同一条路（`apps/links/delivery.py`）：频率限制 → Referer → 开关 → 访问决定（`apps/links/service.py`，全部交给 `apps.storages.access`）→ 跳转或 m3u8 → 下载日志。「下载」按钮经过 `/pd/` 的下载也写进下载日志（`delivery.page_download()` 接收 files 的 `download_clicked`），和打开链接一样 10 分钟内只记第一次（见下面）：IDM 这类下载工具从浏览器接过下载时，会再从第 0 个字节要一次；每一条都记下当时登录着的账号。
   - 直链的前缀是运行时的设置，所以不在 URLconf 里：文件浏览的 catch-all（`apps/files/pages.py`）在认存储源别名之前先问登记的路由（`apps.files.pages.add_route()`），第一段和前缀一样（不分大小写，和 `apps.core.reserved` 比名字的办法一样）就交给 links。前缀和存储源别名、后台地址、网站自己的地址互相不能重名（`apps.core.reserved`）；改了前缀，旧的直链马上失效。网站自己的第一段（`/static/`、`/api/`…）除了默认前缀 `directlink` 都不会是前缀，这些地址不用读数据库就回答 404。
   - 直链里的路径是存储源里的完整路径（含生成者的根目录），打开时按访问者自己的根目录检查（`apps.storages.access` 的 `OPEN_LINK`：只要「下载」），目录密码看这个浏览器解锁过没有：链接本身不带密码。
   - **为什么打开短链时要重新检查生成者**：短链要是持票人链接，生成以后谁拿到都能下载，管理员收回权限、加了「不可访问」的规则、给文件夹设了密码都管不到它，生成者被删了它也照样能用。HFile 把生成者存在短链上，每次打开都把他当成访问者走一遍策略（`check(SHORT_LINK, 路径, keys=生成时解锁的规则)`）：短链能做的永远不超过生成者现在能做的。访问者自己的会话、他解锁过的文件夹都不算（请求不传给策略），所以短链对谁都一样。生成时记下的是规则的「ID + 版本」，规则的表达式或密码一改，版本变了，之前的短链就打不开，要重新生成。

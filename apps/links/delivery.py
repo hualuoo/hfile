@@ -17,8 +17,9 @@
    resume, and some send HEAD (whose answer carries the URL too) and then go to the URL itself.
 
 The download log also gets the downloads from the 下载 button of the site's pages that go through the
-site (page_download(), connected to apps.files.download.download_clicked; D54). Every row says who was
-logged in.
+site (page_download(), connected to apps.files.download.download_clicked; D54), once per file, IP and user
+within service.TARGET_LIFETIME as in step 6: a download manager that takes a download over from the browser
+asks for it from the first byte again. Every row says who was logged in.
 
 A short link's unknown keys also count against a budget of their own (ratelimit.missed()): too many, and
 the address gets 429 for every /s/ address for a while, so that keys can't be guessed quickly.
@@ -276,8 +277,12 @@ def record(request, site, storage, storage_path: str, *, kind: str, short_key: s
 
 
 def page_download(sender, *, request, storage, path, **kwargs) -> None:
-    """apps.files.download.download_clicked: a download from the 下载 button of the site's pages started."""
-    record(request, SiteSettings.load(), storage, path, kind=DownloadLog.Kind.PAGE)
+    """apps.files.download.download_clicked: a download from the 下载 button of the site's pages started. Only the
+    first of the file by its IP and user within service.TARGET_LIFETIME, as for links (_first_opening()): a download
+    manager that takes the download over from the browser (IDM) asks for it from the first byte again."""
+    site = SiteSettings.load()
+    if site.record_download_log and _first_opening(request, storage, path, kind=DownloadLog.Kind.PAGE, short_key=""):
+        record(request, site, storage, path, kind=DownloadLog.Kind.PAGE)
 
 
 # --- the files app's catch-all asks this first (apps.files.pages.add_route) ----------------------------
