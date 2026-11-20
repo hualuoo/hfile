@@ -40,7 +40,7 @@ logger = logging.getLogger("hfile.upgrades")
 TITLE = "-- HFile 数据库备份"  # i18n: data (the backup format, the same in every language)
 TITLES = (TITLE,)
 END = "-- 备份结束"  # i18n: data. The last line; a file without it was cut short
-# "-- 备份时的程序版本：0.0.2". A backup taken before an upgrade holds the database of the version
+# "-- 备份时的程序版本：1.0.0". A backup taken before an upgrade holds the database of the version
 # before: "数据库的版本" is the last one in its upgrade log (no line when it has none).
 HEADER = {"备份时的程序版本": "version", "数据库的版本": "schema", "数据库类型": "engine", "数据库名": "database", "时间": "created"}  # i18n: data
 BATCH_BYTES = 512 * 1024  # per INSERT, far below MySQL's max_allowed_packet (64 MB by default)

@@ -1,4 +1,4 @@
-"""Release check (0.1.0): the limits on what a request may make the site read and hold.
+"""Release check: the limits on what a request may make the site read and hold.
 
 - The whole request: settings.MAX_REQUEST_BYTES (64 MiB), apps.core.middleware.RequestSizeLimitMiddleware;
   waitress twice that (apps/installer/management/commands/serve.py). Tested in apps/core/tests.py.

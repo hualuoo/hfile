@@ -25,7 +25,7 @@
 | POST | `/api/v1/users/me/totp/disable/` | `{"password"}`：关掉。这三个每人每小时最多 20 次 |
 | POST | `/api/v1/captcha/` | 不用登录：`{"scene": "login"}` 取一张验证码图片 `{"required": true, "key", "image", "width", "height", "length", "expires_in"}`，不要验证码时 `{"required": false}`。每个 IP 每分钟最多 30 张，Django 后台的登录页每显示一次也算一张 |
 | GET | `/api/v1/manage/users/` | 管理员：用户列表，`?search=`（用户名、昵称或 ID）、`?is_active=true/false`、`?kind=normal/guest/template`、`?ordering=`（`id`、`username`、`date_joined`、`last_login`，前面加 `-` 倒序）。每个用户带 `can` 和 `why`：这个管理员能对他做什么、不能的原因 |
-| POST | `/api/v1/manage/users/` | 管理员：新建用户 `{"username", "nickname", "password", "is_active", "default_permissions"}`，回答 201。密码空着就是不能用密码登录；`default_permissions` 里缺前置的权限回答 400（比如「「获取直链」要先有「下载」的权限。」，前置见 `grant-options`），回答里不带以前存下的缺前置的权限 |
+| POST | `/api/v1/manage/users/` | 管理员：新建用户 `{"username", "nickname", "password", "is_active", "default_permissions"}`，回答 201。密码空着就是不能用密码登录；`default_permissions` 里缺前置的权限回答 400（比如「「获取直链」要先有「下载」的权限。」，前置见 `grant-options`） |
 | GET / PATCH / DELETE | `/api/v1/manage/users/{id}/` | 管理员：一个用户；改（字段同上，都可以不写，`"password": ""` 表示不改）；删除（204） |
 | POST | `/api/v1/manage/users/{id}/copy/` | 管理员：复制成新用户 `{"username", "nickname", "password"}`，回答 201 |
 | GET | `/api/v1/manage/login-logs/` | 管理员：登录日志，新的在前，`?username=`（包含）、`?ip=`（开头）、`?result=success/failure`、`?since=`、`?until=`（YYYY-MM-DD，都含当天）；回答里的 `newest` 是符合条件的最新一条的 ID |
@@ -64,7 +64,7 @@
 | GET | `storages/key-check/?key=&id=` | 别名能不能用 |
 | POST | `storages/test/`、`storages/helpers/`、`storages/oauth/` | 表单上的「测试连接」、辅助按钮和「授权」：带 `storage`（已有的存储源）或 `type`、`config`、`draft`；添加向导的「授权」还带 `"setup": true`，回调页就回到向导 `#storages/<id>/setup`。服务器给的密钥只放在草稿 `draft` 里，回答只说哪些填好了。辅助按钮还要 `name`（`storage-types` 里 `helpers` 的名字），扫码登录的轮询带上上次回答的 `poll_token` |
 | GET、DELETE | `storages/drafts/<id>/` | GET：一份草稿里有什么（不含密钥的值）；DELETE：删掉它（204） |
-| GET、PUT | `users/<id>/grants/` | 一个用户在每个存储源上的权限，每个存储源一行：`[{"storage": {"id", "key", "name", "type", "enabled"}, "granted", "enabled", "root_path", "permissions"}]`；PUT 同样的列表，替换这个用户的权限（列表里没有的存储源不变，`granted: false` 删掉这一条；缺前置的权限回答 400，GET 不带以前存下的缺前置的权限）；改别的管理员或超级管理员的，要是超级管理员，不然 403；一次最多 10000 个存储源；请求体要是 JSON 列表 |
+| GET、PUT | `users/<id>/grants/` | 一个用户在每个存储源上的权限，每个存储源一行：`[{"storage": {"id", "key", "name", "type", "enabled"}, "granted", "enabled", "root_path", "permissions"}]`；PUT 同样的列表，替换这个用户的权限（列表里没有的存储源不变，`granted: false` 删掉这一条；缺前置的权限回答 400）；改别的管理员或超级管理员的，要是超级管理员，不然 403；一次最多 10000 个存储源；请求体要是 JSON 列表 |
 | GET | `grant-options/?user=` | 15 种权限：`code`、名字 `label`、说明 `help`、前置 `requires`（要先有其中一个，空列表是没有前置），以及这个用户的默认权限 |
 
 不用登录（没登录时按匿名用户算）：

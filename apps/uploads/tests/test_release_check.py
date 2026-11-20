@@ -1,4 +1,4 @@
-"""Release check of 0.1.0: an upload stores exactly what was sent.
+"""Release check: an upload stores exactly what was sent.
 
 - Requests on one session at the same moment, in threads: two last chunks, a second finish while the
   file is written, a cancel or a complete/ during a chunk. The stored file is the data or nothing, the

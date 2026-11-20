@@ -1,4 +1,4 @@
-"""Release check of 0.1.0: `hfile cleanup` with every registered job at once, on a database with live and
+"""Release check: `hfile cleanup` with every registered job at once, on a database with live and
 expired things of every kind and of two users. Each job removes only what has expired (and isn't in use),
 a dry run removes nothing, a second run nothing more.
 

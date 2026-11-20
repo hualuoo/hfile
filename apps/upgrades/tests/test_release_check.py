@@ -1,4 +1,4 @@
-"""Release check (0.1.0): backups and restores, on the database the tests run on.
+"""Release check: backups and restores, on the database the tests run on.
 
 - backup then restore gives back the accounts (their passwords log in), the storages with their keys
   (decrypted with the same secret_key) and the site's settings;

@@ -1,4 +1,4 @@
-"""Release check (0.1.0): the files the site writes hold the secret key, password hashes and storage keys,
+"""Release check: the files the site writes hold the secret key, password hashes and storage keys,
 so they are for the program's user only (files 600, folders 700), whatever the umask it was started with.
 
 Each test runs under a wide umask (000) and the usual one (022). The one marked expectedFailure (the

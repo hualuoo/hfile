@@ -1,4 +1,4 @@
-"""Release check (0.1.0): static files, media and secrets in the logs.
+"""Release check: static files, media and secrets in the logs.
 
 The tests marked expectedFailure show a problem found by the release check; each says what to change.
 Remove the decorator with the fix: the test then has to pass. The one whose comment says "Accepted
