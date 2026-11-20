@@ -182,7 +182,7 @@ location / {
 }
 ```
 
-用 systemd 运行，用一个专门的系统账号（比如 `hfile`），不要用 root：
+用 systemd 运行，用一个专门的系统账号（比如 `www`），不要用 root：
 
 ```ini
 # /etc/systemd/system/hfile.service
@@ -192,7 +192,7 @@ After=network-online.target mysql.service
 Wants=network-online.target
 
 [Service]
-User=hfile
+User=www
 ExecStart=/srv/hfile/hfile --config /srv/hfile/config.toml
 Restart=on-failure
 RestartSec=5
@@ -208,7 +208,7 @@ WantedBy=multi-user.target
 17 * * * *  /srv/hfile/hfile cleanup --config /srv/hfile/config.toml
 ```
 
-网站用哪个账号启动，这个定时任务和 `backup`、`upgrade` 这些命令就用哪个账号运行，这里是 `hfile`（`crontab -u hfile -e`，`sudo -u hfile /srv/hfile/hfile --config /srv/hfile/config.toml backup`）：用 root 运行时，它们新建的文件和文件夹归 root，网站用不了。
+网站用哪个账号启动，这个定时任务和 `backup`、`upgrade` 这些命令就用哪个账号运行，这里是 `www`（`crontab -u www -e`，`sudo -u www /srv/hfile/hfile --config /srv/hfile/config.toml backup`）：用 root 运行时，它们新建的文件和文件夹归 root，网站用不了。
 
 HSTS、`/tmp` 要注意的地方、退出码这些，见[运行](docs/deploy.md)。
 
