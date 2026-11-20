@@ -164,21 +164,36 @@ class GBKRepliesHandler(ListOnlyHandler):
 class StaleSessionHandler(FTPHandler):
     """Like ProFTPD and FileZilla Server once the TLS session of a control connection expired (their data
     connections have to resume it): from its third transfer on, every data connection of a control connection is
-    refused with 425, after the 1xx reply."""
+    refused with 425, after the 1xx reply. The client makes the data connection before it sends the command, but
+    the server may read the command first (a busy machine): pyftpdlib answers 150 then, and sends the data when
+    the connection is made (_on_dtp_connection); that one is refused too."""
 
     transfers = 0
+    refuse_when_connected = False
 
     def push_dtp_data(self, data, isproducer=False, file=None, cmd=None):
-        if self.data_channel is not None:
-            self.transfers += 1
-            if self.transfers > 2:
-                if file is not None:
-                    file.close()
-                self.respond("125 Data connection already open. Transfer starting.")
-                self.data_channel.close()
-                self.respond("425 Unable to build data connection: TLS session of data connection not resumed.")
-                return
-        super().push_dtp_data(data, isproducer, file, cmd)
+        self.transfers += 1
+        if self.transfers <= 2:
+            super().push_dtp_data(data, isproducer, file, cmd)
+            return
+        if file is not None:
+            file.close()
+        if self.data_channel is None:
+            self.respond("150 File status okay. About to open data connection.")
+            self.refuse_when_connected = True
+            return
+        self.respond("125 Data connection already open. Transfer starting.")
+        self.refuse()
+
+    def _on_dtp_connection(self):
+        super()._on_dtp_connection()
+        if self.refuse_when_connected:
+            self.refuse_when_connected = False
+            self.refuse()
+
+    def refuse(self):
+        self.data_channel.close()
+        self.respond("425 Unable to build data connection: TLS session of data connection not resumed.")
 
 
 class DotfilesFS(AbstractedFS):
