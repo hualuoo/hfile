@@ -10,7 +10,7 @@ from functools import lru_cache
 
 from django.template.defaultfilters import filesizeformat
 from django.utils import formats, timezone
-from django.utils.dateparse import parse_date, parse_datetime
+from django.utils.dateparse import parse_datetime
 from django.utils.text import capfirst
 from django.utils.translation import gettext as _, ngettext, pgettext
 
@@ -55,8 +55,11 @@ def _moment(value):
 
 
 def _day(value):
-    day = parse_date(value[:10]) if isinstance(value, str) else None
-    return formats.date_format(day, "Y-m-d") if day else ""
+    """The day of a moment where the site is (its TIME_ZONE), as the pages show it."""
+    moment = parse_datetime(value) if isinstance(value, str) else None
+    if moment is None:
+        return ""
+    return formats.date_format(timezone.localtime(moment), "Y-m-d")
 
 
 def _size(value):

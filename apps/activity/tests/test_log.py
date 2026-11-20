@@ -123,6 +123,7 @@ class DescribeTests(TestCase):
              "3 short links, the expired ones, with 1 download log entry", "3 个短链，过期的，连同 1 条下载日志"),
             (Kind.UPDATE_IP_GEO, {"enabled": False}, {}, "Turned off", "停用"),
             (Kind.DOWNLOAD_IP_GEO, {"built_at": "2026-11-18T07:00:00+00:00"}, {}, "Data of 2026-11-18", "数据日期 2026-11-18"),
+            (Kind.DOWNLOAD_IP_GEO, {"built_at": "2026-11-17T16:20:58+00:00"}, {}, "Data of 2026-11-18", "数据日期 2026-11-18"),  # the 18th in Shanghai
             (Kind.FILL_IP_GEO, {"changed": 3, "redo": True, "addresses": 9}, {},
              "Looked up 9 IPs again; the locations of 3 records changed", "重新查了 9 个 IP；3 条记录的归属地有变化"),
             (Kind.RESET_ADMIN, {"totp": True, "enabled": False, "staff": True}, {},
