@@ -350,24 +350,49 @@ class SignalTests(ServerMixin, SimpleTestCase):
             time.sleep(0.2)
         self.assertFalse(listening(self.port))  # and lets go of the port
 
+    def slow_logins(self, seconds):
+        """A login as boss with a wrong password takes about `seconds` from now on: a password hash that
+        takes that long to check (timed on this machine)."""
+        started = time.perf_counter()
+        hashlib.pbkdf2_hmac("sha256", b"password", b"salt", 200_000)
+        iterations = int(200_000 * seconds / (time.perf_counter() - started))
+        db = sqlite3.connect(self.dir / "hfile.sqlite3")
+        with db:
+            db.execute("UPDATE accounts_user SET password = ? WHERE username = 'boss'", [f"pbkdf2_sha256${iterations}$salt$hash"])
+        db.close()
+
     def test_sigterm_lets_the_requests_in_hand_finish(self):
-        """Logins with a wrong password take a while (the password hash): SIGTERM comes while they are
-        being handled, and each still gets its whole answer before the server stops."""
+        """Logins with a wrong password take a while (the password hash, about 2 seconds here): SIGTERM comes
+        once the server has them all, while they are being handled, and each still gets its whole answer
+        before the server stops. Not at a fixed moment after they were started: on GitHub's busy Windows
+        runner the server hadn't read two of the six yet 0.15 s later, and a request that comes after SIGTERM
+        gets no answer, as it should."""
         self.start(self.installed(), wait_path="/api/v1/site/")
+        self.slow_logins(2)
         _, headers, body = fetch(f"{self.origin}/api/v1/session/")
         cookie = "; ".join(f"{k}={m.value}" for h in headers.get_all("Set-Cookie") for k, m in SimpleCookie(h).items())
         token = json.loads(body)["csrf_token"]
         answers = []
+        sent = threading.Semaphore(0)
 
         def login(n):
             data = json.dumps({"username": "boss", "password": f"wrong-{n}"}).encode()
-            answers.append(fetch(f"{self.origin}/api/v1/session/", data=data, method="POST", timeout=60, headers={
-                "Content-Type": "application/json", "X-CSRFToken": token, "Cookie": cookie}))
+            connection = http.client.HTTPConnection("127.0.0.1", self.port, timeout=60)
+            try:
+                connection.request("POST", "/api/v1/session/", data, {
+                    "Content-Type": "application/json", "X-CSRFToken": token, "Cookie": cookie})
+                sent.release()
+                response = connection.getresponse()
+                answers.append((response.status, response.headers, response.read()))
+            finally:
+                connection.close()
 
         threads = [threading.Thread(target=login, args=(n,)) for n in range(6)]
         for thread in threads:
             thread.start()
-        time.sleep(0.15)  # sent, and being handled
+        for _ in threads:
+            self.assertTrue(sent.acquire(timeout=60), "a login wasn't sent")
+        time.sleep(1)  # read by the server, and being handled
         output = self.stop_with(STOP)
         for thread in threads:
             thread.join()
@@ -381,14 +406,7 @@ class SignalTests(ServerMixin, SimpleTestCase):
         passed another SIGINT on SIGINT_GRACE seconds later, which cut short the server's waiting for its
         requests: a login still being checked got no answer, and the program ended with 130."""
         self.start(self.installed(), wait_path="/api/v1/site/")
-        # A password hash that takes about 6 seconds to check, longer than the grace (timed on this machine).
-        started = time.perf_counter()
-        hashlib.pbkdf2_hmac("sha256", b"password", b"salt", 200_000)
-        iterations = int(200_000 * 6 / (time.perf_counter() - started))
-        db = sqlite3.connect(self.dir / "hfile.sqlite3")
-        with db:
-            db.execute("UPDATE accounts_user SET password = ? WHERE username = 'boss'", [f"pbkdf2_sha256${iterations}$salt$hash"])
-        db.close()
+        self.slow_logins(6)  # longer than the grace
         _, headers, body = fetch(f"{self.origin}/api/v1/session/")
         cookie = "; ".join(f"{k}={m.value}" for h in headers.get_all("Set-Cookie") for k, m in SimpleCookie(h).items())
         token = json.loads(body)["csrf_token"]
