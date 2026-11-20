@@ -5,6 +5,7 @@ zh_Hans catalog)."""
 import ast
 import os
 import re
+import unittest
 from html import unescape
 from pathlib import Path
 from unittest import mock
@@ -53,12 +54,23 @@ class LanguageTests(TestCase):
 
     def test_commands_follow_the_system(self):
         cases = [
-            ({}, "zh-hans"), ({"LANG": "en_US.UTF-8"}, "en"), ({"LANG": "zh_CN.UTF-8"}, "zh-hans"),
+            ({"LANG": "en_US.UTF-8"}, "en"), ({"LANG": "zh_CN.UTF-8"}, "zh-hans"),
             ({"LANG": "C.UTF-8"}, "zh-hans"), ({"LANG": "de_DE.UTF-8"}, "zh-hans"),
             ({"LANG": "zh_CN.UTF-8", "LC_ALL": "en_GB.UTF-8"}, "en"), ({"LANG": "en_US", "LANGUAGE": "zh_CN:en"}, "zh-hans"),
         ]
+        if os.name != "nt":  # none of them: on Windows the language Windows shows (test_commands_follow_windows)
+            cases.append(({}, "zh-hans"))
         for environ, expected in cases:
             with self.subTest(environ), mock.patch.dict(os.environ, environ, clear=True):
+                self.assertEqual(i18n.system_language(), expected)
+
+    @unittest.skipUnless(os.name == "nt", "Windows' own language")
+    def test_commands_follow_windows(self):
+        """Windows sets none of the variables: there the language Windows shows, English on GitHub's runner."""
+        for shown, environ, expected in (("en_US", {}, "en"), ("zh_TW", {}, "zh-hans"), ("", {}, "zh-hans"),
+                                         ("en_US", {"LANG": "zh_CN.UTF-8"}, "zh-hans")):
+            with self.subTest(shown=shown, environ=environ), mock.patch.dict(os.environ, environ, clear=True), \
+                    mock.patch("config.windows.ui_language", return_value=shown):
                 self.assertEqual(i18n.system_language(), expected)
 
     def test_before_django_starts_the_same_catalog(self):

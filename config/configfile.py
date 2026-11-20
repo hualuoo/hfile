@@ -82,9 +82,14 @@ def locate(given=None):
 def _expanded(value):
     """~ and ~user as the home folder. ~ of a user that doesn't exist stays as it is."""
     try:
-        return Path(value).expanduser()
+        path = Path(value).expanduser()
     except RuntimeError:
         return Path(value)
+    head = re.split(r"[\\/]", value, maxsplit=1)[0]
+    # Python on Windows takes ~user for the folder beside this user's home, whether there is one or not.
+    if os.name == "nt" and len(head) > 1 and head[0] == "~" and not os.path.isdir(os.path.expanduser(head)):
+        return Path(value)
+    return path
 
 
 def split_argv(args):
@@ -219,7 +224,8 @@ def _path(value):
     if any(ord(ch) < 0x20 or ord(ch) == 0x7F for ch in value):
         raise Problem(_("Can't contain control characters such as line breaks."))
     if value.startswith("~") and _expanded(value) == Path(value):
-        raise Problem(_("The user %(user)s doesn't exist, so it has no home folder.") % {"user": value.split("/", 1)[0]})
+        user = re.split(r"[\\/]", value, maxsplit=1)[0]
+        raise Problem(_("The user %(user)s doesn't exist, so it has no home folder.") % {"user": user})
     if any(len(part.encode("utf-8", "surrogatepass")) > 255 for part in Path(value).parts):
         raise Problem(_("A part of the path is too long: each name in it is at most 255 bytes."))
     return value

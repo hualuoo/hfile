@@ -330,9 +330,14 @@ class FormTests(SimpleTestCase):
         self.assertTrue(form.is_valid(), form.errors)
         self.assertEqual(form.database(), service.Database(engine="sqlite", file="data/my site.sqlite3"))
         self.assertEqual(form.database().config(), {"engine": "sqlite", "file": "data/my site.sqlite3"})
+        # USERNAME as logging in to Windows sets it, usually the name of the user's folder (on GitHub's runner too):
+        # then Python on Windows makes ~user the folder beside that one. Over SSH it may be in lower case, and then
+        # Python leaves ~user as it is.
+        username = mock.patch.dict(os.environ, {"USERNAME": Path.home().name})
         for path, message in ((" ", "要写数据库文件的路径"), ("data/", "要写到文件名为止"), ("a\tb", "控制字符"),
-                              ("~nosuchuser-hfile/x.sqlite3", "这个用户不存在")):
-            with self.subTest(path=path):
+                              ("~nosuchuser-hfile/x.sqlite3", "~nosuchuser-hfile 这个用户不存在"),
+                              ("~nosuchuser-hfile\\x.sqlite3", "~nosuchuser-hfile 这个用户不存在")):
+            with self.subTest(path=path), username:
                 form = InstallForm(form_data(db_engine="sqlite", db_file=path))
                 self.assertFalse(form.is_valid())
                 self.assertIn(message, form.errors["db_file"][0])
