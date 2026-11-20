@@ -21,7 +21,7 @@ smbprotocol==1.17.0
 PyJWT==2.15.1
 # 二维码（文件链接、两步验证），纯 Python。
 segno==1.6.6
-# 读 IP 归属地数据库（Loyalsoldier/geoip 的 MaxMind DB 文件，apps/ipgeo/lookup.py），用它的纯 Python 模式。
+# 读 IP 归属地数据库（MaxMind 的 GeoLite2-City 或 GeoLite2-Country，apps/ipgeo/lookup.py），用它的纯 Python 模式。
 maxminddb==3.3.0
 # 说明文档（README）和 Markdown 预览在服务器上渲染成 HTML，再用 nh3 只留安全的标签。
 mistune==3.4.0

@@ -259,7 +259,7 @@ HSTS、`/tmp` 要注意的地方、退出码这些，见[运行](docs/deploy.md)
 - 升级出错时，用这份备份把数据库恢复原样，然后停下，原来的版本可以接着用；
 - 数据库被新版本升级过，旧版本会拒绝启动。
 
-从源码运行时，自动升级默认关着：拉了新代码以后，先运行 `python -B manage.py upgrade`。详见[升级](docs/upgrade.md)。
+从源码运行时，自动升级默认关着：拉了新代码以后，先 `pip install -r requirements.lock` 装上新的依赖，再运行 `python -B manage.py upgrade`。详见[升级](docs/upgrade.md)。
 
 ## 文档
 

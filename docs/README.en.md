@@ -261,7 +261,7 @@ To upgrade, stop the old program, put the new file in its place, and start it ag
 - if the upgrade fails, it restores the database from that backup and stops, so the old version can keep running;
 - once a newer version has upgraded the database, older versions refuse to start.
 
-When running from source, automatic upgrades are off by default: after pulling new code, run `python -B manage.py upgrade` first. See [upgrading](upgrade.md) (Chinese).
+When running from source, automatic upgrades are off by default: after pulling new code, first install its dependencies with `pip install -r requirements.lock`, then run `python -B manage.py upgrade`. See [upgrading](upgrade.md) (Chinese).
 
 ## Documentation
 
