@@ -184,7 +184,7 @@ location / {
 }
 ```
 
-Run it with systemd, under a dedicated system account (for example `hfile`), not root:
+Run it with systemd, under a dedicated system account (for example `www`), not root:
 
 ```ini
 # /etc/systemd/system/hfile.service
@@ -194,7 +194,7 @@ After=network-online.target mysql.service
 Wants=network-online.target
 
 [Service]
-User=hfile
+User=www
 ExecStart=/srv/hfile/hfile --config /srv/hfile/config.toml
 Restart=on-failure
 RestartSec=5
@@ -210,7 +210,7 @@ Then add a cron job that cleans up expired sessions, uploads, short links and sh
 17 * * * *  /srv/hfile/hfile cleanup --config /srv/hfile/config.toml
 ```
 
-Run this cron job and commands such as `backup` and `upgrade` as the account that starts the site, here `hfile` (`crontab -u hfile -e`, `sudo -u hfile /srv/hfile/hfile --config /srv/hfile/config.toml backup`): files and folders they create when run as root belong to root, and the site can't use them.
+Run this cron job and commands such as `backup` and `upgrade` as the account that starts the site, here `www` (`crontab -u www -e`, `sudo -u www /srv/hfile/hfile --config /srv/hfile/config.toml backup`): files and folders they create when run as root belong to root, and the site can't use them.
 
 HSTS, what to watch out for with `/tmp`, exit codes and more are covered in [running](deploy.md) (Chinese).
 
@@ -328,6 +328,17 @@ Run `hfile unblock` on the server. It clears the IP and user-agent blocklists; t
 **Behind a reverse proxy I can't log in, or every IP address shown is the proxy's. What now?**
 
 Check `[site] url` and `[server] proxies` in `config.toml`. The diagnostics page (诊断信息 under 系统 on the admin page) points out what is set up wrong.
+
+**IDM or a similar tool says the download can't be resumed, or downloads over a single connection only. What now?**
+
+Most likely the Nginx in front has caching on. With caching (`proxy_cache`) on, Nginx doesn't pass the request's `Range` on to HFile, and every connection of the download tool gets the whole file from its start. BT Panel (宝塔面板) turns caching on for every site by default (the last line of `/www/server/nginx/conf/proxy.conf` is `proxy_cache cache_one;`), even when the site's reverse proxy doesn't. In the site's reverse proxy configuration file (反向代理 → 配置文件), add these two lines inside `location ^~ /`, save, and reload Nginx:
+
+```nginx
+proxy_cache off;
+proxy_set_header X-Forwarded-Proto $scheme;
+```
+
+The second line is the header [deployment](#deployment) asks the proxy to pass on, which BT Panel's configuration lacks. Then click "Copy download link" in a file's menu and run `curl -sS -o /dev/null -D - -H "Range: bytes=0-99" "the copied link"`: the answer should be `206 Partial Content`. In IDM, delete the old task and download again. When you change the reverse proxy settings in the panel later, BT Panel writes this file anew, and the two lines have to be added again.
 
 **After changing `secret_key`, every storage source reports errors. What now?**
 
