@@ -121,6 +121,11 @@ if [ "$(uname -s)" = Linux ] && imaging="$("$PYTHON" -c 'import PIL._imaging as 
 fi
 # Both databases: PyInstaller's Django hook only takes the one the settings above name.
 args+=(--collect-submodules django.db.backends.sqlite3 --collect-submodules django.db.backends.mysql --hidden-import MySQLdb)
+# The Windows program's icon: HFile's logo, scripts/hfile.ico (made from the site's favicon.svg by
+# scripts/windows_icon.py). A Linux program has none.
+if [ -n "$exe" ]; then
+  args+=(--icon "$SRC/scripts/hfile.ico")
+fi
 
 "$PYTHON" -m PyInstaller --noconfirm --clean --onefile --name hfile \
   --distpath "$WORK/dist" --workpath "$WORK/build" --specpath "$WORK" --paths "$SRC" \
