@@ -325,6 +325,17 @@ hfile/
 
 检查 `config.toml` 里的 `[site] url` 和 `[server] proxies`。管理页「系统」下的「诊断信息」会指出哪里没配对。
 
+**用 IDM 这类工具下载时提示不能续传、只能单线程下载，怎么办？**
+
+多半是前面的 Nginx 开着缓存。开着缓存（`proxy_cache`）时，Nginx 不把请求里的 `Range` 交给 HFile，下载工具的每个连接拿到的都是从头开始的整个文件。宝塔面板默认在全局开着缓存（`/www/server/nginx/conf/proxy.conf` 最后一行是 `proxy_cache cache_one;`），网站的反向代理里没开缓存也一样。在网站的「反向代理 → 配置文件」里，往 `location ^~ /` 中加上这两行，保存后重载 Nginx：
+
+```nginx
+proxy_cache off;
+proxy_set_header X-Forwarded-Proto $scheme;
+```
+
+第二行是[部署](#部署)里说要传的请求头，宝塔生成的配置里没有。改好以后，在文件菜单里点「复制下载链接」，运行 `curl -sS -o /dev/null -D - -H "Range: bytes=0-99" "复制的链接"`，应该回答 `206 Partial Content`；IDM 里删掉原来的任务重新下载。以后在面板里改了反向代理的设置，宝塔会重新生成这个文件，这两行要再加一次。
+
 **换了 `secret_key` 以后，存储源都报错了，怎么办？**
 
 存储源的密钥是用 `secret_key` 加密保存的，换了以后读不出来。要在存储源的编辑页里重新填写：网盘重新授权，115 重新扫码。所有人也要重新登录。
