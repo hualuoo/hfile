@@ -1,0 +1,47 @@
+{% include "installer/_head.html" %}{% load static ui %}
+<body class="install-page">
+<main class="install">
+  <header class="install-head">
+    <img src="{% static 'web/favicon.svg' %}" alt="" width="44" height="44">
+    <div>
+      <h1>{% translate "Installation complete" %}</h1>
+      {% if admin %}<p class="muted">{% blocktranslate with username=admin.username %}The first admin is @{{ username }}; log in to the site with it.{% endblocktranslate %}</p>{% endif %}
+    </div>
+  </header>
+
+  {% if admin %}
+  <section class="panel install-section">
+    <dl class="facts install-facts">
+      <div><dt>{% translate "Site" %}</dt><dd><a href="{{ origin }}/">{{ origin }}/</a></dd></div>
+      <div><dt>{% translate "Django admin" context "setup wizard" %}</dt><dd><code id="admin-url">{{ origin }}/{{ admin_path }}/</code></dd></div>
+      <div><dt>{% translate "Settings file" %}</dt><dd><code>{{ config_file }}</code></dd></div>
+    </dl>
+    <p class="notice">{% translate 'Note down the address of the Django admin: it is shown here only, once. If you forget it, no matter: once logged in to the site, click "Django admin" at the end of the menu on the left of the "Manage" page; or look at admin_path in [site] of the settings file.' %}</p>
+    {% if debug %}<p class="hint">{% translate "Debug mode is on. Before going live, set debug in [site] of the settings file to false and restart." %}</p>{% endif %}
+  </section>
+
+  {% if config_problem %}
+  <section class="panel install-section">
+    <div class="notice notice-error" role="alert">{% blocktranslate %}The database and the admin are created, but the settings file couldn't be written: {{ config_problem }}{% endblocktranslate %}</div>
+    <p>{% blocktranslate %}Save the text below as <code>{{ config_file }}</code> (UTF-8, readable by you only: chmod 600), then restart the program:{% endblocktranslate %}</p>
+    <textarea class="config-text" rows="18" readonly spellcheck="false" aria-label="{% translate 'Contents of the settings file' %}">{{ config_text }}</textarea>
+  </section>
+  {% endif %}
+  {% endif %}
+
+  <section class="panel install-section install-restart" id="restart" data-wait="{% if restarting %}1{% endif %}">
+    {% if restarting %}
+    <p id="restart-state" role="status">{% translate "The program is restarting to read the new settings…" %}</p>
+    {% elif admin and not config_problem %}
+    <p id="restart-state" role="status">{% translate "The settings are saved. Restart the program (stop it and run it again), then open the site." %}</p>
+    {% elif not admin %}
+    <p id="restart-state" role="status">{% translate "Installed; waiting for the program to restart. If it never does, stop the program and run it again." %}</p>
+    {% endif %}
+    <a class="btn btn-filled" href="/" id="open-site">{% translate "Open the site" %}</a>
+  </section>
+</main>
+{% js_catalog %}
+<script src="{% static 'web/js/language.js' %}"></script>
+<script src="{% static 'installer/install.js' %}"></script>
+</body>
+</html>

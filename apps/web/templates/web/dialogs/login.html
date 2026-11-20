@@ -1,0 +1,17 @@
+{% load ui sso %}{# For visitors, on every page (base.html) unless a secure login entry is set: shell.js sends it to POST /api/v1/session/. Single sign-on's buttons under it. #}
+<dialog class="dialog dialog-small dialog-full" id="login-dialog" aria-labelledby="login-title">
+  <div class="dialog-box">
+    <header class="dialog-head">
+      <h2 id="login-title">{% translate "Log in" %}</h2>
+      <button type="button" class="icon-button" data-close aria-label="{% translate 'Close' %}" data-tooltip="{% translate 'Close' %}">{% icon "close" %}</button>
+    </header>
+    <form class="dialog-body" id="login-form" novalidate data-captcha="{{ site_settings.login_captcha|yesno:'1,0' }}">
+      {% include "accounts/_login_fields.html" %}
+      <div class="dialog-foot">
+        <button type="button" class="btn btn-text" data-close>{% translate "Cancel" %}</button>
+        <button type="submit" class="btn btn-filled">{% translate "Log in" %}</button>
+      </div>
+      {% sso_login_buttons %}
+    </form>
+  </div>
+</dialog>

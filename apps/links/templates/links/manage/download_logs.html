@@ -1,0 +1,47 @@
+{% load static ui %}{# /manage/#download-logs (apps/web/navigation.py SECTIONS), run by links/js/manage_download_logs.js through /api/v1/manage/download-logs/. #}
+<link rel="stylesheet" href="{% static 'links/css/links.css' %}">
+<div class="section-title-row">
+  <h2>{% translate "Download log" %}</h2>
+  <button type="button" class="btn btn-small" id="download-logs-refresh">{% icon "refresh" %}{% translate "Refresh" %}</button>
+</div>
+<p class="muted">{% blocktranslate %}Three kinds of downloads are logged: direct links, short links, and downloads passed on by this site when someone clicks "Download" in the file list or a preview (page downloads). When the browser downloads straight from the storage source's own address after "Download" (an object storage's direct address or download domain), the download doesn't go through this site and isn't logged; previews, image viewing, playing, copied download links and shares aren't logged either, nor are downloads that were stopped or failed (over the rate limit, hotlink protection, no permission, an expired short link and so on). Each entry is logged when the download starts; whether it finished, the site can't see. "User" is the account logged in at the time; visitors who weren't logged in show as "—".{% endblocktranslate %}</p>
+{% if not site_settings.record_download_log %}<p class="notice" id="download-logs-off">{% blocktranslate %}Downloads aren't being logged now: "Log downloads" is off in "Direct and short links". Below is what was logged before.{% endblocktranslate %}</p>{% endif %}
+<form class="list-toolbar" id="download-logs-filters" role="search" novalidate>
+  <select name="storage" aria-label="{% translate 'Storage source' %}"><option value="">{% translate "All storage sources" %}</option></select>
+  <select name="kind" aria-label="{% translate 'Download type' %}">
+    <option value="">{% translate "All types" %}</option>
+    <option value="path">{% translate "Direct link" %}</option>
+    <option value="short">{% translate "Short link" %}</option>
+    <option value="page">{% translate "Page download" %}</option>
+  </select>
+  <input type="search" name="key" placeholder="{% translate 'Short link key' %}" aria-label="{% translate 'Short link key (contains, any case)' %}" maxlength="16" spellcheck="false">
+  <input type="search" name="path" placeholder="{% translate 'File path' %}" aria-label="{% translate 'File path (contains)' %}" maxlength="1000">
+  <input type="search" name="user" placeholder="{% translate 'User' %}" aria-label="{% translate 'User (contains)' %}" maxlength="150" spellcheck="false">
+  <input type="search" name="ip" placeholder="{% translate 'IP starts with' %}" aria-label="{% translate 'IP starts with' %}" maxlength="64" spellcheck="false">
+  <input type="search" name="user_agent" placeholder="User-Agent" aria-label="{% translate 'User-Agent (contains)' %}" maxlength="2048" spellcheck="false">
+  <input type="search" name="referer" placeholder="Referer" aria-label="{% translate 'Referer (contains)' %}" maxlength="2048" spellcheck="false">
+  <span class="date-range" role="group" aria-label="{% translate 'Downloaded at' %}">
+    <input type="date" name="since" aria-label="{% translate 'From date' %}" title="{% translate 'From date' %}">
+    <span class="muted" aria-hidden="true">{% translate "to" %}</span>
+    <input type="date" name="until" aria-label="{% translate 'To date' %}" title="{% translate 'To date' %}">
+  </span>
+  <button type="reset" class="btn btn-text">{% translate "Clear filters" %}</button>
+</form>
+<div class="list-actions">
+  <p class="muted small list-summary" id="download-logs-summary" role="status"></p>
+  <div class="btn-row">
+    <button type="button" class="btn btn-small" id="download-logs-delete-selected" disabled>{% icon "delete" %}{% translate "Delete selected" %}</button>
+    <button type="button" class="btn btn-small btn-danger-text" id="download-logs-delete-all" disabled>{% icon "delete" %}{% translate "Delete all found" %}</button>
+  </div>
+</div>
+<div class="table-wrap">
+  <table class="data-table stack-table links-admin-table download-logs-table">
+    <thead><tr>
+      <th class="cell-check"><input type="checkbox" id="download-logs-check-page" aria-label="{% translate 'Select this page' %}"></th>
+      <th>{% translate "Downloaded at" %}</th><th>{% translate "Storage source" %}</th><th>{% translate "Type" %}</th><th>{% translate "File path" %}</th><th>{% translate "User" %}</th><th>IP</th><th class="cell-ua">{% translate "Browser and referer" %}</th>
+      <th class="row-actions"><span class="sr-only">{% translate "Actions" %}</span></th>
+    </tr></thead>
+    <tbody id="download-logs-rows"></tbody>
+  </table>
+</div>
+<nav class="pager" id="download-logs-pager" aria-label="{% translate 'Download log pages' %}" hidden></nav>

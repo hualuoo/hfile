@@ -1,0 +1,6 @@
+{# The top app bar's brand (base.html): the logo (站点设置: uploaded, linked or HFile's own) and the site's name. #}
+{# On public pages it opens 首页 Logo 打开链接 (nothing when that is empty), elsewhere the home page. #}
+{% if not public_page %}<a class="brand" href="{% url 'web:index' %}">{% include "web/_brand_inner.html" %}</a>
+{% elif site_settings.home_logo_link %}<a class="brand" href="{{ site_settings.home_logo_link }}"{% if site_settings.home_logo_target == "_blank" %} target="_blank" rel="noopener"{% endif %}>{% include "web/_brand_inner.html" %}</a>
+{% else %}<span class="brand">{% include "web/_brand_inner.html" %}</span>
+{% endif %}

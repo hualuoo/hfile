@@ -1,0 +1,125 @@
+{% include "installer/_head.html" %}{% load static ui %}
+<body class="install-page">
+<main class="install">
+  <header class="install-head">
+    <img src="{% static 'web/favicon.svg' %}" alt="" width="44" height="44">
+    <div>
+      <h1>{% translate "Install HFile" %}</h1>
+      <p class="muted">{% translate "The first start: connect to a database and create the first admin. Once installed, this page can't be opened again." %}</p>
+    </div>
+    {% language_menu inline=True %}
+  </header>
+
+  {% if token_problem %}<div class="notice notice-error" role="alert">{{ token_problem }}</div>{% endif %}
+  {% if form.errors %}{# on one line: .notice keeps line breaks (white-space: pre-line) #}
+  <div class="notice notice-error" role="alert">{% for error in form.non_field_errors %}{{ error }}{% if not forloop.last %}<br>{% endif %}{% empty %}{% translate "Some fields need a change; see the ones marked in red below." %}{% endfor %}</div>
+  {% endif %}
+  {% if log %}<details class="install-log"><summary>{% translate "Output while creating the tables" %}</summary><pre>{{ log }}</pre></details>{% endif %}
+
+  {% comment %}
+    install.js shows one step (section) at a time and asks data-check whether it is right before the next.
+    data-scheme: how this program saw the page's address, which install.js compares with the browser's.
+    data-sent: the form came back with what is wrong; install.js opens the step with the first problem.
+    Without JavaScript all four steps show at once and the form is sent as it is.
+  {% endcomment %}
+  <form method="post" class="install-form" id="install-form" novalidate data-check="{% url 'install-check' %}"{% if form.is_bound %} data-sent{% else %} data-scheme="{{ scheme }}"{% endif %}>
+    <p class="hint install-legend">{% blocktranslate %}Fields marked <span class="required-mark">*</span> are required.{% endblocktranslate %}</p>
+    <section class="panel install-section" data-step="token" data-title="{% translate 'Install token' %}">
+      <h2 tabindex="-1">{% translate "Install token" %}</h2>
+      <p class="muted">{% blocktranslate %}It proves that it's you installing, not somebody else who opened this page first. {{ token_help }}{% endblocktranslate %}</p>
+      {% include "installer/_field.html" with field=form.token %}
+      {% include "installer/_step_end.html" with first=True %}
+    </section>
+
+    <section class="panel install-section" data-step="database" data-title="{% translate 'Database' %}">
+      <h2 tabindex="-1">{% translate "Database" %}</h2>
+      <div class="db-engines" role="radiogroup" aria-label="{% translate 'Type of database' %}">
+        {% for choice in form.db_engine %}
+        <label class="db-engine" for="{{ choice.id_for_label }}">
+          {{ choice.tag }}
+          <span class="db-engine-text">
+            <span class="db-engine-name">{{ choice.choice_label }}</span>
+            {% if choice.data.value == "sqlite" %}
+            <span class="hint">{% translate "The data is kept in one file: no database server to install. Good for sites without much traffic." %}</span>
+            {% else %}
+            <span class="hint">{% translate "Needs MySQL 8.4 or later, installed first. For a lot of traffic and many writes at once." %}</span>
+            {% endif %}
+          </span>
+        </label>
+        {% endfor %}
+      </div>
+      {% for error in form.db_engine.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+
+      <div class="db-part" data-engine="sqlite">
+        {% translate "May include folders, like data/hfile.sqlite3" as db_file_hint %}
+        {% include "installer/_field.html" with field=form.db_file hint=db_file_hint note=sqlite_note %}
+      </div>
+
+      <div class="db-part" data-engine="mysql">
+        <p class="muted">{% blocktranslate %}A database that doesn't exist is created, which needs a user allowed to create databases; one that exists must have no other tables. "Test connection" only reads, it writes nothing.{% endblocktranslate %}</p>
+        <div class="form-grid install-grid">
+          {% translate "127.0.0.1 for this machine" as db_host_hint %}
+          {% include "installer/_field.html" with field=form.db_host hint=db_host_hint %}
+          {% include "installer/_field.html" with field=form.db_port %}
+          {% include "installer/_field.html" with field=form.db_name %}
+          {% include "installer/_field.html" with field=form.db_user %}
+          {% include "installer/_field.html" with field=form.db_password span=True %}
+        </div>
+      </div>
+      {% include "installer/_step_end.html" with test=True %}
+    </section>
+
+    <section class="panel install-section" data-step="site" data-title="{% translate 'Site' %}">
+      <h2 tabindex="-1">{% translate "Site" %}</h2>
+      <div class="form-grid install-grid">
+        {% translate "Can be changed later on the Manage page" as site_name_hint %}
+        {% include "installer/_field.html" with field=form.site_name hint=site_name_hint %}
+        {% translate "The address everybody opens the site at" as url_hint %}
+        {% translate "By default the address you opened this page at (the browser's own, more accurate than what the program sees). Starting with https://, logins go over https only; full direct links and share links use it too." as url_note %}
+        {% include "installer/_field.html" with field=form.url hint=url_hint note=url_note %}
+        {% translate "Separate several with commas" as hosts_hint %}
+        {% translate "The site answers only at these addresses; 127.0.0.1, localhost and the domain of the site address above are added automatically. If the domain changes later, change allowed_hosts and url in the settings file config.toml." as hosts_note %}
+        {% include "installer/_field.html" with field=form.hosts hint=hosts_hint note=hosts_note %}
+        {% translate "1 with Nginx or Caddy in front" as proxies_hint %}
+        {% translate "The proxy must pass on Host, X-Forwarded-For and X-Forwarded-Proto: Caddy does by default, Nginx needs proxy_set_header. Too few, and every visitor's IP counts as the proxy's; too many, and visitors can pass for other IPs." as proxies_note %}
+        {% include "installer/_field.html" with field=form.proxies hint=proxies_hint note=proxies_note %}
+        <div class="field span-2{% if form.admin_path.errors %} invalid{% endif %}">
+          <div class="label-row">
+            <label for="{{ form.admin_path.id_for_label }}">{{ form.admin_path.label }}</label>
+            <span class="hint label-hint">{% translate "May be left empty for a random address of 12 characters" %}</span>
+          </div>
+          <div class="path-input">
+            <span class="path-prefix">{{ form.url.value|default:origin }}/</span>{{ form.admin_path }}<span class="path-suffix">/</span>
+          </div>
+          {% for error in form.admin_path.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+          <p class="hint">{% translate "Django's own admin isn't at /admin/, where anybody would guess it (that is always a 404), so scanners don't find its login page. English letters, digits, - and _." %}</p>
+        </div>
+      </div>
+      {% include "installer/_step_end.html" %}
+    </section>
+
+    <section class="panel install-section" data-step="admin" data-title="{% translate 'Admin' %}">
+      <h2 tabindex="-1">{% translate "The first admin" %}</h2>
+      <p class="muted">{% translate "This account is a superuser: it can open the Manage page and the Django admin." %}</p>
+      <div class="form-grid install-grid">
+        {% translate "For logging in: letters (Chinese too), digits and @ . + - _" as username_hint %}
+        {% include "installer/_field.html" with field=form.username hint=username_hint span=True %}
+        {% translate "At least 8 characters, not too common" as password_hint %}
+        {% include "installer/_field.html" with field=form.password1 hint=password_hint %}
+        {% include "installer/_field.html" with field=form.password2 %}
+      </div>
+      <div class="notice step-notice" role="status" hidden></div>
+      <div class="install-actions step-actions">
+        <p class="muted step-status" aria-live="polite"></p>
+        <p class="muted" id="install-wait" role="status" hidden>{% translate "Creating the tables and the admin. This takes a few seconds to half a minute; please don't close the page…" %}</p>
+        <button class="btn btn-text" type="button" data-action="back" hidden>{% translate "Back" context "wizard" %}</button>
+        <button class="btn btn-filled" type="submit" id="install-submit" data-action="next">{% translate "Install" %}</button>
+      </div>
+    </section>
+  </form>
+</main>
+{% js_catalog %}
+<script src="{% static 'web/js/language.js' %}"></script>
+<script src="{% static 'installer/install.js' %}"></script>
+</body>
+</html>

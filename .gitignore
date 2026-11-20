@@ -221,3 +221,69 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# =====================================================================
+# HFile 自己的规则（上面是 GitHub 的 Python 通用模板）
+# =====================================================================
+
+# 设置文件（里面有数据库密码和密钥），以及安装向导放在它旁边的文件
+config.toml
+config.toml.part
+install-token.txt
+install-token.txt.*.part
+
+# SQLite 数据库（[database] file），以及 SQLite 和升级锁放在它旁边的文件
+*.sqlite3
+*.sqlite3-wal
+*.sqlite3-shm
+*.sqlite3-journal
+*.sqlite3.lock
+
+# 数据库备份（hfile backup 和升级前的自动备份），里面有密码哈希
+backups/
+*.sql.gz
+*.sql.gz.part
+
+# 网站放在设置文件旁边的东西：保存的上传文件（[paths] uploads，默认 media/）、还没传完的上传
+/media/
+/upload-spool/
+
+# 测试放在设置文件旁边的文件夹
+/uploads-tests/
+/crosscheck-tests/
+
+# scripts/dev-db.sh 的 MySQL 账号
+dev-db.env
+
+# 历史开发记录（审查出的问题、修复的经过）：只留在本地，不发布
+/docs/dev/
+
+# 存档的文档：只留在本地，不发布
+/docs/archive/
+
+# manage.py collectstatic 收集的静态文件
+/staticfiles/
+
+# scripts/m3_colors.mjs 要的 npm 包（照它的说明装在别处时用不到）
+node_modules/
+
+# 引入的前端库原样放在这里，它们自己的 build/、dist/、lib/ 这类文件夹不能被上面的通用规则挡掉：
+# scripts/build.sh 只打包提交了的文件
+!/apps/preview/static/preview/vendor/**
+# Django 编译好的翻译（.mo）也要提交，理由同上
+!*.mo
+
+# IDE 的项目设置
+.idea/
+.vscode/
+
+# 系统和编辑器留下的文件
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*.swo
+*~
+*.bak
+*.orig
+*.rej

@@ -1,0 +1,38 @@
+{% load ui siteconf_forms %}{% settings_fields "link" as f %}{# /manage/#links, manage_settings.js: GET and PATCH /api/v1/manage/settings/link/. #}
+<div class="section-title-row"><h2>{% translate "Direct and short links" %}</h2></div>
+<p class="muted">{% translate "A direct link is a fixed address that opens a file by its path; a short link is a short random address. Here are their switches, address prefix, lifetimes, hotlink protection and download rate." %}</p>
+<form class="settings-form" data-settings="link" data-section-key="links" novalidate>
+  <div class="form-error" role="alert" hidden></div>
+  <div class="tab-bar settings-tabs" role="tablist" aria-label="{% translate 'Direct and short links' %}">
+    <button type="button" class="tab-button" role="tab" data-tab="common" aria-controls="links-tab-common" aria-selected="true">{% translate "General" %}</button>
+    <button type="button" class="tab-button" role="tab" data-tab="path" aria-controls="links-tab-path" aria-selected="false">{% translate "Direct links" %}</button>
+    <button type="button" class="tab-button" role="tab" data-tab="short" aria-controls="links-tab-short" aria-selected="false">{% translate "Short links" context "settings tab" %}</button>
+  </div>
+  <div class="tab-panel" id="links-tab-common" role="tabpanel">
+    {% include "siteconf/manage/_field.html" with field=f.record_download_log %}
+    {% include "siteconf/manage/_field.html" with field=f.referer_type %}
+    <div data-show-when="referer_type" data-show-not="off">
+      {% include "siteconf/manage/_field.html" with field=f.referer_allow_empty %}
+      {% include "siteconf/manage/_field.html" with field=f.referer_rules %}
+    </div>
+    <fieldset class="limit-row">
+      <legend class="label">{% translate "Download rate limit" %}</legend>
+      <div class="form-grid">
+        <div>{% include "siteconf/manage/_field.html" with field=f.link_limit_seconds %}</div>
+        <div>{% include "siteconf/manage/_field.html" with field=f.link_limit_downloads %}</div>
+      </div>
+      <p class="hint" data-limit-summary></p>
+    </fieldset>
+  </div>
+  <div class="tab-panel" id="links-tab-path" role="tabpanel" hidden>
+    {% include "siteconf/manage/_field.html" with field=f.show_path_link %}
+    {% include "siteconf/manage/_field.html" with field=f.direct_link_prefix %}
+    <p class="hint example-line" data-prefix-example></p>
+    {% include "siteconf/manage/_field.html" with field=f.path_link_anonymous %}
+  </div>
+  <div class="tab-panel" id="links-tab-short" role="tabpanel" hidden>
+    {% include "siteconf/manage/_field.html" with field=f.show_short_link %}
+    {% include "siteconf/manage/_field.html" with field=f.short_link_expiries %}
+  </div>
+  {% include "siteconf/manage/_save.html" %}
+</form>

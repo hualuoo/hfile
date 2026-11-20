@@ -1,0 +1,19 @@
+{% load ui siteconf_forms %}{% settings_fields "security" as f %}{# /manage/#security, manage_settings.js: GET and PATCH /api/v1/manage/settings/security/. What they do is the accounts app's. #}
+<div class="section-title-row"><h2>{% translate "Security settings" %}</h2></div>
+<p class="muted">{% translate "The login entrance, the home page for people who aren't logged in, the login log and the captcha. Admins set up their two-step verification in their own menu at the top right." %}</p>
+<form class="settings-form" data-settings="security" data-section-key="security" novalidate>
+  <div class="form-error" role="alert" hidden></div>
+  {% include "siteconf/manage/_field.html" with field=f.secure_login_entry %}
+  <p class="hint example-line" data-entry-example></p>
+  {% include "siteconf/manage/_field.html" with field=f.show_login %}
+  {% include "siteconf/manage/_field.html" with field=f.guest_home %}
+  <div data-show-when="guest_home" data-show-is="custom">
+    {% include "siteconf/manage/_field.html" with field=f.guest_home_html %}
+  </div>
+  <div class="switch-group">
+    {% include "siteconf/manage/_field.html" with field=f.login_log %}
+    {% include "siteconf/manage/_field.html" with field=f.login_captcha %}
+    {% include "siteconf/manage/_field.html" with field=f.sso_auto_register %}
+  </div>
+  {% include "siteconf/manage/_save.html" %}
+</form>

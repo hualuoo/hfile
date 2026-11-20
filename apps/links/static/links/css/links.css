@@ -1,0 +1,80 @@
+/* The links app's dialogs in the file browser (links/js/links.js) and its /manage/ sections. */
+
+/* ---------- 生成短链 */
+.links-chosen { margin-bottom: 16px; }
+.links-chosen-text { margin: 4px 0 0; font: var(--md-sys-typescale-body-large); overflow-wrap: anywhere; }
+
+/* ---------- 直链: one file */
+.links-result { display: flex; flex-direction: column; gap: 16px; }
+.links-qr { display: flex; flex-direction: column; align-items: center; gap: 4px; margin: 0; }
+/* The code keeps its white background in the dark theme too: scanners want dark on light. */
+.links-qr img {
+  display: block; width: 200px; height: 200px; padding: 4px; border-radius: var(--md-sys-shape-corner-small);
+  background: #fff; border: 1px solid var(--md-sys-color-outline-variant);
+}
+.links-qr-actions { display: flex; gap: 4px; }
+.links-qr-none { margin: 0; text-align: center; }
+.links-facts { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 16px; margin: 0; }
+.links-facts dt { color: var(--md-sys-color-on-surface-variant); font: var(--md-sys-typescale-label-large); }
+.links-facts dd { margin: 0; overflow-wrap: anywhere; }
+.links-row { display: flex; flex-direction: column; gap: 4px; }
+.links-row > .label { align-self: flex-start; }
+.links-row > .hint { margin: 0; }
+
+/* A link: shown whole, a click copies it. */
+.links-url {
+  display: flex; align-items: flex-start; gap: 8px; width: 100%; padding: 8px 8px 8px 12px; text-align: left; cursor: pointer;
+  border: 1px solid var(--md-sys-color-outline-variant); border-radius: var(--md-sys-shape-corner-small);
+  background: var(--md-sys-color-surface-container-low); color: var(--md-sys-color-on-surface);
+  font: var(--md-sys-typescale-body-medium); font-family: var(--mono); font-size: 13px;
+}
+.links-url:hover { background: color-mix(in srgb, var(--md-sys-color-on-surface) 8%, var(--md-sys-color-surface-container-low)); }
+.links-url:focus-visible { outline: 2px solid var(--md-sys-color-primary); outline-offset: 1px; }
+.links-url-text { flex: 1 1 auto; min-width: 0; overflow-wrap: anywhere; }
+.links-url .icon { flex: none; width: 18px; height: 18px; color: var(--md-sys-color-primary); }
+
+/* ---------- 直链: several files */
+.links-many .dialog-body > .links-result > .muted { margin: 0; }
+.links-table .links-name { min-width: 8em; overflow-wrap: anywhere; }
+.links-table td { vertical-align: middle; }
+.links-th { display: inline-flex; align-items: center; gap: 4px; }
+.links-table .links-url { min-width: 14em; }
+
+/* ---------- /manage/: 短链管理 and 下载日志 */
+.links-admin-table .cell-path { min-width: 10em; overflow-wrap: anywhere; }
+.links-admin-table .cell-storage { min-width: 6.5em; }
+.links-admin-table .cell-user { overflow-wrap: anywhere; }
+.links-admin-table .cell-kind, .links-admin-table code.ip { white-space: nowrap; }
+.links-admin-table .ellipsis {
+  display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  color: var(--md-sys-color-on-surface-variant); font-size: 13px;
+}
+.links-admin-table code { font-size: 12px; }
+.links-admin-table .link-key { font-family: var(--mono); }
+/* 下载日志: a short link's key under its badge, so that the nine columns fit beside the menu at 1280 px
+   (the row's buttons were out of sight, behind a sideways scroll) */
+.links-admin-table .cell-kind .link-key { display: block; margin-top: 2px; }
+@media (min-width: 861px) {
+  /* 浏览器和来源 takes what is left (22% when there is room; its lines cut short, whole on hover), so that the
+     buttons stay in sight with a long IP too; a user's name isn't broken after two or three letters. */
+  .download-logs-table .cell-path { min-width: 9em; }
+  .download-logs-table .cell-user { min-width: 5.5em; }
+  .download-logs-table .cell-ua { width: 22%; min-width: 6em; white-space: normal; }
+  .download-logs-table th.cell-ua { word-break: keep-all; } /* 浏览器和 / 来源, when it must wrap */
+  .download-logs-table .cell-ua .ellipsis { width: 0; min-width: 100%; }
+}
+.links-admin-table .storage-type { display: block; }
+.links-admin-table .expired { color: var(--md-sys-color-error); }
+.links-admin-table .when { white-space: nowrap; }
+.links-admin-table .when-time { display: block; color: var(--md-sys-color-on-surface-variant); font-size: 13px; }
+.links-limits-table td, .links-limits-table th { white-space: nowrap; }
+.links-limits-summary { margin: 0 0 12px; }
+
+.links-phone-only { display: none; }
+
+@media (max-width: 860px) {
+  .links-phone-only { display: inline-flex; }
+  .links-table .links-url { min-width: 0; }
+  .links-admin-table .ellipsis { white-space: normal; overflow-wrap: anywhere; }
+  .links-admin-table .when-time { display: inline; margin-left: 6px; }
+}

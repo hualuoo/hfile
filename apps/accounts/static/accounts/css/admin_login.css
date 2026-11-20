@@ -1,0 +1,26 @@
+/* The captcha row of the Django admin's login page (accounts/admin_login.html), styled like the
+ * username and password fields above it. */
+.login .form-row #id_captcha {
+    padding: 8px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.login .captcha-picture {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 10px 0 0;
+    padding: 0;
+}
+
+.login .captcha-picture img {
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+}
+
+.login .form-row .help {
+    margin: 6px 0 0;
+    padding: 0;
+}

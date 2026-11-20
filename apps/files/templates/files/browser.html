@@ -1,0 +1,63 @@
+{% extends "web/base.html" %}{% load static ui %}
+{% comment %}
+  The file browser (apps/files/pages.py BrowserPage): "/" and /<storage key>/<path>. The page is a shell:
+  files/js/files.js (the component, contract W4) and files/js/browse.js (this page) draw the folder from
+  the API. data-config (files_config as JSON) is what they start from. The upload panel (uploads app,
+  contract U) is loaded here; other apps' scripts and styles: files/_assets.html.
+{% endcomment %}
+{% block title %}{{ page_title }}{% endblock %}
+{% block page %}files{% endblock %}
+{% block head %}<link rel="stylesheet" href="{% static 'files/css/files.css' %}">
+<link rel="stylesheet" href="{% static 'uploads/css/uploads.css' %}">
+{% for style in files_assets.styles %}<link rel="stylesheet" href="{% static style %}">
+{% endfor %}{% endblock %}
+{% block topbar_actions %}
+<div class="menu-wrap files-storage-wrap">
+  <button type="button" class="btn btn-text files-storage-button" id="files-storage-button" aria-haspopup="menu" aria-expanded="false" aria-controls="files-storage-menu" data-tooltip="{% translate 'Switch storage source' %}">{% icon "storage" %}<span class="files-storage-name">{% if storage %}{{ storage.name }}{% else %}{% translate "Choose a storage source" %}{% endif %}</span>{% icon "expand_more" %}</button>
+  <div class="menu" id="files-storage-menu" role="menu" aria-label="{% translate 'Storage source' %}" hidden></div>
+</div>
+<div class="menu-wrap files-upload-wrap" id="files-upload-wrap" hidden>
+  <button type="button" class="icon-button with-badge files-desktop" id="files-upload-button" aria-haspopup="menu" aria-expanded="false" aria-controls="files-upload-menu" aria-label="{% translate 'New and upload' %}" data-tooltip="{% translate 'New and upload' %}">{% icon "cloud_upload" %}<span class="badge-count" id="files-upload-badge" hidden></span></button>
+  <div class="menu" id="files-upload-menu" role="menu" aria-label="{% translate 'New and upload' %}" hidden>
+    <button type="button" class="menu-item" role="menuitem" data-files-action="new_folder" hidden>{% icon "create_new_folder" %}{% translate "New folder" %}</button>
+    <button type="button" class="menu-item" role="menuitem" data-files-action="upload_file" hidden>{% icon "upload_file" %}{% translate "Upload files" %}</button>
+    <button type="button" class="menu-item" role="menuitem" data-files-action="upload_folder" hidden>{% icon "drive_folder_upload" %}{% translate "Upload folder" %}</button>
+    <button type="button" class="menu-item" role="menuitem" data-files-action="upload_panel" hidden>{% icon "upload" %}{% translate "Uploads" %}</button>
+  </div>
+</div>
+<button type="button" class="icon-button files-desktop" id="files-settings-button" aria-label="{% translate 'Preferences' %}" data-tooltip="{% translate 'Preferences' %}">{% icon "tune" %}</button>
+<div class="menu-wrap files-phone">
+  <button type="button" class="icon-button" id="files-overflow-button" aria-haspopup="menu" aria-expanded="false" aria-controls="files-overflow-menu" aria-label="{% translate 'More' %}" data-tooltip="{% translate 'More' %}">{% icon "more_vert" %}</button>
+  <div class="menu" id="files-overflow-menu" role="menu" aria-label="{% translate 'More' %}" hidden>
+    <button type="button" class="menu-item" role="menuitem" data-files-action="new_folder" hidden>{% icon "create_new_folder" %}{% translate "New folder" %}</button>
+    <button type="button" class="menu-item" role="menuitem" data-files-action="upload_file" hidden>{% icon "upload_file" %}{% translate "Upload files" %}</button>
+    <button type="button" class="menu-item" role="menuitem" data-files-action="upload_folder" hidden>{% icon "drive_folder_upload" %}{% translate "Upload folder" %}</button>
+    <button type="button" class="menu-item" role="menuitem" data-files-action="upload_panel" hidden>{% icon "upload" %}{% translate "Uploads" %}</button>
+    <hr role="separator" class="files-overflow-divider" hidden>
+    <button type="button" class="menu-item" role="menuitem" data-files-action="settings">{% icon "tune" %}{% translate "Preferences" %}</button>
+  </div>
+</div>
+{% endblock %}
+{% block header %}<h1 class="sr-only" id="files-heading">{{ page_title }}</h1>{% endblock %}
+{% block content %}
+<section class="files" id="files" aria-label="{% translate 'Files' %}" data-layout="{{ site_settings.layout }}" data-mobile-layout="{{ site_settings.mobile_layout }}" data-config="{{ files_config_json }}">
+  {% if not storage and not files_config.storages %}
+  <div class="files-state empty-state">
+    {% icon "storage" %}
+    <h2>{% translate "No storage sources to browse yet" %}</h2>
+    {% if user.is_staff %}<p>{% translate "There are no storage sources yet. You can add one on the Manage page." %}</p>
+    <p><a class="btn btn-tonal" href="{% url 'web:manage' %}#storages">{% icon "admin_panel_settings" %}{% translate "Add a storage source on the Manage page" %}</a></p>
+    {% elif user.is_authenticated %}<p>{% translate "You don't have access to any storage source. Please ask the administrator to give your account access." %}</p>
+    {% else %}<p>{% translate "There are no storage sources visitors can browse. If you have an account, log in first." %}</p>{% endif %}
+  </div>
+  {% else %}
+  <div class="files-state empty-state files-loading-state"><progress class="linear-progress" aria-label="{% translate 'Loading' %}"></progress></div>
+  <noscript><p class="notice">{% translate "The file list needs JavaScript. Please allow this site to run scripts." %}</p></noscript>
+  {% endif %}
+</section>
+{% endblock %}
+{% block scripts %}<script src="{% static 'files/js/files.js' %}"></script>
+<script src="{% static 'uploads/js/uploads.js' %}"></script>
+{% include "files/_assets.html" %}
+<script src="{% static 'files/js/browse.js' %}"></script>
+{% endblock %}

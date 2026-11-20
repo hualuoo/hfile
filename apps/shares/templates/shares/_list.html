@@ -1,0 +1,45 @@
+{% load ui %}{# The list of shares: 我的分享 (/shares/, mode "mine") and 分享列表 (/manage/#shares, mode "admin"), run by shares/js/share_list.js. #}
+<div class="share-list" data-share-list data-mode="{{ mode }}" data-api="{{ api }}">
+  <div class="section-title-row share-list-head">
+    {% if mode == "admin" %}<h2>{% translate "Shares" %}</h2>{% else %}<span class="share-list-intro muted">{% translate "The share links you created. What people opening a share can see follows your current permissions." %}</span>{% endif %}
+    <div class="btn-row">
+      <button type="button" class="btn btn-small" data-refresh>{% icon "refresh" %}{% translate "Refresh" %}</button>
+    </div>
+  </div>
+  {% if mode == "admin" %}<p class="muted">{% translate "Shares created by every user. Deleting someone else's share takes a superuser; cleaning up expired shares deletes every user's expired shares." %}</p>{% endif %}
+  <form class="list-toolbar" role="search" novalidate data-filters>
+    <input type="search" name="keyword" placeholder="{% translate 'Share key or name' %}" aria-label="{% translate 'Keyword (share key or name)' %}" maxlength="100">
+    {% if mode == "admin" %}<input type="search" name="user" placeholder="{% translate 'Owner' %}" aria-label="{% translate 'Owner (username or nickname)' %}" maxlength="100">{% endif %}
+    <select name="storage" aria-label="{% translate 'Storage source' %}">
+      <option value="">{% translate "All storage sources" %}</option>
+      {% for storage in storages %}<option value="{{ storage.id }}">{{ storage.name }}</option>{% endfor %}
+    </select>
+    <select name="status" aria-label="{% translate 'Status' %}">
+      <option value="all">{% translate "All" %}</option>
+      <option value="active">{% translate "Active" %}</option>
+      <option value="expired">{% translate "Expired" %}</option>
+    </select>
+    <span class="date-range" role="group" aria-label="{% translate 'Created at' %}">
+      <input type="date" name="since" aria-label="{% translate 'Created from' %}" title="{% translate 'Created from' %}">
+      <span class="muted" aria-hidden="true">{% translate "to" %}</span>
+      <input type="date" name="until" aria-label="{% translate 'Created until' %}" title="{% translate 'Created until' %}">
+    </span>
+    <button type="reset" class="btn btn-text">{% translate "Clear filters" %}</button>
+  </form>
+  {# Like 登录日志, 短链管理 and 下载日志: the count, and the bulk delete beside it #}
+  <div class="list-actions">
+    <p class="muted small list-summary" role="status" data-summary></p>
+    <div class="btn-row">
+      <button type="button" class="btn btn-small btn-danger-text" data-clear-expired>{% icon "delete_sweep" %}{% translate "Clean up all expired shares" %}</button>
+    </div>
+  </div>
+  <div class="table-wrap">
+    <table class="data-table stack-table share-table">
+      <thead><tr>
+        <th>{% translate "Content" %}</th>{% if mode == "admin" %}<th>{% translate "Owner" %}</th>{% endif %}<th>{% translate "Storage source" %}</th><th>{% translate "Valid until" %}</th><th>{% translate "Stats" %}</th><th>{% translate "Created at" %}</th><th class="cell-actions"><span class="sr-only">{% translate "Actions" %}</span></th>
+      </tr></thead>
+      <tbody data-rows></tbody>
+    </table>
+  </div>
+  <nav class="pager" data-pager aria-label="{% translate 'Pages' context "pagination" %}" hidden></nav>
+</div>

@@ -1,0 +1,39 @@
+{% load ui %}{# /manage/#login-log (apps/web/navigation.py SECTIONS), run by accounts/js/manage_login_log.js through /api/v1/manage/login-logs/. #}
+<div class="section-title-row">
+  <h2>{% translate "Login log" %}</h2>
+  <button type="button" class="btn btn-small" id="login-log-refresh">{% icon "refresh" %}{% translate "Refresh" %}</button>
+</div>
+<p class="muted">{% translate "Every login (the site's login box, the login page and the Django admin's login page) is logged with its time, the username entered, IP, browser and result, whether it succeeded or failed. Passwords aren't logged. Logins stopped by the rate limit are logged once a minute for each IP." %}</p>
+{% if not site_settings.login_log %}<p class="notice" id="login-log-off">{% blocktranslate %}Logins aren't being logged now: "Log logins" is off in "Security settings". Below is what was logged before.{% endblocktranslate %}</p>{% endif %}
+<form class="list-toolbar" id="login-log-filters" role="search" novalidate>
+  <input type="search" name="username" placeholder="{% translate 'Username' %}" aria-label="{% translate 'Username (contains)' %}" maxlength="150">
+  <input type="search" name="ip" placeholder="{% translate 'IP starts with' %}" aria-label="{% translate 'IP starts with' %}" maxlength="64" spellcheck="false">
+  <select name="result" aria-label="{% translate 'Result' %}">
+    <option value="">{% translate "All results" %}</option>
+    <option value="success">{% translate "Succeeded" %}</option>
+    <option value="failure">{% translate "Failed" %}</option>
+  </select>
+  <span class="date-range" role="group" aria-label="{% translate 'Date' %}">
+    <input type="date" name="since" aria-label="{% translate 'From date' %}" title="{% translate 'From date' %}">
+    <span class="muted" aria-hidden="true">{% translate "to" %}</span>
+    <input type="date" name="until" aria-label="{% translate 'To date' %}" title="{% translate 'To date' %}">
+  </span>
+  <button type="reset" class="btn btn-text">{% translate "Clear filters" %}</button>
+</form>
+<div class="list-actions">
+  <p class="muted small list-summary" id="login-log-summary" role="status"></p>
+  <div class="btn-row">
+    <button type="button" class="btn btn-small" id="login-log-delete-selected" disabled>{% icon "delete" %}{% translate "Delete selected" %}</button>
+    <button type="button" class="btn btn-small btn-danger-text" id="login-log-delete-all" disabled>{% icon "delete" %}{% translate "Delete all found" %}</button>
+  </div>
+</div>
+<div class="table-wrap">
+  <table class="data-table stack-table login-log-table">
+    <thead><tr>
+      <th class="cell-check"><input type="checkbox" id="login-log-check-page" aria-label="{% translate 'Select this page' %}"></th>
+      <th>{% translate "Time" %}</th><th>{% translate "Username" %}</th><th>{% translate "Result" %}</th><th>IP</th><th>{% translate "Browser" %}</th>
+    </tr></thead>
+    <tbody id="login-log-rows"></tbody>
+  </table>
+</div>
+<nav class="pager" id="login-log-pager" aria-label="{% translate 'Login log pages' %}" hidden></nav>

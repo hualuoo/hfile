@@ -1,0 +1,96 @@
+/* Shares, on the tokens of web/css/m3.css and the components of web/css/app.css: the share page's head
+ * and password card, the 创建分享链接 dialog (on the file browser's pages, apps.files.pages.add_assets), and
+ * the lists of 我的分享 and 分享列表. No style attributes. */
+
+/* ---------- the share page: a head above files' browser, in the browser's layout (显示设置 → 页面布局) */
+body[data-page="share"] .main { padding-top: 8px; }
+.share-head { display: flex; align-items: center; gap: 16px; margin: 0 0 8px; padding: 8px 4px; }
+.share-head-icon {
+  display: inline-grid; place-items: center; flex: none; width: 48px; height: 48px; border-radius: var(--md-sys-shape-corner-large);
+  background: var(--md-sys-color-primary-container); color: var(--md-sys-color-on-primary-container);
+}
+.share-head-icon .icon { width: 24px; height: 24px; }
+.share-head-text { min-width: 0; }
+.share-title { margin: 0; font: var(--md-sys-typescale-title-large); }
+.share-meta { display: flex; flex-wrap: wrap; gap: 4px 16px; margin: 2px 0 0; font: var(--md-sys-typescale-body-medium); }
+.share-meta strong { color: var(--md-sys-color-on-surface); font-weight: 500; }
+.share-locked { display: inline-flex; align-items: center; gap: 4px; }
+.share-locked .icon { width: 16px; height: 16px; }
+@media (min-width: 768px) {
+  .share-head[data-layout="center"] { width: 80%; margin-inline: auto; }
+  .share-head[data-layout="card"] { max-width: 80rem; margin-inline: auto; }
+  body:has(.share-head[data-layout="card"]) { background: var(--md-sys-color-surface-container-low); }
+}
+@media (max-width: 767px) {
+  .share-head[data-mobile-layout="center"] { width: 92%; margin-inline: auto; }
+  .share-head-icon { width: 40px; height: 40px; }
+  .share-title { font: var(--md-sys-typescale-title-medium); }
+}
+
+/* the password: one card in the middle */
+.share-password {
+  align-items: stretch; gap: 0; width: min(100%, 420px); margin: 24px auto; padding: 28px 24px 24px;
+  background: var(--md-sys-color-surface-container-low);
+}
+.share-password-icon {
+  display: inline-grid; place-items: center; align-self: center; width: 56px; height: 56px; margin-bottom: 12px;
+  border-radius: 50%; background: var(--md-sys-color-secondary-container); color: var(--md-sys-color-on-secondary-container);
+}
+.share-password-icon .icon { width: 28px; height: 28px; }
+.share-password h2 { margin: 0 0 24px; text-align: center; font: var(--md-sys-typescale-title-medium); }
+.share-password .field { margin-bottom: 16px; }
+.share-password .form-error { margin: -4px 0 16px; }
+.share-password-submit { align-self: stretch; justify-content: center; }
+
+/* ---------- the 创建分享链接 dialog */
+.share-create-items { margin: 0 0 16px; }
+.share-create-items .label { display: block; margin-bottom: 8px; }
+.share-create-one { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.share-create-one .icon { flex: none; color: var(--md-sys-color-on-surface-variant); }
+.share-create-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.share-create-list {
+  max-height: 168px; margin: 8px 0 0; padding: 4px 0; overflow: auto; list-style: none;
+  border: 1px solid var(--md-sys-color-outline-variant); border-radius: var(--md-sys-shape-corner-small);
+}
+.share-create-list li { display: flex; align-items: center; gap: 8px; min-height: 32px; padding: 0 12px; }
+.share-create-list .icon { flex: none; width: 20px; height: 20px; color: var(--md-sys-color-on-surface-variant); }
+.share-kind { flex: none; }
+.share-expiry-choice { margin-top: 4px; }
+.share-expiry-custom { margin-top: 12px; }
+.share-tip { display: flex; gap: 8px; margin: 0 0 16px; padding: 12px; border-radius: var(--md-sys-shape-corner-small);
+  background: var(--md-sys-color-surface-container-high); color: var(--md-sys-color-on-surface-variant); font: var(--md-sys-typescale-body-small); }
+.share-tip .icon { flex: none; width: 18px; height: 18px; color: var(--md-sys-color-primary); }
+.share-result-ok { display: flex; align-items: center; gap: 8px; margin: 0 0 16px; color: var(--md-sys-color-on-surface); font: var(--md-sys-typescale-title-small); }
+.share-result-ok .icon { color: var(--md-sys-color-success); }
+.share-copy-row { display: flex; align-items: center; gap: 4px; }
+.share-copy-row input { flex: 1 1 auto; min-width: 0; font-family: var(--mono); }
+.share-copy-row .icon-button { flex: none; }
+.share-result-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: -8px; }
+
+/* ---------- the lists: 我的分享 (/shares/) and 分享列表 (/manage/#shares) */
+.share-list-head { flex-wrap: wrap; gap: 8px; }
+.share-list-intro { flex: 1 1 260px; }
+.share-table td { vertical-align: middle; }
+.share-content { display: flex; align-items: flex-start; gap: 12px; min-width: 0; }
+.share-content > .icon { flex: none; margin-top: 2px; color: var(--md-sys-color-on-surface-variant); }
+.share-content-text { min-width: 0; }
+.share-content-name { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; font-weight: 500; overflow-wrap: anywhere; }
+.share-more-items { padding: 0 6px; height: 24px; border: 0; border-radius: var(--md-sys-shape-corner-small); background: none;
+  color: var(--md-sys-color-primary); font: var(--md-sys-typescale-label-medium); cursor: pointer; }
+.share-more-items:hover { background: color-mix(in srgb, var(--md-sys-color-primary) 8%, transparent); }
+.share-folder { display: block; margin-top: 2px; overflow-wrap: anywhere; }
+.share-key { font-family: var(--mono); }
+.share-expired { color: var(--md-sys-color-error); }
+.share-counts { white-space: nowrap; }
+/* a storage name breaks between its words, not inside one (分享列表's seven columns at 1280 px broke 本地文件
+   after three characters) */
+.share-table td.share-storage { word-break: keep-all; overflow-wrap: normal; }
+.share-table .cell-actions { width: 48px; text-align: right; }
+.share-entries-list { margin: 0; padding: 0; list-style: none; }
+.share-entries-list li { display: flex; align-items: center; gap: 8px; min-height: 36px; overflow-wrap: anywhere; }
+.share-entries-list .icon { flex: none; color: var(--md-sys-color-on-surface-variant); }
+.menu.share-row-menu { position: fixed; right: auto; top: 0; left: 0; z-index: 60; transform-origin: top right; }
+@media (max-width: 760px) {
+  .share-table .cell-actions { width: auto; text-align: left; }
+  .share-content { gap: 8px; }
+}

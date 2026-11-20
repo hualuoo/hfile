@@ -1,0 +1,11 @@
+{% extends "web/base.html" %}{% load static %}
+{% comment %}DEBUG only (apps/preview/dev.py): the viewers' pure functions tested in the browser (selftest.js).{% endcomment %}
+{% block title %}预览自测{% endblock %}
+{% block page %}preview-selftest{% endblock %}
+{% block head %}<link rel="stylesheet" href="{% static 'preview/css/preview.css' %}">{% endblock %}
+{% block heading %}预览自测{% endblock %}
+{% block content %}
+<section class="panel"><pre id="selftest-result" class="mono small" data-status="running">运行中……</pre></section>
+{% endblock %}
+{% block scripts %}{% for script in preview_scripts %}<script src="{% static script %}"></script>
+{% endfor %}<script src="{% static 'preview/js/selftest.js' %}"></script>{% endblock %}

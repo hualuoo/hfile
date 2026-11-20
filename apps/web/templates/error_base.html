@@ -1,0 +1,25 @@
+{% load static %}<!doctype html>
+{% get_current_language as lang %}<html lang="{{ lang }}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>{% if heading %}{{ heading }}{% else %}{% block title %}{% endblock %}{% endif %}</title>
+<link rel="icon" href="{% static 'web/favicon.svg' %}" type="image/svg+xml">
+<script src="{% static 'web/js/theme.js' %}"></script>
+<link rel="stylesheet" href="{% static 'web/css/m3.css' %}">
+<link rel="stylesheet" href="{% static 'web/css/app.css' %}">
+</head>
+{# The error pages, in Chinese: 400, 401, 403, 404, 413, 429, 500 and 502.html, drawn in place by apps/web/errors.py #}
+{# (and Django's handlers). `message`, when given, says what went wrong instead of the page's own text; #}
+{# `heading` replaces the title, `actions` ([(label, path)]) the 回到首页 button; `home` False: no button at all. #}
+{# On their own: a 500 is drawn without the request, and the page frame (base.html) may be what failed. #}
+<body class="error-page">
+<main class="panel error-box">
+  <p class="error-code">{% block code %}{% endblock %}</p>
+  <h1>{% if heading %}{{ heading }}{% else %}{% block heading %}{% endblock %}{% endif %}</h1>
+  <p class="muted">{% if message %}{{ message }}{% else %}{% block text %}{% endblock %}{% endif %}</p>
+  {% if actions or home is not False %}<p class="error-actions">{% block actions %}{% for label, path in actions %}<a class="btn {% if forloop.first %}btn-filled{% else %}btn-text{% endif %}" href="{{ path }}">{{ label }}</a>{% empty %}<a class="btn btn-filled" href="/">{% translate "Back to home" %}</a>{% endfor %}{% endblock %}</p>{% endif %}
+</main>
+</body>
+</html>

@@ -1,0 +1,15 @@
+{% load ui %}{# The fields of the login form: in the login dialog (web/dialogs/login.html) and on the login page (accounts/login.html). shell.js runs them. #}
+      <div class="form-error" role="alert" hidden></div>
+      <div class="field login-password-part">
+        <label for="login-username">{% translate "Username" %}</label>
+        <input id="login-username" name="username" autocomplete="username" autocapitalize="off" spellcheck="false" maxlength="150" required data-autofocus>
+      </div>
+      <div class="field login-password-part">
+        <label for="login-password">{% translate "Password" %}</label>
+        <span class="input-box">
+          <input id="login-password" name="password" type="password" autocomplete="current-password" maxlength="4096" required>
+          <button type="button" class="icon-button field-button" data-toggle-password aria-pressed="false" aria-label="{% translate 'Show password' %}" data-tooltip="{% translate 'Show password' %}">{% icon "visibility" %}</button>
+        </span>
+      </div>
+      {# A login step (apps/accounts/login.py) shows its fields here: the captcha, two-step verification; see shell.js. #}
+      <div class="login-step" hidden></div>

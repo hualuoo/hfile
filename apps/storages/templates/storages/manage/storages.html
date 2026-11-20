@@ -1,0 +1,49 @@
+{% load static ui %}{% comment %}
+  /manage/#storages (apps/web/navigation.py SECTIONS): the storage sources. storages/js/manage_storages.js draws its
+  pages into #storages-root from the API (apps/storages/views.py):
+    #storages               the list: drag to sort, enable and disable, copy, delete
+    #storages/new           a new storage; #storages/<id> edits one (?draft=… after an OAuth redirect)
+    #storages/<id>/filters, /passwords, /readmes   the storage's rules, with the rule tester
+  The <template>s hold the longer help texts. grants.js defines App.grantsEditor for the users section
+  (contract 1); it is deferred, so it runs after common.js, at the end of the page.
+{% endcomment %}
+<link rel="stylesheet" href="{% static 'storages/css/storages.css' %}">
+<script src="{% static 'storages/js/grants.js' %}" defer></script>
+<div class="storages" id="storages-root" aria-live="polite">
+  <p class="muted">{% translate "Loading…" %}</p>
+</div>
+
+<template id="storages-help-list">
+  <p class="muted">{% blocktranslate %}A storage source is a place put on the site: a folder on the server, an object storage bucket, a cloud drive and so on. Its alias is its name in addresses (<code>/alias/folder/file</code>). Drag the handles on the left to change the order; users see storage sources in this order too.{% endblocktranslate %}</p>
+</template>
+
+<template id="storages-help-glob">
+  <div class="notice notice-info rule-help">
+    <p>{% blocktranslate %}How to write an <strong>expression</strong> (not case-sensitive):{% endblocktranslate %}</p>
+    <ul>
+      <li>{% blocktranslate %}<code>*</code> is any characters within a part, <code>?</code> is one character, <code>**</code> spans any number of parts; any other character stands for itself.{% endblocktranslate %}</li>
+      <li>{% blocktranslate %}<code>/dir</code> is the folder itself, <code>/dir/*</code> what is directly in it, <code>/dir/**</code> everything below it (not itself).{% endblocktranslate %}</li>
+      <li>{% blocktranslate %}<code>*.txt</code> is the .txt files in the root, <code>**/*.txt</code> or <code>**.txt</code> .txt files anywhere, <code>**/private</code> anything anywhere named private.{% endblocktranslate %}</li>
+      <li>{% blocktranslate %}Dots and spaces at the end of names don't count (Windows-like storages treat <code>secret.</code> as <code>secret</code>), so <code>/secret</code> also covers <code>/Secret.</code>; <code>\</code> separates parts just like <code>/</code>.{% endblocktranslate %}</li>
+    </ul>
+  </div>
+</template>
+
+<template id="storages-help-filters">
+  <p class="muted">{% blocktranslate %}Expressions are paths in the storage source, from its root (the base path), whatever the user's own root folder. Filter rules apply to users without the "Ignore hiding" permission, and to every visitor in shared folders. All three modes keep what matches out of the lists:{% endblocktranslate %}</p>
+  <ul class="muted rule-modes">
+    <li>{% blocktranslate %}<strong>Hide only</strong>: not in the lists, but anyone who knows the path can still open and download it.{% endblocktranslate %}</li>
+    <li>{% blocktranslate %}<strong>Hide and block access</strong>: it and everything below it can't be opened or downloaded, and nothing can be put in it; folders that may hold such content can't be deleted, moved, copied or renamed as a whole (rules by name like <code>**/name</code> go with the content and don't block folders, but deleting a folder deletes such things in it too).{% endblocktranslate %}</li>
+    <li>{% blocktranslate %}<strong>Hide and block downloads</strong>: it and the files below it can't be downloaded, previewed or given direct or short links, nor copied, moved or renamed (a new name would make them downloadable).{% endblocktranslate %}</li>
+  </ul>
+</template>
+
+<template id="storages-help-passwords">
+  <p class="muted">{% blocktranslate %}Expressions are paths in the storage source, from its root (the base path), whatever the user's own root folder. A rule covers what it matches and everything below: <code>/music</code> makes the music folder and everything in it need the password; <code>/music/*</code> makes what is in music need it, while music's own list can be seen as usual. <strong>The first matching rule in order</strong> decides which password is needed, so put nested rules first: <code>/music/private</code>, then <code>/music</code>.{% endblocktranslate %}</p>
+  <p class="muted">{% blocktranslate %}Once a visitor enters the right password, this browser remembers it (for 30 days with "Remember password"); after the expression or password changes, it must be entered again. Users with the "Ignore passwords" permission don't need to. Deleting, moving, copying or renaming a whole folder needs every password that may apply inside it entered first.{% endblocktranslate %}</p>
+</template>
+
+<template id="storages-help-readmes">
+  <p class="muted">{% blocktranslate %}When a folder is opened, the first rule in order that matches the folder shows its readme above or below the list or in a dialog (Markdown). <code>/</code> is the root, <code>/music</code> only the music folder, <code>/music/**</code> every folder below it.{% endblocktranslate %}</p>
+  <p class="muted">{% blocktranslate %}<strong>Relative paths</strong> count from the user's own root folder: for a user whose root is /music, opening /music also matches a relative rule for <code>/</code>. <strong>Absolute paths</strong> count from the storage source, the same folder for everyone.{% endblocktranslate %}</p>
+</template>

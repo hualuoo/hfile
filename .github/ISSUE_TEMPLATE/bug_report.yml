@@ -1,0 +1,78 @@
+name: 问题报告 / Bug report
+description: HFile 出错了，或者和文档说的不一样 / Something is broken or doesn't match the docs
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        先搜一下[已有的 Issue](https://github.com/hualuoo/hfile/issues)。中文或英文都可以。
+        Please search the [existing issues](https://github.com/hualuoo/hfile/issues) first. Chinese or English is fine.
+  - type: input
+    id: version
+    attributes:
+      label: 版本 / Version
+      description: "`hfile --version`，或者管理页「系统」下的「版本与升级」 / `hfile --version`, or 版本与升级 under 系统 on the admin page"
+      placeholder: "1.0.0"
+    validations:
+      required: true
+  - type: dropdown
+    id: run
+    attributes:
+      label: 运行方式 / How do you run it?
+      options:
+        - 单文件程序 / Single-file program
+        - 从源码运行 / From source
+    validations:
+      required: true
+  - type: input
+    id: os
+    attributes:
+      label: 系统 / OS
+      placeholder: Ubuntu 24.04
+    validations:
+      required: true
+  - type: dropdown
+    id: database
+    attributes:
+      label: 数据库 / Database
+      options:
+        - SQLite
+        - MySQL
+    validations:
+      required: true
+  - type: input
+    id: storage
+    attributes:
+      label: 存储源类型 / Storage type
+      description: 和存储源有关时填 / If a storage source is involved
+      placeholder: 本地、S3、OneDrive、115…
+  - type: textarea
+    id: what
+    attributes:
+      label: 发生了什么 / What happened?
+      description: 本来应该怎样，实际是怎样 / What you expected, and what happened instead
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: 怎么复现 / Steps to reproduce
+      placeholder: |
+        1.
+        2.
+        3.
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: 输出或日志 / Output or logs
+      description: 贴之前去掉密钥、令牌、密码和不想公开的域名 / Remove keys, tokens, passwords and private domain names before posting
+      render: text
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: 确认 / Checks
+      options:
+        - label: 搜过已有的 Issue / I searched the existing issues
+          required: true

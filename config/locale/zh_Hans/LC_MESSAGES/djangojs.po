@@ -1,0 +1,5265 @@
+# Translations of HFile.
+# This file is distributed under the same license as HFile (Apache License 2.0).
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: HFile\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-14 18:54+0800\n"
+"Language: zh_Hans\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: apps/accounts/static/accounts/js/login_steps.js
+#: apps/captchas/static/captchas/js/captcha.js
+msgid "Captcha"
+msgstr "验证码"
+
+#: apps/accounts/static/accounts/js/login_steps.js
+msgid "Two-step verification code"
+msgstr "两步验证码"
+
+#: apps/accounts/static/accounts/js/login_steps.js
+msgid ""
+"One more step: open the authenticator app on your phone and enter the 6 "
+"digits it shows for this site now."
+msgstr "还差一步：打开手机上的验证器 App，输入这个网站现在显示的 6 位数字。"
+
+#: apps/accounts/static/accounts/js/login_steps.js
+msgid ""
+"The password is right. Open the authenticator app on your phone and enter "
+"the 6 digits it shows for this site now."
+msgstr "密码对了。打开手机上的验证器 App，输入这个网站现在显示的 6 位数字。"
+
+#: apps/accounts/static/accounts/js/login_steps.js
+msgid "Verify"
+msgstr "验证"
+
+#: apps/accounts/static/accounts/js/login_steps.js
+msgid "Please enter the 6 digits."
+msgstr "请输入 6 位数字。"
+
+#: apps/accounts/static/accounts/js/manage_login_log.js
+#: apps/links/static/links/js/manage_download_logs.js
+#: apps/links/static/links/js/manage_short_links.js
+msgid "Delete %(count)s selected"
+msgid_plural "Delete %(count)s selected"
+msgstr[0] "删除选中的 %(count)s 条"
+
+#: apps/accounts/static/accounts/js/manage_login_log.js
+#: apps/links/static/links/js/manage_download_logs.js
+#: apps/links/static/links/js/manage_short_links.js
+msgid "Delete selected"
+msgstr "删除选中的"
+
+#: apps/accounts/static/accounts/js/manage_login_log.js
+#: apps/links/static/links/js/manage_download_logs.js
+msgid "Delete the %(count)s found"
+msgid_plural "Delete all %(count)s found"
+msgstr[0] "删除查到的全部 %(count)s 条"
+
+#: apps/accounts/static/accounts/js/manage_login_log.js
+#: apps/links/static/links/js/manage_download_logs.js
+msgid "Delete the %(count)s entry"
+msgid_plural "Delete all %(count)s entries"
+msgstr[0] "清空全部 %(count)s 条"
+
+#: apps/accounts/static/accounts/js/manage_login_log.js
+#: apps/links/static/links/js/manage_download_logs.js
+msgid "Delete all found"
+msgstr "删除查到的全部"
+
+#: apps/accounts/static/accounts/js/manage_login_log.js
+#: apps/links/static/links/js/manage_download_logs.js
+msgid "Select the entry from %(when)s"
+msgstr "选中 %(when)s 这一条"
+
+#: apps/accounts/static/accounts/js/manage_login_log.js
+msgid "Time"
+msgstr "时间"
+
+#: apps/accounts/static/accounts/js/manage_login_log.js
+#: apps/web/static/web/js/common.js
+msgid "Username"
+msgstr "用户名"
+
+#: apps/accounts/static/accounts/js/manage_login_log.js
+msgid "(empty)"
+msgstr "（没填）"
+
+#: apps/accounts/static/accounts/js/manage_login_log.js
+msgid "Result"
+msgstr "结果"
+
+#: apps/accounts/static/accounts/js/manage_login_log.js
+msgid "Browser"
+msgstr "浏览器"
+
+#: apps/accounts/static/accounts/js/manage_login_log.js
+#: apps/accounts/static/accounts/js/manage_users.js
+#: apps/links/static/links/js/manage_download_logs.js
+#: apps/links/static/links/js/manage_short_links.js
+#: apps/shares/static/shares/js/share_list.js
+msgid "Previous page"
+msgstr "上一页"
+
+#: apps/accounts/static/accounts/js/manage_login_log.js
+#: apps/accounts/static/accounts/js/manage_users.js
+#: apps/links/static/links/js/manage_download_logs.js
+#: apps/links/static/links/js/manage_short_links.js
+#: apps/shares/static/shares/js/share_list.js
+msgid "Page %(page)s of %(pages)s"
+msgid_plural "Page %(page)s of %(pages)s"
+msgstr[0] "第 %(page)s / %(pages)s 页"
+
+#: apps/accounts/static/accounts/js/manage_login_log.js
+#: apps/accounts/static/accounts/js/manage_users.js
+#: apps/links/static/links/js/manage_download_logs.js
+#: apps/links/static/links/js/manage_short_links.js
+#: apps/shares/static/shares/js/share_list.js
+msgid "Next page"
+msgstr "下一页"
+
+#: apps/accounts/static/accounts/js/manage_login_log.js
+#: apps/accounts/static/accounts/js/manage_users.js
+#: apps/accounts/static/accounts/js/totp.js apps/files/static/files/js/files.js
+#: apps/links/static/links/js/manage_download_logs.js
+#: apps/links/static/links/js/manage_short_links.js
+#: apps/shares/static/shares/js/share_list.js apps/sso/static/sso/js/links.js
+#: apps/sso/static/sso/js/manage_sso.js
+#: apps/storages/static/storages/js/grants.js
+msgid "Loading…"
+msgstr "加载中…"
+
+#: apps/accounts/static/accounts/js/manage_login_log.js
+#: apps/links/static/links/js/manage_download_logs.js
+#: apps/links/static/links/js/manage_short_links.js
+msgid "%(count)s found"
+msgid_plural "%(count)s found"
+msgstr[0] "找到 %(count)s 条"
+
+#: apps/accounts/static/accounts/js/manage_login_log.js
+#: apps/links/static/links/js/manage_download_logs.js
+#: apps/links/static/links/js/manage_short_links.js
+msgid "%(count)s entry"
+msgid_plural "%(count)s entries"
+msgstr[0] "共 %(count)s 条"
+
+#: apps/accounts/static/accounts/js/manage_login_log.js
+#: apps/links/static/links/js/manage_download_logs.js
+msgid "Nothing matches."
+msgstr "没有符合条件的记录。"
+
+#: apps/accounts/static/accounts/js/manage_login_log.js
+msgid "No logins logged yet."
+msgstr "还没有登录记录。"
+
+#: apps/accounts/static/accounts/js/manage_login_log.js
+#: apps/accounts/static/accounts/js/manage_users.js
+#: apps/accounts/static/accounts/js/totp.js
+#: apps/links/static/links/js/manage_download_logs.js
+#: apps/links/static/links/js/manage_short_links.js
+#: apps/shares/static/shares/js/share_list.js
+#: apps/siteconf/static/siteconf/js/manage_diagnostics.js
+#: apps/siteconf/static/siteconf/js/manage_settings.js
+#: apps/sso/static/sso/js/links.js apps/sso/static/sso/js/manage_sso.js
+#: apps/storages/static/storages/js/manage_storages.js
+#: apps/web/static/web/js/manage_version.js
+msgid "Failed to load: %(message)s"
+msgstr "加载失败：%(message)s"
+
+#: apps/accounts/static/accounts/js/manage_login_log.js
+msgid "Delete the %(count)s selected login log entry?"
+msgid_plural "Delete the %(count)s selected login log entries?"
+msgstr[0] "删除选中的 %(count)s 条登录日志？"
+
+#: apps/accounts/static/accounts/js/manage_login_log.js
+#: apps/links/static/links/js/manage_download_logs.js
+#: apps/sso/static/sso/js/manage_sso.js
+msgid "This can't be undone."
+msgstr "删除以后不能恢复。"
+
+#: apps/accounts/static/accounts/js/manage_login_log.js
+#: apps/accounts/static/accounts/js/manage_users.js
+#: apps/files/static/files/js/files.js
+#: apps/links/static/links/js/manage_download_logs.js
+#: apps/links/static/links/js/manage_short_links.js
+#: apps/shares/static/shares/js/share_list.js
+#: apps/siteconf/static/siteconf/js/manage_settings.js
+#: apps/sso/static/sso/js/manage_sso.js
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Delete"
+msgstr "删除"
+
+#: apps/accounts/static/accounts/js/manage_login_log.js
+#: apps/links/static/links/js/manage_download_logs.js
+msgid "Deleted %(deleted)s entry."
+msgid_plural "Deleted %(deleted)s entries."
+msgstr[0] "删除了 %(deleted)s 条。"
+
+#: apps/accounts/static/accounts/js/manage_login_log.js
+msgid "Delete the %(count)s login log entry found?"
+msgid_plural "Delete the %(count)s login log entries found?"
+msgstr[0] "删除查到的 %(count)s 条登录日志？"
+
+#: apps/accounts/static/accounts/js/manage_login_log.js
+msgid "Delete the whole login log (%(count)s entry)?"
+msgid_plural "Delete the whole login log (%(count)s entries)?"
+msgstr[0] "清空全部 %(count)s 条登录日志？"
+
+#: apps/accounts/static/accounts/js/manage_login_log.js
+#: apps/links/static/links/js/manage_download_logs.js
+msgid ""
+"Everything the current filters find is deleted, not only this page; entries "
+"logged after the list loaded are kept. This can't be undone."
+msgstr ""
+"会删除列表现在显示的这些条件找到的所有记录，不只是这一页；在那之后才记下的不"
+"会删除。删除以后不能恢复。"
+
+#: apps/accounts/static/accounts/js/manage_login_log.js
+msgid ""
+"No filters are set: every entry in the list is deleted (except those logged "
+"after it loaded). This can't be undone."
+msgstr ""
+"没有设条件：列表里的登录日志都会删除（在那之后才记下的除外）。删除以后不能恢"
+"复。"
+
+#: apps/accounts/static/accounts/js/manage_login_log.js
+#: apps/links/static/links/js/manage_download_logs.js
+msgid "Delete all"
+msgstr "全部删除"
+
+#: apps/accounts/static/accounts/js/manage_login_log.js
+#: apps/links/static/links/js/manage_download_logs.js
+msgctxt "the whole list"
+msgid "Delete all"
+msgstr "清空"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+msgid "Default permissions"
+msgstr "默认权限"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+#: apps/sso/static/sso/js/manage_sso.js
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Enabled"
+msgstr "启用"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+msgid ""
+"Visitors who aren't logged in act as this user: its permissions are what "
+"visitors can do. Disable it and nothing can be seen without logging in."
+msgstr ""
+"没登录的访客用这个身份：它的权限就是访客能做的事。停用它，没登录就什么都看不"
+"了。"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+msgid ""
+"Accounts that single sign-on creates later start with a copy of its default "
+"permissions and storage source permissions."
+msgstr "以后单点登录新建的账号，一开始复制它的默认权限和存储源权限。"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+msgid ""
+"Can open the Manage page and the Django admin. Superusers are made at "
+"installation, with the createsuperuser command or in the Django admin."
+msgstr ""
+"能进管理页和后台。超级管理员在安装时、用 createsuperuser 命令或在后台设置。"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+msgid "Can open the Manage page."
+msgstr "能进管理页。"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+msgid ""
+"This is the built-in \"Anonymous user\": visitors who aren't logged in act "
+"as it, and its permissions are what visitors can do. Its name can't be "
+"changed and it has no password; turn the switch below off and nothing can be "
+"seen without logging in."
+msgstr ""
+"这是内置的「匿名用户」：没登录的访客用这个身份，它的权限就是访客能做的事。它"
+"的名字不能改，也没有密码；关掉下面的开关，没登录就什么都看不了。"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+msgid ""
+"This is the built-in \"New user template\": accounts that single sign-on "
+"creates later start with a copy of its default permissions and storage "
+"source permissions. Its name can't be changed, and it can't log in."
+msgstr ""
+"这是内置的「虚拟新用户」：以后单点登录新建的账号，一开始复制它的默认权限和存"
+"储源权限。它的名字不能改，也不能登录。"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+msgid "Built-in"
+msgstr "内置"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+msgid "Logging in also asks for the digits in a phone authenticator app"
+msgstr "登录时还要输入手机验证器 App 上的数字"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+#: apps/accounts/static/accounts/js/totp.js
+msgid "Two-step verification"
+msgstr "两步验证"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+msgid "No password: can't log in with a password"
+msgstr "没有密码，不能用密码登录"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+msgid "No password"
+msgstr "没有密码"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+msgid "No access"
+msgstr "不许访问"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+#: apps/storages/static/storages/js/grants.js
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Disabled"
+msgstr "已停用"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+msgid "Allow access without logging in"
+msgstr "允许没登录的人访问"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+msgid "Enable %(username)s"
+msgstr "启用 %(username)s"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+msgid "Last login"
+msgstr "最近登录"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+msgid "Doesn't log in"
+msgstr "不登录"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+msgid "Never"
+msgstr "从未登录"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+#: apps/links/static/links/js/manage_short_links.js
+#: apps/shares/static/shares/js/share_list.js
+msgid "Created at"
+msgstr "创建时间"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+#: apps/sso/static/sso/js/manage_sso.js
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Edit"
+msgstr "编辑"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+#: apps/files/static/files/js/files.js
+#: apps/preview/static/preview/js/markdown.js
+#: apps/shares/static/shares/js/create.js
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Copy"
+msgstr "复制"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+msgid "%(count)s user found"
+msgid_plural "%(count)s users found"
+msgstr[0] "找到 %(count)s 个用户"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+msgid "%(count)s user"
+msgid_plural "%(count)s users"
+msgstr[0] "共 %(count)s 个用户"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+msgid "No users match."
+msgstr "没有符合条件的用户。"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+msgid "No users yet."
+msgstr "还没有用户。"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+msgid ""
+"Access without logging in is allowed now (with the anonymous user's "
+"permissions)."
+msgstr "已允许没登录的人访问（按匿名用户的权限）。"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+msgid "Anonymous access is off: nothing can be seen without logging in."
+msgstr "已关闭匿名访问：没登录就什么都看不了。"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+msgid "%(username)s is enabled."
+msgstr "已启用 %(username)s。"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+msgid ""
+"%(username)s is disabled: they can't log in, and were logged out where "
+"logged in."
+msgstr "已停用 %(username)s：他登录不了了，已经登录的也退出了。"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+msgid ""
+"Save this user in \"Basic info\" first, then set their permissions on each "
+"storage source."
+msgstr "先在「基本信息」里保存这个用户，再设置他在每个存储源上的权限。"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+msgid "Storage source management isn't ready yet."
+msgstr "存储源管理还没有装好。"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+msgid ""
+"Save this user in \"Basic info\" first, then link their single sign-on "
+"accounts."
+msgstr "先在「基本信息」里保存这个用户，再绑定他的单点登录账号。"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+msgid "Single sign-on isn't ready yet."
+msgstr "单点登录还没有装好。"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+msgid "Edit user \"%(username)s\""
+msgstr "编辑用户「%(username)s」"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+msgid "New user"
+msgstr "新建用户"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+msgid ""
+"At least 8 characters, not too common and not all digits. Left empty, the "
+"account can't log in with a password for now"
+msgstr ""
+"至少 8 位，不能太常见，也不能全是数字。不填的话，这个账号暂时不能用密码登录"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+msgid "Leave empty to keep it. Once changed, their logins on every device end"
+msgstr "不改就留空。改了以后，他在所有设备上的登录都会失效"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+msgid "They have no password now and can't log in with one"
+msgstr "他现在没有密码，不能用密码登录"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+msgid "Once off, people who aren't logged in see no storage sources."
+msgstr "关掉以后，没登录的人就看不到任何存储源了。"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+msgid ""
+"Once disabled, the user can't log in, and is logged out right away where "
+"already logged in."
+msgstr "停用后不能登录，已经登录的也会马上退出。"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+msgid "Role"
+msgstr "身份"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+msgid "Last login IP"
+msgstr "最近登录 IP"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+#: apps/files/static/files/js/files.js
+#: apps/preview/static/preview/js/pdfview.js
+#: apps/storages/static/storages/js/manage_storages.js
+#: apps/uploads/static/uploads/js/uploads.js apps/web/static/web/js/common.js
+msgid "Password"
+msgstr "密码"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+#: apps/siteconf/static/siteconf/js/manage_settings.js
+msgid "Set"
+msgstr "已设置"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+#: apps/siteconf/static/siteconf/js/manage_diagnostics.js
+msgid "None"
+msgstr "没有"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+#: apps/web/static/web/js/shell.js
+msgid "Enter your username."
+msgstr "要填用户名。"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+msgid ""
+"User %(username)s created. Next, set their permissions on each storage "
+"source."
+msgstr "已创建用户 %(username)s。接着设置他在每个存储源上的权限。"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+msgid "%(username)s saved."
+msgstr "已保存 %(username)s。"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+msgid ""
+"The basic info, default permissions and storage source permissions have "
+"unsaved changes."
+msgstr "基本信息、默认权限和存储源权限改了还没保存。"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+msgid "The basic info or default permissions have unsaved changes."
+msgstr "基本信息或默认权限改了还没保存。"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+msgid "The storage source permissions have unsaved changes."
+msgstr "存储源权限改了还没保存。"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+#: apps/sso/static/sso/js/manage_sso.js
+msgid "Discard unsaved changes?"
+msgstr "放弃没保存的修改？"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+#: apps/sso/static/sso/js/manage_sso.js
+msgid "Discard"
+msgstr "放弃修改"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+msgid ""
+"The new user gets the same default permissions, storage source permissions "
+"and enabled status as \"%(username)s\"; the password, admin role and two-"
+"step verification aren't copied."
+msgstr ""
+"新用户有和「%(username)s」一样的默认权限和存储源权限，启用状态也一样；不复制"
+"密码、管理员身份和两步验证。"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+msgid ""
+"The new user gets the same default permissions and storage source "
+"permissions as \"%(username)s\"; the password, admin role and two-step "
+"verification aren't copied."
+msgstr ""
+"新用户有和「%(username)s」一样的默认权限和存储源权限；不复制密码、管理员身份"
+"和两步验证。"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+msgid "New username"
+msgstr "新用户名"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+msgid "New nickname"
+msgstr "新昵称"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+msgid "Optional"
+msgstr "可以不填"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+#: apps/web/static/web/js/common.js
+msgid "New password"
+msgstr "新密码"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+msgid "Optional: without it, the new user can't log in with a password for now"
+msgstr "可以不填：不填的话，新用户暂时不能用密码登录"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+#: apps/accounts/static/accounts/js/totp.js apps/sso/static/sso/js/links.js
+#: apps/storages/static/storages/js/manage_storages.js
+#: apps/web/static/web/js/shell.js
+msgid "Show password"
+msgstr "显示密码"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+msgid "Copy user \"%(username)s\""
+msgstr "复制用户「%(username)s」"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+msgid "A new username is required."
+msgstr "要填新用户名。"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+msgid "Copied as %(username)s."
+msgstr "已复制为 %(username)s。"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+msgid "Copied as %(username)s (no password yet)."
+msgstr "已复制为 %(username)s（还没有密码）。"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+msgid "Delete user \"%(username)s\"?"
+msgstr "删除用户「%(username)s」？"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+msgid ""
+"Their permissions on every storage source and their shares are deleted too; "
+"their login log entries stay. This can't be undone."
+msgstr ""
+"他在每个存储源上的权限和他的分享会一起删除，登录日志里的记录留着。删除以后不"
+"能恢复。"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+msgid "%(username)s deleted."
+msgstr "已删除 %(username)s。"
+
+#: apps/accounts/static/accounts/js/totp.js
+msgid ""
+"After the password, logging in also asks for the 6 digits an authenticator "
+"app on your phone shows: someone who knows your password still can't log in. "
+"Any app that supports TOTP works, like Google Authenticator or Microsoft "
+"Authenticator."
+msgstr ""
+"登录时输完密码，还要输入手机上验证器 App 显示的 6 位数字：别人知道了你的密码"
+"也登录不了。可以用 Google 身份验证器、Microsoft Authenticator 等支持 TOTP 的 "
+"App。"
+
+#: apps/accounts/static/accounts/js/totp.js apps/files/static/files/js/files.js
+#: apps/links/static/links/js/links.js
+#: apps/links/static/links/js/manage_short_links.js
+#: apps/preview/static/preview/js/image.js
+#: apps/preview/static/preview/js/preview.js
+#: apps/preview/static/preview/js/text.js
+#: apps/shares/static/shares/js/create.js
+#: apps/shares/static/shares/js/share_list.js
+#: apps/storages/static/storages/js/manage_storages.js
+#: apps/uploads/static/uploads/js/uploads.js apps/web/static/web/js/common.js
+msgid "Close"
+msgstr "关闭"
+
+#: apps/accounts/static/accounts/js/totp.js
+msgid "Your login password"
+msgstr "你的登录密码"
+
+#: apps/accounts/static/accounts/js/totp.js apps/files/static/files/js/files.js
+#: apps/links/static/links/js/links.js apps/shares/static/shares/js/create.js
+#: apps/storages/static/storages/js/manage_storages.js
+#: apps/web/static/web/js/common.js
+msgid "Cancel"
+msgstr "取消"
+
+#: apps/accounts/static/accounts/js/totp.js
+msgid "Off"
+msgstr "没开"
+
+#: apps/accounts/static/accounts/js/totp.js
+msgid "Set up"
+msgstr "开始设置"
+
+#: apps/accounts/static/accounts/js/totp.js
+msgid "Copy key"
+msgstr "复制密钥"
+
+#: apps/accounts/static/accounts/js/totp.js
+msgid "Key copied."
+msgstr "密钥已复制。"
+
+#: apps/accounts/static/accounts/js/totp.js
+msgid "Copying failed. Please type it in."
+msgstr "复制失败，请手动输入。"
+
+#: apps/accounts/static/accounts/js/totp.js
+msgid ""
+"1. Scan this QR code with the authenticator app; if it can't scan, type the "
+"key below into the app (choose \"Time based\")."
+msgstr ""
+"1. 用验证器 App 扫这个二维码；扫不了的话，在 App 里手动输入下面的密钥（选「基"
+"于时间」）。"
+
+#: apps/accounts/static/accounts/js/totp.js
+msgid "Two-step verification QR code"
+msgstr "两步验证的二维码"
+
+#: apps/accounts/static/accounts/js/totp.js
+msgid ""
+"1. The site name and username are too long for a QR code: type the key below "
+"into the authenticator app (choose \"Time based\")."
+msgstr ""
+"1. 站点名称和用户名太长，二维码装不下：在验证器 App 里手动输入下面的密钥（选"
+"「基于时间」）。"
+
+#: apps/accounts/static/accounts/js/totp.js
+msgid ""
+"2. Enter the 6 digits the app shows for this site now and your login "
+"password to turn it on. Valid for 10 minutes."
+msgstr ""
+"2. 输入 App 里这个网站现在显示的 6 位数字和你的登录密码，确认开启。10 分钟内"
+"有效。"
+
+#: apps/accounts/static/accounts/js/totp.js
+msgid "6 digits"
+msgstr "6 位数字"
+
+#: apps/accounts/static/accounts/js/totp.js
+msgid "Verify and turn on"
+msgstr "验证并开启"
+
+#: apps/accounts/static/accounts/js/totp.js
+msgid "Please enter the 6 digits the app shows."
+msgstr "请输入 App 里显示的 6 位数字。"
+
+#: apps/accounts/static/accounts/js/totp.js
+msgid "Your login password is required."
+msgstr "要填你的登录密码。"
+
+#: apps/accounts/static/accounts/js/totp.js
+msgid ""
+"Two-step verification is on. Next time you log in, enter the digits from "
+"your phone."
+msgstr "两步验证已经开启。下次登录时要输入手机上的数字。"
+
+#: apps/accounts/static/accounts/js/totp.js
+msgid "On"
+msgstr "已开启"
+
+#: apps/accounts/static/accounts/js/totp.js
+msgid " since %(enabled_at)s"
+msgstr " 从 %(enabled_at)s 起"
+
+#: apps/accounts/static/accounts/js/totp.js
+msgid ""
+"After the password, logging in also asks for the 6 digits an authenticator "
+"app on your phone shows. New phone: turn it off here first, then set it up "
+"again. Lost the phone and can't log in: run hfile resetadmin on the server."
+msgstr ""
+"登录时输完密码，还要输入手机上验证器 App 显示的 6 位数字。换了手机：先在这里"
+"关掉，再重新设置。手机丢了、登录不了：在服务器上运行 hfile resetadmin。"
+
+#: apps/accounts/static/accounts/js/totp.js
+msgid "Turn off two-step verification"
+msgstr "关闭两步验证"
+
+#: apps/accounts/static/accounts/js/totp.js
+msgid "Two-step verification is off."
+msgstr "两步验证已经关闭。"
+
+#: apps/captchas/static/captchas/js/captcha.js
+msgid "Not case-sensitive. Can't read it? Click the picture for another one."
+msgstr "不区分大小写，看不清就点图片换一张"
+
+#: apps/captchas/static/captchas/js/captcha.js
+msgid "Captcha picture"
+msgstr "验证码图片"
+
+#: apps/captchas/static/captchas/js/captcha.js
+msgid "Show another captcha picture"
+msgstr "换一张验证码图片"
+
+#: apps/captchas/static/captchas/js/captcha.js
+msgid "Can't read it? Get another one"
+msgstr "看不清？换一张"
+
+#: apps/captchas/static/captchas/js/captcha.js
+msgid "Another one"
+msgstr "换一张"
+
+#: apps/captchas/static/captchas/js/captcha.js
+msgid ""
+"The captcha didn't load: %(message)s Click the refresh button to try again."
+msgstr "验证码没加载出来：%(message)s 点刷新按钮再试一次。"
+
+#: apps/captchas/static/captchas/js/captcha.js
+msgid "The captcha hasn't loaded yet. Please wait a moment and try again."
+msgstr "验证码还没加载出来，请稍等再试。"
+
+#: apps/captchas/static/captchas/js/captcha.js
+msgid ""
+"The captcha expired and was replaced by a new one. Please enter it again."
+msgstr "验证码过期了，换了一张新的，请重新输入。"
+
+#: apps/captchas/static/captchas/js/captcha.js
+msgid "Please enter the captcha."
+msgstr "请输入验证码。"
+
+#: apps/captchas/static/captchas/js/captcha.js
+msgid "The previous captcha has been used. Please enter this new one."
+msgstr "刚才的验证码已经用掉了，请输入这张新的。"
+
+#: apps/files/static/files/js/browse.js
+msgid "There are no storage sources yet. You can add one on the Manage page."
+msgstr "当前无可用存储源，可以到管理页添加存储源。"
+
+#: apps/files/static/files/js/browse.js
+msgid ""
+"You don't have access to any storage source. Please ask the administrator to "
+"give your account access."
+msgstr "您当前没有可用存储源，请联系管理员为当前用户添加存储源权限。"
+
+#: apps/files/static/files/js/browse.js
+msgid ""
+"There are no storage sources visitors can browse. If you have an account, "
+"log in first."
+msgstr "没有可以匿名浏览的存储源。有账号的话，先登录。"
+
+#: apps/files/static/files/js/browse.js
+msgid "Add a storage source on the Manage page"
+msgstr "前往管理页添加存储源"
+
+#: apps/files/static/files/js/browse.js apps/files/static/files/js/files.js
+#: apps/office/static/office/js/editor.js apps/web/static/web/js/common.js
+#: apps/web/static/web/js/shell.js
+msgid "Log in"
+msgstr "登录"
+
+#: apps/files/static/files/js/browse.js apps/files/static/files/js/files.js
+msgid "Home"
+msgstr "首页"
+
+#: apps/files/static/files/js/browse.js
+msgid "No storage sources available"
+msgstr "没有可用的存储源"
+
+#: apps/files/static/files/js/browse.js
+msgid "Upload files to %(path)s"
+msgstr "上传文件至 %(path)s"
+
+#: apps/files/static/files/js/files.js
+msgid "Image"
+msgstr "图片"
+
+#: apps/files/static/files/js/files.js
+msgid "Video"
+msgstr "视频"
+
+#: apps/files/static/files/js/files.js
+msgid "Audio"
+msgstr "音频"
+
+#: apps/files/static/files/js/files.js
+msgid "Text"
+msgstr "文本"
+
+#: apps/files/static/files/js/files.js
+msgid "Office document"
+msgstr "Office 文档"
+
+#: apps/files/static/files/js/files.js apps/links/static/links/js/links.js
+#: apps/shares/static/shares/js/create.js
+msgid "File"
+msgstr "文件"
+
+#: apps/files/static/files/js/files.js
+msgid "Archive"
+msgstr "压缩包"
+
+#: apps/files/static/files/js/files.js
+msgid "Program"
+msgstr "程序"
+
+#: apps/files/static/files/js/files.js
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Document"
+msgstr "文档"
+
+#: apps/files/static/files/js/files.js
+msgid "3D model"
+msgstr "3D 模型"
+
+#: apps/files/static/files/js/files.js apps/links/static/links/js/links.js
+msgid "Unknown"
+msgstr "未知"
+
+#: apps/files/static/files/js/files.js apps/links/static/links/js/links.js
+#: apps/storages/static/storages/js/grants.js
+#: apps/uploads/static/uploads/js/uploads.js apps/web/static/web/js/common.js
+msgid "OK"
+msgstr "确定"
+
+#: apps/files/static/files/js/files.js apps/web/static/web/js/common.js
+msgid "Sort"
+msgstr "排序"
+
+#: apps/files/static/files/js/files.js
+msgid "List view"
+msgstr "列表模式"
+
+#: apps/files/static/files/js/files.js
+msgid "Icon view"
+msgstr "图标模式"
+
+#: apps/files/static/files/js/files.js
+msgid "Gallery view"
+msgstr "画廊模式"
+
+#: apps/files/static/files/js/files.js
+msgid "Open gallery view"
+msgstr "打开画廊模式"
+
+#: apps/files/static/files/js/files.js
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Location"
+msgstr "位置"
+
+#: apps/files/static/files/js/files.js
+msgid "View"
+msgstr "视图"
+
+#: apps/files/static/files/js/files.js
+msgid "Actions for the selected items"
+msgstr "选中项目的操作"
+
+#: apps/files/static/files/js/files.js
+msgid "Deselect"
+msgstr "取消选择"
+
+#: apps/files/static/files/js/files.js
+msgid "Deselect (Esc)"
+msgstr "取消选择 (Esc)"
+
+#: apps/files/static/files/js/files.js apps/preview/static/preview/js/image.js
+#: apps/preview/static/preview/js/markdown.js
+#: apps/preview/static/preview/js/pdfview.js
+#: apps/preview/static/preview/js/preview.js
+#: apps/preview/static/preview/js/text.js apps/web/static/web/js/common.js
+msgid "Loading"
+msgstr "加载中"
+
+#: apps/files/static/files/js/files.js
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Folder readme"
+msgstr "目录文档"
+
+#: apps/files/static/files/js/files.js
+msgid "Back to top"
+msgstr "回到顶部"
+
+#: apps/files/static/files/js/files.js
+msgid "%(title)s, %(count)s item"
+msgid_plural "%(title)s, %(count)s items"
+msgstr[0] "%(title)s，%(count)s 项"
+
+#: apps/files/static/files/js/files.js
+msgid "Password required"
+msgstr "需要密码"
+
+#: apps/files/static/files/js/files.js
+msgid "This folder is protected. Enter the password to view it."
+msgstr "这个文件夹已加密，输入密码才能查看。"
+
+#: apps/files/static/files/js/files.js
+msgid "Enter password"
+msgstr "输入密码"
+
+#: apps/files/static/files/js/files.js
+msgid "Please log in first"
+msgstr "请先登录"
+
+#: apps/files/static/files/js/files.js apps/office/static/office/js/editor.js
+#: apps/uploads/static/uploads/js/uploads.js
+msgid "Retry"
+msgstr "重试"
+
+#: apps/files/static/files/js/files.js
+msgid "Up one level"
+msgstr "返回上一级"
+
+#: apps/files/static/files/js/files.js
+msgid "The folder doesn't exist"
+msgstr "文件夹不存在"
+
+#: apps/files/static/files/js/files.js
+msgid "Can't open this folder"
+msgstr "打不开这个文件夹"
+
+#: apps/files/static/files/js/files.js
+msgid "It may have been renamed, moved or deleted."
+msgstr "可能已经被改名、移动或者删除了。"
+
+#: apps/files/static/files/js/files.js
+msgid "Please enter"
+msgstr "请输入"
+
+#: apps/files/static/files/js/files.js
+#: apps/uploads/static/uploads/js/uploads.js
+msgid "This folder is protected. Please enter the password:"
+msgstr "此文件夹已加密，请输入密码："
+
+#: apps/files/static/files/js/files.js
+#: apps/uploads/static/uploads/js/uploads.js
+msgid "Remember password"
+msgstr "记住密码"
+
+#: apps/files/static/files/js/files.js
+msgid ""
+"Once remembered, this browser won't ask again for 30 days (it remembers that "
+"the folder is unlocked, not the password)."
+msgstr "记住以后，这个浏览器 30 天内不用再输入（只记住已经解锁，不保存密码）。"
+
+#: apps/files/static/files/js/files.js
+msgid "Note"
+msgstr "提示"
+
+#: apps/files/static/files/js/files.js
+msgid "The password can't be empty."
+msgstr "密码不能为空."
+
+#: apps/files/static/files/js/files.js
+#: apps/preview/static/preview/js/pdfview.js
+#: apps/uploads/static/uploads/js/uploads.js
+msgid "Wrong password. Please try again."
+msgstr "密码不对，请再试一次。"
+
+#: apps/files/static/files/js/files.js
+msgid ""
+"Too many passwords are needed. Please open those folders and enter their "
+"passwords first."
+msgstr "需要的密码太多了，请先打开那些文件夹输入密码。"
+
+#: apps/files/static/files/js/files.js
+msgid "Close gallery view"
+msgstr "关闭画廊模式"
+
+#: apps/files/static/files/js/files.js
+msgid "No storage sources to browse yet"
+msgstr "还没有可以浏览的存储源"
+
+#: apps/files/static/files/js/files.js
+msgid ""
+"Files are listed here once the administrator has added a storage source."
+msgstr "管理员加好存储源以后，文件就列在这里。"
+
+#: apps/files/static/files/js/files.js
+msgid "This folder is empty"
+msgstr "这个文件夹是空的"
+
+#: apps/files/static/files/js/files.js
+msgid "Drag files here, or use Upload above."
+msgstr "把文件拖到这里，或者用上方的「上传」。"
+
+#: apps/files/static/files/js/files.js
+msgctxt "list of them"
+msgid "Storage sources"
+msgstr "存储源"
+
+#: apps/files/static/files/js/files.js
+msgctxt "list of them"
+msgid "Files"
+msgstr "文件"
+
+#: apps/files/static/files/js/files.js
+msgid "Sort by %(label)s"
+msgstr "按%(label)s排序"
+
+#: apps/files/static/files/js/files.js
+#: apps/storages/static/storages/js/grants.js
+msgid "Select all"
+msgstr "全选"
+
+#: apps/files/static/files/js/files.js
+#: apps/siteconf/static/siteconf/js/manage_diagnostics.js
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Name"
+msgstr "名称"
+
+#: apps/files/static/files/js/files.js apps/links/static/links/js/links.js
+msgid "File name"
+msgstr "文件名"
+
+#: apps/files/static/files/js/files.js apps/links/static/links/js/links.js
+msgid "Modified"
+msgstr "修改时间"
+
+#: apps/files/static/files/js/files.js apps/links/static/links/js/links.js
+msgid "Size"
+msgstr "大小"
+
+#: apps/files/static/files/js/files.js
+msgid "Select %(name)s"
+msgstr "选择 %(name)s"
+
+#: apps/files/static/files/js/files.js
+msgid "More actions for %(name)s"
+msgstr "%(name)s 的更多操作"
+
+#: apps/files/static/files/js/files.js
+msgid "More actions"
+msgstr "更多操作"
+
+#: apps/files/static/files/js/files.js
+msgid "No images in this folder"
+msgstr "当前文件夹无图片"
+
+#: apps/files/static/files/js/files.js
+msgid "Leave gallery view"
+msgstr "退出画廊模式"
+
+#: apps/files/static/files/js/files.js
+msgid "%(total)s file in all, %(count)s loaded; click to load %(next)s more"
+msgid_plural ""
+"%(total)s files in all, %(count)s loaded; click to load %(next)s more"
+msgstr[0] "共 %(total)s 个文件，已加载 %(count)s 个，点击再加载 %(next)s 个"
+
+#: apps/files/static/files/js/files.js
+msgid "Load more"
+msgstr "加载更多"
+
+#: apps/files/static/files/js/files.js
+msgid "More locations"
+msgstr "更多位置"
+
+#: apps/files/static/files/js/files.js
+msgid "Ascending"
+msgstr "升序"
+
+#: apps/files/static/files/js/files.js
+msgid "Descending"
+msgstr "降序"
+
+#: apps/files/static/files/js/files.js
+msgid "Don't show this again until the content changes?"
+msgstr "在内容变更前是否不再显示此弹窗？"
+
+#: apps/files/static/files/js/files.js
+msgid "Yes"
+msgstr "是"
+
+#: apps/files/static/files/js/files.js
+msgid "Preview failed"
+msgstr "预览失败"
+
+#: apps/files/static/files/js/files.js
+#: apps/preview/static/preview/js/preview.js
+msgid "You don't have permission to download this file."
+msgstr "没有下载这个文件的权限。"
+
+#: apps/files/static/files/js/files.js apps/preview/static/preview/js/image.js
+#: apps/preview/static/preview/js/preview.js
+#: apps/preview/static/preview/js/video.js
+#: apps/shares/static/shares/js/share.js
+msgid "Download"
+msgstr "下载"
+
+#: apps/files/static/files/js/files.js
+#: apps/preview/static/preview/js/preview.js
+msgid "Download the file %(name)s?"
+msgstr "是否确认下载文件 %(name)s？"
+
+#: apps/files/static/files/js/files.js
+#: apps/shares/static/shares/js/share_list.js
+msgid "Actions"
+msgstr "操作"
+
+#: apps/files/static/files/js/files.js
+msgid "Failed"
+msgstr "操作失败"
+
+#: apps/files/static/files/js/files.js
+#: apps/storages/static/storages/js/grants.js
+msgid "%(count)s selected"
+msgid_plural "%(count)s selected"
+msgstr[0] "已选 %(count)s 项"
+
+#: apps/files/static/files/js/files.js
+msgid "New folder"
+msgstr "新建文件夹"
+
+#: apps/files/static/files/js/files.js
+msgid "Create"
+msgstr "创建"
+
+#: apps/files/static/files/js/files.js
+msgid "Create a folder in %(path)s. Enter its name:"
+msgstr "在 %(path)s 下创建文件夹，请输入要创建的文件夹名称"
+
+#: apps/files/static/files/js/files.js
+msgid "Folder name"
+msgstr "文件夹名称"
+
+#: apps/files/static/files/js/files.js
+msgid "The folder name can't be empty"
+msgstr "文件夹名称不能为空"
+
+#: apps/files/static/files/js/files.js
+msgid "A folder name can't contain / (nested folders can't be created at once)"
+msgstr "文件夹名称不能包含 / (不支持多级创建)"
+
+#: apps/files/static/files/js/files.js
+msgid "Created"
+msgstr "创建成功"
+
+#: apps/files/static/files/js/files.js
+msgid "This storage source doesn't support renaming folders."
+msgstr "当前存储源不支持重命名文件夹！"
+
+#: apps/files/static/files/js/files.js
+msgid "Rename"
+msgstr "重命名"
+
+#: apps/files/static/files/js/files.js
+msgid "Rename %(name)s to:"
+msgstr "将 %(name)s 修改为："
+
+#: apps/files/static/files/js/files.js
+msgid "New name"
+msgstr "新名称"
+
+#: apps/files/static/files/js/files.js
+msgid "The name can't be empty"
+msgstr "名称不能为空"
+
+#: apps/files/static/files/js/files.js
+msgid "The name can't contain /"
+msgstr "名称不能包含 /"
+
+#: apps/files/static/files/js/files.js
+msgid "Renaming…"
+msgstr "重命名中..."
+
+#: apps/files/static/files/js/files.js
+msgid "Renamed"
+msgstr "重命名成功"
+
+#: apps/files/static/files/js/files.js
+msgid "Delete %(name)s?"
+msgstr "是否确认删除 %(name)s？"
+
+#: apps/files/static/files/js/files.js
+msgid "%(folders)s folder"
+msgid_plural "%(folders)s folders"
+msgstr[0] "%(folders)s 个文件夹"
+
+#: apps/files/static/files/js/files.js
+msgid "%(files)s file"
+msgid_plural "%(files)s files"
+msgstr[0] "%(files)s 个文件"
+
+#: apps/files/static/files/js/files.js
+msgid "Delete %(what)s?"
+msgstr "是否确认批量删除 %(what)s？"
+
+#: apps/files/static/files/js/files.js
+#: apps/siteconf/static/siteconf/js/manage_settings.js
+#: apps/storages/static/storages/js/manage_storages.js
+#: apps/web/static/web/js/common.js
+msgctxt "between clauses"
+msgid ", "
+msgstr "，"
+
+#: apps/files/static/files/js/files.js
+msgid ""
+"\n"
+"(What is inside the folders is deleted too.)"
+msgstr ""
+"\n"
+"（文件夹里的内容会一起删除）"
+
+#: apps/files/static/files/js/files.js
+msgid "Deleting…"
+msgstr "删除中..."
+
+#: apps/files/static/files/js/files.js
+msgid "This storage source doesn't support copying folders."
+msgstr "当前存储源不支持复制文件夹！"
+
+#: apps/files/static/files/js/files.js
+msgid "This storage source doesn't support moving."
+msgstr "当前存储源不支持移动！"
+
+#: apps/files/static/files/js/files.js
+msgid "The target folder you chose is the folder they are already in."
+msgstr "你选择的目标文件夹与源文件夹相同！"
+
+#: apps/files/static/files/js/files.js
+msgid "View details"
+msgstr "查看详情"
+
+#: apps/files/static/files/js/files.js
+msgctxt "list of them"
+msgid "Folders"
+msgstr "文件夹"
+
+#: apps/files/static/files/js/files.js
+msgid "Confirm"
+msgstr "确认"
+
+#: apps/files/static/files/js/files.js
+msgid "Target folder"
+msgstr "目标文件夹"
+
+#: apps/files/static/files/js/files.js
+msgid "This folder needs a password to open."
+msgstr "需要密码才能打开这个文件夹。"
+
+#: apps/files/static/files/js/files.js
+#: apps/storages/static/storages/js/grants.js
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Root folder"
+msgstr "根目录"
+
+#: apps/files/static/files/js/files.js
+msgid "No folders"
+msgstr "无文件夹"
+
+#: apps/files/static/files/js/files.js
+msgid "There is no download link to copy."
+msgstr "没有可以复制的下载链接。"
+
+#: apps/files/static/files/js/files.js
+msgid "Download link copied to the clipboard"
+msgstr "下载链接已复制到剪贴板"
+
+#: apps/files/static/files/js/files.js apps/links/static/links/js/links.js
+#: apps/links/static/links/js/manage_download_logs.js
+#: apps/links/static/links/js/manage_short_links.js
+#: apps/shares/static/shares/js/create.js
+#: apps/shares/static/shares/js/share_list.js
+msgid "Copying failed. Please copy it by hand."
+msgstr "复制失败，请手动复制。"
+
+#: apps/files/static/files/js/files.js
+msgid "Moved"
+msgstr "移动成功"
+
+#: apps/files/static/files/js/files.js
+msgid "Move failed: %(error)s"
+msgstr "移动失败：%(error)s"
+
+#: apps/files/static/files/js/files.js
+msgid "Some items couldn't be moved. View the details?"
+msgstr "部分文件移动失败，是否查看详情？"
+
+#: apps/files/static/files/js/files.js
+msgid "None of the items could be moved. View the details?"
+msgstr "全部移动失败，是否查看详情？"
+
+#: apps/files/static/files/js/files.js
+msgid "Move results"
+msgstr "移动结果"
+
+#: apps/files/static/files/js/files.js
+msgid "Move to"
+msgstr "移动到"
+
+#: apps/files/static/files/js/files.js
+msgid "Move %(name)s"
+msgstr "移动 %(name)s"
+
+#: apps/files/static/files/js/files.js
+msgid "Move %(count)s item"
+msgid_plural "Move %(count)s items"
+msgstr[0] "移动 %(count)s 项"
+
+#: apps/files/static/files/js/files.js apps/links/static/links/js/links.js
+#: apps/links/static/links/js/manage_download_logs.js
+#: apps/links/static/links/js/manage_short_links.js
+#: apps/preview/static/preview/js/markdown.js
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Copied"
+msgstr "复制成功"
+
+#: apps/files/static/files/js/files.js
+msgid "Copy failed: %(error)s"
+msgstr "复制失败：%(error)s"
+
+#: apps/files/static/files/js/files.js
+msgid "Some items couldn't be copied. View the details?"
+msgstr "部分文件复制失败，是否查看详情？"
+
+#: apps/files/static/files/js/files.js
+msgid "None of the items could be copied. View the details?"
+msgstr "全部复制失败，是否查看详情？"
+
+#: apps/files/static/files/js/files.js
+msgid "Copy results"
+msgstr "复制结果"
+
+#: apps/files/static/files/js/files.js
+msgid "Copy to"
+msgstr "复制到"
+
+#: apps/files/static/files/js/files.js
+msgid "Copy %(name)s"
+msgstr "复制 %(name)s"
+
+#: apps/files/static/files/js/files.js
+msgid "Copy %(count)s item"
+msgid_plural "Copy %(count)s items"
+msgstr[0] "复制 %(count)s 项"
+
+#: apps/files/static/files/js/files.js
+#: apps/links/static/links/js/manage_short_links.js
+msgid "Deleted"
+msgstr "删除成功"
+
+#: apps/files/static/files/js/files.js
+msgid "Delete failed: %(error)s"
+msgstr "删除失败：%(error)s"
+
+#: apps/files/static/files/js/files.js
+msgid "Some items couldn't be deleted. View the details?"
+msgstr "部分文件删除失败，是否查看详情？"
+
+#: apps/files/static/files/js/files.js
+msgid "None of the items could be deleted. View the details?"
+msgstr "全部删除失败，是否查看详情？"
+
+#: apps/files/static/files/js/files.js
+msgid "Delete results"
+msgstr "删除结果"
+
+#: apps/files/static/files/js/files.js
+msgid "Results"
+msgstr "批量操作结果"
+
+#: apps/files/static/files/js/files.js
+msgid "Include successes"
+msgstr "包含成功"
+
+#: apps/files/static/files/js/files.js
+msgid "Message"
+msgstr "消息"
+
+#: apps/files/static/files/js/files.js
+#: apps/links/static/links/js/manage_download_logs.js
+#: apps/links/static/links/js/manage_short_links.js
+#: apps/office/static/office/js/office.js
+#: apps/preview/static/preview/js/kkfileview.js
+#: apps/preview/static/preview/js/pdfview.js
+msgid "Open"
+msgstr "打开"
+
+#: apps/files/static/files/js/files.js
+msgid "Open in new tab"
+msgstr "新标签打开"
+
+#: apps/files/static/files/js/files.js
+msgid "Preview"
+msgstr "预览"
+
+#: apps/files/static/files/js/files.js
+#: apps/links/static/links/js/manage_download_logs.js
+msgid "Copy download link"
+msgstr "复制下载链接"
+
+#: apps/files/static/files/js/files.js
+msgid "Move"
+msgstr "移动"
+
+#: apps/files/static/files/js/files.js
+msgid "Delete (%(count)s)"
+msgstr "删除 (%(count)s)"
+
+#: apps/files/static/files/js/files.js
+msgid "Upload files"
+msgstr "上传文件"
+
+#: apps/files/static/files/js/files.js
+msgid "Upload folder"
+msgstr "上传文件夹"
+
+#: apps/files/static/files/js/files.js
+msgid "Refresh"
+msgstr "刷新"
+
+#: apps/files/static/files/js/files.js
+msgid " (%(unit)s)"
+msgstr "（%(unit)s）"
+
+#: apps/files/static/files/js/files.js
+#: apps/links/static/links/js/manage_download_logs.js
+#: apps/links/static/links/js/manage_short_links.js
+#: apps/shares/static/shares/js/share_list.js
+#: apps/storages/static/storages/js/grants.js
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Storage source"
+msgstr "存储源"
+
+#: apps/files/static/files/js/files.js
+msgid "Choose a storage source"
+msgstr "请选择存储源"
+
+#: apps/files/static/files/js/files.js
+msgid "Forget unlocked folders"
+msgstr "清理密码文件夹缓存"
+
+#: apps/files/static/files/js/files.js
+msgctxt "notice"
+msgid "Done"
+msgstr "操作成功"
+
+#: apps/files/static/files/js/files.js
+msgid "Preferences"
+msgstr "个人设置"
+
+#: apps/files/static/files/js/files.js
+msgid "Tip: settings are saved automatically and stay after a reload."
+msgstr "提示：设置会自动保存，刷新后仍有效。"
+
+#: apps/files/static/files/js/files.js
+msgid "Display"
+msgstr "显示方式"
+
+#: apps/files/static/files/js/files.js
+msgid "Small"
+msgstr "小"
+
+#: apps/files/static/files/js/files.js
+msgid "Medium"
+msgstr "中"
+
+#: apps/files/static/files/js/files.js
+msgid "Large"
+msgstr "大"
+
+#: apps/files/static/files/js/files.js
+msgid "Gallery"
+msgstr "画廊"
+
+#: apps/files/static/files/js/files.js
+msgid "Columns"
+msgstr "图片列数"
+
+#: apps/files/static/files/js/files.js
+msgid "Column gap"
+msgstr "列间距"
+
+#: apps/files/static/files/js/files.js
+msgid "Row gap"
+msgstr "行间距"
+
+#: apps/files/static/files/js/files.js
+msgid "Rounded image borders"
+msgstr "图片是否带圆角边框"
+
+#: apps/files/static/files/js/files.js
+msgid "Show names"
+msgstr "显示名称"
+
+#: apps/files/static/files/js/files.js
+msgid "Name position"
+msgstr "名称显示模式"
+
+#: apps/files/static/files/js/files.js
+msgid "On hover"
+msgstr "悬浮显示"
+
+#: apps/files/static/files/js/files.js
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Below"
+msgstr "底部显示"
+
+#: apps/files/static/files/js/files.js
+msgid "Double-click preview"
+msgstr "双击预览模式"
+
+#: apps/files/static/files/js/files.js
+msgid "Show all"
+msgstr "显示全部"
+
+#: apps/files/static/files/js/files.js
+msgid "Show one"
+msgstr "显示单张"
+
+#: apps/files/static/files/js/files.js
+msgid "Click to enlarge"
+msgstr "点击放大预览"
+
+#: apps/files/static/files/js/files.js
+msgid "Back-to-top button"
+msgstr "回到顶部按钮"
+
+#: apps/files/static/files/js/files.js
+msgid "Other"
+msgstr "其他"
+
+#: apps/installer/static/installer/install.js
+msgid "Install steps"
+msgstr "安装的步骤"
+
+#: apps/installer/static/installer/install.js
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Still to fill in: %(fields)s"
+msgstr "还要填：%(fields)s"
+
+#: apps/installer/static/installer/install.js
+#: apps/sso/static/sso/js/manage_sso.js
+#: apps/storages/static/storages/js/grants.js
+#: apps/storages/static/storages/js/manage_storages.js
+#: apps/web/static/web/js/manage_version.js
+msgid ", "
+msgstr "、"
+
+#: apps/installer/static/installer/install.js
+msgid ""
+"Can't reach the program: check its command-line window to see whether it has "
+"stopped, then try again."
+msgstr "连不上程序：看看命令行窗口，它是不是已经停了，再试一次。"
+
+#: apps/installer/static/installer/install.js
+msgid ""
+"The program's answer couldn't be understood (HTTP %(status)s). Try again."
+msgstr "程序的回答看不懂（HTTP %(status)s），再试一次。"
+
+#: apps/installer/static/installer/install.js
+msgid "Testing the connection…"
+msgstr "正在测试连接……"
+
+#: apps/installer/static/installer/install.js
+#: apps/shares/static/shares/js/share.js
+msgid "Checking…"
+msgstr "正在检查……"
+
+#: apps/installer/static/installer/install.js
+msgid "Installing…"
+msgstr "正在安装…"
+
+#: apps/installer/static/installer/install.js
+msgid ""
+"The program has started with the new settings. Open the site and log in with "
+"the admin account you just created."
+msgstr "程序已经用新的设置启动了，可以打开网站，用刚才的管理员账号登录。"
+
+#: apps/installer/static/installer/install.js
+msgid ""
+"The program still hasn't started after a minute. Check the output in its "
+"command-line window, or stop the program and run it again."
+msgstr ""
+"一分钟了程序还没有启动好。请看看命令行窗口里的输出，或者关掉程序再运行一次。"
+
+#: apps/links/static/links/js/links.js
+msgid "Short link lifetime"
+msgstr "短链有效期"
+
+#: apps/links/static/links/js/links.js
+msgid "%(n)s second"
+msgid_plural "%(n)s seconds"
+msgstr[0] "%(n)s 秒"
+
+#: apps/links/static/links/js/links.js
+msgid "%(n)s minute"
+msgid_plural "%(n)s minutes"
+msgstr[0] "%(n)s 分钟"
+
+#: apps/links/static/links/js/links.js
+msgid "%(n)s hour"
+msgid_plural "%(n)s hours"
+msgstr[0] "%(n)s 小时"
+
+#: apps/links/static/links/js/links.js
+msgid "%(n)s day"
+msgid_plural "%(n)s days"
+msgstr[0] "%(n)s 天"
+
+#: apps/links/static/links/js/links.js
+msgid "%(n)s week"
+msgid_plural "%(n)s weeks"
+msgstr[0] "%(n)s 周"
+
+#: apps/links/static/links/js/links.js
+msgid "%(n)s month"
+msgid_plural "%(n)s months"
+msgstr[0] "%(n)s 月"
+
+#: apps/links/static/links/js/links.js
+msgid "%(n)s year"
+msgid_plural "%(n)s years"
+msgstr[0] "%(n)s 年"
+
+#: apps/links/static/links/js/links.js
+#: apps/links/static/links/js/manage_short_links.js
+#: apps/siteconf/static/siteconf/js/manage_settings.js
+msgid "Forever"
+msgstr "永久"
+
+#: apps/links/static/links/js/links.js
+msgid "Get direct links"
+msgstr "获取直链"
+
+#: apps/links/static/links/js/links.js
+msgid "Create short links"
+msgstr "生成短链"
+
+#: apps/links/static/links/js/links.js
+msgid "Get both links"
+msgstr "同时获取"
+
+#: apps/links/static/links/js/links.js
+msgid "Please select at least one file"
+msgstr "请至少选择一个文件"
+
+#: apps/links/static/links/js/links.js
+msgid ""
+"The site has no short link lifetimes set. Please contact the administrator."
+msgstr "网站没有设置短链有效期，请联系管理员。"
+
+#: apps/links/static/links/js/links.js
+msgid "Selected files"
+msgstr "选中的文件"
+
+#: apps/links/static/links/js/links.js
+msgid "%(count)s file"
+msgid_plural "%(count)s files"
+msgstr[0] "%(count)s 个"
+
+#: apps/links/static/links/js/links.js
+msgid "Direct link"
+msgstr "直链"
+
+#: apps/links/static/links/js/links.js
+msgid "Copy direct link"
+msgstr "复制直链"
+
+#: apps/links/static/links/js/links.js
+msgid "Copy all direct links"
+msgstr "复制全部直链"
+
+#: apps/links/static/links/js/links.js
+msgid "Copy all direct links to the clipboard"
+msgstr "批量复制直链到剪贴板"
+
+#: apps/links/static/links/js/links.js
+msgid "Copied %(count)s direct link"
+msgid_plural "Copied %(count)s direct links"
+msgstr[0] "已复制 %(count)s 个直链"
+
+#: apps/links/static/links/js/links.js
+msgid "Short link"
+msgstr "短链"
+
+#: apps/links/static/links/js/links.js
+msgid "Copy short link"
+msgstr "复制短链"
+
+#: apps/links/static/links/js/links.js
+msgid "Copy all short links"
+msgstr "复制全部短链"
+
+#: apps/links/static/links/js/links.js
+msgid "Copy all short links to the clipboard"
+msgstr "批量复制短链到剪贴板"
+
+#: apps/links/static/links/js/links.js
+msgid "Copied %(count)s short link"
+msgid_plural "Copied %(count)s short links"
+msgstr[0] "已复制 %(count)s 个短链"
+
+#: apps/links/static/links/js/links.js
+msgid "Click to copy"
+msgstr "点击复制"
+
+#: apps/links/static/links/js/links.js apps/shares/static/shares/js/create.js
+msgid "Valid until %(expires_at)s"
+msgstr "有效期至 %(expires_at)s"
+
+#: apps/links/static/links/js/links.js apps/shares/static/shares/js/create.js
+#: apps/shares/static/shares/js/share_list.js
+msgid "Never expires"
+msgstr "永久有效"
+
+#: apps/links/static/links/js/links.js
+msgid "%(count)s file; the short link never expires."
+msgid_plural "%(count)s files; the short links never expire."
+msgstr[0] "%(count)s 个文件，短链永久有效。"
+
+#: apps/links/static/links/js/links.js
+msgid "%(count)s file; the short link is valid until %(expires_at)s."
+msgid_plural "%(count)s files; the short links are valid until %(expires_at)s."
+msgstr[0] "%(count)s 个文件，短链有效期至 %(expires_at)s。"
+
+#: apps/links/static/links/js/links.js
+msgid "The direct link, with the file's full path."
+msgstr "路径直链地址，包含文件完整路径."
+
+#: apps/links/static/links/js/links.js
+msgid "A shorter link, easy to copy and pass on."
+msgstr "缩短版直链地址，便于复制分发."
+
+#: apps/links/static/links/js/links.js
+msgid "QR code of the file"
+msgstr "文件二维码"
+
+#: apps/links/static/links/js/links.js
+msgid "The link is too long for a QR code."
+msgstr "链接太长，生成不了二维码。"
+
+#: apps/links/static/links/js/links.js
+msgid "Copy all to the clipboard"
+msgstr "批量复制到剪贴板"
+
+#: apps/links/static/links/js/links.js
+msgid "Export"
+msgstr "导出"
+
+#: apps/links/static/links/js/links.js
+msgid "%(count)s file."
+msgid_plural "%(count)s files."
+msgstr[0] "%(count)s 个文件。"
+
+#: apps/links/static/links/js/links.js
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Path"
+msgstr "路径"
+
+#: apps/links/static/links/js/links.js
+msgid "%(site)s direct links %(stamp)s.csv"
+msgstr "%(site)s 直链导出 %(stamp)s.csv"
+
+#: apps/links/static/links/js/manage_download_logs.js
+#: apps/links/static/links/js/manage_short_links.js
+msgid "Copy %(url)s"
+msgstr "复制 %(url)s"
+
+#: apps/links/static/links/js/manage_download_logs.js
+msgid "Open the download link"
+msgstr "打开下载链接"
+
+#: apps/links/static/links/js/manage_download_logs.js
+msgid "Downloaded at"
+msgstr "下载时间"
+
+#: apps/links/static/links/js/manage_download_logs.js
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Type"
+msgstr "类型"
+
+#: apps/links/static/links/js/manage_download_logs.js
+#: apps/links/static/links/js/manage_short_links.js
+msgid "File path"
+msgstr "文件路径"
+
+#: apps/links/static/links/js/manage_download_logs.js
+msgid "User"
+msgstr "用户"
+
+#: apps/links/static/links/js/manage_download_logs.js
+msgid "Browser and referer"
+msgstr "浏览器和来源"
+
+#: apps/links/static/links/js/manage_download_logs.js
+msgid "UA: %(user_agent)s"
+msgstr "UA：%(user_agent)s"
+
+#: apps/links/static/links/js/manage_download_logs.js
+msgid "UA: —"
+msgstr "UA：—"
+
+#: apps/links/static/links/js/manage_download_logs.js
+msgid "Referer: %(referer)s"
+msgstr "来源：%(referer)s"
+
+#: apps/links/static/links/js/manage_download_logs.js
+msgid "Referer: —"
+msgstr "来源：—"
+
+#: apps/links/static/links/js/manage_download_logs.js
+msgid "No downloads logged yet."
+msgstr "还没有下载记录。"
+
+#: apps/links/static/links/js/manage_download_logs.js
+#: apps/links/static/links/js/manage_short_links.js
+msgid "Please select at least one entry"
+msgstr "请至少选择一条数据"
+
+#: apps/links/static/links/js/manage_download_logs.js
+msgid "Delete the %(count)s selected download log entry?"
+msgid_plural "Delete the %(count)s selected download log entries?"
+msgstr[0] "是否确认删除选中的 %(count)s 条下载日志？"
+
+#: apps/links/static/links/js/manage_download_logs.js
+msgid "Delete the %(count)s download log entry these filters find?"
+msgid_plural "Delete the %(count)s download log entries these filters find?"
+msgstr[0] "是否确认删除当前查询条件下的 %(count)s 条下载日志？"
+
+#: apps/links/static/links/js/manage_download_logs.js
+msgid "Delete the whole download log (%(count)s entry)?"
+msgid_plural "Delete the whole download log (%(count)s entries)?"
+msgstr[0] "清空全部 %(count)s 条下载日志？"
+
+#: apps/links/static/links/js/manage_download_logs.js
+msgctxt "download log"
+msgid ""
+"No filters are set: every entry in the list is deleted (except those logged "
+"after it loaded). This can't be undone."
+msgstr ""
+"没有设条件：列表里的下载日志都会删除（在那之后才记下的除外）。删除以后不能恢"
+"复。"
+
+#: apps/links/static/links/js/manage_short_links.js
+msgid "Select short link %(key)s"
+msgstr "选中短链 %(key)s"
+
+#: apps/links/static/links/js/manage_short_links.js
+msgid "Delete short link %(key)s"
+msgstr "删除短链 %(key)s"
+
+#: apps/links/static/links/js/manage_short_links.js
+msgid "Short link key"
+msgstr "短链 Key"
+
+#: apps/links/static/links/js/manage_short_links.js
+msgid "Created by"
+msgstr "生成者"
+
+#: apps/links/static/links/js/manage_short_links.js
+msgid "%(nickname)s (%(username)s)"
+msgstr "%(nickname)s（%(username)s）"
+
+#: apps/links/static/links/js/manage_short_links.js
+msgid "Expires at"
+msgstr "过期时间"
+
+#: apps/links/static/links/js/manage_short_links.js
+msgid "Expired"
+msgstr "已过期"
+
+#: apps/links/static/links/js/manage_short_links.js
+msgid "Open short link %(key)s"
+msgstr "打开短链 %(key)s"
+
+#: apps/links/static/links/js/manage_short_links.js
+msgid "No short links match."
+msgstr "没有符合条件的短链。"
+
+#: apps/links/static/links/js/manage_short_links.js
+msgid "No short links yet."
+msgstr "还没有短链。"
+
+#: apps/links/static/links/js/manage_short_links.js
+msgid "Delete short link %(key)s?"
+msgstr "删除短链 %(key)s？"
+
+#: apps/links/static/links/js/manage_short_links.js
+msgid ""
+"Once deleted, this short link stops working. Its download log entries are "
+"kept."
+msgstr "删除以后这个短链就打不开了，它的下载日志会保留。"
+
+#: apps/links/static/links/js/manage_short_links.js
+msgid "Delete the %(count)s selected short link?"
+msgid_plural "Delete the %(count)s selected short links?"
+msgstr[0] "删除选中的 %(count)s 个短链？"
+
+#: apps/links/static/links/js/manage_short_links.js
+msgid ""
+"Once deleted, these short links stop working. Their download log entries are "
+"kept."
+msgstr "删除以后这些短链就打不开了，它们的下载日志会保留。"
+
+#: apps/links/static/links/js/manage_short_links.js
+msgid "Deleted %(deleted)s short link."
+msgid_plural "Deleted %(deleted)s short links."
+msgstr[0] "删除了 %(deleted)s 个。"
+
+#: apps/links/static/links/js/manage_short_links.js
+msgid "Delete expired short links?"
+msgstr "删除过期短链？"
+
+#: apps/links/static/links/js/manage_short_links.js
+msgid ""
+"Every expired short link is deleted, along with its download log entries. "
+"This can't be undone."
+msgstr "会删除所有已经过期的短链，连同它们的下载日志。删除以后不能恢复。"
+
+#: apps/links/static/links/js/manage_short_links.js
+msgid "Deleted %(deleted)s short link (and %(logs)s download log entries)."
+msgid_plural ""
+"Deleted %(deleted)s short links (and %(logs)s download log entries)."
+msgstr[0] "成功删除 %(deleted)s 条（连同 %(logs)s 条下载日志）。"
+
+#: apps/links/static/links/js/manage_short_links.js
+msgid "There are no expired short links."
+msgstr "没有过期的短链。"
+
+#: apps/links/static/links/js/manage_short_links.js
+msgid ""
+"Downloads aren't rate-limited now (the seconds or the count in \"Direct and "
+"short links\" is 0)."
+msgstr "现在没有限制下载频率（「直链和短链」里秒数或次数是 0）。"
+
+#: apps/links/static/links/js/manage_short_links.js
+msgid ""
+"Each IP may download %(downloads)s time per %(seconds)s s. Counters now: %"
+"(count)s (those older than %(seconds)s s are cleared)."
+msgid_plural ""
+"Each IP may download %(downloads)s times per %(seconds)s s. Counters now: %"
+"(count)s (those older than %(seconds)s s are cleared)."
+msgstr[0] ""
+"当前系统限制单 IP %(seconds)s 秒内下载 %(downloads)s 次，已记录 %(count)s 条"
+"记录。（超出 %(seconds)s 秒的记录将被清除。）"
+
+#: apps/links/static/links/js/manage_short_links.js
+msgid "No downloads in the last %(seconds)s second."
+msgid_plural "No downloads in the last %(seconds)s seconds."
+msgstr[0] "%(seconds)s 秒内没有任何下载记录。"
+
+#: apps/links/static/links/js/manage_short_links.js
+msgid "Downloads"
+msgstr "次数"
+
+#: apps/links/static/links/js/manage_short_links.js
+msgid "Window"
+msgstr "统计区间"
+
+#: apps/links/static/links/js/manage_short_links.js
+msgid "From %(started_at)s"
+msgstr "%(started_at)s 起"
+
+#: apps/links/static/links/js/manage_short_links.js
+msgid "Only the top %(count)s is listed."
+msgid_plural "Only the top %(count)s are listed."
+msgstr[0] "只列出次数最多的 %(count)s 个。"
+
+#: apps/links/static/links/js/manage_short_links.js
+msgid "Statistics"
+msgstr "统计信息"
+
+#: apps/links/static/links/js/manage_short_links.js
+msgid ""
+"The counters are kept in the memory of this site's process and start from "
+"zero when the site restarts."
+msgstr "计数在网站这个进程的内存里，网站重新启动后从零开始。"
+
+#: apps/office/static/office/js/editor.js
+msgid ""
+"Couldn't reach the online document server. Please check that it is working."
+msgstr "调用在线文档服务失败，请检查在线文档服务是否正常"
+
+#: apps/office/static/office/js/editor.js
+msgid "Back to the folder"
+msgstr "返回文件夹"
+
+#: apps/office/static/office/js/editor.js
+msgid "Opening the document failed."
+msgstr "打开文档失败。"
+
+#: apps/office/static/office/js/editor.js
+msgid "Online document"
+msgstr "在线文档"
+
+#: apps/office/static/office/js/editor.js
+msgid "The online document server reported an error: %(error)s"
+msgstr "在线文档服务报告了错误：%(error)s"
+
+#: apps/office/static/office/js/editor.js
+msgid "unknown error"
+msgstr "未知错误"
+
+#: apps/office/static/office/js/office.js
+msgid "\"%(name)s\" opens in a new tab, and the browser blocked it."
+msgstr "「%(name)s」要在新标签页里打开，浏览器拦下了它。"
+
+#: apps/office/static/office/js/office.js
+msgid "Open with OnlyOffice"
+msgstr "用 OnlyOffice 打开"
+
+#: apps/preview/static/preview/js/audio.js
+msgid "In order"
+msgstr "顺序播放"
+
+#: apps/preview/static/preview/js/audio.js
+msgid "Shuffle"
+msgstr "随机播放"
+
+#: apps/preview/static/preview/js/audio.js
+msgid "Repeat all"
+msgstr "列表循环"
+
+#: apps/preview/static/preview/js/audio.js
+msgid "Repeat one"
+msgstr "单曲循环"
+
+#: apps/preview/static/preview/js/audio.js
+msgid "No repeat"
+msgstr "不循环"
+
+#: apps/preview/static/preview/js/audio.js
+msgid "Playback position"
+msgstr "播放进度"
+
+#: apps/preview/static/preview/js/audio.js
+msgid "Play"
+msgstr "播放"
+
+#: apps/preview/static/preview/js/audio.js
+#: apps/preview/static/preview/js/video.js
+msgid "Playlist"
+msgstr "播放列表"
+
+#: apps/preview/static/preview/js/audio.js
+msgid "Music player"
+msgstr "音乐播放器"
+
+#: apps/preview/static/preview/js/audio.js
+msgctxt "track"
+msgid "Previous"
+msgstr "上一首"
+
+#: apps/preview/static/preview/js/audio.js
+msgctxt "track"
+msgid "Next"
+msgstr "下一首"
+
+#: apps/preview/static/preview/js/audio.js
+msgid "Close the player"
+msgstr "关闭播放器"
+
+#: apps/preview/static/preview/js/audio.js
+msgid "Play order: %(order)s"
+msgstr "播放顺序：%(order)s"
+
+#: apps/preview/static/preview/js/audio.js
+msgid "Repeat: %(mode)s"
+msgstr "循环模式：%(mode)s"
+
+#: apps/preview/static/preview/js/audio.js
+msgid "%(name)s (no permission to play)"
+msgstr "%(name)s（没有播放的权限）"
+
+#: apps/preview/static/preview/js/audio.js
+msgid "Pause"
+msgstr "暂停"
+
+#: apps/preview/static/preview/js/audio.js
+msgid ""
+"%(name)s can't be played: the browser may not support this audio format."
+msgstr "%(name)s 不能播放：浏览器可能不支持这种音频格式。"
+
+#: apps/preview/static/preview/js/image.js
+msgctxt "image"
+msgid "Previous"
+msgstr "上一张"
+
+#: apps/preview/static/preview/js/image.js
+msgid "Previous (A)"
+msgstr "上一张（A）"
+
+#: apps/preview/static/preview/js/image.js
+msgctxt "image"
+msgid "Next"
+msgstr "下一张"
+
+#: apps/preview/static/preview/js/image.js
+msgid "Next (D)"
+msgstr "下一张（D）"
+
+#: apps/preview/static/preview/js/image.js
+msgid "Zoom out (S)"
+msgstr "缩小（S）"
+
+#: apps/preview/static/preview/js/image.js
+msgid "Zoom in (W)"
+msgstr "放大（W）"
+
+#: apps/preview/static/preview/js/image.js
+msgid "Rotate left (Q)"
+msgstr "向左旋转（Q）"
+
+#: apps/preview/static/preview/js/image.js
+msgid "Rotate right (E)"
+msgstr "向右旋转（E）"
+
+#: apps/preview/static/preview/js/image.js
+msgid "Reset (Space)"
+msgstr "还原（空格）"
+
+#: apps/preview/static/preview/js/image.js
+msgid "Image preview: %(name)s"
+msgstr "图片预览：%(name)s"
+
+#: apps/preview/static/preview/js/image.js
+msgid "Close (Esc)"
+msgstr "关闭（Esc）"
+
+#: apps/preview/static/preview/js/image.js
+msgid "You don't have permission to preview this image."
+msgstr "没有预览这张图片的权限。"
+
+#: apps/preview/static/preview/js/image.js
+msgid "The image didn't load."
+msgstr "图片加载失败。"
+
+#: apps/preview/static/preview/js/image.js
+msgid "The browser may not support this image format."
+msgstr "浏览器可能不支持这种图片格式。"
+
+#: apps/preview/static/preview/js/kkfileview.js
+msgid "Loading the preview, please wait…"
+msgstr "正在加载预览，请稍候..."
+
+#: apps/preview/static/preview/js/kkfileview.js
+msgid "kkFileView can't be at the same address as the site."
+msgstr "kkFileView 不能和网站在同一个地址下。"
+
+#: apps/preview/static/preview/js/kkfileview.js
+msgid "The kkFileView preview is ready (the browser blocked the new tab)."
+msgstr "kkFileView 预览准备好了（浏览器拦下了新标签页）。"
+
+#: apps/preview/static/preview/js/kkfileview.js
+msgid "kkFileView preview: %(name)s"
+msgstr "kkFileView 预览：%(name)s"
+
+#: apps/preview/static/preview/js/kkfileview.js
+msgid "Loading the preview failed: %(message)s"
+msgstr "加载预览失败：%(message)s"
+
+#: apps/preview/static/preview/js/kkfileview.js
+msgid "kkFileView preview"
+msgstr "kkFileView 预览"
+
+#: apps/preview/static/preview/js/markdown.js
+msgid "External image"
+msgstr "外部图片"
+
+#: apps/preview/static/preview/js/markdown.js
+msgid "Copy code"
+msgstr "复制代码"
+
+#: apps/preview/static/preview/js/markdown.js
+msgid "Copy failed"
+msgstr "复制失败"
+
+#: apps/preview/static/preview/js/markdown.js
+msgid "View source"
+msgstr "查看源文件"
+
+#: apps/preview/static/preview/js/markdown.js
+msgid "View as text"
+msgstr "以文本查看"
+
+#: apps/preview/static/preview/js/markdown.js
+msgid "This file is empty."
+msgstr "这个文件是空的。"
+
+#: apps/preview/static/preview/js/markdown.js
+msgid "The Markdown didn't load."
+msgstr "Markdown 加载失败。"
+
+#: apps/preview/static/preview/js/pdfview.js
+msgid "This PDF has a password"
+msgstr "这个 PDF 有密码"
+
+#: apps/preview/static/preview/js/pdfview.js
+msgid "PDF pages"
+msgstr "PDF 页面"
+
+#: apps/preview/static/preview/js/pdfview.js apps/web/static/web/js/common.js
+msgid "Page"
+msgstr "页码"
+
+#: apps/preview/static/preview/js/pdfview.js
+msgid "Previous page (←)"
+msgstr "上一页（←）"
+
+#: apps/preview/static/preview/js/pdfview.js
+msgid "Next page (→)"
+msgstr "下一页（→）"
+
+#: apps/preview/static/preview/js/pdfview.js
+msgid "Show all pages"
+msgstr "显示所有页"
+
+#: apps/preview/static/preview/js/pdfview.js
+msgid "Zoom out (-)"
+msgstr "缩小（-）"
+
+#: apps/preview/static/preview/js/pdfview.js
+msgid "Zoom in (+)"
+msgstr "放大（+）"
+
+#: apps/preview/static/preview/js/pdfview.js
+msgid "Fit width"
+msgstr "适合宽度"
+
+#: apps/preview/static/preview/js/pdfview.js
+msgid "The PDF didn't load"
+msgstr "PDF 加载失败"
+
+#: apps/preview/static/preview/js/pdfview.js
+msgid "This file isn't a valid PDF."
+msgstr "这个文件不是有效的 PDF。"
+
+#: apps/preview/static/preview/js/pdfview.js
+msgid "Page %(number)s"
+msgstr "第 %(number)s 页"
+
+#: apps/preview/static/preview/js/pdfview.js
+msgid "Loading %(percent)s%"
+msgstr "加载 %(percent)s%"
+
+#: apps/preview/static/preview/js/pdfview.js
+msgid "Without the password this PDF can't be opened."
+msgstr "没有输入密码，打不开这个 PDF。"
+
+#: apps/preview/static/preview/js/pdfview.js
+msgid "PDFs over %(limit)s page can only be viewed one page at a time"
+msgid_plural "PDFs over %(limit)s pages can only be viewed one page at a time"
+msgstr[0] "超过 %(limit)s 页的 PDF 只能一页一页看"
+
+#: apps/preview/static/preview/js/preview.js
+msgid "The file is too large (%(size)s); the page previews at most %(limit)s."
+msgstr "文件太大了（%(size)s），网页上最多预览 %(limit)s。"
+
+#: apps/preview/static/preview/js/preview.js
+msgid "You can download it and open it on your device."
+msgstr "可以下载后再打开。"
+
+#: apps/preview/static/preview/js/preview.js
+msgid "Couldn't get a download address."
+msgstr "拿不到下载地址。"
+
+#: apps/preview/static/preview/js/preview.js
+msgid "A script didn't load. Please reload the page and try again."
+msgstr "脚本加载失败，请刷新页面再试。"
+
+#: apps/preview/static/preview/js/preview.js apps/web/static/web/js/common.js
+msgid "Network error. Please check your connection and try again."
+msgstr "网络错误，请检查网络后再试。"
+
+#: apps/preview/static/preview/js/text.js
+msgid "Plain text"
+msgstr "纯文本"
+
+#: apps/preview/static/preview/js/text.js
+msgid "Batch (bat)"
+msgstr "批处理（bat）"
+
+#: apps/preview/static/preview/js/text.js
+msgid "Windows-1250 (Central European)"
+msgstr "Windows-1250（中欧）"
+
+#: apps/preview/static/preview/js/text.js
+msgid "Windows-1251 (Cyrillic)"
+msgstr "Windows-1251（西里尔）"
+
+#: apps/preview/static/preview/js/text.js
+msgid "Windows-1252 (Western European)"
+msgstr "Windows-1252（西欧）"
+
+#: apps/preview/static/preview/js/text.js
+msgid "Windows-1253 (Greek)"
+msgstr "Windows-1253（希腊）"
+
+#: apps/preview/static/preview/js/text.js
+msgid "Windows-1254 (Turkish)"
+msgstr "Windows-1254（土耳其）"
+
+#: apps/preview/static/preview/js/text.js
+msgid "Windows-1255 (Hebrew)"
+msgstr "Windows-1255（希伯来）"
+
+#: apps/preview/static/preview/js/text.js
+msgid "Windows-1256 (Arabic)"
+msgstr "Windows-1256（阿拉伯）"
+
+#: apps/preview/static/preview/js/text.js
+msgid "Windows-1257 (Baltic)"
+msgstr "Windows-1257（波罗的海）"
+
+#: apps/preview/static/preview/js/text.js
+msgid "Windows-1258 (Vietnamese)"
+msgstr "Windows-1258（越南）"
+
+#: apps/preview/static/preview/js/text.js
+msgid "Edit %(name)s"
+msgstr "编辑 %(name)s"
+
+#: apps/preview/static/preview/js/text.js
+msgid "Language"
+msgstr "语言"
+
+#: apps/preview/static/preview/js/text.js
+msgid "Encoding"
+msgstr "编码"
+
+#: apps/preview/static/preview/js/text.js
+#: apps/storages/static/storages/js/grants.js
+#: apps/storages/static/storages/js/manage_storages.js
+#: apps/web/static/web/js/common.js
+msgid "Save"
+msgstr "保存"
+
+#: apps/preview/static/preview/js/text.js
+msgid "Read-only"
+msgstr "只读"
+
+#: apps/preview/static/preview/js/text.js
+msgid "Wrap lines"
+msgstr "自动换行"
+
+#: apps/preview/static/preview/js/text.js
+msgid "Lines %(lines)s"
+msgstr "行数 %(lines)s"
+
+#: apps/preview/static/preview/js/text.js
+msgid "Length %(length)s"
+msgstr "长度 %(length)s"
+
+#: apps/preview/static/preview/js/text.js
+msgid "Cursor %(line)s:%(column)s"
+msgstr "光标 %(line)s:%(column)s"
+
+#: apps/preview/static/preview/js/text.js
+msgid "Selected %(selected)s"
+msgstr "选中 %(selected)s"
+
+#: apps/preview/static/preview/js/text.js
+msgid "Encoding %(name)s"
+msgstr "编码 %(name)s"
+
+#: apps/preview/static/preview/js/text.js
+msgid " (with BOM)"
+msgstr "（带 BOM）"
+
+#: apps/preview/static/preview/js/text.js
+msgid " (detected)"
+msgstr "（自动识别）"
+
+#: apps/preview/static/preview/js/text.js
+#: apps/storages/static/storages/js/grants.js
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Unsaved changes"
+msgstr "有改动，还没保存"
+
+#: apps/preview/static/preview/js/text.js
+msgid "The text file didn't load."
+msgstr "加载文本文件失败。"
+
+#: apps/preview/static/preview/js/text.js
+msgid "Files over %(limit)s can only be viewed"
+msgstr "超过 %(limit)s 的文件只能查看"
+
+#: apps/preview/static/preview/js/text.js
+msgid "Read-only: the file can't be saved"
+msgstr "只读状态下不允许保存文件"
+
+#: apps/preview/static/preview/js/text.js
+msgid "The file has changed"
+msgstr "文件已经被改过了"
+
+#: apps/preview/static/preview/js/text.js
+#: apps/uploads/static/uploads/js/uploads.js
+msgid "Overwrite"
+msgstr "覆盖"
+
+#: apps/preview/static/preview/js/text.js
+msgid ""
+"This file was changed after you opened it. Overwrite it with what you have "
+"now?"
+msgstr "这个文件在你打开以后被修改过。要用你现在的内容覆盖它吗？"
+
+#: apps/preview/static/preview/js/text.js
+#: apps/storages/static/storages/js/grants.js
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Saved"
+msgstr "已保存"
+
+#: apps/preview/static/preview/js/text.js
+msgid "Saving failed: %(message)s"
+msgstr "保存失败：%(message)s"
+
+#: apps/preview/static/preview/js/text.js
+msgid "Change the encoding"
+msgstr "换一种编码"
+
+#: apps/preview/static/preview/js/text.js
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Change"
+msgstr "更换"
+
+#: apps/preview/static/preview/js/text.js
+msgid ""
+"Changing the encoding reads the file again in the new one; unsaved changes "
+"are lost."
+msgstr "换编码会按新的编码重新读出文件，没保存的修改会丢掉。"
+
+#: apps/preview/static/preview/js/text.js
+msgid "Unreadable characters"
+msgstr "有读不出的字符"
+
+#: apps/preview/static/preview/js/text.js
+msgid "Edit anyway"
+msgstr "仍然编辑"
+
+#: apps/preview/static/preview/js/text.js
+msgid ""
+"In the current encoding this file has characters that can't be read (shown "
+"as �). Try another encoding; if you edit and save it as it is, those "
+"characters are replaced."
+msgstr ""
+"按现在的编码，这个文件里有读不出的字符（显示成 �）。换一种编码看看；直接编辑"
+"并保存的话，这些字符会被换掉。"
+
+#: apps/preview/static/preview/js/text.js
+msgid "NUL characters"
+msgstr "有 NUL 字符"
+
+#: apps/preview/static/preview/js/text.js
+msgid ""
+"This file has NUL characters (U+0000), and the online editor can't save text "
+"with them. Most likely the encoding is wrong (UTF-16 without a BOM, say), so "
+"try another one; to edit it anyway, delete those characters before saving."
+msgstr ""
+"这个文件里有 NUL 字符（U+0000），在线编辑不能保存带 NUL 的文本。多半是编码不"
+"对（比如没有 BOM 的 UTF-16），换一种编码看看；仍然编辑的话，要先删掉这些字符"
+"才能保存。"
+
+#: apps/preview/static/preview/js/text.js
+msgid "There are unsaved changes. Close without saving?"
+msgstr "有没保存的修改，确定不保存就关闭吗？"
+
+#: apps/preview/static/preview/js/text.js
+msgid "Don't save"
+msgstr "不保存"
+
+#: apps/preview/static/preview/js/video.js
+msgid "The m3u8 refers to addresses outside this folder."
+msgstr "m3u8 里引用了这个文件夹以外的地址。"
+
+#: apps/preview/static/preview/js/video.js
+msgid "Thunder"
+msgstr "迅雷"
+
+#: apps/preview/static/preview/js/video.js
+msgid "Subtitles"
+msgstr "字幕"
+
+#: apps/preview/static/preview/js/video.js
+msgid "Previous video"
+msgstr "上一个视频"
+
+#: apps/preview/static/preview/js/video.js
+msgid "Next video"
+msgstr "下一个视频"
+
+#: apps/preview/static/preview/js/video.js
+msgid ""
+"Tip: click an app above to play it in a local player, which decodes better."
+msgstr "提示：可以点上面的软件用本地播放器播放，解码效果更好。"
+
+#: apps/preview/static/preview/js/video.js
+msgid "Hide external players"
+msgstr "收起外部播放器"
+
+#: apps/preview/static/preview/js/video.js
+msgid "External players"
+msgstr "外部播放器"
+
+#: apps/preview/static/preview/js/video.js
+msgid "Autoplay"
+msgstr "自动播放"
+
+#: apps/preview/static/preview/js/video.js
+msgid "Play the next one automatically"
+msgstr "自动播放下一个"
+
+#: apps/preview/static/preview/js/video.js
+msgid "Playlist (%(count)s)"
+msgstr "播放列表（%(count)s）"
+
+#: apps/preview/static/preview/js/video.js
+msgid "Video player"
+msgstr "视频播放器"
+
+#: apps/preview/static/preview/js/video.js
+msgid "Subtitles off"
+msgstr "关闭字幕"
+
+#: apps/preview/static/preview/js/video.js
+msgid "The subtitles %(name)s didn't load: %(message)s"
+msgstr "字幕 %(name)s 加载失败：%(message)s"
+
+#: apps/preview/static/preview/js/video.js
+msgid ""
+"This video can't play in the browser (its format or codec isn't supported). "
+"You can download it, or open it in one of the external players below."
+msgstr ""
+"这个视频不能在浏览器里播放（格式或编码不支持），可以下载，或者用下面的外部播"
+"放器打开。"
+
+#: apps/preview/static/preview/js/video.js
+msgid "You don't have permission to play this video."
+msgstr "没有播放这个视频的权限。"
+
+#: apps/preview/static/preview/js/video.js
+msgid ""
+"This m3u8 refers to an address outside its folder, which isn't loaded for "
+"safety: %(address)s"
+msgstr "这个 m3u8 引用了它所在的文件夹以外的地址，为了安全不加载：%(address)s"
+
+#: apps/preview/static/preview/js/video.js
+msgid ""
+"The m3u8 didn't play (%(error)s). Its segments must be in the same folder as "
+"the m3u8."
+msgstr "m3u8 播放失败（%(error)s）。分片要和 m3u8 放在同一个文件夹里。"
+
+#: apps/preview/static/preview/js/video.js
+msgid "This browser can't play m3u8."
+msgstr "这个浏览器不能播放 m3u8。"
+
+#: apps/preview/static/preview/js/video.js
+msgid "The video didn't load: %(message)s"
+msgstr "视频加载失败：%(message)s"
+
+#: apps/shares/static/shares/js/create.js
+msgid "Expires in 7 days"
+msgstr "7 天后过期"
+
+#: apps/shares/static/shares/js/create.js
+msgid "Expires in 30 days"
+msgstr "30 天后过期"
+
+#: apps/shares/static/shares/js/create.js
+msgid "Custom"
+msgstr "自定义"
+
+#: apps/shares/static/shares/js/create.js
+msgid "Folder"
+msgstr "文件夹"
+
+#: apps/shares/static/shares/js/create.js
+msgid "Share files"
+msgstr "分享文件"
+
+#: apps/shares/static/shares/js/create.js
+msgid "Share files: %(count)s item selected"
+msgid_plural "Share files: %(count)s items selected"
+msgstr[0] "分享文件：已选 %(count)s 个项目"
+
+#: apps/shares/static/shares/js/create.js
+msgid "Shared files and folders"
+msgstr "分享的文件和文件夹"
+
+#: apps/shares/static/shares/js/create.js
+msgid "Leave empty to generate one"
+msgstr "留空系统自动生成"
+
+#: apps/shares/static/shares/js/create.js
+msgid "Leave empty for no password"
+msgstr "留空为无密码访问"
+
+#: apps/shares/static/shares/js/create.js
+msgid "Generate a random password"
+msgstr "随机生成密码"
+
+#: apps/shares/static/shares/js/create.js
+msgid "Random"
+msgstr "随机生成"
+
+#: apps/shares/static/shares/js/create.js
+msgid "Choose when it expires"
+msgstr "选择过期时间"
+
+#: apps/shares/static/shares/js/create.js
+msgid "Create share"
+msgstr "创建分享"
+
+#: apps/shares/static/shares/js/create.js
+msgid ""
+"What people can open through the share follows your permissions, and changes "
+"as soon as they change."
+msgstr ""
+"分享链接中的文件和目录访问范围会继承当前用户的权限设置，且会随权限调整即时生"
+"效。"
+
+#: apps/shares/static/shares/js/create.js
+msgid "Share key"
+msgstr "分享 Key"
+
+#: apps/shares/static/shares/js/create.js
+msgid "Letters, digits, underscores and hyphens only, 3 to 8 characters"
+msgstr "只能包含字母、数字、下划线和短横线，长度为 3-8 位"
+
+#: apps/shares/static/shares/js/create.js
+msgid "Access password"
+msgstr "访问密码"
+
+#: apps/shares/static/shares/js/create.js
+msgid "4 to 20 characters; people opening the share must enter it."
+msgstr "密码长度在 4 到 20 个字符；访问分享的人要输入它。"
+
+#: apps/shares/static/shares/js/create.js
+msgid "Expires"
+msgstr "有效期"
+
+#: apps/shares/static/shares/js/create.js
+msgid "Create share link"
+msgstr "创建分享链接"
+
+#: apps/shares/static/shares/js/create.js
+msgid ""
+"The share key can only have letters, digits, underscores and hyphens, 3 to 8 "
+"characters"
+msgstr "分享 Key 只能包含字母、数字、下划线和短横线，长度为 3-8 位"
+
+#: apps/shares/static/shares/js/create.js
+msgid "The password must be 4 to 20 characters"
+msgstr "密码长度在 4 到 20 个字符"
+
+#: apps/shares/static/shares/js/create.js
+msgid "Please choose when it expires"
+msgstr "请选择过期时间"
+
+#: apps/shares/static/shares/js/create.js
+msgid "The expiry time must be in the future"
+msgstr "过期时间必须是未来的时间"
+
+#: apps/shares/static/shares/js/create.js
+msgid "Creating…"
+msgstr "创建中..."
+
+#: apps/shares/static/shares/js/create.js
+msgid "Share link created!"
+msgstr "分享链接创建成功！"
+
+#: apps/shares/static/shares/js/create.js
+msgid "Share link"
+msgstr "分享链接"
+
+#: apps/shares/static/shares/js/create.js
+#: apps/shares/static/shares/js/share_list.js
+msgid "Copy share link"
+msgstr "复制分享链接"
+
+#: apps/shares/static/shares/js/create.js
+#: apps/shares/static/shares/js/share_list.js
+msgid "Share link copied to the clipboard"
+msgstr "分享链接已复制到剪贴板"
+
+#: apps/shares/static/shares/js/create.js
+#: apps/shares/static/shares/js/share_list.js
+msgid "Copy access password"
+msgstr "复制访问密码"
+
+#: apps/shares/static/shares/js/create.js
+#: apps/shares/static/shares/js/share_list.js
+msgid "Access password copied to the clipboard"
+msgstr "访问密码已复制到剪贴板"
+
+#: apps/shares/static/shares/js/create.js
+msgid "Open link"
+msgstr "打开链接"
+
+#: apps/shares/static/shares/js/create.js
+#: apps/shares/static/shares/js/share_list.js
+msgid "Copy link with password"
+msgstr "复制带密码链接"
+
+#: apps/shares/static/shares/js/create.js
+#: apps/shares/static/shares/js/share_list.js
+msgid "Share link with password copied to the clipboard"
+msgstr "带密码的分享链接已复制到剪贴板"
+
+#: apps/shares/static/shares/js/create.js
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Done"
+msgstr "完成"
+
+#: apps/shares/static/shares/js/share.js
+msgid "Enter the access password"
+msgstr "请输入访问密码"
+
+#: apps/shares/static/shares/js/share.js
+msgctxt "share"
+msgid "Open"
+msgstr "访问"
+
+#: apps/shares/static/shares/js/share.js
+msgid "Wrong password. Please try again"
+msgstr "密码错误，请重新输入"
+
+#: apps/shares/static/shares/js/share.js
+msgid "Folders can't be downloaded yet"
+msgstr "暂不支持下载文件夹"
+
+#: apps/shares/static/shares/js/share.js
+msgid "All files"
+msgstr "全部文件"
+
+#: apps/shares/static/shares/js/share.js
+msgid "File share"
+msgstr "文件分享"
+
+#: apps/shares/static/shares/js/share.js
+msgid "%(title)s · File share"
+msgstr "%(title)s · 文件分享"
+
+#: apps/shares/static/shares/js/share_list.js
+msgid "Files and folders in it"
+msgstr "包含的文件 / 文件夹"
+
+#: apps/shares/static/shares/js/share_list.js
+msgid "Expired · %(when)s"
+msgstr "已过期 · %(when)s"
+
+#: apps/shares/static/shares/js/share_list.js
+msgid "Copy share key"
+msgstr "复制 Share Key"
+
+#: apps/shares/static/shares/js/share_list.js
+msgid "Share key copied to the clipboard"
+msgstr "Share Key 已复制到剪贴板"
+
+#: apps/shares/static/shares/js/share_list.js
+msgid "Couldn't get the share's password"
+msgstr "未获取到分享密码"
+
+#: apps/shares/static/shares/js/share_list.js
+msgid "Open share"
+msgstr "打开分享"
+
+#: apps/shares/static/shares/js/share_list.js
+msgid "Actions for %(label)s"
+msgstr "%(label)s 的操作"
+
+#: apps/shares/static/shares/js/share_list.js
+msgid "and others (%(entry_count)s item)"
+msgid_plural "and others (%(entry_count)s items)"
+msgstr[0] "等 %(entry_count)s 项"
+
+#: apps/shares/static/shares/js/share_list.js
+msgctxt "share badge"
+msgid "Password"
+msgstr "需密码"
+
+#: apps/shares/static/shares/js/share_list.js
+msgid "Content"
+msgstr "分享内容"
+
+#: apps/shares/static/shares/js/share_list.js
+msgid "Owner"
+msgstr "所属用户"
+
+#: apps/shares/static/shares/js/share_list.js
+msgid "Valid until"
+msgstr "有效期至"
+
+#: apps/shares/static/shares/js/share_list.js
+msgid "Stats"
+msgstr "统计"
+
+#: apps/shares/static/shares/js/share_list.js
+msgid "Visits %(access_count)s · Downloads %(download_count)s"
+msgstr "访问 %(access_count)s · 下载 %(download_count)s"
+
+#: apps/shares/static/shares/js/share_list.js
+msgid "%(count)s share found"
+msgid_plural "%(count)s shares found"
+msgstr[0] "找到 %(count)s 个分享"
+
+#: apps/shares/static/shares/js/share_list.js
+msgid "%(count)s share"
+msgid_plural "%(count)s shares"
+msgstr[0] "共 %(count)s 个分享"
+
+#: apps/shares/static/shares/js/share_list.js
+msgid "No shares match."
+msgstr "没有符合条件的分享。"
+
+#: apps/shares/static/shares/js/share_list.js
+msgid "No one has created a share yet."
+msgstr "还没有人创建分享。"
+
+#: apps/shares/static/shares/js/share_list.js
+msgid ""
+"You haven't created any shares yet: select files or folders in the file "
+"list, right-click and choose \"Create share\"."
+msgstr "还没有创建过分享：在文件列表里选中文件或文件夹，右键「创建分享」。"
+
+#: apps/shares/static/shares/js/share_list.js
+msgid "Delete this share?"
+msgstr "确认删除该分享？"
+
+#: apps/shares/static/shares/js/share_list.js
+msgid "Once deleted, the share link of \"%(label)s\" stops working."
+msgstr "「%(label)s」的分享链接删除以后就打不开了。"
+
+#: apps/shares/static/shares/js/share_list.js
+msgid "Share deleted"
+msgstr "分享已删除"
+
+#: apps/shares/static/shares/js/share_list.js
+msgid "Delete all expired shares?"
+msgstr "确认清理所有已过期分享？"
+
+#: apps/shares/static/shares/js/share_list.js
+msgid "Every user's expired shares are deleted. This can't be undone."
+msgstr "所有用户已经过期的分享都会删除，不能恢复。"
+
+#: apps/shares/static/shares/js/share_list.js
+msgid "Your expired shares are deleted. This can't be undone."
+msgstr "你已经过期的分享都会删除，不能恢复。"
+
+#: apps/shares/static/shares/js/share_list.js
+msgid "Clean up"
+msgstr "清理"
+
+#: apps/shares/static/shares/js/share_list.js
+msgid "Deleted %(deleted)s expired share"
+msgid_plural "Deleted %(deleted)s expired shares"
+msgstr[0] "已清理 %(deleted)s 个过期分享"
+
+#: apps/siteconf/static/siteconf/js/manage_diagnostics.js
+msgid "Your IP (as the site sees it)"
+msgstr "你的 IP（网站看到的）"
+
+#: apps/siteconf/static/siteconf/js/manage_diagnostics.js
+msgid "unreadable"
+msgstr "读不出来"
+
+#: apps/siteconf/static/siteconf/js/manage_diagnostics.js
+msgid "Connection from"
+msgstr "连接来自"
+
+#: apps/siteconf/static/siteconf/js/manage_diagnostics.js
+msgid "Address the site sees"
+msgstr "网站看到的地址"
+
+#: apps/siteconf/static/siteconf/js/manage_diagnostics.js
+msgid "not set"
+msgstr "没有设"
+
+#: apps/siteconf/static/siteconf/js/manage_diagnostics.js
+msgid "Value"
+msgstr "值"
+
+#: apps/siteconf/static/siteconf/js/manage_diagnostics.js
+msgid "Your IP (as the site sees it): %(ip)s"
+msgstr "你的 IP（网站看到的）：%(ip)s"
+
+#: apps/siteconf/static/siteconf/js/manage_diagnostics.js
+msgid "Connection from: %(remote_addr)s"
+msgstr "连接来自：%(remote_addr)s"
+
+#: apps/siteconf/static/siteconf/js/manage_diagnostics.js
+msgid "[server] proxies: %(proxies)s"
+msgstr "[server] proxies：%(proxies)s"
+
+#: apps/siteconf/static/siteconf/js/manage_diagnostics.js
+msgid "Address the site sees: %(origin)s"
+msgstr "网站看到的地址：%(origin)s"
+
+#: apps/siteconf/static/siteconf/js/manage_diagnostics.js
+msgid "[site] url: %(url)s"
+msgstr "[site] url：%(url)s"
+
+#: apps/siteconf/static/siteconf/js/manage_diagnostics.js
+msgid "Copied to the clipboard."
+msgstr "已复制到剪贴板。"
+
+#: apps/siteconf/static/siteconf/js/manage_diagnostics.js
+#: apps/sso/static/sso/js/manage_sso.js
+msgid "Can't copy it. Please select and copy it by hand."
+msgstr "复制不了，请手动选中复制。"
+
+#: apps/siteconf/static/siteconf/js/manage_settings.js
+msgid "seconds"
+msgstr "秒"
+
+#: apps/siteconf/static/siteconf/js/manage_settings.js
+msgid "minutes"
+msgstr "分钟"
+
+#: apps/siteconf/static/siteconf/js/manage_settings.js
+msgid "hours"
+msgstr "小时"
+
+#: apps/siteconf/static/siteconf/js/manage_settings.js
+msgid "days"
+msgstr "天"
+
+#: apps/siteconf/static/siteconf/js/manage_settings.js
+msgid "weeks"
+msgstr "周"
+
+#: apps/siteconf/static/siteconf/js/manage_settings.js
+msgid "months"
+msgstr "月"
+
+#: apps/siteconf/static/siteconf/js/manage_settings.js
+msgid "years"
+msgstr "年"
+
+#: apps/siteconf/static/siteconf/js/manage_settings.js
+msgid "Item %(n)s: %(errors)s"
+msgstr "第 %(n)s 项：%(errors)s"
+
+#: apps/siteconf/static/siteconf/js/manage_settings.js
+msgid "%(count)s item needs changing; see what's marked in red."
+msgid_plural "%(count)s items need changing; see what's marked in red."
+msgstr[0] "有 %(count)s 项要改一下，见标红的地方。"
+
+#: apps/siteconf/static/siteconf/js/manage_settings.js
+msgid "Allowlist"
+msgstr "白名单"
+
+#: apps/siteconf/static/siteconf/js/manage_settings.js
+msgid "Blocklist"
+msgstr "黑名单"
+
+#: apps/siteconf/static/siteconf/js/manage_settings.js
+msgid ""
+"Direct link address: %(origin)s/%(prefix)s/storage-alias/folder/file-name"
+msgstr "直链的地址：%(origin)s/%(prefix)s/存储源别名/文件夹/文件名"
+
+#: apps/siteconf/static/siteconf/js/manage_settings.js
+msgid "prefix"
+msgstr "前缀"
+
+#: apps/siteconf/static/siteconf/js/manage_settings.js
+msgid "Now: each IP can download at most %(downloads)s time in %(seconds)s s."
+msgid_plural ""
+"Now: each IP can download at most %(downloads)s times in %(seconds)s s."
+msgstr[0] "现在：单个 IP 在 %(seconds)s 秒内最多下载 %(downloads)s 次。"
+
+#: apps/siteconf/static/siteconf/js/manage_settings.js
+msgid "Downloads aren't rate-limited now."
+msgstr "现在不限制下载频率。"
+
+#: apps/siteconf/static/siteconf/js/manage_settings.js
+msgid "Login address: %(origin)s/login/%(entry)s/ (logging in only works here)"
+msgstr "登录地址：%(origin)s/login/%(entry)s/（只有从这里能登录）"
+
+#: apps/siteconf/static/siteconf/js/manage_settings.js
+msgid "No secure login entrance: \"Log in\" on the pages logs in."
+msgstr "没有设登录安全入口：在页面上点「登录」就能登录。"
+
+#: apps/siteconf/static/siteconf/js/manage_settings.js
+msgid "Using the uploaded picture now."
+msgstr "现在用的是上传的图片。"
+
+#: apps/siteconf/static/siteconf/js/manage_settings.js
+msgid "Using the picture at the address below now."
+msgstr "现在用的是下面这个地址的图片。"
+
+#: apps/siteconf/static/siteconf/js/manage_settings.js
+msgid "Using HFile's own icon now."
+msgstr "现在用的是 HFile 自己的图标。"
+
+#: apps/siteconf/static/siteconf/js/manage_settings.js
+msgid "The picture has been changed."
+msgstr "图片已经换好了。"
+
+#: apps/siteconf/static/siteconf/js/manage_settings.js
+msgid "Restore the default?"
+msgstr "恢复默认？"
+
+#: apps/siteconf/static/siteconf/js/manage_settings.js
+msgid "Goes back to HFile's own icon; the uploaded picture is deleted."
+msgstr "改回 HFile 自己的图标，上传过的图片会删掉。"
+
+#: apps/siteconf/static/siteconf/js/manage_settings.js
+msgid "Restore the default"
+msgstr "恢复默认"
+
+#: apps/siteconf/static/siteconf/js/manage_settings.js
+msgid "The default is restored."
+msgstr "已经恢复默认。"
+
+#: apps/siteconf/static/siteconf/js/manage_settings.js
+#: apps/storages/static/storages/js/grants.js
+msgid "Not set"
+msgstr "未设置"
+
+#: apps/siteconf/static/siteconf/js/manage_settings.js
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Cleared when saved"
+msgstr "保存时清除"
+
+#: apps/siteconf/static/siteconf/js/manage_settings.js
+msgid "Length"
+msgstr "多长"
+
+#: apps/siteconf/static/siteconf/js/manage_settings.js
+msgid "Unit"
+msgstr "单位"
+
+#: apps/siteconf/static/siteconf/js/manage_settings.js
+#: apps/sso/static/sso/js/manage_sso.js
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Move up"
+msgstr "上移"
+
+#: apps/siteconf/static/siteconf/js/manage_settings.js
+#: apps/sso/static/sso/js/manage_sso.js
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Move down"
+msgstr "下移"
+
+#: apps/siteconf/static/siteconf/js/manage_settings.js
+msgid "Delete this item"
+msgstr "删除这一项"
+
+#: apps/siteconf/static/siteconf/js/manage_settings.js
+msgid ""
+"The site sees your IP as %(ip)s; don't put it in the IP blocklist (saving "
+"checks this too). If it isn't your IP, see \"Diagnostics\": most likely "
+"[server] proxies in the settings file is wrong."
+msgstr ""
+"网站看到的你的 IP 是 %(ip)s，别把它写进 IP 黑名单（保存时也会检查）。不是你"
+"的 IP 的话，看「诊断信息」：多半是设置文件的 [server] proxies 不对。"
+
+#: apps/siteconf/static/siteconf/js/manage_settings.js
+msgid "(unreadable)"
+msgstr "（读不出来）"
+
+#: apps/siteconf/static/siteconf/js/manage_settings.js
+msgid "The browser you're using (User-Agent): %(agent)s"
+msgstr "你现在用的浏览器（User-Agent）是：%(agent)s"
+
+#: apps/siteconf/static/siteconf/js/manage_settings.js
+msgid "(none)"
+msgstr "（没有）"
+
+#: apps/siteconf/static/siteconf/js/manage_settings.js
+msgid "Blocked: matches \"%(rule)s\"."
+msgstr "会被挡住：匹配了「%(rule)s」。"
+
+#: apps/siteconf/static/siteconf/js/manage_settings.js
+msgid "Not blocked: no rule matches."
+msgstr "不会被挡住，没有匹配的规则。"
+
+#: apps/siteconf/static/siteconf/js/manage_settings.js
+msgid "The list has problems: %(problems)s"
+msgstr "名单有问题：%(problems)s"
+
+#: apps/siteconf/static/siteconf/js/manage_settings.js
+msgid "The list already has Thunder's rules."
+msgstr "名单里已经有迅雷的规则了。"
+
+#: apps/siteconf/static/siteconf/js/manage_settings.js
+msgid "Added %(count)s Thunder rule; it applies once saved."
+msgid_plural "Added %(count)s Thunder rules; they apply once saved."
+msgstr[0] "加上了 %(count)s 条迅雷的规则，保存以后生效。"
+
+#: apps/siteconf/static/siteconf/js/manage_settings.js
+msgid "Nothing changed."
+msgstr "没有修改。"
+
+#: apps/siteconf/static/siteconf/js/manage_settings.js
+msgid "Saved."
+msgstr "已保存。"
+
+#: apps/sso/static/sso/js/links.js
+msgid "Login password"
+msgstr "登录密码"
+
+#: apps/sso/static/sso/js/links.js
+msgid "Not linked"
+msgstr "没有绑定"
+
+#: apps/sso/static/sso/js/links.js
+msgid "Not linked (this single sign-on isn't enabled now)"
+msgstr "没有绑定（这个单点登录现在没有启用）"
+
+#: apps/sso/static/sso/js/links.js
+msgid "Linked, ID %(external_id)s"
+msgstr "已绑定，ID %(external_id)s"
+
+#: apps/sso/static/sso/js/links.js apps/sso/static/sso/js/manage_sso.js
+msgid "Last login with it: %(last_login_at)s"
+msgstr "最近用它登录：%(last_login_at)s"
+
+#: apps/sso/static/sso/js/links.js apps/sso/static/sso/js/manage_sso.js
+msgid "Linked at %(created_at)s"
+msgstr "绑定于 %(created_at)s"
+
+#: apps/sso/static/sso/js/links.js apps/sso/static/sso/js/manage_sso.js
+msgid "This single sign-on isn't enabled now"
+msgstr "这个单点登录现在没有启用"
+
+#: apps/sso/static/sso/js/links.js apps/sso/static/sso/js/manage_sso.js
+msgid "Unlink"
+msgstr "解除绑定"
+
+#: apps/sso/static/sso/js/links.js apps/sso/static/sso/js/manage_sso.js
+msgid "Link"
+msgstr "绑定"
+
+#: apps/sso/static/sso/js/links.js
+msgid "There is no single sign-on to link now."
+msgstr "现在没有可以绑定的单点登录。"
+
+#: apps/sso/static/sso/js/links.js
+msgid "The server gave a wrong address."
+msgstr "服务器给的地址不对。"
+
+#: apps/sso/static/sso/js/links.js
+msgid "Link %(name)s"
+msgstr "绑定 %(name)s"
+
+#: apps/sso/static/sso/js/links.js
+msgid ""
+"Next, the %(name)s login page opens; once you allow it there, you come back "
+"here. To confirm it's you, enter this site's login password first."
+msgstr ""
+"接下来会打开 %(name)s 的登录页，在那里同意以后回到这里。为了确认是你本人，先"
+"输入这个网站的登录密码。"
+
+#: apps/sso/static/sso/js/links.js
+msgid "Continue"
+msgstr "继续"
+
+#: apps/sso/static/sso/js/links.js
+msgid "The login password is required."
+msgstr "要填登录密码。"
+
+#: apps/sso/static/sso/js/links.js apps/sso/static/sso/js/manage_sso.js
+msgid "Unlink %(name)s?"
+msgstr "解除 %(name)s 的绑定？"
+
+#: apps/sso/static/sso/js/links.js
+msgid ""
+"After unlinking, this account can't log in any more; it can be linked again "
+"later."
+msgstr "解除以后就不能再用这个账号登录了；以后可以重新绑定。"
+
+#: apps/sso/static/sso/js/links.js apps/sso/static/sso/js/manage_sso.js
+msgid "%(name)s is unlinked."
+msgstr "已经解除了 %(name)s 的绑定。"
+
+#: apps/sso/static/sso/js/links.js
+msgid "Linked: this account can log in from now on."
+msgstr "绑定好了：以后可以用这个账号登录。"
+
+#: apps/sso/static/sso/js/manage_sso.js
+msgid "Authorization endpoint"
+msgstr "授权端点"
+
+#: apps/sso/static/sso/js/manage_sso.js
+msgid "Token endpoint"
+msgstr "Token 端点"
+
+#: apps/sso/static/sso/js/manage_sso.js
+msgid "Userinfo endpoint"
+msgstr "用户信息端点"
+
+#: apps/sso/static/sso/js/manage_sso.js
+msgid "How the Client Secret is sent"
+msgstr "Client Secret 的发送方式"
+
+#: apps/sso/static/sso/js/manage_sso.js
+msgid "User ID field"
+msgstr "用户 ID 字段"
+
+#: apps/sso/static/sso/js/manage_sso.js
+msgid "Username field"
+msgstr "用户名字段"
+
+#: apps/sso/static/sso/js/manage_sso.js
+msgid "Nickname field"
+msgstr "昵称字段"
+
+#: apps/sso/static/sso/js/manage_sso.js
+msgid "User ID"
+msgstr "用户 ID"
+
+#: apps/sso/static/sso/js/manage_sso.js
+msgid "Built-in users don't log in and can't link single sign-on."
+msgstr "内置用户不登录，不能绑定单点登录。"
+
+#: apps/sso/static/sso/js/manage_sso.js
+msgid ""
+"%(reason)s Only superusers can see and change their single sign-on links too."
+msgstr "%(reason)s他的单点登录绑定也只有超级管理员能看和改。"
+
+#: apps/sso/static/sso/js/manage_sso.js
+msgid ""
+"They have no password, so this is their only way to log in: after unlinking "
+"they couldn't log in (you can give them a password in \"Basic info\")."
+msgstr ""
+"他没有密码，这是他唯一的登录方式：解除以后他就登录不了了（可以在「基本信息」"
+"里给他设一个密码）。"
+
+#: apps/sso/static/sso/js/manage_sso.js
+msgid ""
+"After unlinking, they can't log in with this account; it can be linked again "
+"later."
+msgstr "解除以后他不能再用这个账号登录；以后可以重新绑定。"
+
+#: apps/sso/static/sso/js/manage_sso.js
+msgid "Never logged in with it"
+msgstr "还没用它登录过"
+
+#: apps/sso/static/sso/js/manage_sso.js
+msgid "%(name)s (not enabled)"
+msgstr "%(name)s（没有启用）"
+
+#: apps/sso/static/sso/js/manage_sso.js
+msgid "Provider"
+msgstr "服务商"
+
+#: apps/sso/static/sso/js/manage_sso.js
+msgid "User ID at the provider"
+msgstr "服务商那边的用户 ID"
+
+#: apps/sso/static/sso/js/manage_sso.js
+msgid "The value of the \"User ID field\" in the user info"
+msgstr "用户信息里「用户 ID 字段」的值"
+
+#: apps/sso/static/sso/js/manage_sso.js
+msgid "The user ID at the provider is required."
+msgstr "要填服务商那边的用户 ID。"
+
+#: apps/sso/static/sso/js/manage_sso.js
+msgid "Linked the %(name)s account %(external_id)s."
+msgstr "已经绑定了 %(name)s 的账号 %(external_id)s。"
+
+#: apps/sso/static/sso/js/manage_sso.js
+msgid ""
+"Once linked, they can log in with these providers' accounts. When someone "
+"without a link fails to log in with single sign-on, the login log shows "
+"\"short-name:user-ID\", which you can link here; before linking, check with "
+"the provider that the ID really is theirs."
+msgstr ""
+"绑定以后，他可以用这些服务商的账号登录。没绑定的人用单点登录失败时，登录日志"
+"里记着「简称:用户 ID」，可以照着在这里绑定；绑定前在服务商那里核对一下这个 "
+"ID 确实是他的。"
+
+#: apps/sso/static/sso/js/manage_sso.js
+msgid ""
+"This is your own account: to link or unlink, use \"Linked accounts\" in the "
+"menu at the top right (linking asks for your login password)."
+msgstr ""
+"这是你自己的账号：绑定或解除请用右上角菜单的「账号绑定」（绑定时要输登录密"
+"码）。"
+
+#: apps/sso/static/sso/js/manage_sso.js
+msgid "No single sign-on accounts linked yet."
+msgstr "还没有绑定任何单点登录账号。"
+
+#: apps/sso/static/sso/js/manage_sso.js
+msgid ""
+"There are no single sign-on providers yet: add one in \"Single sign-on\" on "
+"the Manage page first."
+msgstr "还没有单点登录服务商：先在管理页的「单点登录」里添加。"
+
+#: apps/sso/static/sso/js/manage_sso.js
+msgid "Only superusers can change the single sign-on settings."
+msgstr "只有超级管理员可以修改单点登录的设置。"
+
+#: apps/sso/static/sso/js/manage_sso.js
+msgid ""
+"secret_key in the settings file has changed; the Client Secret must be "
+"entered again"
+msgstr "设置文件里的 secret_key 换过，要重新填 Client Secret"
+
+#: apps/sso/static/sso/js/manage_sso.js
+msgid "Secret unreadable"
+msgstr "Secret 读不出来"
+
+#: apps/sso/static/sso/js/manage_sso.js
+msgid "Enable %(name)s"
+msgstr "启用 %(name)s"
+
+#: apps/sso/static/sso/js/manage_sso.js
+msgid "Linked users"
+msgstr "绑定的用户"
+
+#: apps/sso/static/sso/js/manage_sso.js
+msgid "%(identities)s user"
+msgid_plural "%(identities)s users"
+msgstr[0] "%(identities)s 个"
+
+#: apps/sso/static/sso/js/manage_sso.js
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Order"
+msgstr "顺序"
+
+#: apps/sso/static/sso/js/manage_sso.js
+msgid "%(count)s in all, %(enabled)s enabled"
+msgid_plural "%(count)s in all, %(enabled)s enabled"
+msgstr[0] "共 %(count)s 个，启用了 %(enabled)s 个"
+
+#: apps/sso/static/sso/js/manage_sso.js
+msgid "No single sign-on yet. Click \"Add\" and choose a provider to start."
+msgstr "还没有单点登录。点「新增」，选一个服务商开始。"
+
+#: apps/sso/static/sso/js/manage_sso.js
+msgid "%(name)s is enabled: it's on the login page now."
+msgstr "已启用 %(name)s：登录页上有它了。"
+
+#: apps/sso/static/sso/js/manage_sso.js
+msgid ""
+"%(name)s is disabled: it's no longer on the login page and can't be used to "
+"log in."
+msgstr "已停用 %(name)s：登录页上不再显示，也不能用它登录。"
+
+#: apps/sso/static/sso/js/manage_sso.js
+msgid "Delete the single sign-on \"%(name)s\"?"
+msgstr "删除单点登录「%(name)s」？"
+
+#: apps/sso/static/sso/js/manage_sso.js
+msgid ""
+"The %(name)s account linked by %(count)s user is deleted too, and can't log "
+"in any more (the user account stays). This can't be undone."
+msgid_plural ""
+"The %(name)s accounts linked by %(count)s users are deleted too, and can't "
+"log in any more (the user accounts stay). This can't be undone."
+msgstr[0] ""
+"%(count)s 个用户绑定的 %(name)s 账号会一起删除，他们不能再用它登录（账号本身"
+"还在）。删除以后不能恢复。"
+
+#: apps/sso/static/sso/js/manage_sso.js
+msgid "%(name)s deleted."
+msgstr "已删除 %(name)s。"
+
+#: apps/sso/static/sso/js/manage_sso.js
+msgid "<short-name>"
+msgstr "<简称>"
+
+#: apps/sso/static/sso/js/manage_sso.js
+msgid ""
+"Can't show it: the address is wrong, or this page doesn't allow that site "
+"yet (save and reload to see it)"
+msgstr "显示不了：地址不对，或者是这个页面还不认的网站（保存后刷新再看）"
+
+#: apps/sso/static/sso/js/manage_sso.js
+msgid "Edit single sign-on \"%(name)s\""
+msgstr "编辑单点登录「%(name)s」"
+
+#: apps/sso/static/sso/js/manage_sso.js
+msgid "Add single sign-on: %(label)s"
+msgstr "新增单点登录：%(label)s"
+
+#: apps/sso/static/sso/js/manage_sso.js
+msgid "Add single sign-on"
+msgstr "新增单点登录"
+
+#: apps/sso/static/sso/js/manage_sso.js
+msgid "Unreadable (secret_key has changed); please enter it again"
+msgstr "读不出来了（secret_key 换过），请重新填"
+
+#: apps/sso/static/sso/js/manage_sso.js
+msgid "Already set; leave empty to keep it"
+msgstr "已经设置了，不改就留空"
+
+#: apps/sso/static/sso/js/manage_sso.js
+msgid "Saved encrypted and not shown again; public clients can leave it empty"
+msgstr "加密保存，保存后不再显示；公开客户端可以不填"
+
+#: apps/sso/static/sso/js/manage_sso.js
+msgid "The order should be an integer."
+msgstr "排序要写成整数。"
+
+#: apps/sso/static/sso/js/manage_sso.js
+msgid "%(name)s saved."
+msgstr "已保存 %(name)s。"
+
+#: apps/sso/static/sso/js/manage_sso.js
+msgid ""
+"%(name)s added. Don't forget to register the callback URL with the provider."
+msgstr "已新增 %(name)s。别忘了把回调地址登记到服务商那里。"
+
+#: apps/sso/static/sso/js/manage_sso.js
+msgid "Only PNG, JPEG, GIF, WebP or SVG pictures."
+msgstr "只能用 PNG、JPEG、GIF、WebP 或 SVG 图片。"
+
+#: apps/sso/static/sso/js/manage_sso.js
+msgid "The picture is too large: at most %(limit)s KB."
+msgstr "图片太大了：最多 %(limit)s KB。"
+
+#: apps/sso/static/sso/js/manage_sso.js
+msgid "Callback URL copied."
+msgstr "回调地址已复制。"
+
+#: apps/sso/static/sso/js/manage_sso.js
+msgid "Fill in from a .well-known address"
+msgstr "通过 .well-known 地址自动填写"
+
+#: apps/sso/static/sso/js/manage_sso.js
+msgid ""
+"Enter the OpenID Connect service's configuration address, like https://"
+"gitlab.com/.well-known/openid-configuration. The server reads it and fills "
+"in the authorization, token and userinfo endpoints."
+msgstr ""
+"填 OpenID Connect 服务的配置地址，比如 https://gitlab.com/.well-known/openid-"
+"configuration。服务器去读它，填上授权、Token 和用户信息三个端点。"
+
+#: apps/sso/static/sso/js/manage_sso.js
+msgid ".well-known address"
+msgstr ".well-known 地址"
+
+#: apps/sso/static/sso/js/manage_sso.js
+msgid "Read"
+msgstr "读取"
+
+#: apps/sso/static/sso/js/manage_sso.js
+msgid "The .well-known address is required."
+msgstr "要填 .well-known 地址。"
+
+#: apps/sso/static/sso/js/manage_sso.js
+msgid "Read it, but it has no %(fields)s; please fill them in by hand."
+msgstr "读到了，但是没有%(fields)s，请手动填。"
+
+#: apps/sso/static/sso/js/manage_sso.js
+msgid "Read it: the three endpoints are filled in."
+msgstr "读到了：三个端点已经填好。"
+
+#: apps/sso/static/sso/js/manage_sso.js
+msgid "This single sign-on's settings have unsaved changes."
+msgstr "这个单点登录的设置改了还没保存。"
+
+#: apps/storages/static/storages/js/grants.js
+msgid "No permissions"
+msgstr "没有权限"
+
+#: apps/storages/static/storages/js/grants.js
+msgid "%(labels)s and others (%(count)s in all)"
+msgstr "%(labels)s 等 %(count)s 项"
+
+#: apps/storages/static/storages/js/grants.js
+msgid "Select none"
+msgstr "全不选"
+
+#: apps/storages/static/storages/js/grants.js
+msgid "Invert selection"
+msgstr "反选"
+
+#: apps/storages/static/storages/js/grants.js
+msgid "Use this user's default permissions"
+msgstr "用这个用户的默认权限"
+
+#: apps/storages/static/storages/js/grants.js
+msgid ""
+"Which folder the user sees as \"/\" in these storage sources, like / or /"
+"team/alice."
+msgstr "用户在这些存储源里看到的「/」是哪个文件夹，例如 / 或 /团队/张三。"
+
+#: apps/storages/static/storages/js/grants.js
+msgid "Allowed"
+msgstr "允许使用"
+
+#: apps/storages/static/storages/js/grants.js
+msgid "Not allowed"
+msgstr "禁止使用"
+
+#: apps/storages/static/storages/js/grants.js
+msgid "Set permissions"
+msgstr "设置权限"
+
+#: apps/storages/static/storages/js/grants.js
+msgid "Set permissions of %(count)s storage source"
+msgid_plural "Set permissions of %(count)s storage sources"
+msgstr[0] "设置 %(count)s 个存储源的权限"
+
+#: apps/storages/static/storages/js/grants.js
+msgid ""
+"Checked are the permissions all of these storage sources have. Checking adds "
+"a permission to each, unchecking removes it from each; permissions only some "
+"of them have stay as they are."
+msgstr ""
+"勾着的是这几个存储源都有的权限。勾上的加给每一个，去掉勾的从每一个去掉；只有"
+"其中一部分有的权限不变。"
+
+#: apps/storages/static/storages/js/grants.js
+msgid ""
+"Permissions grayed out because what they need isn't checked (rather than "
+"unchecked by hand) stay only on the storage sources that still have what "
+"they need."
+msgstr ""
+"因为前置没勾而变灰、不是手动去掉勾的权限，只在还有它的前置权限的存储源里保"
+"留。"
+
+#: apps/storages/static/storages/js/grants.js
+msgid "Set root folder"
+msgstr "设置根目录"
+
+#: apps/storages/static/storages/js/grants.js
+msgid "Set the root folder of %(count)s storage source"
+msgid_plural "Set the root folder of %(count)s storage sources"
+msgstr[0] "设置 %(count)s 个存储源的根目录"
+
+#: apps/storages/static/storages/js/grants.js
+msgid "Select \"%(name)s\""
+msgstr "选中「%(name)s」"
+
+#: apps/storages/static/storages/js/grants.js
+msgid "Allow \"%(name)s\""
+msgstr "允许使用「%(name)s」"
+
+#: apps/storages/static/storages/js/grants.js
+msgid "Root folder of \"%(name)s\""
+msgstr "「%(name)s」的根目录"
+
+#: apps/storages/static/storages/js/grants.js
+msgid "Change the permissions of \"%(name)s\""
+msgstr "修改「%(name)s」的权限"
+
+#: apps/storages/static/storages/js/grants.js
+msgid "Change permissions"
+msgstr "修改权限"
+
+#: apps/storages/static/storages/js/grants.js
+msgid "Permissions of \"%(name)s\""
+msgstr "「%(name)s」的权限"
+
+#: apps/storages/static/storages/js/grants.js
+msgid "A new storage source, not set up for this user yet"
+msgstr "新增的存储源，还没给这个用户设置过"
+
+#: apps/storages/static/storages/js/grants.js
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Permissions"
+msgstr "权限"
+
+#: apps/storages/static/storages/js/grants.js
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "No storage sources yet"
+msgstr "还没有存储源"
+
+#: apps/storages/static/storages/js/grants.js
+msgid ""
+"Create one in \"Storage sources\" first, then come back to set this user's "
+"permissions."
+msgstr "先在「存储源」里新建一个，再回来给这个用户设置权限。"
+
+#: apps/storages/static/storages/js/grants.js
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "New storage source"
+msgstr "新建存储源"
+
+#: apps/storages/static/storages/js/grants.js
+msgid "Select"
+msgstr "选择"
+
+#: apps/storages/static/storages/js/grants.js
+msgid ""
+"Each storage source is set separately: with \"Allowed\" off the storage "
+"source can't be seen; the root folder is what the user sees as \"/\" in it; "
+"the permissions decide what they can do (preview, download, upload…)."
+msgstr ""
+"每个存储源分开设置：关掉「允许使用」就看不到这个存储源；根目录是用户在这个存"
+"储源里看到的「/」；权限决定能做什么（预览、下载、上传……）。"
+
+#: apps/storages/static/storages/js/grants.js
+msgid "Storage source permissions saved"
+msgstr "存储源权限已保存"
+
+#: apps/storages/static/storages/js/grants.js
+#: apps/storages/static/storages/js/manage_storages.js
+#: apps/web/static/web/js/common.js
+msgid "; "
+msgstr "；"
+
+#: apps/storages/static/storages/js/grants.js
+msgid "Some settings are wrong; see the red text below"
+msgstr "有的设置不对，见下面的红字"
+
+#: apps/storages/static/storages/js/grants.js
+msgid "Loading the storage source permissions failed: %(message)s"
+msgstr "存储源权限加载失败：%(message)s"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Alias"
+msgstr "别名"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Remark"
+msgstr "备注"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Settings"
+msgstr "参数"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Download domain"
+msgstr "下载域名"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Download link lifetime"
+msgstr "下载链接有效期"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Expression"
+msgstr "表达式"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Description"
+msgstr "描述"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Mode"
+msgstr "模式"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Path mode"
+msgstr "路径模式"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Shown"
+msgstr "显示位置"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Keys to clear"
+msgstr "清除的密钥"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Rules"
+msgstr "规则"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Rule type"
+msgstr "规则类型"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "User's root folder"
+msgstr "用户的根目录"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Filter rules"
+msgstr "过滤规则"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "No filter rules yet."
+msgstr "还没有过滤规则。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Folder passwords"
+msgstr "目录密码"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "No folder passwords yet."
+msgstr "还没有目录密码。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "No folder readmes yet."
+msgstr "还没有目录文档。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Hide only"
+msgstr "仅隐藏"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Hide and block access"
+msgstr "隐藏并且不可访问"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Hide and block downloads"
+msgstr "隐藏并且不可下载"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Relative path"
+msgstr "相对路径"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Absolute path"
+msgstr "绝对路径"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "At the top"
+msgstr "顶部显示"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "In a dialog"
+msgstr "弹窗显示"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Back to the storage sources"
+msgstr "返回存储源列表"
+
+#: apps/storages/static/storages/js/manage_storages.js
+#: apps/uploads/static/uploads/js/uploads.js
+msgid "Back"
+msgstr "返回"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Drag to sort (keyboard: Alt + ↑ / ↓)"
+msgstr "拖动排序（键盘：Alt + ↑ / ↓）"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Leave this page?"
+msgstr "离开这个页面？"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "The changes aren't saved; leaving loses them."
+msgstr "改动还没有保存，离开就丢掉了。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Leave"
+msgstr "离开"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgctxt "manage menu"
+msgid "Storage sources"
+msgstr "存储源"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Storage sources · Manage"
+msgstr "存储源 · 管理"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid ""
+"Create a storage source to put a folder on the server, an object storage or "
+"a cloud drive on the site."
+msgstr "新建一个存储源，把服务器上的文件夹、对象存储或网盘挂到网站上。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Search name, alias, type or remark"
+msgstr "搜索名称、别名、类型或备注"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Search storage sources"
+msgstr "搜索存储源"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Storage sources; drag to sort"
+msgstr "存储源，可以拖动排序"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "No storage sources match."
+msgstr "没有符合的存储源。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "More actions: %(name)s"
+msgstr "更多操作：%(name)s"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "More"
+msgstr "更多"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Continue setup"
+msgstr "继续设置"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Check connection"
+msgstr "检查连接"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Disable"
+msgstr "停用"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Enable"
+msgstr "启用"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Connection failed: %(message)s (%(at)s)"
+msgstr "连接失败：%(message)s（%(at)s）"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Token renewed automatically %(tokens_saved_at)s"
+msgstr "令牌自动更新于 %(tokens_saved_at)s"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Error"
+msgstr "出错"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Drag \"%(name)s\" to sort"
+msgstr "拖动「%(name)s」排序"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Order saved"
+msgstr "顺序已保存"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "The order wasn't saved: %(message)s"
+msgstr "排序没保存：%(message)s"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Checking \"%(name)s\"…"
+msgstr "正在检查「%(name)s」…"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "\"%(name)s\" connects fine"
+msgstr "「%(name)s」连接正常"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "\"%(name)s\" failed to connect: %(message)s"
+msgstr "「%(name)s」连接失败：%(message)s"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Enable \"%(name)s\"?"
+msgstr "启用「%(name)s」？"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Disable \"%(name)s\"?"
+msgstr "停用「%(name)s」？"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid ""
+"The connection is checked first; if it fails, the storage source isn't "
+"enabled."
+msgstr "启用之前会先检查一次连接，连不上就不启用。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid ""
+"Once disabled, users can't see it or open its files, direct links and "
+"shares; its settings and permissions are kept."
+msgstr "停用以后用户看不到它，也打不开它的文件、直链和分享；设置和权限都保留。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgctxt "notice"
+msgid "Enabled"
+msgstr "已启用"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Delete \"%(name)s\"?"
+msgstr "删除「%(name)s」？"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid ""
+"Its filter rules, folder passwords, folder readmes and every user's "
+"permissions on it are deleted too, and its direct links, short links and "
+"shares stop working. The files in the storage aren't touched."
+msgstr ""
+"它的过滤规则、目录密码、目录文档和所有用户对它的权限会一起删掉，它的直链、短"
+"链和分享也都失效。存储里的文件不会动。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Deleted \"%(name)s\""
+msgstr "已删除「%(name)s」"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "%(name)s copy"
+msgstr "%(name)s 副本"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid ""
+"Copies its type, settings, download settings, filter rules, folder "
+"passwords, folder readmes and every user's permissions."
+msgstr ""
+"复制它的类型、参数、下载设置、过滤规则、目录密码、目录文档和所有用户的权限。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Name of the new storage source"
+msgstr "新存储源的名称"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Alias of the new storage source"
+msgstr "新存储源的别名"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "The name in addresses: lowercase letters, digits, - and _ only."
+msgstr "网址里的名字，只能用小写字母、数字、- 和 _。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Copy \"%(name)s\""
+msgstr "复制「%(name)s」"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Copied as \"%(name)s\""
+msgstr "已复制为「%(name)s」"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid ""
+"Copied as \"%(name)s\". It's disabled: two storage sources can't share a 115 "
+"token, so scan to log in again in its settings, then enable it."
+msgstr ""
+"已复制为「%(name)s」。它停用着：115 的令牌不能两个存储源共用，请到它的设置里"
+"重新扫码登录，再启用。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid ""
+"This program doesn't know this storage source's type (%(type)s), or its "
+"driver can't load."
+msgstr "这个存储源的类型（%(type)s）这个程序不认识，或者它的驱动加载不了。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Edit \"%(name)s\" · Manage"
+msgstr "编辑「%(name)s」 · 管理"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "New storage source · Manage"
+msgstr "新建存储源 · 管理"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid ""
+"Disabled storage sources aren't shown on the site and can't be opened. "
+"Enabling checks the connection first."
+msgstr "停用的存储源在前台不显示，也不能访问。启用时先检查连接。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Open in gallery view"
+msgstr "默认打开画廊模式"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid ""
+"Opens gallery view whenever you switch to this storage source; good for "
+"storage sources of pictures."
+msgstr "每次切换到这个存储源时自动打开画廊模式，适合放图片的存储源。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid ""
+"The name in addresses: /alias/folder/file. Lowercase letters, digits, - and "
+"_ only."
+msgstr "网址里的名字：/别名/文件夹/文件。只能用小写字母、数字、- 和 _。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Basic info"
+msgstr "基本信息"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "The name users see."
+msgstr "显示给用户看的名字。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Storage type"
+msgstr "存储类型"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid ""
+"Can't change once created: settings and paths mean nothing for another type."
+msgstr "创建以后不能改：换了类型，参数和路径就没有意义了。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid ""
+"%(kinds)s can only be created by superusers: it can read and write any "
+"folder the program can reach on the server."
+msgstr ""
+"%(kinds)s只有超级管理员可以新建：它能读写服务器上程序能访问的任何文件夹。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Only admins can see it."
+msgstr "只有管理员看得到。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Test connection"
+msgstr "测试连接"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Edit \"%(name)s\""
+msgstr "编辑「%(name)s」"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Filled in (applies once saved)"
+msgstr "已经填好了（保存后生效）"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Set; leave empty to keep it"
+msgstr "已设置，留空表示不修改"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid ""
+"The saved value can't be read (secret_key has changed); please fill it in "
+"again"
+msgstr "保存的值读不出来了（secret_key 换过），请重新填写"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Only superusers can change this."
+msgstr "只有超级管理员可以改这一项。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Clear"
+msgstr "清除"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Don't clear"
+msgstr "不清除了"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "%(label)s settings"
+msgstr "%(label)s的设置"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Authorize"
+msgstr "授权"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "More settings"
+msgstr "更多设置"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Copying failed. Please select and copy it by hand"
+msgstr "复制失败，请手动选中复制"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Put this address of the site in the app's redirect URI (callback URL):"
+msgstr "在应用的重定向 URI（回调地址）里填本站的这个地址："
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Downloads and uploads"
+msgstr "下载和上传"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Like https://dl.example.com"
+msgstr "例如 https://dl.example.com"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid ""
+"Optional. When set, download links are this address plus the file's path in "
+"the storage source, and your own web server or CDN serves the files (WebDAV "
+"can use its own address too, if it allows anonymous downloads); when empty, "
+"this site passes downloads on."
+msgstr ""
+"可选。填了以后，下载链接是这个地址加上文件在存储源里的路径，由你自己的 Web 服"
+"务器或 CDN 提供这些文件（WebDAV 也可以填它自己的地址，前提是允许匿名下载）；"
+"不填就由本站转发下载。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Download through the site"
+msgstr "代理下载"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid ""
+"When on, downloads go through this site to users instead of browsers "
+"downloading straight from the storage. It takes a lot of the server's "
+"bandwidth; only turn it on when needed."
+msgstr ""
+"打开后，下载先经过本站再给用户，而不是让浏览器直接从存储下载。很占服务器的带"
+"宽，确有需要再打开。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Upload through the site"
+msgstr "代理上传"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid ""
+"When on, uploads go to this site first and then on to the storage, instead "
+"of browsers uploading straight to the storage. It takes a lot of the "
+"server's bandwidth; only turn it on when needed."
+msgstr ""
+"打开后，上传先传到本站，再由本站传给存储，而不是由浏览器直接传给存储。很占服"
+"务器的带宽，确有需要再打开。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Download link lifetime (seconds)"
+msgstr "下载链接有效期（秒）"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid ""
+"How long download links signed by this site and the storage's own signed "
+"links last: 1800 seconds (half an hour) by default, 7 days at most."
+msgstr ""
+"本站签名的下载链接和存储自己的签名链接多久以后失效，默认 1800 秒（半小时），"
+"最长 7 天。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Permanent download links"
+msgstr "永久下载链接"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid ""
+"When on, download links from this site don't expire (they're still signed "
+"and download only that file). \"New link key\" below makes all earlier "
+"permanent links stop working."
+msgstr ""
+"打开后，本站给的下载链接不会过期（仍然带签名，只能下载那一个文件）。下面的"
+"「换一个链接密钥」能让以前的永久链接全部失效。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid ""
+"When on, download links from this site don't expire (they're still signed "
+"and download only that file). Later, \"New link key\" in the storage "
+"source's settings makes all earlier permanent links stop working."
+msgstr ""
+"打开后，本站给的下载链接不会过期（仍然带签名，只能下载那一个文件）。以后在存"
+"储源的设置里点「换一个链接密钥」，能让以前的永久链接全部失效。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Download links force downloading"
+msgstr "下载链接强制下载"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid ""
+"When on, browsers always save the file; when off, opening a download link "
+"directly (a copied one or a direct link, say) shows files the browser can "
+"show (pictures, PDFs and so on). The \"Download\" buttons on the pages "
+"always save the file."
+msgstr ""
+"打开时浏览器总是保存文件；关掉时，直接打开下载链接（比如复制出去的、直链），"
+"能在浏览器里显示的文件（图片、PDF 等）就直接显示。页面上的「下载」按钮总是保"
+"存文件。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "New link key"
+msgstr "换一个链接密钥"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Change the link key?"
+msgstr "换一个链接密钥？"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid ""
+"All permanent download links this storage source gave before stop working, "
+"and time-limited links stop before they expire."
+msgstr "这个存储源以前给出的永久下载链接会全部失效，有时效的链接到期前也失效。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Link key changed"
+msgstr "已更换链接密钥"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Connections at once"
+msgstr "同时连接数"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid ""
+"How many downloads through this site the storage source sends at once. Every "
+"connection counts: each of the connections a download tool opens, and each "
+"picture a gallery page loads."
+msgstr ""
+"这个存储源经过本站同时发送几个下载。每个连接都算一个：下载工具开的每个连接，"
+"画廊加载的每张图片。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Send to the storage's own link"
+msgstr "转到存储源自己的链接"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Answer 429 (Too Many Requests)"
+msgstr "返回 429（请求过多）"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "When all are in use"
+msgstr "连接数满了时"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid ""
+"With the storage's own link, the download comes straight from the storage: "
+"it only works if people can reach the storage, and this site's limits per IP "
+"don't apply to it. With 429, they're told to try again in a moment."
+msgstr ""
+"转到存储源自己的链接时，文件直接从存储源下载：访问者要能连上存储源，本站对单"
+"个 IP 的限制也管不到它。返回 429 时，对方会被告知稍后再试。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "%(label)s:"
+msgstr "%(label)s："
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "%(label)s: %(message)s"
+msgstr "%(label)s：%(message)s"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid ""
+"The authorization result is filled into the form; click \"Save\" to apply it."
+msgstr "授权的结果已经填进表单，点「保存」生效。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid ""
+"The authorization result has expired (over 6 hours old, or saved already); "
+"authorize again if needed."
+msgstr ""
+"授权的结果已经过期了（超过 6 小时，或者已经保存过），需要的话请重新授权。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Testing"
+msgstr "正在测试"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Connecting…"
+msgstr "正在连接…"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Connected."
+msgstr "连接成功。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Connection failed: %(message)s"
+msgstr "连接失败：%(message)s"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Saved \"%(name)s\""
+msgstr "已保存「%(name)s」"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid ""
+"By their default permissions, %(enabled)s user can already use it (of %"
+"(users)s users)."
+msgid_plural ""
+"By their default permissions, %(enabled)s users can already use it (of %"
+"(users)s users)."
+msgstr[0] ""
+"按各自的默认权限，%(enabled)s 个用户已经能使用它（共 %(users)s 个用户）。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "No user can use it yet: users' default permissions are all empty."
+msgstr "现在还没有用户能使用它：用户的默认权限都是空的。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid ""
+"\"%(name)s\" is saved. %(who)s To change who can use it and from which "
+"folder, set it for each user in \"Users\"."
+msgstr ""
+"「%(name)s」已经保存。%(who)s要调整谁能使用它、从哪个文件夹开始，到「用户」里"
+"给每个用户设置。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Go to users"
+msgstr "去用户管理"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Back to the list"
+msgstr "回到列表"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Filled into the form; click \"Save\" to apply it."
+msgstr "已经填进表单，点「保存」生效。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Nothing to choose."
+msgstr "没有可以选的。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Choose %(label)s from a list"
+msgstr "从列表里选择%(label)s"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Choose from the list (%(count)s)…"
+msgid_plural "Choose from the list (%(count)s)…"
+msgstr[0] "从列表里选一个（%(count)s 个）…"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "QR code for logging in"
+msgstr "登录用的二维码"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Please scan"
+msgstr "请扫码"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "%(message)s: filled into the form; click \"Save\" to apply it."
+msgstr "%(message)s：已经填进表单，点「保存」生效。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Logged in"
+msgstr "登录成功"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid ""
+"Log in and agree in the window that opens; when done, you come back here."
+msgstr "在打开的窗口里登录并同意授权，完成后会自动回到这里。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid ""
+"Authorization didn't finish: the reason is in the authorization window. You "
+"can click \"Authorize\" again."
+msgstr "授权没有完成：原因写在授权的窗口里。可以再点一次「授权」。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Add storage source · Manage"
+msgstr "添加存储源 · 管理"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Steps to add a storage source"
+msgstr "添加存储源的步骤"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Add storage source"
+msgstr "添加存储源"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Keys"
+msgstr "密钥"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Other settings"
+msgstr "其他设置"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Next"
+msgstr "下一步"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgctxt "wizard"
+msgid "Back"
+msgstr "上一步"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid ""
+"Can't change once saved: settings and paths mean nothing for another type."
+msgstr "保存以后不能改：换了类型，参数和路径就没有意义了。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid ""
+"First give it a name and choose the storage type. The settings for "
+"connecting come next and the rest at the end; all can be changed later."
+msgstr ""
+"先起个名字、选好存储的类型。连接要用的设置在下一步填，其他设置放在最后，以后"
+"都可以再改。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid ""
+"Fill in where this storage is. After saving, the next step tests the "
+"connection."
+msgstr "填上这个存储的位置。保存以后，下一步测试连接。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid ""
+"Register an app in the provider's developer console, add the callback URL "
+"below to it, then fill in the app's ID and secret here. After saving, the "
+"next step logs in to the account to authorize."
+msgstr ""
+"在服务商的开发者后台注册一个应用，把下面的回调地址加进去，再把应用的 ID 和密"
+"码填在这里。保存以后，下一步登录帐户授权。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid ""
+"Fill in the app ID from the open platform. After saving, the next step is "
+"scanning to log in."
+msgstr "填上开放平台给的应用 ID。保存以后，下一步扫码登录。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid ""
+"Fill in the address and keys for connecting to this storage. After saving, "
+"the next step tests the connection."
+msgstr "填上连接这个存储要用的地址和密钥。保存以后，下一步测试连接。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Save and continue"
+msgstr "保存并继续"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Already authorized. To use another account, authorize again."
+msgstr "已经授权了。要换一个帐户，可以重新授权。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid ""
+"Click \"Authorize\", log in to the account and agree in the window that "
+"opens; back here afterwards, the token is saved for you."
+msgstr ""
+"点「授权」，在打开的窗口里登录帐户、同意授权；完成以后回到这里，令牌自动保"
+"存。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Authorize again"
+msgstr "重新授权"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Already logged in. To use another account, scan again."
+msgstr "已经登录了。要换一个帐户，可以重新扫码。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid ""
+"Click \"Scan to log in\" and scan the QR code with the phone app; after "
+"logging in, the token is saved for you."
+msgstr "点「扫码登录」，用手机应用扫二维码登录；登录以后令牌自动保存。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Scan again"
+msgstr "重新扫码"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Scan to log in"
+msgstr "扫码登录"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid ""
+"Connects to the storage once with the settings just saved, to see whether it "
+"works."
+msgstr "用刚才保存的设置连接一次存储，看看能不能用。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid ""
+"Not authorized yet: you can go on with the other settings, but it can't be "
+"enabled before authorizing."
+msgstr "还没有授权：也可以先往下设置，只是授权以前它启用不了。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "The connection works."
+msgstr "连接正常。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Authorized and saved. %(result)s"
+msgstr "授权成功，已经保存。%(result)s"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Testing the connection failed: %(message)s"
+msgstr "测试连接时出错：%(message)s"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid ""
+"The authorization result wasn't saved: %(message)s Please authorize again."
+msgstr "授权的结果没有保存：%(message)s请重新授权。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Authorized and saved. Next, set: %(fields)s."
+msgstr "授权成功，已经保存。下一步还要设置：%(fields)s。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Authorized and saved."
+msgstr "授权成功，已经保存。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid ""
+"Authorization didn't finish: the reason is on the authorization page you "
+"just saw. You can click \"Authorize\" again."
+msgstr "授权没有完成：原因写在刚才的授权页上。可以再点一次「授权」。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid ""
+"Fill in %(fields)s first; everything else has defaults, and all can be "
+"changed later in the storage source's settings. Finishing checks the "
+"connection, then enables the storage source."
+msgstr ""
+"先填好%(fields)s，其他的都有默认值；以后在存储源的设置里也能改。完成时会先检"
+"查连接，再启用这个存储源。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "\"%(label)s\""
+msgstr "「%(label)s」"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid ""
+"These all have defaults, so you can click \"Done\" right away; they can be "
+"changed later in the storage source's settings. Finishing checks the "
+"connection, then enables the storage source."
+msgstr ""
+"这些都有默认值，可以直接点「完成」；以后在存储源的设置里也能改。完成时会先检"
+"查连接，再启用这个存储源。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Enabling"
+msgstr "正在启用"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Checking the connection…"
+msgstr "正在检查连接…"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Done, without enabling"
+msgstr "先不启用，完成"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid ""
+"By their default permissions, %(enabled)s user can use it (of %(users)s "
+"users)."
+msgid_plural ""
+"By their default permissions, %(enabled)s users can use it (of %(users)s "
+"users)."
+msgstr[0] ""
+"按各自的默认权限，%(enabled)s 个用户能使用它（共 %(users)s 个用户）。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid ""
+"By their default permissions, %(enabled)s user can use it once it's enabled "
+"(of %(users)s users)."
+msgid_plural ""
+"By their default permissions, %(enabled)s users can use it once it's enabled "
+"(of %(users)s users)."
+msgstr[0] ""
+"按各自的默认权限，启用以后 %(enabled)s 个用户能使用它（共 %(users)s 个用"
+"户）。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "\"%(name)s\" is added"
+msgstr "「%(name)s」添加好了"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "\"%(name)s\" is saved but not enabled yet"
+msgstr "「%(name)s」已经保存，还没有启用"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "It's enabled: users with permissions can use it now."
+msgstr "已经启用，有权限的用户现在就能用它。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid ""
+"It's still disabled: you can enable it later in the storage source list, "
+"which checks the connection first."
+msgstr "它还是停用的：可以以后在存储源列表里启用，启用时会先检查连接。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid ""
+"%(who)s To change who can use it and from which folder, set it for each user "
+"in \"Users\"."
+msgstr ""
+"%(who)s要调整谁能使用它、从哪个文件夹开始，到「用户」里给每个用户设置。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Storage source settings"
+msgstr "存储源设置"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "%(title)s · %(name)s · Manage"
+msgstr "%(title)s · %(name)s · 管理"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Add rule"
+msgstr "添加规则"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Rules saved"
+msgstr "规则已保存"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Read README.md in folders"
+msgstr "读取文件夹里的 README.md"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid ""
+"When on, the rules below no longer apply: opening a folder shows the "
+"README.md in it (any case), always below the list."
+msgstr ""
+"打开后下面的规则不再生效：打开文件夹时显示它里面的 README.md（不分大小写），"
+"固定在列表下面。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Now reading README.md"
+msgstr "已改为读取 README.md"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Now using the rules below"
+msgstr "已改为使用下面的规则"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "/folder/**"
+msgstr "/文件夹/**"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "No content yet"
+msgstr "还没有内容"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Edit readme"
+msgstr "编辑文档"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid ""
+"Written in Markdown, with some simple HTML if you like (links, pictures, "
+"tables, details blocks). It's shown as untrusted content: scripts, styles, "
+"forms and event attributes are removed. Remember to click \"Save\" on the "
+"page afterwards."
+msgstr ""
+"用 Markdown 写，也可以夹一些简单的 HTML（链接、图片、表格、折叠块）。显示时按"
+"不信任的内容处理：脚本、样式、表单和事件属性会被去掉。改完记得点页面上的「保"
+"存」。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Delete rule %(n)s"
+msgstr "删除第 %(n)s 条规则"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Drag rule %(n)s to sort"
+msgstr "拖动第 %(n)s 条规则排序"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Enter a path in the storage source to see which rules cover it."
+msgstr "输入一个存储源里的路径，看看哪些规则管到它。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Path to test"
+msgstr "测试路径"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "A path in the storage source, like /music/rock/a.mp3."
+msgstr "存储源里的路径，例如 /music/rock/a.mp3。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Relative rules count from it; / by default."
+msgstr "相对路径的规则按它算；默认 /。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Rule test"
+msgstr "规则测试"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Matches"
+msgstr "匹配"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Covers it (a parent matches)"
+msgstr "管到它（上级匹配）"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "No access: it and what's below it can't be opened."
+msgstr "不能访问：它和它下面的东西都打不开。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "No downloads: downloads, previews, direct and short links don't work."
+msgstr "不能下载：下载、预览、直链和短链都不行。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Not shown in lists."
+msgstr "列表里不显示。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Not affected by these filter rules."
+msgstr "不受这些过滤规则影响。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "No password needed."
+msgstr "不需要密码。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Decides the password"
+msgstr "决定密码"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Needs the password of rule %(n)s (%(description)s)."
+msgstr "要输入第 %(n)s 条规则（%(description)s）的密码。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Needs the password of rule %(n)s."
+msgstr "要输入第 %(n)s 条规则的密码。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid ""
+"This path isn't in the user's root folder, so no relative rules count; no "
+"readme."
+msgstr "这个路径不在用户的根目录里，相对路径的规则都不算；没有文档。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "This folder has no readme."
+msgstr "这个文件夹没有文档。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Shows it"
+msgstr "显示它"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Shows the readme of rule %(n)s (%(place)s)."
+msgstr "显示第 %(n)s 条规则的文档（%(place)s）。"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "below the list"
+msgstr "列表下面"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "in a dialog"
+msgstr "弹窗"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "above the list"
+msgstr "列表上面"
+
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "As compared:"
+msgstr "比较时的写法："
+
+#: apps/storages/static/storages/js/oauth_callback.js
+msgid ""
+"The authorization result went to the page that started it; you can close "
+"this window."
+msgstr "授权的结果已经交给发起授权的页面，可以关掉这个窗口了。"
+
+#: apps/uploads/static/uploads/js/uploads.js
+msgid ""
+"Upload failed (HTTP %(status)s, target %(target)s, code %(code)s): %"
+"(message)s"
+msgstr ""
+"上传失败 (HTTP %(status)s, target %(target)s, code %(code)s): %(message)s"
+
+#: apps/uploads/static/uploads/js/uploads.js
+msgid "the storage service refused the upload"
+msgstr "存储服务拒绝了上传"
+
+#: apps/uploads/static/uploads/js/uploads.js
+msgid "Upload failed: a network problem, or the target service isn't answering"
+msgstr "上传失败: 网络异常或目标服务无响应"
+
+#: apps/uploads/static/uploads/js/uploads.js
+msgid ""
+"Upload failed: the browser blocked the cross-origin request, or the target "
+"service can't be reached (%(target)s). Please check the storage service's "
+"CORS settings or the network."
+msgstr ""
+"上传失败: 浏览器拦截了跨域请求或目标服务不可达 (%(target)s)，请检查存储服务的"
+"跨域配置或网络状态。"
+
+#: apps/uploads/static/uploads/js/uploads.js
+msgid ""
+" An administrator can click \"Allow direct uploads from this site (set CORS)"
+"\" in the storage source's settings, or turn on \"Upload through the site\"."
+msgstr ""
+"管理员可以在存储源设置里点「允许本站直传（设置跨域）」，或者打开「代理上"
+"传」。"
+
+#: apps/uploads/static/uploads/js/uploads.js
+msgid "Queued…"
+msgstr "排队中..."
+
+#: apps/uploads/static/uploads/js/uploads.js
+msgid "Getting ready…"
+msgstr "准备上传..."
+
+#: apps/uploads/static/uploads/js/uploads.js
+msgid "Upload failed"
+msgstr "上传失败"
+
+#: apps/uploads/static/uploads/js/uploads.js
+msgid "Skipped"
+msgstr "已跳过"
+
+#: apps/uploads/static/uploads/js/uploads.js
+msgid "The new name can't be used; waiting for another…"
+msgstr "新名字不能用，等待输入..."
+
+#: apps/uploads/static/uploads/js/uploads.js
+msgid ""
+"This folder needs a password, and none was entered, so nothing was uploaded."
+msgstr "这个文件夹需要密码，没有输入密码，没有上传。"
+
+#: apps/uploads/static/uploads/js/uploads.js
+msgid "Too many uploads; waiting a moment…"
+msgstr "太频繁了，等一会儿再传..."
+
+#: apps/uploads/static/uploads/js/uploads.js
+msgid "Already exists; waiting for a choice…"
+msgstr "已存在，等待选择..."
+
+#: apps/uploads/static/uploads/js/uploads.js
+msgid "Skip all"
+msgstr "全部跳过"
+
+#: apps/uploads/static/uploads/js/uploads.js
+msgid "Skip"
+msgstr "跳过"
+
+#: apps/uploads/static/uploads/js/uploads.js
+msgid "Overwrite all"
+msgstr "全部覆盖"
+
+#: apps/uploads/static/uploads/js/uploads.js
+msgctxt "upload under another name"
+msgid "Rename"
+msgstr "换个名字"
+
+#: apps/uploads/static/uploads/js/uploads.js
+msgid ""
+"\"%(where)s\" already exists. Overwriting replaces the file that is there."
+msgstr "「%(where)s」已经存在了。覆盖会把原来的文件换掉。"
+
+#: apps/uploads/static/uploads/js/uploads.js
+msgid ""
+"\"%(where)s\" already exists. You don't have the \"Delete\" permission, so "
+"you can't overwrite it; please upload it with another name."
+msgstr ""
+"「%(where)s」已经存在了。你没有「删除」权限，不能覆盖它，请换个名字再上传。"
+
+#: apps/uploads/static/uploads/js/uploads.js
+msgid ""
+"\"%(where)s\" already exists. Overwriting a file needs the \"Delete\" "
+"permission, so it can only be skipped."
+msgstr "「%(where)s」已经存在了。覆盖原来的文件要有「删除」的权限，只能跳过。"
+
+#: apps/uploads/static/uploads/js/uploads.js
+msgid "The file already exists"
+msgstr "文件已存在"
+
+#: apps/uploads/static/uploads/js/uploads.js
+msgid ""
+"Upload \"%(original)s\" with a new name; the file already there stays as it "
+"is."
+msgstr "用新的名字上传「%(original)s」，原来的文件不动。"
+
+#: apps/uploads/static/uploads/js/uploads.js
+msgid "New file name"
+msgstr "新的文件名"
+
+#: apps/uploads/static/uploads/js/uploads.js
+msgid "Upload"
+msgstr "上传"
+
+#: apps/uploads/static/uploads/js/uploads.js
+msgid "Please enter a new file name."
+msgstr "请输入新的文件名。"
+
+#: apps/uploads/static/uploads/js/uploads.js
+msgid "A file name can't contain / or \\."
+msgstr "文件名里不能有 / 或 \\。"
+
+#: apps/uploads/static/uploads/js/uploads.js
+msgid "A file name can't be only dots and spaces."
+msgstr "文件名不能只有点和空格。"
+
+#: apps/uploads/static/uploads/js/uploads.js
+msgid "This folder is protected"
+msgstr "此文件夹已加密"
+
+#: apps/uploads/static/uploads/js/uploads.js
+msgid "Please enter the password."
+msgstr "请输入密码。"
+
+#: apps/uploads/static/uploads/js/uploads.js
+msgid "Waiting for another request to finish with this upload…"
+msgstr "等别的请求处理完这个上传..."
+
+#: apps/uploads/static/uploads/js/uploads.js
+msgid "Uploading"
+msgstr "上传中"
+
+#: apps/uploads/static/uploads/js/uploads.js
+msgid "Uploaded; the server is passing it on…"
+msgstr "上传完成, 服务器中转中..."
+
+#: apps/uploads/static/uploads/js/uploads.js
+msgid "The network dropped; retrying (attempt %(failures)s)…"
+msgstr "网络中断，正在重试（第 %(failures)s 次）..."
+
+#: apps/uploads/static/uploads/js/uploads.js
+msgid "The upload session is no longer valid. Please upload again."
+msgstr "上传会话已经失效了，请重新上传。"
+
+#: apps/uploads/static/uploads/js/uploads.js
+msgid ""
+"This folder needs a password, and none was entered, so the upload stopped."
+msgstr "这个文件夹需要密码，没有输入密码，上传停下了。"
+
+#: apps/uploads/static/uploads/js/uploads.js
+msgid "Another request keeps holding this upload. Please try again later."
+msgstr "这个上传一直被别的请求占着，请稍后重试。"
+
+#: apps/uploads/static/uploads/js/uploads.js apps/web/static/web/js/common.js
+msgid "The server ran into an error (HTTP %(status)s). Please try again later."
+msgstr "服务器出错了（HTTP %(status)s），请稍后再试。"
+
+#: apps/uploads/static/uploads/js/uploads.js
+msgid "Writing to the storage failed."
+msgstr "写入存储失败了。"
+
+#: apps/uploads/static/uploads/js/uploads.js
+msgid "Uploaded; confirming…"
+msgstr "上传完成，正在确认..."
+
+#: apps/uploads/static/uploads/js/uploads.js
+msgid "This kind of storage doesn't support uploading empty files"
+msgstr "当前存储类型不支持上传空文件"
+
+#: apps/uploads/static/uploads/js/uploads.js
+msgid "Uploaded"
+msgstr "上传成功"
+
+#: apps/uploads/static/uploads/js/uploads.js
+msgid "%(ok)s uploaded, %(failed)s failed."
+msgid_plural "%(ok)s uploaded, %(failed)s failed."
+msgstr[0] "上传完成 %(ok)s 个，失败 %(failed)s 个。"
+
+#: apps/uploads/static/uploads/js/uploads.js
+msgid "Uploaded %(ok)s file"
+msgid_plural "Uploaded %(ok)s files"
+msgstr[0] "上传成功：%(ok)s 个文件"
+
+#: apps/uploads/static/uploads/js/uploads.js
+msgid "Collapse"
+msgstr "收起"
+
+#: apps/uploads/static/uploads/js/uploads.js
+msgid "Expand"
+msgstr "展开"
+
+#: apps/uploads/static/uploads/js/uploads.js
+msgid "%(label)s: %(name)s"
+msgstr "%(label)s：%(name)s"
+
+#: apps/uploads/static/uploads/js/uploads.js
+msgid "%(speed)s/s"
+msgstr "%(speed)s/秒"
+
+#: apps/uploads/static/uploads/js/uploads.js
+msgid "Cancel upload"
+msgstr "取消上传"
+
+#: apps/uploads/static/uploads/js/uploads.js
+msgid "Remove"
+msgstr "移除"
+
+#: apps/uploads/static/uploads/js/uploads.js
+msgid "Uploading %(n)s file"
+msgid_plural "Uploading %(n)s files"
+msgstr[0] "正在上传 %(n)s 个文件"
+
+#: apps/uploads/static/uploads/js/uploads.js
+msgid "%(failed)s file failed to upload"
+msgid_plural "%(failed)s files failed to upload"
+msgstr[0] "%(failed)s 个文件上传失败"
+
+#: apps/uploads/static/uploads/js/uploads.js
+msgid "Uploads finished"
+msgstr "上传完成"
+
+#: apps/uploads/static/uploads/js/uploads.js
+msgid "%(uploading)s uploading"
+msgid_plural "%(uploading)s uploading"
+msgstr[0] "%(uploading)s 个上传中"
+
+#: apps/uploads/static/uploads/js/uploads.js
+msgid "%(queued)s queued"
+msgid_plural "%(queued)s queued"
+msgstr[0] "%(queued)s 个排队中"
+
+#: apps/uploads/static/uploads/js/uploads.js
+msgid "%(done)s done"
+msgid_plural "%(done)s done"
+msgstr[0] "%(done)s 个完成"
+
+#: apps/uploads/static/uploads/js/uploads.js
+msgid "%(skipped)s skipped"
+msgid_plural "%(skipped)s skipped"
+msgstr[0] "%(skipped)s 个跳过"
+
+#: apps/uploads/static/uploads/js/uploads.js
+msgid "%(failed)s failed"
+msgid_plural "%(failed)s failed"
+msgstr[0] "%(failed)s 个失败"
+
+#: apps/uploads/static/uploads/js/uploads.js
+msgid "No uploads"
+msgstr "没有上传"
+
+#: apps/uploads/static/uploads/js/uploads.js
+msgid "Cancel uploading %(name)s?"
+msgstr "是否确定取消文件 %(name)s 上传？"
+
+#: apps/uploads/static/uploads/js/uploads.js
+msgid "The folder \"%(path)s\" wasn't created: %(detail)s"
+msgstr "文件夹「%(path)s」没有建成：%(detail)s"
+
+#: apps/uploads/static/uploads/js/uploads.js
+msgid "The folder wasn't created: %(message)s"
+msgstr "文件夹没有建成：%(message)s"
+
+#: apps/uploads/static/uploads/js/uploads.js
+msgid "You don't have the \"Upload\" permission."
+msgstr "没有「上传」的权限。"
+
+#: apps/uploads/static/uploads/js/uploads.js
+msgid ""
+"You don't have the \"New folder\" permission: %(nested)s file inside folders "
+"was skipped."
+msgid_plural ""
+"You don't have the \"New folder\" permission: %(nested)s files inside "
+"folders were skipped."
+msgstr[0] "没有「新建文件夹」的权限：跳过了文件夹里的 %(nested)s 个文件。"
+
+#: apps/uploads/static/uploads/js/uploads.js
+msgid ""
+"You don't have the \"New folder\" permission, so the folder wasn't uploaded."
+msgstr "没有「新建文件夹」的权限：文件夹没有上传。"
+
+#: apps/uploads/static/uploads/js/uploads.js
+msgid "Upload %(count)s file?"
+msgid_plural "Upload %(count)s files?"
+msgstr[0] "文件数量为 %(count)s 个，是否确认上传？"
+
+#: apps/uploads/static/uploads/js/uploads.js
+msgid "Creating folders…"
+msgstr "创建文件夹中..."
+
+#: apps/uploads/static/uploads/js/uploads.js
+msgid "The folder has been created."
+msgstr "文件夹已经建好。"
+
+#: apps/uploads/static/uploads/js/uploads.js
+msgid "Reading the dropped files failed."
+msgstr "读取拖进来的文件失败了。"
+
+#: apps/web/static/web/js/common.js
+msgid "Current password"
+msgstr "原密码"
+
+#: apps/web/static/web/js/common.js
+msgid "Nickname"
+msgstr "昵称"
+
+#: apps/web/static/web/js/common.js
+msgid "Site name"
+msgstr "网站名称"
+
+#: apps/web/static/web/js/common.js
+msgid "Page size"
+msgstr "每页条数"
+
+#: apps/web/static/web/js/common.js
+msgid "Search"
+msgstr "搜索"
+
+#: apps/web/static/web/js/common.js
+msgid ""
+"Your login state has changed (you may have logged in or out in another tab). "
+"Please reload the page and try again."
+msgstr "登录状态已经变了（可能在别的标签页登录或退出了），请刷新页面再试。"
+
+#: apps/web/static/web/js/common.js
+msgid "Item %(n)s (%(msg)s)"
+msgstr "第 %(n)s 项（%(msg)s）"
+
+#: apps/web/static/web/js/common.js
+msgid "%(label)s: %(msg)s"
+msgstr "%(label)s：%(msg)s"
+
+#: apps/web/static/web/js/common.js
+msgid "Please log in first."
+msgstr "请先登录。"
+
+#: apps/web/static/web/js/common.js
+msgid "You don't have permission to do this."
+msgstr "没有权限做这件事。"
+
+#: apps/web/static/web/js/common.js
+msgid "Not found."
+msgstr "没有找到。"
+
+#: apps/web/static/web/js/common.js
+msgid "What was sent is too large."
+msgstr "提交的内容太大了。"
+
+#: apps/web/static/web/js/common.js
+msgid "Too many requests. Please try again later."
+msgstr "太频繁了，请稍后再试。"
+
+#: apps/web/static/web/js/common.js
+msgid "Request failed (HTTP %(status)s)"
+msgstr "请求失败（HTTP %(status)s）"
+
+#: apps/web/static/web/js/common.js
+msgid "Your login has expired. Please reload the page and log in again."
+msgstr "登录已经失效了，请刷新页面重新登录。"
+
+#: apps/web/static/web/js/common.js
+msgid ""
+"The server's answer couldn't be understood (HTTP %(status)s). Please try "
+"again later."
+msgstr "服务器的回答看不懂（HTTP %(status)s），请稍后再试。"
+
+#: apps/web/static/web/js/common.js
+msgid "just now"
+msgstr "刚刚"
+
+#: apps/web/static/web/js/common.js
+msgid "%(n)s minute ago"
+msgid_plural "%(n)s minutes ago"
+msgstr[0] "%(n)s 分钟前"
+
+#: apps/web/static/web/js/common.js
+msgid "%(n)s hour ago"
+msgid_plural "%(n)s hours ago"
+msgstr[0] "%(n)s 小时前"
+
+#: apps/web/static/web/js/common.js
+msgid "%(n)s day ago"
+msgid_plural "%(n)s days ago"
+msgstr[0] "%(n)s 天前"
+
+#: apps/web/static/web/js/manage.js
+msgid "%(section)s · Manage"
+msgstr "%(section)s · 管理"
+
+#: apps/web/static/web/js/manage.js
+msgid "Manage"
+msgstr "管理"
+
+#: apps/web/static/web/js/manage_version.js
+msgid "newer than the program"
+msgstr "比程序新"
+
+#: apps/web/static/web/js/manage_version.js
+msgid "%(count)s migration pending"
+msgid_plural "%(count)s migrations pending"
+msgstr[0] "还差 %(count)s 个迁移"
+
+#: apps/web/static/web/js/manage_version.js
+msgid "matches the program"
+msgstr "和程序一致"
+
+#: apps/web/static/web/js/manage_version.js
+msgid ""
+"The database has migrations this program doesn't have: %(list)s. A newer "
+"version upgraded it, and this version may fail on it; please go back to the "
+"newer program."
+msgstr ""
+"数据库里有这个程序没有的迁移：%(list)s。它被更新的版本升级过，这个版本可能出"
+"错，请换回新版程序。"
+
+#: apps/web/static/web/js/manage_version.js
+msgid "The database still needs these migrations: %(list)s. "
+msgstr "数据库还差这些迁移：%(list)s。"
+
+#: apps/web/static/web/js/manage_version.js
+msgid "Restart the program and it upgrades by itself."
+msgstr "重启程序就会自动升级。"
+
+#: apps/web/static/web/js/manage_version.js
+msgid ""
+"When running from source, upgrade with python manage.py upgrade (it backs up "
+"first)."
+msgstr "从源码运行时，执行 python manage.py upgrade 升级（会先备份）。"
+
+#: apps/web/static/web/js/manage_version.js
+msgid "%(version)s (first entry)"
+msgstr "%(version)s（第一条记录）"
+
+#: apps/web/static/web/js/manage_version.js
+msgid "no structure changes"
+msgstr "结构没变"
+
+#: apps/web/static/web/js/manage_version.js
+msgid "%(count)s migration applied"
+msgid_plural "%(count)s migrations applied"
+msgstr[0] "执行了 %(count)s 个迁移"
+
+#: apps/web/static/web/js/manage_version.js
+msgid "took %(seconds)s s"
+msgstr "用时 %(seconds)s 秒"
+
+#: apps/web/static/web/js/manage_version.js
+msgid "took under 0.1 s"
+msgstr "用时不到 0.1 秒"
+
+#: apps/web/static/web/js/manage_version.js
+msgid "Finished at"
+msgstr "完成时间"
+
+#: apps/web/static/web/js/manage_version.js
+msgid "Version"
+msgstr "版本"
+
+#: apps/web/static/web/js/manage_version.js
+msgid "Database"
+msgstr "数据库"
+
+#: apps/web/static/web/js/manage_version.js
+msgid "Backup before upgrade"
+msgstr "升级前的备份"
+
+#: apps/web/static/web/js/manage_version.js
+msgid "Program version"
+msgstr "程序版本"
+
+#: apps/web/static/web/js/manage_version.js
+msgid "Upgrade at startup"
+msgstr "启动时自动升级"
+
+#: apps/web/static/web/js/manage_version.js
+msgctxt "setting"
+msgid "On"
+msgstr "开"
+
+#: apps/web/static/web/js/manage_version.js
+msgid "Off (turned off in the settings file)"
+msgstr "关（设置文件里关掉了）"
+
+#: apps/web/static/web/js/manage_version.js
+msgid "Off (running from source)"
+msgstr "关（从源码运行）"
+
+#: apps/web/static/web/js/manage_version.js
+msgid "Backup folder"
+msgstr "备份文件夹"
+
+#: apps/web/static/web/js/manage_version.js
+msgid "Environment"
+msgstr "运行环境"
+
+#: apps/web/static/web/js/manage_version.js
+msgid ""
+"No upgrades yet. One is recorded here when the program upgrades the database "
+"at startup, or first starts on this database."
+msgstr ""
+"还没有升级记录。程序启动时升级数据库、或者第一次在这个数据库上启动时，会记在"
+"这里。"
+
+#: apps/web/static/web/js/shell.js
+msgid "Hide password"
+msgstr "隐藏密码"
+
+#: apps/web/static/web/js/shell.js
+msgid "%(detail)s This page can't do that step yet (%(name)s)."
+msgstr "%(detail)s这个页面还不会这一步（%(name)s）。"
+
+#: apps/web/static/web/js/shell.js
+msgid "One more step is needed."
+msgstr "还要再验证一步。"
+
+#: apps/web/static/web/js/shell.js
+msgid "Log in another way"
+msgstr "换个方式登录"
+
+#: apps/web/static/web/js/shell.js
+msgid "Enter your password."
+msgstr "要填密码。"
+
+#: apps/web/static/web/js/shell.js
+msgid "Logged out."
+msgstr "已退出登录。"
+
+#: apps/web/static/web/js/shell.js
+msgid "The two new passwords don't match."
+msgstr "两次输入的新密码不一样。"
+
+#: apps/web/static/web/js/shell.js
+msgid ""
+"Your password is set: you can now also log in with your username and "
+"password."
+msgstr "密码设好了：以后也能用用户名和密码登录。"
+
+#: apps/web/static/web/js/shell.js
+msgid ""
+"Your password has been changed. Logins on other devices have ended; log in "
+"there again with the new password."
+msgstr "密码已经改好了。其他设备上的登录已经失效，要用新密码重新登录。"

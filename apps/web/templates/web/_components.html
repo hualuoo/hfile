@@ -1,0 +1,239 @@
+{% load ui %}{# One theme's half of /components/ (components.html): p is the prefix of its ids. #}
+<h2 class="type-title-large">{{ theme_name }}</h2>
+
+<section class="demo"><h2>颜色</h2>
+  <div class="demo-swatches">
+    <div class="swatch swatch-primary">primary</div>
+    <div class="swatch swatch-primary-container">primary-container</div>
+    <div class="swatch swatch-secondary-container">secondary-container</div>
+    <div class="swatch swatch-tertiary-container">tertiary-container</div>
+    <div class="swatch swatch-surface-container">surface-container</div>
+    <div class="swatch swatch-error-container">error-container</div>
+    <div class="swatch swatch-success-container">success-container</div>
+    <div class="swatch swatch-warning-container">warning-container</div>
+  </div>
+</section>
+
+<section class="demo demo-type"><h2>字体</h2>
+  <p class="type-display-small">Display 文件列表</p>
+  <p class="type-headline-small">Headline 存储源设置</p>
+  <p class="type-title-large">Title large 上传文件</p>
+  <p class="type-title-medium">Title medium 分享链接</p>
+  <p class="type-body-large">Body large：正文，中文用系统的字体，英文和数字用 Roboto 0123456789。</p>
+  <p class="type-label-large">Label large 按钮上的字</p>
+  <p class="type-body-small">Body small 提示和说明</p>
+</section>
+
+<section class="demo"><h2>按钮</h2>
+  <div class="demo-row">
+    <button type="button" class="btn btn-filled">填充</button>
+    <button type="button" class="btn btn-tonal">色调</button>
+    <button type="button" class="btn">描边</button>
+    <button type="button" class="btn btn-text">文字</button>
+    <button type="button" class="btn btn-elevated">浮起</button>
+  </div>
+  <div class="demo-row">
+    <button type="button" class="btn btn-filled">{% icon "upload" %}上传</button>
+    <button type="button" class="btn btn-tonal">{% icon "create_new_folder" %}新建文件夹</button>
+    <button type="button" class="btn">{% icon "download" %}下载</button>
+    <button type="button" class="btn btn-text">{% icon "link" %}复制链接</button>
+  </div>
+  <div class="demo-row">
+    <button type="button" class="btn btn-danger">{% icon "delete" %}删除</button>
+    <button type="button" class="btn btn-danger-text">删除</button>
+    <button type="button" class="btn btn-filled" disabled>不能点</button>
+    <button type="button" class="btn" disabled>不能点</button>
+    <button type="button" class="btn btn-small">{% icon "refresh" %}小按钮</button>
+  </div>
+</section>
+
+<section class="demo"><h2>图标按钮和悬浮按钮</h2>
+  <div class="demo-row">
+    <button type="button" class="icon-button" aria-label="更多" data-tooltip="更多">{% icon "more_vert" %}</button>
+    <button type="button" class="icon-button filled" aria-label="添加" data-tooltip="添加">{% icon "add" %}</button>
+    <button type="button" class="icon-button tonal" aria-label="编辑" data-tooltip="编辑">{% icon "edit" %}</button>
+    <button type="button" class="icon-button outlined" aria-label="分享" data-tooltip="分享">{% icon "share" %}</button>
+    <button type="button" class="icon-button" aria-pressed="false" aria-label="网格视图" data-tooltip="网格视图" data-demo-toggle>{% icon "grid_view" %}</button>
+    <button type="button" class="icon-button" disabled aria-label="不能点">{% icon "delete" %}</button>
+  </div>
+  <div class="demo-row">
+    <button type="button" class="fab fab-small" aria-label="新建">{% icon "add" %}</button>
+    <button type="button" class="fab" aria-label="上传">{% icon "upload" %}</button>
+    <button type="button" class="fab fab-large" aria-label="上传">{% icon "upload" %}</button>
+    <button type="button" class="fab fab-extended">{% icon "upload" %}<span class="fab-label">上传文件</span></button>
+    <button type="button" class="fab fab-secondary" aria-label="新建文件夹">{% icon "create_new_folder" %}</button>
+  </div>
+</section>
+
+<section class="demo"><h2>分段按钮</h2>
+  <div class="segmented" role="group" aria-label="视图">
+    <button type="button" class="segment" aria-pressed="true" data-demo-segment>{% icon "view_list" %}列表</button>
+    <button type="button" class="segment" aria-pressed="false" data-demo-segment>{% icon "grid_view" %}网格</button>
+    <button type="button" class="segment" aria-pressed="false" data-demo-segment>{% icon "image" %}画廊</button>
+  </div>
+</section>
+
+<section class="demo"><h2>菜单</h2>
+  <div class="menu-wrap">
+    <button type="button" class="btn" aria-haspopup="menu" aria-expanded="false" aria-controls="{{ p }}-menu">{% icon "sort" %}排序{% icon "expand_more" %}</button>
+    <div class="menu start" id="{{ p }}-menu" role="menu" hidden>
+      <button type="button" class="menu-item" role="menuitemradio" aria-checked="true">{% icon "sort" %}名称</button>
+      <button type="button" class="menu-item" role="menuitemradio" aria-checked="false">{% icon "schedule" %}修改时间</button>
+      <button type="button" class="menu-item" role="menuitemradio" aria-checked="false">{% icon "storage" %}大小</button>
+      <hr role="separator">
+      <button type="button" class="menu-item" role="menuitem">{% icon "content_copy" %}复制<span class="menu-trailing">Ctrl+C</span></button>
+      <button type="button" class="menu-item" role="menuitem" aria-disabled="true">{% icon "drive_file_move" %}移动（不能点）</button>
+      <button type="button" class="menu-item danger" role="menuitem">{% icon "delete" %}删除</button>
+    </div>
+  </div>
+</section>
+
+<section class="demo"><h2>标签页</h2>
+  <div class="tab-bar" role="tablist" aria-label="示例标签页" data-demo-tabs>
+    <button type="button" class="tab-button" role="tab" data-tab="a" aria-controls="{{ p }}-tab-a" aria-selected="true">{% icon "folder" %}文件</button>
+    <button type="button" class="tab-button" role="tab" data-tab="b" aria-controls="{{ p }}-tab-b" aria-selected="false">{% icon "share" %}分享</button>
+    <button type="button" class="tab-button" role="tab" data-tab="c" aria-controls="{{ p }}-tab-c" aria-selected="false">{% icon "history" %}记录</button>
+  </div>
+  <div class="tab-panel" id="{{ p }}-tab-a" role="tabpanel">第一个标签页的内容。用左右方向键切换。</div>
+  <div class="tab-panel" id="{{ p }}-tab-b" role="tabpanel" hidden>第二个标签页。</div>
+  <div class="tab-panel" id="{{ p }}-tab-c" role="tabpanel" hidden>第三个标签页。</div>
+</section>
+
+<section class="demo"><h2>面包屑</h2>
+  <nav aria-label="当前位置">
+    <ol class="breadcrumbs">
+      <li><a class="breadcrumb" href="#">{% icon "home" %}本地存储</a></li>
+      <li><a class="breadcrumb" href="#">照片</a></li>
+      <li><a class="breadcrumb" href="#">2026 年的旅行，名字很长会被截断</a></li>
+      <li><span class="breadcrumb" aria-current="page">十一月</span></li>
+    </ol>
+  </nav>
+</section>
+
+<section class="demo"><h2>输入框</h2>
+  <div class="field">
+    <div class="label-row"><label for="{{ p }}-name">文件夹名称</label><span class="hint label-hint">不能有 / 和 \</span><span class="hint" data-count-for="{{ p }}-name" data-max="40"></span></div>
+    <input id="{{ p }}-name" value="新建文件夹" maxlength="80">
+  </div>
+  <div class="field">
+    <label for="{{ p }}-password">密码</label>
+    <span class="input-box">
+      <input id="{{ p }}-password" type="password" value="secret-pass" autocomplete="off">
+      <button type="button" class="icon-button field-button" data-toggle-password aria-pressed="false" aria-label="显示密码" data-tooltip="显示密码">{% icon "visibility" %}</button>
+    </span>
+  </div>
+  <div class="field invalid">
+    <label for="{{ p }}-url">网站地址</label>
+    <input id="{{ p }}-url" value="files.example.com">
+    <p class="field-error">要以 https:// 或 http:// 开头。</p>
+  </div>
+  <div class="form-grid">
+    <div class="field">
+      <label for="{{ p }}-type">存储类型</label>
+      <select id="{{ p }}-type"><option>本地</option><option>S3</option><option>WebDAV</option></select>
+    </div>
+    <div class="field">
+      <label for="{{ p }}-off">不能改</label>
+      <input id="{{ p }}-off" value="只读" disabled>
+    </div>
+  </div>
+  <div class="field">
+    <label for="{{ p }}-note">说明</label>
+    <textarea id="{{ p }}-note" rows="3">多行的输入框，可以拖右下角改高度。</textarea>
+  </div>
+  <input type="search" placeholder="搜索文件" aria-label="搜索文件">
+</section>
+
+<section class="demo"><h2>复选框、单选框和开关</h2>
+  <label class="check-line"><input type="checkbox" checked> 允许下载</label>
+  <label class="check-line"><input type="checkbox"> 允许上传</label>
+  <label class="check-line"><input type="checkbox" checked disabled> 不能改（勾上的）</label>
+  <label class="check-line"><input type="radio" name="{{ p }}-radio" checked> 列表</label>
+  <label class="check-line"><input type="radio" name="{{ p }}-radio"> 网格</label>
+  <label class="switch-line">启用这个存储源<input type="checkbox" class="switch" role="switch" checked></label>
+  <label class="switch-line">搜索<input type="checkbox" class="switch" role="switch"></label>
+  <label class="switch-line">不能改<input type="checkbox" class="switch" role="switch" disabled></label>
+</section>
+
+<section class="demo"><h2>标签（chips）</h2>
+  <div class="chips">
+    <button type="button" class="chip">{% icon "filter_list" %}筛选</button>
+    <button type="button" class="chip" aria-pressed="true" data-demo-toggle>图片</button>
+    <button type="button" class="chip" aria-pressed="false" data-demo-toggle>视频</button>
+    <span class="chip chip-input">report.pdf<button type="button" class="chip-remove" aria-label="移除">{% icon "close" %}</button></span>
+    <button type="button" class="chip" disabled>不能点</button>
+  </div>
+</section>
+
+<section class="demo"><h2>卡片</h2>
+  <div class="card-grid">
+    <article class="card"><div class="card-body"><h3 class="card-title">浮起的卡片</h3><p class="card-text">默认的卡片，有一点阴影。</p></div>
+      <div class="card-actions"><button type="button" class="btn btn-text">打开</button></div></article>
+    <article class="card card-filled"><div class="card-body"><h3 class="card-title">填充的卡片</h3><p class="card-text">没有阴影，底色深一些。</p></div></article>
+    <a class="card card-outlined interactive" href="#"><span class="card-body"><span class="card-title">描边的卡片</span><span class="card-text">整张都能点。</span></span></a>
+  </div>
+</section>
+
+<section class="demo"><h2>列表</h2>
+  <ul class="list list-divided">
+    <li><a class="list-item interactive" href="#"><span class="list-leading">{% icon "folder" %}</span><span class="list-text"><span class="list-headline">照片</span><span class="list-supporting">128 个文件</span></span><span class="list-trailing">2026-11-07</span></a></li>
+    <li><a class="list-item interactive" href="#"><span class="list-leading">{% icon "picture_as_pdf" %}</span><span class="list-text"><span class="list-headline">说明书.pdf</span><span class="list-supporting">2.4 MB</span></span><span class="list-trailing">3 天前</span></a></li>
+    <li><div class="list-item selected"><span class="list-leading">{% icon "movie" %}</span><span class="list-text"><span class="list-headline">选中的一项.mp4</span></span>
+      <span class="list-trailing"><button type="button" class="icon-button small" aria-label="更多" data-tooltip="更多">{% icon "more_vert" %}</button></span></div></li>
+  </ul>
+</section>
+
+<section class="demo"><h2>对话框</h2>
+  <div class="demo-row">
+    <button type="button" class="btn" data-open="{{ p }}-dialog">打开对话框</button>
+    <button type="button" class="btn" data-demo-confirm>确认对话框</button>
+  </div>
+  <dialog class="dialog dialog-full" id="{{ p }}-dialog" aria-labelledby="{{ p }}-dialog-title">
+    <div class="dialog-box">
+      <header class="dialog-head"><h2 id="{{ p }}-dialog-title">重命名</h2>
+        <button type="button" class="icon-button" data-close aria-label="关闭" data-tooltip="关闭">{% icon "close" %}</button></header>
+      <form class="dialog-body" method="dialog">
+        <div class="field"><label for="{{ p }}-rename">新名称</label><input id="{{ p }}-rename" value="说明书.pdf" data-autofocus></div>
+        <div class="dialog-foot"><button type="button" class="btn btn-text" data-close>取消</button><button type="submit" class="btn btn-filled">确定</button></div>
+      </form>
+    </div>
+  </dialog>
+</section>
+
+<section class="demo"><h2>提示条和进度</h2>
+  <div class="demo-row">
+    <button type="button" class="btn" data-demo-snackbar>提示条</button>
+    <button type="button" class="btn" data-demo-snackbar="action">带操作的提示条</button>
+    <button type="button" class="btn" data-demo-snackbar="error">出错的提示条</button>
+  </div>
+  <progress class="linear-progress" max="100" value="40" aria-label="上传进度"></progress>
+  <p></p>
+  <progress class="linear-progress" aria-label="正在加载"></progress>
+  <div class="demo-row" data-demo-spinners></div>
+</section>
+
+<section class="demo"><h2>徽章和提示</h2>
+  <div class="demo-row">
+    <span class="badge">普通</span><span class="badge badge-ok">{% icon "check" %}启用</span>
+    <span class="badge badge-warning">待处理</span><span class="badge badge-error">出错</span><span class="badge badge-info">新</span>
+    <span class="with-badge"><button type="button" class="icon-button" aria-label="通知，3 条" data-tooltip="通知">{% icon "info" %}</button><span class="badge-count">3</span></span>
+    <span class="with-badge"><button type="button" class="icon-button" aria-label="有更新" data-tooltip="有更新">{% icon "upgrade" %}</button><span class="badge-dot"></span></span>
+  </div>
+  <div class="notice notice-info">提示：鼠标停在图标按钮上，或者用 Tab 键移到上面，会出现文字提示。</div>
+  <div class="notice notice-ok">存储源已经保存。</div>
+  <div class="notice">数据库还差 2 个迁移。</div>
+  <div class="notice notice-error">连不上 127.0.0.1:3306 的 MySQL。</div>
+</section>
+
+<section class="demo"><h2>分隔线和表格</h2>
+  <hr class="divider">
+  <div class="table-wrap">
+    <table class="data-table stack-table">
+      <thead><tr><th>名称</th><th>类型</th><th class="numeric">大小</th><th>状态</th></tr></thead>
+      <tbody>
+        <tr class="interactive"><td data-label="名称">本地存储</td><td data-label="类型">local</td><td data-label="大小" class="numeric">1.2 TB</td><td data-label="状态"><span class="badge badge-ok">启用</span></td></tr>
+        <tr class="interactive selected"><td data-label="名称">对象存储</td><td data-label="类型">s3</td><td data-label="大小" class="numeric">—</td><td data-label="状态"><span class="badge">停用</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>

@@ -1,0 +1,26 @@
+{% extends "web/base.html" %}{% load sso %}
+{% comment %}
+  The login page: /login/ while no secure login entry is set, else only /login/<entry>/
+  (apps/accounts/views.py LoginPage). The same form as the login dialog, which this page leaves out; shell.js
+  sends it with the entry (data-entry) and then goes to ?next= or the home page.
+{% endcomment %}
+{% block title %}{% translate "Log in" %}{% endblock %}
+{% block page %}login{% endblock %}
+{% block header %}{% endblock %}
+{% block login_dialog %}{% endblock %}
+{% block login_button %}{% endblock %}
+{% block content %}
+<div class="login-page">
+  <section class="card card-outlined login-card" aria-labelledby="login-title">
+    <h1 id="login-title">{% blocktranslate with site_name=site_settings.site_name %}Log in to {{ site_name }}{% endblocktranslate %}</h1>
+    <form id="login-form" novalidate data-captcha="{{ site_settings.login_captcha|yesno:'1,0' }}"{% if entry %} data-entry="{{ entry }}"{% endif %}>
+      {% include "accounts/_login_fields.html" %}
+      <div class="dialog-foot">
+        <button type="submit" class="btn btn-filled btn-block">{% translate "Log in" %}</button>
+      </div>
+      {# Single sign-on works with or without a secure login entry (apps/sso/views.py). #}
+      {% sso_login_buttons %}
+    </form>
+  </section>
+</div>
+{% endblock %}

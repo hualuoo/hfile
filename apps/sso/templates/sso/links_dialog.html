@@ -1,0 +1,17 @@
+{% load ui %}{# 账号绑定, in the user menu (apps/web/templates/web/base.html) while {% sso_links_offered %}; filled by sso/js/links.js from GET /api/v1/sso/links/. #}
+<dialog class="dialog dialog-small dialog-full" id="sso-links-dialog" aria-labelledby="sso-links-title">
+  <div class="dialog-box">
+    <header class="dialog-head">
+      <h2 id="sso-links-title">{% translate "Linked accounts" %}</h2>
+      <button type="button" class="icon-button" data-close aria-label="{% translate 'Close' %}" data-tooltip="{% translate 'Close' %}">{% icon "close" %}</button>
+    </header>
+    <div class="dialog-body">
+      <p class="muted">{% blocktranslate with site_name=site_settings.site_name %}Once linked, these accounts can log in to {{ site_name }} without a password. One account per provider.{% endblocktranslate %}</p>
+      <div class="form-error" role="alert" hidden></div>
+      <ul class="list list-divided sso-link-list" id="sso-link-list" aria-live="polite"></ul>
+      <div class="dialog-foot">
+        <button type="button" class="btn btn-text" data-close>{% translate "Close" %}</button>
+      </div>
+    </div>
+  </div>
+</dialog>

@@ -1,0 +1,115 @@
+/* The upload panel (uploads/js/uploads.js): an M3 sheet that stays beside the page, not a modal. On
+ * wide screens it floats at the bottom right (a side sheet's container: surface-container-low,
+ * elevation 3, large corners); on phones it is a bottom sheet above the navigation bar. One row per
+ * file: its type, name, "<sent> / <size> · <speed>/秒 · <status>", a linear progress, its actions and a
+ * mark (finished green, queued yellow, failed red). Tokens from web/css/m3.css, no style attributes. */
+
+.upload-panel {
+  position: fixed; right: 24px; bottom: 24px; z-index: 30;
+  display: flex; flex-direction: column;
+  width: min(420px, calc(100vw - 48px)); max-height: min(70dvh, 560px); overflow: hidden;
+  border-radius: var(--md-sys-shape-corner-large);
+  background: var(--md-sys-color-surface-container-low); color: var(--md-sys-color-on-surface);
+  box-shadow: var(--md-sys-elevation-level3);
+  animation: upload-panel-in var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-emphasized-decelerate);
+}
+@keyframes upload-panel-in { from { opacity: 0; transform: translateY(16px); } }
+@media (prefers-reduced-motion: reduce) { .upload-panel { animation: none; } }
+
+.upload-panel-head {
+  display: flex; align-items: center; gap: 8px; flex: none;
+  min-height: 64px; padding: 8px 8px 8px 16px;
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
+}
+.upload-panel.collapsed .upload-panel-head { border-bottom-color: transparent; }
+.upload-panel-icon {
+  display: grid; place-items: center; flex: none; width: 40px; height: 40px; border-radius: 50%;
+  background: var(--md-sys-color-primary-container); color: var(--md-sys-color-on-primary-container);
+}
+.upload-panel-icon .icon { width: 22px; height: 22px; }
+.upload-panel-text { display: flex; flex-direction: column; flex: 1; min-width: 0; }
+.upload-panel-title {
+  margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  font: var(--md-sys-typescale-title-medium); letter-spacing: var(--md-sys-typescale-title-medium-tracking);
+}
+.upload-panel-summary {
+  margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  color: var(--md-sys-color-on-surface-variant); font: var(--md-sys-typescale-body-small); line-height: 1.5;
+}
+
+.upload-list { flex: 1; min-height: 0; margin: 0; padding: 4px 0 8px; overflow-y: auto; list-style: none; overscroll-behavior: contain; }
+.upload-panel.collapsed .upload-list { display: none; }
+
+.upload-row {
+  display: flex; align-items: center; gap: 12px; min-height: 64px; padding: 8px 8px 8px 16px;
+}
+.upload-row + .upload-row { border-top: 1px solid var(--md-sys-color-outline-variant); }
+.upload-icon { display: grid; place-items: center; flex: none; color: var(--md-sys-color-on-surface-variant); }
+.upload-icon .icon { width: 24px; height: 24px; }
+.upload-main { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
+.upload-line { display: flex; min-width: 0; font: var(--md-sys-typescale-body-large); letter-spacing: var(--md-sys-typescale-body-large-tracking); line-height: 1.4; }
+.upload-where { flex: none; max-width: 45%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--md-sys-color-on-surface-variant); }
+.upload-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.upload-meta {
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-variant-numeric: tabular-nums;
+  color: var(--md-sys-color-on-surface-variant); font: var(--md-sys-typescale-body-small); line-height: 1.5;
+}
+.upload-error {
+  color: var(--md-sys-color-error); font: var(--md-sys-typescale-body-small); line-height: 1.5;
+  overflow-wrap: anywhere; white-space: pre-line;
+}
+.upload-row .linear-progress { margin-top: 4px; }
+.upload-actions { display: flex; align-items: center; flex: none; }
+.upload-mark { display: grid; place-items: center; flex: none; width: 24px; }
+.upload-mark:empty { display: none; }
+.upload-mark .icon { width: 20px; height: 20px; }
+.upload-row[data-state="done"] .upload-mark { color: var(--md-sys-color-success); }
+.upload-row[data-state="queued"] .upload-mark { color: var(--md-sys-color-warning); }
+.upload-row[data-state="failed"] .upload-mark,
+.upload-row[data-state="failed"] .upload-icon { color: var(--md-sys-color-error); }
+.upload-row[data-state="skipped"] .upload-mark,
+.upload-row[data-state="skipped"] .upload-line { color: var(--md-sys-color-on-surface-variant); }
+
+/* The audio player's bar (preview's audio.js) runs along the bottom too: the panel goes above it, not
+   over its buttons (--audio-bar-height comes from audio.js). */
+body.has-audio-bar .upload-panel { bottom: calc(24px + var(--audio-bar-height, 0px)); }
+
+/* Snackbars (app.css) above the panel where they would cover it: a centred snackbar reaches the panel at
+   the bottom right on narrower windows, and the bottom sheet on phones (--upload-panel-height comes from
+   uploads.js). */
+@media (max-width: 1100px) {
+  body.has-upload-panel .snackbar { bottom: calc(24px + var(--upload-panel-height, 0px) + 8px); }
+  body.has-upload-panel.has-audio-bar .snackbar { bottom: calc(24px + var(--audio-bar-height, 0px) + var(--upload-panel-height, 0px) + 8px); }
+}
+@media (max-width: 640px) {
+  body.has-upload-panel .snackbar { bottom: calc(var(--navbar-height) + var(--upload-panel-height, 0px) + 8px); }
+  body.has-upload-panel.has-audio-bar .snackbar {
+    bottom: calc(var(--navbar-height) + var(--audio-bar-height, 0px) + var(--upload-panel-height, 0px) + 8px);
+  }
+}
+
+/* Phones: a bottom sheet, the whole width, above the navigation bar (--navbar-height, app.css). */
+@media (max-width: 640px) {
+  .upload-panel, body.has-audio-bar .upload-panel {
+    left: 0; right: 0; bottom: calc(var(--navbar-height) + var(--audio-bar-height, 0px)); width: auto; max-height: 60dvh;
+    border-radius: var(--md-sys-shape-corner-extra-large) var(--md-sys-shape-corner-extra-large) 0 0;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .upload-panel-head { position: relative; padding-top: 20px; }
+  /* M3's drag handle, as a sign of a bottom sheet (the header's buttons fold and close it) */
+  .upload-panel-head::before {
+    content: ""; position: absolute; top: 8px; left: 50%; width: 32px; height: 4px; margin-left: -16px;
+    border-radius: 2px; background: var(--md-sys-color-on-surface-variant); opacity: .4;
+  }
+  .upload-row { padding-left: 12px; gap: 8px; }
+  /* the page's FAB would cover the sheet: away while the sheet is open */
+  body.has-upload-panel .nav > .fab { display: none; }
+}
+
+/* /components/uploads/ (DEBUG): the drop zone of the page to try the panel on. */
+.try-drop {
+  display: grid; place-items: center; min-height: 120px; margin-top: 16px; padding: 16px;
+  border: 2px dashed var(--md-sys-color-outline-variant); border-radius: var(--md-sys-shape-corner-medium);
+  color: var(--md-sys-color-on-surface-variant); text-align: center;
+}
+.try-drop.over { border-color: var(--md-sys-color-primary); background: color-mix(in srgb, var(--md-sys-color-primary) 8%, transparent); }

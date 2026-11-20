@@ -1,0 +1,71 @@
+{% load ui siteconf_forms %}{% comment %}
+  One field of a settings page (siteconf/js/manage_settings.js fills and reads it by its name):
+  field  a FieldSpec (apps/siteconf/serializers.py form_fields); kinds: switch, select, number, text,
+         textarea, code, suffixes, image, secret, expiries
+  Superuser-only fields (raw HTML and JS on public pages, D33; the OnlyOffice and kkFileView servers,
+  D49) are disabled for other admins, and manage_settings.js doesn't send them.
+{% endcomment %}{% with name=field.name lock=field.superuser_only %}
+{% if field.kind == "switch" %}
+<label class="switch-line settings-switch" data-field="{{ name }}">
+  <span class="switch-text"><span class="switch-label">{{ field.label }}</span>{% if field.help %}<span class="hint">{{ field.help }}</span>{% endif %}</span>
+  <input type="checkbox" class="switch" role="switch" id="set-{{ name }}" name="{{ name }}">
+</label>
+{% elif field.kind == "select" %}
+<div class="field" data-field="{{ name }}">
+  <label for="set-{{ name }}">{{ field.label }}</label>
+  <select id="set-{{ name }}" name="{{ name }}">{% for value, text in field.choices %}<option value="{{ value }}">{{ text }}</option>{% endfor %}</select>
+  {% if field.help %}<p class="hint">{{ field.help }}</p>{% endif %}
+</div>
+{% elif field.kind == "number" %}
+<div class="field" data-field="{{ name }}">
+  <label for="set-{{ name }}">{{ field.label }}</label>
+  <input type="number" id="set-{{ name }}" name="{{ name }}" inputmode="numeric" step="1"{% if field.min_value is not None %} min="{{ field.min_value }}"{% endif %}{% if field.max_value is not None %} max="{{ field.max_value }}"{% endif %}>
+  {% if field.help %}<p class="hint">{{ field.help }}</p>{% endif %}
+</div>
+{% elif field.kind == "image" %}
+<div class="field image-field" data-field="{{ name }}" data-image="{{ name }}">
+  <span class="label">{{ field.label }}</span>
+  <div class="image-row">
+    <span class="image-frame{% if name == 'home_logo' %} wide{% endif %}">{% blocktranslate with label=field.label asvar preview_alt %}Preview of {{ label }}{% endblocktranslate %}<img class="image-preview" alt="{{ preview_alt }}" data-image-preview></span>
+    <div class="image-actions">
+      <input type="file" class="sr-only" id="set-{{ name }}-file" accept="{% image_accept name %}" tabindex="-1" data-image-file>
+      <button type="button" class="btn btn-tonal btn-small" data-image-upload>{% icon "upload" %}{% translate "Upload picture" %}</button>
+      <button type="button" class="btn btn-text btn-small" data-image-reset>{% icon "restore" %}{% translate "Restore the default" %}</button>
+    </div>
+  </div>
+  <p class="hint image-state" data-image-state></p>
+  <div class="field image-url">
+    <label for="set-{{ name }}">{% translate "Picture address (optional)" %}</label>
+    <input id="set-{{ name }}" name="{{ name }}" inputmode="url" autocomplete="off" spellcheck="false" placeholder="https://…" maxlength="500">
+  </div>
+  {% if field.help %}<p class="hint">{{ field.help }}</p>{% endif %}
+</div>
+{% elif field.kind == "secret" %}
+<div class="field" data-field="{{ name }}" data-secret="{{ name }}">
+  <div class="label-row"><label for="set-{{ name }}">{{ field.label }}</label><span class="hint label-hint" data-secret-state>{% translate "Not set" %}</span></div>
+  {% if lock and not user.is_superuser %}<input type="password" id="set-{{ name }}" name="{{ name }}" autocomplete="off" disabled data-locked>
+  <p class="hint locked-hint">{% icon "lock" %}{% translate "Only superusers can change this." %}</p>
+  {% else %}<span class="input-box">
+    <input type="password" id="set-{{ name }}" name="{{ name }}" autocomplete="new-password" spellcheck="false" placeholder="{% translate 'Empty means unchanged' %}"{% if field.max_length %} maxlength="{{ field.max_length }}"{% endif %}>
+    <button type="button" class="icon-button field-button" data-toggle-password aria-pressed="false" aria-label="{% translate 'Show password' %}" data-tooltip="{% translate 'Show password' %}">{% icon "visibility" %}</button>
+  </span>{% endif %}
+  {% if field.help %}<p class="hint">{{ field.help }}</p>{% endif %}
+  {% if not lock or user.is_superuser %}<p class="secret-actions"><button type="button" class="btn btn-text btn-small" data-secret-clear hidden>{% icon "delete" %}{% translate "Clear the saved secret" %}</button></p>{% endif %}
+</div>
+{% elif field.kind == "expiries" %}
+<div class="field expiries-field" data-field="{{ name }}" data-expiries="{{ name }}">
+  <span class="label" id="set-{{ name }}-label">{{ field.label }}</span>
+  <ol class="expiry-list" aria-labelledby="set-{{ name }}-label" data-expiry-list></ol>
+  <button type="button" class="btn btn-small" data-expiry-add>{% icon "add" %}{% translate "Add a lifetime" %}</button>
+  {% if field.help %}<p class="hint">{{ field.help }}</p>{% endif %}
+</div>
+{% else %}
+<div class="field" data-field="{{ name }}">
+  {% if field.counted %}<div class="label-row"><label for="set-{{ name }}">{{ field.label }}</label>{% if field.help %}<span class="hint label-hint">{{ field.help }}</span>{% endif %}<span class="hint" data-count-for="set-{{ name }}" data-max="{{ field.max_length }}"></span></div>{% else %}<label for="set-{{ name }}">{{ field.label }}</label>{% endif %}
+  {% if field.kind == "text" %}<input id="set-{{ name }}" name="{{ name }}" autocomplete="off"{% if field.max_length %} maxlength="{{ field.max_length|add:100 }}"{% endif %}{% if lock and not user.is_superuser %} disabled data-locked{% endif %}>
+  {% else %}<textarea id="set-{{ name }}" name="{{ name }}" rows="{{ field.rows }}" spellcheck="false"{% if field.kind == "code" %} class="mono"{% endif %}{% if lock and not user.is_superuser %} disabled data-locked{% endif %}></textarea>{% endif %}
+  {% if lock and not user.is_superuser %}<p class="hint locked-hint">{% icon "lock" %}{% translate "Only superusers can change this." %}</p>{% endif %}
+  {% if field.help and not field.counted %}<p class="hint">{{ field.help }}</p>{% endif %}
+  {% if field.kind == "suffixes" %}<p class="field-tools"><button type="button" class="btn btn-text btn-small" data-reset="{{ name }}" data-default="{{ field.default }}">{% icon "restore" %}{% translate "Restore the default" %}</button></p>{% endif %}
+</div>
+{% endif %}{% endwith %}

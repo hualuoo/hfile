@@ -1,0 +1,66 @@
+{% load ui siteconf_forms %}{% settings_fields "view" as f %}{# /manage/#view, manage_settings.js: GET and PATCH /api/v1/manage/settings/view/. #}
+<div class="section-title-row"><h2>{% translate "Display settings" %}</h2></div>
+<p class="muted">{% translate "How the file list looks and works, which files preview how, OnlyOffice and kkFileView, the announcement, and custom CSS and JS." %}</p>
+<form class="settings-form" data-settings="view" data-section-key="view" novalidate>
+  <div class="form-error" role="alert" hidden></div>
+  <div class="tab-bar settings-tabs" role="tablist" aria-label="{% translate 'Display settings' %}">
+    <button type="button" class="tab-button" role="tab" data-tab="habits" aria-controls="view-tab-habits" aria-selected="true">{% translate "Habits" %}</button>
+    <button type="button" class="tab-button" role="tab" data-tab="preview" aria-controls="view-tab-preview" aria-selected="false">{% translate "Previews" %}</button>
+    <button type="button" class="tab-button" role="tab" data-tab="onlyoffice" aria-controls="view-tab-onlyoffice" aria-selected="false">OnlyOffice</button>
+    <button type="button" class="tab-button" role="tab" data-tab="kkfileview" aria-controls="view-tab-kkfileview" aria-selected="false">kkFileView</button>
+    <button type="button" class="tab-button" role="tab" data-tab="announcement" aria-controls="view-tab-announcement" aria-selected="false">{% translate "Announcement" %}</button>
+    <button type="button" class="tab-button" role="tab" data-tab="custom" aria-controls="view-tab-custom" aria-selected="false">{% translate "Custom CSS/JS" %}</button>
+  </div>
+  <div class="tab-panel" id="view-tab-habits" role="tabpanel">
+    <div class="form-grid">
+      <div>{% include "siteconf/manage/_field.html" with field=f.layout %}</div>
+      <div>{% include "siteconf/manage/_field.html" with field=f.mobile_layout %}</div>
+      <div>{% include "siteconf/manage/_field.html" with field=f.file_click_mode %}</div>
+      <div>{% include "siteconf/manage/_field.html" with field=f.mobile_file_click_mode %}</div>
+      <div>{% include "siteconf/manage/_field.html" with field=f.default_sort_field %}</div>
+      <div>{% include "siteconf/manage/_field.html" with field=f.default_sort_order %}</div>
+      <div>{% include "siteconf/manage/_field.html" with field=f.max_show_size %}</div>
+      <div>{% include "siteconf/manage/_field.html" with field=f.load_more_size %}</div>
+    </div>
+    <div class="switch-group">
+      {% include "siteconf/manage/_field.html" with field=f.root_show_storage %}
+      {% include "siteconf/manage/_field.html" with field=f.mobile_show_size %}
+      {% include "siteconf/manage/_field.html" with field=f.download_confirm %}
+      {% include "siteconf/manage/_field.html" with field=f.default_save_password %}
+      {% include "siteconf/manage/_field.html" with field=f.show_document %}
+    </div>
+  </div>
+  <div class="tab-panel" id="view-tab-preview" role="tabpanel" hidden>
+    <p class="notice notice-info">{% translate "Suffixes aren't case-sensitive and are separated by commas, like mp4,webm,mkv; empty means the default. With a kind's switch off, those files aren't previewed and download when opened. A suffix listed doesn't guarantee a preview: it depends on the browser supporting the format, and HFile doesn't convert." %}</p>
+    {% include "siteconf/manage/_field.html" with field=f.image_preview %}
+    {% include "siteconf/manage/_field.html" with field=f.image_suffixes %}
+    {% include "siteconf/manage/_field.html" with field=f.video_preview %}
+    {% include "siteconf/manage/_field.html" with field=f.video_suffixes %}
+    {% include "siteconf/manage/_field.html" with field=f.audio_preview %}
+    {% include "siteconf/manage/_field.html" with field=f.audio_suffixes %}
+    {% include "siteconf/manage/_field.html" with field=f.text_preview %}
+    {% include "siteconf/manage/_field.html" with field=f.text_suffixes %}
+    {% include "siteconf/manage/_field.html" with field=f.text_preview_max_kb %}
+    {% include "siteconf/manage/_field.html" with field=f.office_preview %}
+    {% include "siteconf/manage/_field.html" with field=f.office_suffixes %}
+    {% include "siteconf/manage/_field.html" with field=f.kkfileview_preview %}
+    {% include "siteconf/manage/_field.html" with field=f.kkfileview_suffixes %}
+  </div>
+  <div class="tab-panel" id="view-tab-onlyoffice" role="tabpanel" hidden>
+    {% include "siteconf/manage/_field.html" with field=f.onlyoffice_url %}
+    {% include "siteconf/manage/_field.html" with field=f.onlyoffice_secret %}
+  </div>
+  <div class="tab-panel" id="view-tab-kkfileview" role="tabpanel" hidden>
+    {% include "siteconf/manage/_field.html" with field=f.kkfileview_url %}
+    {% include "siteconf/manage/_field.html" with field=f.kkfileview_open_mode %}
+  </div>
+  <div class="tab-panel" id="view-tab-announcement" role="tabpanel" hidden>
+    {% include "siteconf/manage/_field.html" with field=f.show_announcement %}
+    {% include "siteconf/manage/_field.html" with field=f.announcement %}
+  </div>
+  <div class="tab-panel" id="view-tab-custom" role="tabpanel" hidden>
+    {% include "siteconf/manage/_field.html" with field=f.custom_css %}
+    {% include "siteconf/manage/_field.html" with field=f.custom_js %}
+  </div>
+  {% include "siteconf/manage/_save.html" %}
+</form>

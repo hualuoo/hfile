@@ -1,0 +1,8 @@
+{# The end of each step but the last, for install.js (hidden without it): what the program said about the step, which required fields are still empty, and the buttons. test: the database's 测试连接. #}
+<div class="notice step-notice" role="status" hidden></div>
+<div class="install-actions step-actions" hidden>
+  <p class="muted step-status" aria-live="polite"></p>
+  {% if test %}<button class="btn" type="button" data-action="test">{% translate "Test connection" %}</button>{% endif %}
+  {% if not first %}<button class="btn btn-text" type="button" data-action="back">{% translate "Back" context "wizard" %}</button>{% endif %}
+  <button class="btn btn-filled" type="button" data-action="next">{% translate "Next" %}</button>
+</div>

@@ -1,0 +1,3 @@
+{% load static %}{# What other apps add to every page that shows the file browser (apps.files.pages.add_assets): after files.js, before the page's own script. #}
+{% for script in files_assets.scripts %}<script src="{% static script %}"></script>
+{% endfor %}

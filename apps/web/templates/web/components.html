@@ -1,0 +1,13 @@
+{% extends "web/base.html" %}{% load static ui %}
+{% block title %}组件{% endblock %}
+{% block page %}components{% endblock %}
+{% block heading %}组件{% endblock %}
+{% block page_actions %}<span class="muted small">只在调试模式下有：每个组件左边浅色、右边深色（屏幕窄时上下排）。</span>{% endblock %}
+{% block content %}
+{# apps/web/static/web/css/app.css draws all of these; web/js/components.js makes the demo buttons work. #}
+<div class="components">
+  <div data-theme="light">{% include "web/_components.html" with p="l" theme_name="浅色" %}</div>
+  <div data-theme="dark">{% include "web/_components.html" with p="d" theme_name="深色" %}</div>
+</div>
+{% endblock %}
+{% block scripts %}<script src="{% static 'web/js/components.js' %}"></script>{% endblock %}

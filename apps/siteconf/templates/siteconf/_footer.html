@@ -1,0 +1,5 @@
+{# The footer of public pages (base.html): 站点设置 → 备案号, and where the site comes from. #}
+<footer class="site-footer">
+  {% if site_settings.icp %}<a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">{{ site_settings.icp }}</a><span class="site-footer-dot" aria-hidden="true">·</span>{% endif %}
+  <span>Powered by HFile</span>
+</footer>

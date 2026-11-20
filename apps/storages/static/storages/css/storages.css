@@ -1,0 +1,189 @@
+/* The storages section of /manage/ (storages/manage/storages.html) and the grants editor (grants.js),
+ * built from the tokens of web/css/m3.css and the components of web/css/app.css. */
+
+/* ---------- headings with a way back */
+.title-with-back { display: flex; align-items: center; gap: 4px; min-width: 0; }
+.title-with-back h2 { margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.storages .section-title-row { margin-bottom: 8px; }
+.storage-links { margin: 4px 0 16px; }
+.storages .chip { text-decoration: none; }
+.storages p > code, .storages li > code { white-space: nowrap; }
+.storages .hint, .grants-editor .hint { overflow-wrap: anywhere; }
+
+/* ---------- the list: a handle to drag, the storage, its menu */
+.storages-search { margin: 4px 0 12px; }
+.storage-list { padding: 0; border: 1px solid var(--md-sys-color-outline-variant); border-radius: var(--md-sys-shape-corner-medium); }
+.storage-list > li + li { border-top: 1px solid var(--md-sys-color-outline-variant); }
+.storage-row { display: flex; align-items: center; gap: 4px; min-height: 72px; padding: 8px 8px 8px 4px; background: var(--md-sys-color-surface-container-low); }
+.storage-row:first-child { border-radius: var(--md-sys-shape-corner-medium) var(--md-sys-shape-corner-medium) 0 0; }
+.storage-row:last-child { border-radius: 0 0 var(--md-sys-shape-corner-medium) var(--md-sys-shape-corner-medium); }
+.storage-row:only-child { border-radius: var(--md-sys-shape-corner-medium); }
+.storage-row.disabled .list-headline, .storage-row.disabled .list-leading { color: var(--md-sys-color-on-surface-variant); }
+.storage-main {
+  display: flex; align-items: center; gap: 16px; flex: 1; min-width: 0; padding: 4px 8px; border-radius: var(--md-sys-shape-corner-small);
+  color: var(--md-sys-color-on-surface); text-decoration: none;
+}
+.storage-main:hover { text-decoration: none; background: color-mix(in srgb, var(--md-sys-color-on-surface) 6%, transparent); }
+.storage-main .list-leading .icon { width: 24px; height: 24px; }
+.storage-main .list-headline { display: flex; align-items: center; gap: 8px; white-space: normal; }
+.storage-main .list-headline > span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.storage-badges { display: inline-flex; gap: 6px; flex: none; }
+.storage-remark { white-space: normal; }
+.storage-problem { color: var(--md-sys-color-error); font: var(--md-sys-typescale-body-small); white-space: normal; overflow-wrap: anywhere; }
+.storages-nothing { padding: 16px; }
+
+/* dragging: the row lifts while it follows the pointer; the handle doesn't scroll on touch screens */
+.drag-handle { cursor: grab; touch-action: none; }
+.drag-handle:active { cursor: grabbing; }
+.sortable-row.dragging { position: relative; z-index: 2; box-shadow: var(--md-sys-elevation-level3); background: var(--md-sys-color-surface-container-high); }
+
+/* ---------- the form */
+.storage-form { max-width: 960px; }
+.form-section { margin: 0 0 8px; padding: 0 0 8px; border-bottom: 1px solid var(--md-sys-color-outline-variant); }
+.form-section:last-of-type { border-bottom: 0; }
+.form-section > h3 { margin: 16px 0 16px; }
+.switch-field { margin: 0 0 16px; max-width: 640px; }
+.switch-field .switch-line { min-height: 40px; }
+.switch-field > .hint { margin-top: 0; }
+.switch-field.invalid .switch-line { color: var(--md-sys-color-error); }
+.field-extras { display: flex; justify-content: flex-end; flex: 1 1 100%; }
+.field .field-extras { padding: 0 4px; }
+.secret-clear { margin-top: 2px; }
+.redirect-uri { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; }
+.redirect-uri code { overflow-wrap: anywhere; }
+.helper-row { display: flex; flex-wrap: wrap; gap: 8px; margin: -8px 0 16px; }
+.helper-result:empty { display: none; }
+.choice-picker { flex: 1 1 100%; margin-top: 8px; }
+.more-settings { margin: 0 0 16px; }
+.more-settings > summary {
+  display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 12px; margin: 0 0 12px -12px; list-style: none;
+  border-radius: var(--md-sys-shape-corner-full); color: var(--md-sys-color-primary); cursor: pointer;
+  font: var(--md-sys-typescale-label-large); letter-spacing: var(--md-sys-typescale-label-large-tracking);
+}
+.more-settings > summary::-webkit-details-marker { display: none; }
+.more-settings > summary:hover { background: color-mix(in srgb, var(--md-sys-color-primary) 8%, transparent); }
+.more-settings > summary .icon { transition: transform var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard); }
+.more-settings[open] > summary .icon { transform: rotate(180deg); }
+.form-actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 8px; margin: 16px 0 0; }
+.form-actions > .btn-tonal:first-child { margin-right: auto; }
+.form-test-result:empty { display: none; }
+.form-test-result { margin-top: 16px; }
+.testing { display: flex; align-items: center; gap: 12px; margin: 8px 0 16px; color: var(--md-sys-color-on-surface-variant); }
+.btn-row.start { justify-content: flex-start; margin-bottom: 16px; }
+
+/* ---------- the add wizard (#storages/new): one step at a time, the steps above it as in the installer
+ * (installer/install.css: a bar each, filled for those done and the one open; done ones open again) */
+.setup-form { max-width: 800px; }
+.setup-steps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin: 0 0 8px; padding: 0; list-style: none; }
+.setup-steps button {
+  display: flex; align-items: center; gap: 8px; width: 100%; min-width: 0; padding: 10px 0 4px; cursor: pointer;
+  border: 0; border-top: 4px solid var(--md-sys-color-outline-variant); background: none;
+  color: var(--md-sys-color-on-surface-variant); font: var(--md-sys-typescale-label-large); text-align: left;
+}
+.setup-steps button:disabled { cursor: default; }
+.setup-steps button:is(.done, [aria-current="step"]) { border-top-color: var(--md-sys-color-primary); }
+.setup-steps button[aria-current="step"] { color: var(--md-sys-color-on-surface); }
+.setup-steps button.done:not(:disabled):hover .step-title { text-decoration: underline; }
+.setup-steps .step-number {
+  position: relative; display: inline-grid; place-items: center; flex: none; width: 24px; height: 24px;
+  border: 1px solid currentColor; border-radius: 50%; font: var(--md-sys-typescale-label-medium);
+}
+.setup-steps :is([aria-current="step"], .done) > .step-number { border-color: transparent; background: var(--md-sys-color-primary); color: var(--md-sys-color-on-primary); }
+.setup-steps .done > .step-number { color: transparent; }
+.setup-steps .done > .step-number::after {
+  content: ""; position: absolute; inset: 4px; background: var(--md-sys-color-on-primary);
+  -webkit-mask: var(--icon-check) center / contain no-repeat; mask: var(--icon-check) center / contain no-repeat;
+}
+.setup-steps .step-title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.setup-step { border-bottom: 0; }
+.setup-step > h3:focus { outline: none; } /* focused when its step opens, for screen readers */
+.setup-step > .setup-intro { margin: -8px 0 24px; }
+.setup-step > .redirect-uri { margin-bottom: 24px; }
+.setup-actions .step-status { flex: 1 1 auto; margin: 0; }
+.setup-transfers > h3 { margin: 24px 0 16px; } /* as the edit form's sections (.form-section > h3) */
+.setup-done > p { margin: 0 0 8px; }
+
+/* ---------- the QR code of a login: white around it, so phones read it in the dark theme too */
+.qr-body { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.qr-image { width: 220px; height: 220px; padding: 8px; border-radius: var(--md-sys-shape-corner-medium); background: #fff; image-rendering: pixelated; }
+.qr-message { margin: 0; text-align: center; }
+.qr-body .dialog-foot { align-self: stretch; margin-top: 8px; }
+
+/* ---------- rules */
+.rule-help { white-space: normal; }
+.rule-help ul, .rule-modes { margin: 4px 0 0; padding-left: 20px; }
+.rule-help li, .rule-modes li { margin: 2px 0; }
+.rule-help p { margin: 0 0 4px; }
+.rule-modes { margin-bottom: 12px; }
+.panel-inset { margin: 0 0 16px; padding: 4px 16px; border-radius: var(--md-sys-shape-corner-medium); background: var(--md-sys-color-surface-container); --field-bg: var(--md-sys-color-surface-container); }
+.rule-list { display: flex; flex-direction: column; gap: 12px; margin: 16px 0 0; }
+.rule-row { --field-bg: var(--md-sys-color-surface); padding: 8px 16px 0 8px; }
+.rule-row.matched { border-color: var(--md-sys-color-primary); }
+.rule-row.decides { box-shadow: inset 0 0 0 1px var(--md-sys-color-primary); }
+.rule-head { display: flex; align-items: center; gap: 4px; margin-bottom: 12px; }
+.rule-number { color: var(--md-sys-color-on-surface-variant); font: var(--md-sys-typescale-label-large); }
+.rule-match { margin-left: 8px; margin-right: auto; }
+.rule-fields { padding-left: 8px; }
+.rule-fields .field { margin-bottom: 16px; }
+.readme-edit { display: flex; align-items: center; gap: 12px; min-width: 0; margin: -4px 0 16px 8px; }
+.readme-preview { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.readme-edit.invalid .readme-preview { color: var(--md-sys-color-error); }
+.readme-text { font-family: var(--mono); font-size: 14px; min-height: 280px; }
+.rule-empty { padding: 16px 0 0; }
+.rule-actions { justify-content: space-between; }
+.rule-actions > .btn-tonal:first-child { margin-right: 0; }
+.rule-status { margin-left: auto; }
+.tester { margin-top: 24px; --field-bg: var(--md-sys-color-surface-container-highest); }
+.tester .card-title { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
+.tester .card-title .icon { width: 20px; height: 20px; color: var(--md-sys-color-primary); }
+.tester-result p { margin: 0 0 4px; }
+.tester-line { font: var(--md-sys-typescale-body-large); }
+
+/* ---------- the grants editor (in the user dialog of the users section) */
+.grants-editor .grants-intro { margin: 0 0 12px; }
+.grants-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0 0 8px; }
+.grants-toolbar .check-line { margin-right: 8px; }
+.grants-table td { vertical-align: middle; }
+.grants-table input:not([type="checkbox"]) { height: 40px; min-width: 120px; }
+.grants-table .grant-pick { width: 40px; }
+.grant-storage { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; }
+.grant-permission-cell { display: flex; align-items: center; gap: 4px; }
+.grant-summary { min-width: 0; }
+.grant-notes:empty { display: none; }
+.grant-notes p { margin: 4px 0 0; }
+.grant-warning { color: var(--md-sys-color-on-warning-container); background: var(--md-sys-color-warning-container); padding: 4px 8px; border-radius: var(--md-sys-shape-corner-small); font: var(--md-sys-typescale-body-small); }
+.grants-foot { display: flex; align-items: center; justify-content: flex-end; gap: 12px; margin-top: 16px; }
+.grants-loading { display: flex; align-items: center; gap: 12px; padding: 16px 0; color: var(--md-sys-color-on-surface-variant); }
+.grant-quick { margin: 0 0 8px; }
+.grant-permissions { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0 16px; }
+.grant-permission .hint { margin: -6px 0 8px 30px; }
+
+/* ---------- the OAuth callback page */
+.oauth-result { max-width: 640px; }
+
+@media (max-width: 860px) {
+  .grants-table .grant-pick { width: auto; }
+  .stack-table.grants-table td[data-label]::before { min-width: 4.5em; }
+  .grants-table input:not([type="checkbox"]) { flex: 1 1 160px; }
+  .stack-table.grants-table td { align-items: center; }
+}
+@media (max-width: 640px) {
+  .storage-row { min-height: 64px; padding: 4px 0; }
+  .storage-main { gap: 12px; padding: 4px; }
+  .storage-main .list-leading { display: none; }
+  .form-actions { justify-content: stretch; }
+  .form-actions > .btn { flex: 1 1 auto; }
+  .form-actions > .btn-tonal:first-child { flex-basis: 100%; margin-right: 0; }
+  .rule-row { padding: 4px 12px 0 4px; }
+  .rule-fields { padding-left: 4px; }
+  .readme-edit { flex-wrap: wrap; }
+  .helper-row .btn { flex: 1 1 auto; }
+  .setup-actions .step-status { flex-basis: 100%; }
+}
+@media (max-width: 480px) {
+  .setup-steps button:not([aria-current="step"]) .step-title { display: none; } /* the open step's name only */
+  /* ...which takes the room the others leave: in a quarter of a phone's card it read 「基…」 */
+  .setup-steps { display: flex; }
+  .setup-steps > li { flex: 1 1 0; min-width: 0; }
+  .setup-steps > li:has(> [aria-current="step"]) { flex: 1 0 auto; }
+}

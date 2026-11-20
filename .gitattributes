@@ -1,0 +1,4 @@
+# Text files are checked out as they are committed, with LF, on Windows too, where git would otherwise give
+# them CRLF (core.autocrlf): bash refuses it in scripts/*.sh, and the tests on Windows run with LF. Git tells
+# text from binary by itself.
+* text=auto eol=lf

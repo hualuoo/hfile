@@ -1,0 +1,24 @@
+name: 功能建议 / Feature request
+description: 想要 HFile 能做的事 / Something you'd like HFile to do
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        先搜一下[已有的 Issue](https://github.com/hualuoo/hfile/issues)，也许已经有人提过。中文或英文都可以。
+        Please search the [existing issues](https://github.com/hualuoo/hfile/issues) first: it may have been suggested already. Chinese or English is fine.
+  - type: textarea
+    id: problem
+    attributes:
+      label: 想做成什么事 / What are you trying to do?
+      description: 现在为什么做不到 / And why you can't do it now
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: 想要的做法 / The solution you'd like
+  - type: textarea
+    id: workaround
+    attributes:
+      label: 现在的变通办法 / How you work around it now

@@ -1,0 +1,126 @@
+{% load ui sso %}{# /manage/#sso (apps/web/navigation.py SECTIONS), run by sso/js/manage_sso.js through /api/v1/manage/sso/. #}
+{% sso_manage as sso %}
+<div class="section-title-row">
+  <h2>{% translate "Single sign-on" %}</h2>
+  {% if sso.can_edit %}<div class="menu-wrap">
+    <button type="button" class="btn btn-filled" id="sso-new" aria-haspopup="menu" aria-expanded="false" aria-controls="sso-new-menu">{% icon "add" %}{% translate "Add" %}{% icon "expand_more" "caret" %}</button>
+    <div class="menu" id="sso-new-menu" role="menu" aria-labelledby="sso-new" hidden>
+      <button type="button" class="menu-item" role="menuitem" data-preset="">{% icon "edit" %}{% translate "Blank" %}</button>
+      <hr role="separator">
+      {% for preset in sso.presets %}<button type="button" class="menu-item" role="menuitem" data-preset="{{ preset.key }}"><img class="sso-menu-icon" src="{{ preset.values.icon }}" alt="" width="20" height="20">{{ preset.label }}</button>
+      {% endfor %}
+    </div>
+  </div>{% endif %}
+</div>
+<p class="muted">{% translate "Log in with GitHub, Gitee, GitLab or OpenID Connect (Logto, Keycloak and others) accounts. Register an app with the provider first, giving it the callback URL from the form, then fill in the Client ID and Secret it gives you here. Accounts are linked by the provider's user ID that never changes, not by username: a user with the same name at the provider doesn't log in as the user here." %}</p>
+<p class="notice notice-info">{% if sso.auto_register %}{% blocktranslate %}Users that single sign-on creates get the permissions of the "New user template" in "Users" (default permissions and storage source permissions), and are never admins. Whether they can be created is "Let single sign-on register new users" in "Security settings", which is <strong>on</strong> now.{% endblocktranslate %}{% else %}{% blocktranslate %}Users that single sign-on creates get the permissions of the "New user template" in "Users" (default permissions and storage source permissions), and are never admins. Whether they can be created is "Let single sign-on register new users" in "Security settings", which is <strong>off</strong> now: people who haven't linked an account can't log in with single sign-on; they log in with a password and link it themselves first, or an admin links it in the user's "Single sign-on".{% endblocktranslate %}{% endif %}</p>
+{% if not sso.can_edit %}<p class="notice notice-info" id="sso-read-only">{% translate "Only superusers can change the single sign-on settings: a provider's settings decide which of its accounts logs in as which user. Here they can only be viewed." %}</p>{% endif %}
+{% if not sso.from_site_url %}<p class="notice" id="sso-origin-warning">{% blocktranslate with origin=sso.origin %}The settings file has no [site] url, so the callback URL comes from the address you opened this page with ({{ origin }}); opened from another address, it changes, and no longer matches the one registered with the provider. Set the site's real address as [site] url in config.toml.{% endblocktranslate %}</p>{% endif %}
+<p class="muted small list-summary" id="sso-summary" role="status"></p>
+<div class="table-wrap">
+  <table class="data-table stack-table sso-table">
+    <thead><tr><th>{% translate "Provider" %}</th><th>{% translate "Enabled" %}</th><th>{% translate "Linked users" %}</th><th>{% translate "Order" %}</th><th><span class="sr-only">{% translate "Actions" %}</span></th></tr></thead>
+    <tbody id="sso-rows"></tbody>
+  </table>
+</div>
+
+{# The dialog to add or change a provider. manage_sso.js moves it to <body> (this section can be hidden). #}
+<dialog class="dialog dialog-wide dialog-full sso-dialog" id="sso-dialog" aria-labelledby="sso-dialog-title" data-origin="{{ sso.origin }}" data-presets="{{ sso.presets_json }}" data-can-edit="{{ sso.can_edit|yesno:'1,0' }}">
+  <div class="dialog-box">
+    <header class="dialog-head">
+      <h2 id="sso-dialog-title">{% translate "Add single sign-on" %}</h2>
+      <button type="button" class="icon-button" data-close aria-label="{% translate 'Close' %}" data-tooltip="{% translate 'Close' %}">{% icon "close" %}</button>
+    </header>
+    <form class="dialog-body" id="sso-form" novalidate>
+      <div class="form-error" role="alert" hidden></div>
+      <p class="notice notice-info" id="sso-preset-help" hidden></p>
+      <div class="form-grid">
+        <div class="field" data-field="code">
+          <div class="label-row"><label for="sso-code">{% translate "Short name" %}</label><span class="hint label-hint">{% translate "Used in addresses: lowercase letters, digits, - and _" %}</span></div>
+          <input id="sso-code" name="code" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="32" required placeholder="github" data-autofocus>
+        </div>
+        <div class="field" data-field="name">
+          <div class="label-row"><label for="sso-name">{% translate "Name" %}</label><span class="hint label-hint">{% translate "Shown when hovering over the login button" %}</span><span class="hint" data-count-for="sso-name" data-max="50"></span></div>
+          <input id="sso-name" name="name" autocomplete="off" maxlength="80" required placeholder="GitHub">
+        </div>
+        <div class="field span-2" data-field="callback">
+          <div class="label-row"><span class="field-label" id="sso-callback-label">{% translate "Callback URL" %}</span><span class="hint label-hint">{% translate "Register it with the provider as the Redirect URI / Callback URL" %}</span></div>
+          <div class="sso-callback"><code id="sso-callback-url" aria-labelledby="sso-callback-label"></code><button type="button" class="icon-button" id="sso-callback-copy" aria-label="{% translate 'Copy callback URL' %}" data-tooltip="{% translate 'Copy' %}">{% icon "content_copy" %}</button></div>
+        </div>
+        <div class="field span-2" data-field="icon">
+          <div class="label-row"><label for="sso-icon">{% translate "Icon" %}</label><span class="hint label-hint">{% translate "An http(s) or data:image/… address, at most 64 KB; when empty, the name's first letter is shown" %}</span></div>
+          <div class="sso-icon-row">
+            <span class="sso-button sso-icon-preview" id="sso-icon-preview" aria-hidden="true"></span>
+            <input id="sso-icon" name="icon" autocomplete="off" spellcheck="false" placeholder="{% translate 'https://… or data:image/svg+xml;base64,…' %}">
+            <button type="button" class="btn" id="sso-icon-upload">{% icon "upload" %}{% translate "Upload picture" %}</button>
+            <input type="file" id="sso-icon-file" accept="image/png,image/jpeg,image/gif,image/webp,image/svg+xml" hidden>
+          </div>
+        </div>
+        <div class="field" data-field="client_id">
+          <label for="sso-client-id">Client ID</label>
+          <input id="sso-client-id" name="client_id" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="255" required>
+        </div>
+        <div class="field" data-field="client_secret">
+          <div class="label-row"><label for="sso-client-secret">Client Secret</label><span class="hint label-hint" id="sso-secret-hint">{% translate "Saved encrypted and not shown again" %}</span></div>
+          <span class="input-box">
+            <input id="sso-client-secret" name="client_secret" type="password" autocomplete="new-password" spellcheck="false" maxlength="2000">
+            <button type="button" class="icon-button field-button" data-toggle-password aria-pressed="false" aria-label="{% translate 'Show password' %}" data-tooltip="{% translate 'Show password' %}">{% icon "visibility" %}</button>
+          </span>
+          <label class="check-line" id="sso-secret-clear" hidden><input type="checkbox" name="clear_secret"> {% translate "Clear the saved Client Secret (make it a public client)" %}</label>
+        </div>
+        <div class="span-2 sso-discover-row">
+          <button type="button" class="btn btn-tonal" id="sso-discover">{% icon "language" %}{% translate "Fill in from a .well-known address" %}</button>
+          <span class="hint">{% translate "For OpenID Connect, the three endpoints below can be read from its configuration address" %}</span>
+        </div>
+        <div class="field span-2" data-field="auth_url">
+          <label for="sso-auth-url">{% translate "Authorization endpoint" %}</label>
+          <input id="sso-auth-url" name="auth_url" type="url" autocomplete="off" spellcheck="false" maxlength="1000" required placeholder="https://…/authorize">
+        </div>
+        <div class="field span-2" data-field="token_url">
+          <label for="sso-token-url">{% translate "Token endpoint" %}</label>
+          <input id="sso-token-url" name="token_url" type="url" autocomplete="off" spellcheck="false" maxlength="1000" required placeholder="https://…/token">
+        </div>
+        <div class="field span-2" data-field="userinfo_url">
+          <label for="sso-userinfo-url">{% translate "Userinfo endpoint" %}</label>
+          <input id="sso-userinfo-url" name="userinfo_url" type="url" autocomplete="off" spellcheck="false" maxlength="1000" required placeholder="https://…/userinfo">
+        </div>
+        <div class="field" data-field="scope">
+          <div class="label-row"><label for="sso-scope">Scope</label><span class="hint label-hint">{% translate "Separated by spaces; they must allow reading the user info" %}</span></div>
+          <input id="sso-scope" name="scope" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="500" placeholder="openid profile">
+        </div>
+        <div class="field" data-field="token_auth">
+          <label for="sso-token-auth">{% translate "How the Client Secret is sent" %}</label>
+          <select id="sso-token-auth" name="token_auth">
+            <option value="post">{% translate "In the request's form (client_secret_post)" %}</option>
+            <option value="basic">{% translate "HTTP Basic (client_secret_basic)" %}</option>
+          </select>
+        </div>
+        <div class="field" data-field="id_field">
+          <div class="label-row"><label for="sso-id-field">{% translate "User ID field" %}</label><span class="hint label-hint">{% translate "The unique ID that never changes: sub or id" %}</span></div>
+          <input id="sso-id-field" name="id_field" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="200" required placeholder="sub">
+        </div>
+        <div class="field" data-field="username_field">
+          <div class="label-row"><label for="sso-username-field">{% translate "Username field" %}</label><span class="hint label-hint">{% translate "New users' username; optional" %}</span></div>
+          <input id="sso-username-field" name="username_field" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="200" placeholder="preferred_username">
+        </div>
+        <div class="field" data-field="nickname_field">
+          <div class="label-row"><label for="sso-nickname-field">{% translate "Nickname field" %}</label><span class="hint label-hint">{% translate "New users' nickname; optional" %}</span></div>
+          <input id="sso-nickname-field" name="nickname_field" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="200" placeholder="name">
+        </div>
+        <div class="field" data-field="order">
+          <div class="label-row"><label for="sso-order">{% translate "Sort" %}</label><span class="hint label-hint">{% translate "Smallest first on the login page" %}</span></div>
+          <input id="sso-order" name="order" type="number" inputmode="numeric" step="1" min="-1000000" max="1000000" value="0">
+        </div>
+      </div>
+      <p class="hint sso-path-help">{% blocktranslate %}The three fields are positions in the JSON the userinfo endpoint returns: <code>sub</code>, <code>data.login</code>, <code>$.user.id</code>, <code>['user-name']</code>, <code>emails[0]</code>. The values must be text or integers.{% endblocktranslate %}</p>
+      <label class="switch-line" data-field="enabled">
+        <span class="switch-text"><span id="sso-enabled-label">{% translate "Enabled" %}</span><span class="hint" id="sso-enabled-hint">{% translate "When not enabled, it isn't shown on the login page and can't be used to log in." %}</span></span>
+        <input type="checkbox" class="switch" role="switch" name="enabled" aria-labelledby="sso-enabled-label" aria-describedby="sso-enabled-hint" checked>
+      </label>
+      <div class="dialog-foot">
+        <button type="button" class="btn btn-text" data-close>{% translate "Cancel" %}</button>
+        <button type="submit" class="btn btn-filled">{% icon "save" %}{% translate "Save" %}</button>
+      </div>
+    </form>
+  </div>
+</dialog>

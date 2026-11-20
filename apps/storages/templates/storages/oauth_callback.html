@@ -1,0 +1,17 @@
+{% extends "web/base.html" %}{% load static ui %}
+{% comment %}
+  /storages/oauth/callback/ (apps.storages.views.oauth_callback): where Microsoft or Google sends the admin
+  back after 授权. The tokens went into the form's draft on the server; this page only says how it went.
+  In the window the form opened, storages/js/oauth_callback.js tells the form and closes it.
+{% endcomment %}
+{% block title %}{% translate "Storage source authorization" %}{% endblock %}
+{% block page %}storages-oauth{% endblock %}
+{% block heading %}{% translate "Storage source authorization" %}{% endblock %}
+{% block content %}
+<div class="panel oauth-result" id="oauth-result" data-ok="{{ ok|yesno:'1,0' }}" data-draft="{{ draft|default:'' }}" data-asked="{{ asked|default:'' }}">
+  <div class="notice {% if ok %}notice-ok{% else %}notice-error{% endif %}" role="status">{{ message }}</div>
+  {% if ok %}<p class="muted" id="oauth-closing" hidden>{% translate "This window closes by itself in a moment." %}</p>{% endif %}
+  <p><a class="btn btn-filled" href="{{ back }}">{% icon "arrow_back" %}{% translate "Back to the storage source's settings" as default_back %}{{ back_label|default:default_back }}</a></p>
+</div>
+{% endblock %}
+{% block scripts %}<script src="{% static 'storages/js/oauth_callback.js' %}"></script>{% endblock %}

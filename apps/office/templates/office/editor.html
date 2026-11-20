@@ -1,0 +1,48 @@
+{% load static ui %}<!doctype html>
+{% comment %}
+  The OnlyOffice editor's own page (apps/office/views.py editor_page), opened in a new tab by office/js/office.js.
+  It isn't drawn in the site's frame (web/base.html): the editor takes the whole window. office/js/editor.js
+  asks for the config (POST /api/v1/office/config/, with the CSRF token of this page), loads the Document
+  Server's api.js and opens the editor in #office-editor. data-config holds what it needs (no inline script);
+  the page's CSP lets the Document Server's origin in script-src and frame-src, nothing else.
+{% endcomment %}
+{% get_current_language as lang %}<html lang="{{ lang }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
+  <meta name="csrf-token" content="{{ csrf_token }}">
+  <meta name="site-name" content="{{ site_settings.site_name }}">
+  <meta name="icons" content="{% static 'web/icons.svg' %}">
+  <title>{{ page_title }} · {{ site_settings.site_name }}</title>
+  <link rel="icon" href="{{ site_settings.favicon_url }}"{% if not site_settings.favicon %} type="image/svg+xml"{% endif %}>
+  <script src="{% static 'web/js/theme.js' %}"></script>
+  <link rel="stylesheet" href="{% static 'web/css/m3.css' %}">
+  <link rel="stylesheet" href="{% static 'web/css/app.css' %}">
+  <link rel="stylesheet" href="{% static 'office/css/office.css' %}">
+</head>
+<body class="office-page" data-auth="{{ user.is_authenticated|yesno:'1,0' }}" data-user="{% if user.is_authenticated %}{{ user.pk }}{% endif %}">
+<main class="office-main" id="office" data-config="{{ editor_page_json }}">
+  <div class="office-editor" id="office-editor"></div>
+  <div class="office-state" id="office-state">
+    {% if editor_error %}
+    <div class="office-message" role="alert">
+      {% icon "error" %}
+      <p class="office-message-text">{{ editor_error }}</p>
+      <p class="btn-row"><a class="btn btn-tonal" href="{{ editor_back }}">{% icon "arrow_back" %}{% translate "Back to the folder" %}</a></p>
+    </div>
+    {% else %}
+    <div class="office-message" role="status">
+      <progress class="linear-progress" aria-label="{% translate 'Loading' %}"></progress>
+      <p class="office-message-text">{% translate "Opening the document, please wait…" %}</p>
+    </div>
+    {% endif %}
+    <noscript><p class="notice">{% translate "Online documents need JavaScript. Please allow this site to run scripts." %}</p></noscript>
+  </div>
+</main>
+<div id="snackbar" class="snackbar" role="status" aria-live="polite" popover="manual" hidden></div>
+{% js_catalog %}
+<script src="{% static 'web/js/common.js' %}"></script>
+<script src="{% static 'office/js/editor.js' %}"></script>
+</body>
+</html>

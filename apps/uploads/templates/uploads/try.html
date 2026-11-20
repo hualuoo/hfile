@@ -1,0 +1,34 @@
+{% extends "web/base.html" %}{% load static ui %}
+{% block title %}试一试上传{% endblock %}
+{% block page %}uploads-try{% endblock %}
+{% block head %}<link rel="stylesheet" href="{% static 'uploads/css/uploads.css' %}">{% endblock %}
+{% block heading %}试一试上传{% endblock %}
+{% block page_actions %}<span class="muted small">只在调试模式下有：文件浏览做好以前，在这里试上传面板。</span>{% endblock %}
+{% block content %}
+<section class="panel" aria-labelledby="try-where">
+  <h2 id="try-where">上传到哪里</h2>
+  <div class="form-grid">
+    <div class="field">
+      <label for="try-storage">存储源</label>
+      <select id="try-storage"></select>
+    </div>
+    <div class="field">
+      <label for="try-path">文件夹</label>
+      <input id="try-path" value="/" autocomplete="off">
+    </div>
+  </div>
+  <p class="muted small" id="try-permissions"></p>
+  <div class="demo-row">
+    <button type="button" class="btn btn-filled" id="try-files">{% icon "upload_file" %}上传文件</button>
+    <button type="button" class="btn btn-tonal" id="try-folder">{% icon "drive_folder_upload" %}上传文件夹</button>
+    <button type="button" class="btn btn-text" id="try-show">{% icon "upload" %}上传面板 <span class="badge" id="try-count">0</span></button>
+  </div>
+  <div class="try-drop" id="try-drop" tabindex="0">把文件或文件夹拖到这里</div>
+</section>
+<section class="panel" aria-labelledby="try-events">
+  <h2 id="try-events">hfile:files-changed</h2>
+  <ul class="list" id="try-log"></ul>
+</section>
+{% endblock %}
+{% block scripts %}<script src="{% static 'uploads/js/uploads.js' %}"></script>
+<script src="{% static 'uploads/js/try.js' %}"></script>{% endblock %}

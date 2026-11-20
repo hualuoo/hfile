@@ -1,0 +1,49 @@
+{% load static ui %}{# /manage/#short-links (apps/web/navigation.py SECTIONS), run by links/js/manage_short_links.js through /api/v1/manage/short-links/. #}
+<link rel="stylesheet" href="{% static 'links/css/links.css' %}">
+<div class="section-title-row">
+  <h2>{% translate "Short links" %}</h2>
+  <div class="btn-row">
+    <button type="button" class="btn btn-small" id="short-links-limits">{% icon "info" %}{% translate "Statistics" %}</button>
+    <button type="button" class="btn btn-small" id="short-links-refresh">{% icon "refresh" %}{% translate "Refresh" %}</button>
+  </div>
+</div>
+<p class="muted">{% blocktranslate %}Short links (/s/Key) that users created in the file list. When a short link is opened, the user who created it is checked again: if the account is disabled, has lost the "Create short links" or "Download" permission, the file is no longer in their root folder or is hidden by a filter rule, or the folder has a new password, the short link stops working. Whether short links are allowed, and the lifetimes to choose from, are set in <a href="#links">"Direct and short links"</a>.{% endblocktranslate %}</p>
+{% if not site_settings.show_short_link %}<p class="notice" id="short-links-off">{% blocktranslate %}Short links aren't allowed now: "Allow short links" is off in "Direct and short links", so none of the short links below work.{% endblocktranslate %}</p>{% endif %}
+<form class="list-toolbar" id="short-links-filters" role="search" novalidate>
+  <select name="storage" aria-label="{% translate 'Storage source' %}"><option value="">{% translate "All storage sources" %}</option></select>
+  <input type="search" name="path" placeholder="{% translate 'File path' %}" aria-label="{% translate 'File path (contains)' %}" maxlength="1000">
+  <input type="search" name="key" placeholder="{% translate 'Short link key' %}" aria-label="{% translate 'Short link key (contains, any case)' %}" maxlength="16" spellcheck="false">
+  <span class="date-range" role="group" aria-label="{% translate 'Created at' %}">
+    <input type="date" name="since" aria-label="{% translate 'Created from' %}" title="{% translate 'Created from' %}">
+    <span class="muted" aria-hidden="true">{% translate "to" %}</span>
+    <input type="date" name="until" aria-label="{% translate 'Created until' %}" title="{% translate 'Created until' %}">
+  </span>
+  <select name="ordering" aria-label="{% translate 'Sort' %}">
+    <option value="-created_at">{% translate "Newest first" %}</option>
+    <option value="created_at">{% translate "Oldest first" %}</option>
+    <option value="expires_at">{% translate "Expiring soonest first" %}</option>
+    <option value="-expires_at">{% translate "Expiring latest first" %}</option>
+    <option value="key">{% translate "By short link key" %}</option>
+  </select>
+  <button type="reset" class="btn btn-text">{% translate "Clear filters" %}</button>
+</form>
+<div class="list-actions">
+  <p class="muted small list-summary" id="short-links-summary" role="status"></p>
+  <div class="btn-row">
+    <button type="button" class="btn btn-small" id="short-links-export" disabled>{% icon "download" %}{% translate "Export" %}</button>
+    <button type="button" class="btn btn-small" id="short-links-delete-selected" disabled>{% icon "delete" %}{% translate "Delete selected" %}</button>
+    <button type="button" class="btn btn-small btn-danger-text" id="short-links-delete-expired">{% icon "delete" %}{% translate "Delete expired short links" %}</button>
+  </div>
+</div>
+<div class="table-wrap">
+  <table class="data-table stack-table links-admin-table">
+    <thead><tr>
+      <th class="cell-check"><input type="checkbox" id="short-links-check-page" aria-label="{% translate 'Select this page' %}"></th>
+      <th>{% translate "Storage source" %}</th>
+      <th>{% translate "Short link key" %}</th><th>{% translate "File path" %}</th><th>{% translate "Created by" %}</th><th>{% translate "Created at" %}</th><th>{% translate "Expires at" %}</th>
+      <th class="row-actions"><span class="sr-only">{% translate "Actions" %}</span></th>
+    </tr></thead>
+    <tbody id="short-links-rows"></tbody>
+  </table>
+</div>
+<nav class="pager" id="short-links-pager" aria-label="{% translate 'Short link pages' %}" hidden></nav>

@@ -1,0 +1,9 @@
+{% load ui siteconf_forms %}{% settings_fields "proxy" as f %}{# /manage/#proxy, manage_settings.js: GET and PATCH /api/v1/manage/settings/proxy/. #}
+<div class="section-title-row"><h2>{% translate "Proxy download" %}</h2></div>
+<p class="muted">{% blocktranslate %}Downloads through this site: those of storage sources with "Download through the site" on, and those of local, FTP, SFTP, WebDAV and Google Drive storage sources without a download domain. They run on threads of their own, not the [server] threads of the settings file, so they don't hold up the pages. How many each storage source sends at once, and what happens when it has no more, is in its own settings.{% endblocktranslate %}</p>
+<form class="settings-form" data-settings="proxy" data-section-key="proxy" novalidate>
+  <div class="form-error" role="alert" hidden></div>
+  {% include "siteconf/manage/_field.html" with field=f.proxy_ip_connections %}
+  {% include "siteconf/manage/_field.html" with field=f.proxy_ip_speed %}
+  {% include "siteconf/manage/_save.html" %}
+</form>

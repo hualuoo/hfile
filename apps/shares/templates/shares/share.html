@@ -1,0 +1,51 @@
+{% extends "web/base.html" %}{% load static ui %}
+{% comment %}
+  The share page /share/<key> (apps/shares/pages.py SharePage), a public page. Before the share's password
+  only the form and what it needs (share_config.info); once the password was given, files' browser in
+  share mode (files/js/files.js, W4) on the share's API, with the viewers (files/_assets.html), started
+  by shares/js/share.js from data-config.
+{% endcomment %}
+{% block title %}{{ page_title }}{% endblock %}
+{% block page %}share{% endblock %}
+{% block head %}<link rel="stylesheet" href="{% static 'files/css/files.css' %}">
+{% for style in files_assets.styles %}<link rel="stylesheet" href="{% static style %}">
+{% endfor %}{% endblock %}
+{% block topbar_actions %}{% if verified %}<button type="button" class="icon-button" id="share-settings-button" aria-label="{% translate 'Preferences' %}" data-tooltip="{% translate 'Preferences' %}">{% icon "tune" %}</button>{% endif %}{% endblock %}
+{% block header %}<h1 class="sr-only" id="share-heading">{{ page_title }}</h1>{% endblock %}
+{% block content %}
+<section class="share-page" id="share" aria-label="{% translate 'Share' %}" data-config="{{ share_config_json }}">
+  <header class="share-head" data-layout="{{ site_settings.layout }}" data-mobile-layout="{{ site_settings.mobile_layout }}">
+    <span class="share-head-icon" aria-hidden="true">{% icon "share" %}</span>
+    <div class="share-head-text">
+      <p class="share-title">{% translate "File share" %}</p>
+      <p class="share-meta muted">
+        {% if info.owner %}<span>{% blocktranslate with owner=info.owner %}Shared by <strong>{{ owner }}</strong>{% endblocktranslate %}</span>{% endif %}
+        <span>{% blocktranslate count entry_count=info.entry_count %}{{ entry_count }} item{% plural %}{{ entry_count }} items{% endblocktranslate %}</span>
+        <span>{% if expires_at %}{% translate "Valid until" %} <time class="share-expiry" datetime="{{ info.expires_at }}">{{ expires_at|date:"Y-m-d H:i" }}</time>{% else %}{% translate "Never expires" %}{% endif %}</span>
+        {% if info.need_password %}<span class="share-locked">{% icon "lock" %}{% translate "Password required" %}</span>{% endif %}
+      </p>
+    </div>
+  </header>
+  {% if verified %}
+  <div class="files share-files" id="share-files" data-layout="{{ site_settings.layout }}" data-mobile-layout="{{ site_settings.mobile_layout }}">
+    <div class="files-state empty-state files-loading-state"><progress class="linear-progress" aria-label="{% translate 'Loading' %}"></progress></div>
+  </div>
+  {% else %}
+  <form class="card share-password" id="share-password-form" novalidate>
+    <span class="share-password-icon" aria-hidden="true">{% icon "lock" %}</span>
+    <h2>{% translate "This share is password-protected. Please enter the access password" %}</h2>
+    <div class="field">
+      <label for="share-password">{% translate "Access password" %}</label>
+      <input type="password" id="share-password" name="password" autocomplete="off" maxlength="200" placeholder="{% translate 'Enter the access password' %}" required data-autofocus>
+    </div>
+    <div class="form-error" role="alert" hidden></div>
+    <button type="submit" class="btn btn-filled share-password-submit">{% icon "key" %}<span>{% translate "Open" %}</span></button>
+  </form>
+  {% endif %}
+  <noscript><p class="notice">{% translate "Shared files need JavaScript to show. Please allow this site to run scripts." %}</p></noscript>
+</section>
+{% endblock %}
+{% block scripts %}{% if verified %}<script src="{% static 'files/js/files.js' %}"></script>
+{% include "files/_assets.html" %}{% endif %}
+<script src="{% static 'shares/js/share.js' %}"></script>
+{% endblock %}

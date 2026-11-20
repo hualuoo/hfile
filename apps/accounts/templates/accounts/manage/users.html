@@ -1,0 +1,99 @@
+{% load ui users %}{# /manage/#users (apps/web/navigation.py SECTIONS), run by accounts/js/manage_users.js through /api/v1/manage/users/. #}
+<div class="section-title-row">
+  <h2>{% translate "Users" context "manage menu" %}</h2>
+  <button type="button" class="btn btn-filled" id="user-new">{% icon "add" %}{% translate "New user" %}</button>
+</div>
+<p class="muted">{% blocktranslate %}Everyone logs in with their own account; what they can do on which storage source is set in the user's "Storage source permissions". The "Anonymous user" permissions are what visitors who aren't logged in can do; disable it and nothing can be seen without logging in. The "New user template" permissions are what accounts that single sign-on creates later start with.{% endblocktranslate %}</p>
+<form class="list-toolbar" id="user-filters" role="search" novalidate>
+  <input type="search" name="search" placeholder="{% translate 'Search username, nickname or ID' %}" aria-label="{% translate 'Search username, nickname or ID' %}" maxlength="100">
+  <select name="is_active" aria-label="{% translate 'Status' %}">
+    <option value="">{% translate "All statuses" %}</option>
+    <option value="true">{% translate "Enabled" context "filter" %}</option>
+    <option value="false">{% translate "disabled" %}</option>
+  </select>
+  <select name="ordering" aria-label="{% translate 'Sort' %}">
+    <option value="id">{% translate "By ID" %}</option>
+    <option value="-date_joined">{% translate "Newest first" %}</option>
+    <option value="-last_login">{% translate "Recent logins first" %}</option>
+    <option value="username">{% translate "By username" %}</option>
+  </select>
+</form>
+<p class="muted small list-summary" id="user-summary" role="status"></p>
+<div class="table-wrap">
+  <table class="data-table stack-table user-table">
+    <thead><tr><th>{% translate "User" %}</th><th>{% translate "Enabled" %}</th><th>{% translate "Last login" %}</th><th>{% translate "Created at" %}</th><th><span class="sr-only">{% translate "Actions" %}</span></th></tr></thead>
+    <tbody id="user-rows"></tbody>
+  </table>
+</div>
+<nav class="pager" id="user-pager" aria-label="{% translate 'User list pages' %}" hidden></nav>
+
+{# The dialog to create or edit a user. manage_users.js moves it to <body> (this section can be hidden). #}
+<dialog class="dialog dialog-wide dialog-full user-dialog" id="user-dialog" aria-labelledby="user-dialog-title">
+  <div class="dialog-box">
+    <header class="dialog-head">
+      <h2 id="user-dialog-title">{% translate "Edit user" %}</h2>
+      <button type="button" class="icon-button" data-close aria-label="{% translate 'Close' %}" data-tooltip="{% translate 'Close' %}">{% icon "close" %}</button>
+    </header>
+    <div class="tab-bar dialog-tabs" role="tablist" aria-label="{% translate 'User settings' %}" id="user-tabs">
+      <button type="button" class="tab-button" role="tab" data-tab="basic" aria-controls="user-tab-basic" aria-selected="true">{% icon "person" %}{% translate "Basic info" %}</button>
+      <button type="button" class="tab-button" role="tab" data-tab="defaults" aria-controls="user-tab-defaults" aria-selected="false">{% icon "tune" %}{% translate "Default permissions" %}</button>
+      <button type="button" class="tab-button" role="tab" data-tab="grants" aria-controls="user-tab-grants" aria-selected="false">{% icon "storage" %}{% translate "Storage source permissions" %}</button>
+      <button type="button" class="tab-button" role="tab" data-tab="sso" aria-controls="user-tab-sso" aria-selected="false">{% icon "key" %}{% translate "Single sign-on" %}</button>
+    </div>
+    <div class="dialog-body">
+      <form id="user-form" novalidate>
+        <div class="form-error" role="alert" hidden></div>
+        <div class="tab-panel" id="user-tab-basic" role="tabpanel">
+          <p class="notice notice-info" id="user-builtin-note" hidden></p>
+          <div class="form-grid">
+            <div class="field" data-field="username">
+              <div class="label-row"><label for="user-username">{% translate "Username" %}</label><span class="hint label-hint" id="user-username-hint">{% translate "For logging in, not case-sensitive; letters (Chinese too), digits and @ . + - _" %}</span></div>
+              <input id="user-username" name="username" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="150" required data-autofocus>
+            </div>
+            <div class="field" data-field="nickname">
+              <div class="label-row"><label for="user-nickname">{% translate "Nickname" %}</label><span class="hint label-hint">{% translate "Only for display; others may have the same one" %}</span><span class="hint" data-count-for="user-nickname" data-max="50"></span></div>
+              <input id="user-nickname" name="nickname" autocomplete="off" maxlength="80">
+            </div>
+            <div class="field span-2" data-field="password" id="user-password-field">
+              <div class="label-row"><label for="user-password">{% translate "Password" %}</label><span class="hint label-hint" id="user-password-hint">{% translate "At least 8 characters, not too common, and not all digits" %}</span></div>
+              <span class="input-box">
+                <input id="user-password" name="password" type="password" autocomplete="new-password" maxlength="128">
+                <button type="button" class="icon-button field-button" data-toggle-password aria-pressed="false" aria-label="{% translate 'Show password' %}" data-tooltip="{% translate 'Show password' %}">{% icon "visibility" %}</button>
+              </span>
+            </div>
+          </div>
+          <label class="switch-line" id="user-active-line" data-field="is_active">
+            <span class="switch-text"><span id="user-active-label">{% translate "Enabled" %}</span><span class="hint" id="user-active-hint">{% translate "Once disabled, the user can't log in, and is logged out right away where already logged in." %}</span></span>
+            <input type="checkbox" class="switch" role="switch" name="is_active" aria-labelledby="user-active-label" aria-describedby="user-active-hint" checked>
+          </label>
+          <dl class="facts" id="user-facts" hidden></dl>
+        </div>
+        <div class="tab-panel" id="user-tab-defaults" role="tabpanel" hidden>
+          <p class="muted">{% blocktranslate %}On storage sources added later, this user gets the permissions checked here, with / as the root folder. Existing storage sources aren't affected; set those in "Storage source permissions". With none checked, new storage sources aren't given to this user.{% endblocktranslate %}</p>
+          <div class="btn-row perm-actions">
+            <button type="button" class="btn btn-text btn-small" data-permissions="all">{% translate "Select all" %}</button>
+            <button type="button" class="btn btn-text btn-small" data-permissions="none">{% translate "Select none" %}</button>
+            <button type="button" class="btn btn-text btn-small" data-permissions="invert">{% translate "Invert selection" %}</button>
+          </div>
+          {% permission_choices as permissions %}
+          <div class="perm-grid">
+            {% for code, label, help, requires in permissions %}
+            <div class="perm-item">
+              <label class="check-line"><input type="checkbox" name="default_permissions" value="{{ code }}"{% if requires %} data-requires="{{ requires }}"{% endif %}{% if help %} aria-describedby="user-perm-{{ code }}-hint"{% endif %}> {{ label }}</label>
+              {% if help %}<p class="hint" id="user-perm-{{ code }}-hint">{{ help }}</p>{% endif %}
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="dialog-foot" id="user-form-foot">
+          <button type="button" class="btn btn-text" data-close>{% translate "Cancel" %}</button>
+          <button type="submit" class="btn btn-filled">{% icon "save" %}{% translate "Save" %}</button>
+        </div>
+      </form>
+      {# Outside the form: the storages app's editor brings its own 保存 (App.grantsEditor). #}
+      <div class="tab-panel" id="user-tab-grants" role="tabpanel" hidden></div>
+      {# The accounts bound to the user, the sso app's (App.ssoIdentities): bound and unbound at once. #}
+      <div class="tab-panel" id="user-tab-sso" role="tabpanel" hidden></div>
+    </div>
+  </div>
+</dialog>

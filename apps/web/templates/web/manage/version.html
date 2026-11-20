@@ -1,0 +1,15 @@
+{% load ui %}{# /manage/#version (apps/web/navigation.py SECTIONS), filled by manage_version.js from GET /api/v1/manage/version/. #}
+<div class="section-title-row">
+  <h2>{% translate "Version and upgrades" %}</h2>
+  <button type="button" class="btn btn-small" id="version-refresh">{% icon "refresh" %}{% translate "Refresh" %}</button>
+</div>
+<p class="muted">{% translate "When a new version of the program starts, it checks the database first. If the database structure has to change, it backs up the whole database to the backup folder, then upgrades; if the upgrade fails, it restores the backup and stops instead of starting, and the old version can go on running. Once a newer version has upgraded the database, older versions refuse to start. Uploaded files aren't in the backup. This page only shows what is there; it can't upgrade or restore (use the upgrade, backup and restore commands)." %}</p>
+<div class="notice" id="version-problem" role="status" hidden></div>
+<dl class="facts" id="version-facts"><div><dt>{% translate "Program version" %}</dt><dd>{% translate "Loading…" %}</dd></div></dl>
+<h3 class="version-log-title">{% translate "Upgrade history" %}</h3>
+<div class="table-wrap">
+  <table class="data-table stack-table">
+    <thead><tr><th>{% translate "Finished at" %}</th><th>{% translate "Version" %}</th><th>{% translate "Database" %}</th><th>{% translate "Backup before upgrade" %}</th></tr></thead>
+    <tbody id="version-rows"></tbody>
+  </table>
+</div>

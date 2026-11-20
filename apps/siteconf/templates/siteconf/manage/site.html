@@ -1,0 +1,17 @@
+{% load ui siteconf_forms %}{% settings_fields "site" as f %}{# /manage/#site (apps/web/navigation.py SECTIONS), manage_settings.js: GET and PATCH /api/v1/manage/settings/site/. #}
+<div class="section-title-row"><h2>{% translate "Site settings" %}</h2></div>
+<p class="muted">{% translate "The site's name, icon and logo at the top left, the first part of the path above the file list, and the ICP number at the bottom of the page." %}</p>
+<form class="settings-form" data-settings="site" data-section-key="site" novalidate>
+  <div class="form-error" role="alert" hidden></div>
+  {% include "siteconf/manage/_field.html" with field=f.site_name %}
+  {% include "siteconf/manage/_field.html" with field=f.favicon %}
+  {% include "siteconf/manage/_field.html" with field=f.home_logo %}
+  <div class="form-grid">
+    <div>{% include "siteconf/manage/_field.html" with field=f.home_logo_link %}</div>
+    <div>{% include "siteconf/manage/_field.html" with field=f.home_logo_target %}</div>
+  </div>
+  {% include "siteconf/manage/_field.html" with field=f.home_name %}
+  {% include "siteconf/manage/_field.html" with field=f.icp %}
+  {% include "siteconf/manage/_field.html" with field=f.max_file_uploads %}
+  {% include "siteconf/manage/_save.html" %}
+</form>

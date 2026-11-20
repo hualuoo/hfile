@@ -1,0 +1,10 @@
+{# One field of the installer's form: label (* when it must be filled in), the hint after it, the input, its errors, a note under it. #}
+<div class="field{% if field.errors %} invalid{% endif %}{% if span %} span-2{% endif %}">
+  <div class="label-row">
+    <label for="{{ field.id_for_label }}">{{ field.label }}{% if field.field.required or field.field.widget.attrs.required %}<span class="required-mark" aria-hidden="true">*</span>{% endif %}</label>
+    {% if hint %}<span class="hint label-hint">{{ hint }}</span>{% endif %}
+  </div>
+  {{ field }}
+  {% for error in field.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+  {% if note %}<p class="hint">{{ note }}</p>{% endif %}
+</div>

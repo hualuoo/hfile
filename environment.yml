@@ -1,0 +1,12 @@
+name: hfile
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  # 写全版本，和 requirements.lock 一致：不一致时 pip install -r requirements.lock 会换掉它们，mysqlclient 要从源码编译。
+  - mysqlclient=2.3.0
+  - pillow=13.0.0
+  - pip
+  - pip:
+      - -r requirements.txt
+      - -r requirements-dev.txt

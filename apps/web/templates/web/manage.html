@@ -1,0 +1,30 @@
+{% extends "web/base.html" %}{% load static ui %}
+{% block title %}{% translate "Manage" %}{% endblock %}
+{% block page %}manage{% endblock %}
+{% block heading %}{% translate "Manage" %}{% endblock %}
+{% block content %}
+{# The sections are apps/web/navigation.py SECTIONS: a link in the menu, a template below, a script at the end. #}
+<div class="manage">
+  <nav class="manage-menu" aria-label="{% translate 'Manage menu' %}">
+    {% for group, items in section_groups %}
+    {% if group %}<p class="manage-group">{{ group }}</p>{% endif %}
+    {% for section in items %}
+    <a class="manage-link" href="#{{ section.key }}" data-section="{{ section.key }}">{% icon section.icon "off" %}{% with filled=section.icon|add:"-fill" %}{% icon filled "on" %}{% endwith %}{{ section.label }}</a>
+    {% endfor %}
+    {% endfor %}
+    <a class="manage-link" href="{% url 'admin:index' %}" data-tooltip="{% translate "Django's own admin site, at a random address" %}">{% icon "dns" "off" %}{% icon "dns-fill" "on" %}{% translate "Django admin" %}</a>
+  </nav>
+  <div class="manage-body">
+    {% for section in sections %}
+    <section class="panel manage-section" id="section-{{ section.key }}" data-section="{{ section.key }}" aria-label="{{ section.label }}" hidden>
+      {% include section.template %}
+    </section>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{% static 'web/js/manage.js' %}"></script>
+{% for script in section_scripts %}<script src="{% static script %}"></script>
+{% endfor %}
+{% endblock %}

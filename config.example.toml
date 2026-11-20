@@ -1,0 +1,68 @@
+# HFile 的设置。改了以后，重新启动程序才生效。
+# 里面有数据库的密码和网站的密钥：不要发给别人，也不要放进代码仓库。
+# 格式是 TOML：文字加英文双引号，数字和 true/false 不加。文件和文件夹可以写相对路径，从这个文件所在的文件夹算起。
+
+[server]
+# 监听的 IP。"0.0.0.0" 是这台机器所有的 IPv4 地址，"::" 是所有的 IPv6 地址。
+# 只让这台机器上的反向代理（Nginx、Caddy）连进来时，写 "127.0.0.1"。python manage.py runserver 不看这一节。
+host = "0.0.0.0"
+# 端口
+port = 8080
+# 同时处理几个请求；经过本站的下载用自己的线程，不算在里面
+threads = 8
+# 前面有几层反向代理：直接对外是 0，前面只有一个 Nginx 或 Caddy 是 1。
+# 不是 0 时，访问者的 IP 取 X-Forwarded-For 里从右数第这么多个，是不是 https 看 X-Forwarded-Proto，
+# 代理要传这两个请求头和 Host。是 0 时这些请求头都不看，因为谁都能伪造。
+proxies = 0
+# 每个请求在日志里打印一行（参照 Go 的 Gin）：状态码、用时、访问者的 IP、方法和地址、大小、浏览器。
+# 后台的地址和链接里的口令、签名不会打印出来。python manage.py runserver 不看这一项，它有自己的。
+log_requests = true
+
+[database]
+# 数据库的类型："sqlite" 或 "mysql"。
+# sqlite：数据存在一个文件里（下面的 file），不用另外装数据库，适合访问量不大的站。
+# mysql：MySQL 8.4 以上，用下面的 host、port、name、user 和 password。
+engine = "sqlite"
+# SQLite 的数据库文件。要放在这台机器自己的硬盘上，不能放在网络共享的文件夹里。
+# 旁边会多出同名的 -wal 和 -shm 文件，也是数据库的一部分：程序运行时不要只复制这个文件当备份，用 backup 命令。
+file = "hfile.sqlite3"
+# MySQL 的地址，也可以写 Unix 套接字的路径（以 / 开头）。
+host = "127.0.0.1"
+port = 3306
+name = "hfile"
+user = "hfile"
+password = ""
+# MySQL 连接的加密（TLS）："preferred" 服务器开着 TLS 就加密（MySQL 自己的默认）；"required" 一定加密，不能加密就不连；
+# "verify_ca" 还用下面的 ca 校验服务器的证书；"verify_identity" 还要证书上的名字和 host 一样。
+# MySQL 在另一台机器上时写 verify_ca 或 verify_identity：只加密不校验证书，挡不住冒充数据库的机器。
+tls = "preferred"
+# 校验 MySQL 服务器证书用的 CA 证书文件（PEM 格式），tls 是 verify_ca 或 verify_identity 时要写。
+# ca = "mysql-ca.pem"
+
+[site]
+# 网站的密钥：登录状态和存在数据库里的存储源密码都靠它。
+# 空着时程序以安装模式启动（整个网站只有安装页面），安装向导会生成一个写进来。
+# 装好以后不要改：改了所有人都要重新登录，加密保存的密码也解不开了。
+secret_key = ""
+# 网站的域名或 IP，只有用这些地址打开网站才有回应。下面 url 里的域名会自动加上。
+allowed_hosts = ["127.0.0.1", "localhost"]
+# 网站对外的地址，比如 "https://files.example.com"。完整的链接（直链、分享）用它，它也是 CSRF 信任的来源；
+# 以 https:// 开头时，登录用的 Cookie 只走 https。空着：链接用每个请求自己的地址。
+url = ""
+# 后台（Django 自带的管理后台）的地址：/<这一段>/。空着：由密钥算出一个随机的，程序启动时会打印出来。
+# 只能用英文字母、数字、- 和 _。/admin/ 永远是 404。
+admin_path = ""
+# 调试模式：出错时页面上显示详细信息，接口能在浏览器里直接浏览。只在自己的电脑上开发时打开。
+debug = false
+
+[paths]
+# 网站自己保存的上传文件（比如网站的 Logo 和图标）放在这个文件夹。网址是 /media/…。
+# 改到别处时，把原来文件夹里的文件也搬过去。
+uploads = "media"
+# 数据库的备份：升级前自动做的，和 backup 命令做的
+backups = "backups"
+
+[upgrade]
+# 启动时数据库要升级的话，先备份再自动升级（README「升级」）。
+# 不写时：单文件程序是 true；从源码运行是 false，要用 python manage.py upgrade 升级。
+# auto = true

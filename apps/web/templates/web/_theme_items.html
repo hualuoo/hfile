@@ -1,0 +1,5 @@
+{% load ui %}{# The 主题 choice, in the user menu and the visitors' theme menu (shell.js keeps aria-checked). #}
+<p class="menu-label" role="none">{% translate "Theme" %}</p>
+<button type="button" class="menu-item" role="menuitemradio" aria-checked="false" data-theme-choice="system" data-keep-open>{% icon "contrast" %}{% translate "System" %}</button>
+<button type="button" class="menu-item" role="menuitemradio" aria-checked="false" data-theme-choice="light" data-keep-open>{% icon "light_mode" %}{% translate "Light" %}</button>
+<button type="button" class="menu-item" role="menuitemradio" aria-checked="false" data-theme-choice="dark" data-keep-open>{% icon "dark_mode" %}{% translate "Dark" %}</button>

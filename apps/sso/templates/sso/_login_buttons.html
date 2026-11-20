@@ -1,0 +1,11 @@
+{% load ui %}{# {% sso_login_buttons %}: under the login form (the dialog, /login/ and /login/<entry>/). sso/js/login.js adds ?next=. Hidden with the password while a step after it is asked (shell.js). #}
+{% if providers %}
+<div class="sso-login login-password-part">
+  <p class="sso-divider"><span>{% translate "Log in with another account" %}</span></p>
+  <div class="sso-buttons">
+    {% for provider in providers %}
+    {% blocktranslate with name=provider.name asvar label %}Log in with {{ name }}{% endblocktranslate %}<a class="sso-button" href="/sso/{{ provider.code }}/login" data-sso-login aria-label="{{ label }}" data-tooltip="{{ provider.name }}">{% if provider.icon %}<img src="{{ provider.icon }}" alt="" width="24" height="24" referrerpolicy="no-referrer">{% else %}<span class="sso-letter" aria-hidden="true">{{ provider.name|slice:":1" }}</span>{% endif %}</a>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}

@@ -1,0 +1,12 @@
+# 只在开发、测试和打包时用，不进单文件程序。
+pyinstaller==6.22.3
+# manage.py test --parallel 把失败的测试的 traceback 从子进程传回来要用它；没有它，一个失败就让整次测试中断。
+tblib==3.2.2
+# 存储驱动的测试服务器：S3（moto）、FTP（pyftpdlib）、WebDAV（WsgiDAV）。
+moto[server]==5.2.5
+pyftpdlib==2.2.0
+# pyftpdlib 的 FTPS 测试服务器（TLS_FTPHandler）要用它，只用来测试 FTP 驱动的 FTPS。
+pyOpenSSL==26.4.0
+WsgiDAV==4.4.0
+# 浏览器测试（apps/web/test_browser.py）：驱动系统装的 Chrome，不另外下载浏览器。和 scripts/screenshots/run.sh 用同一个版本。
+playwright==1.65.2

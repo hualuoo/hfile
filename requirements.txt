@@ -1,0 +1,28 @@
+Django==6.1.3
+djangorestframework==3.18.3
+# `hfile serve` 的 Web 服务器：纯 Python，能打进单文件程序，Linux 和 Windows 上都能用。
+waitress==3.0.2
+# 关着调试模式也由程序自己提供静态文件（CSS、JS、字体、图标）。
+whitenoise==6.12.0
+# 加密数据库里存储源的密钥和令牌；SFTP（paramiko）和 SSO 的签名校验也用它。
+cryptography==50.0.2
+# 登录的图片验证码。纯 Python，画图用 Pillow。
+captcha==0.7.1
+# 没有系统时区和 CA 证书的机器（精简的容器镜像）上用打包进去的这两份。
+tzdata==2026.6
+certifi==2026.10.23
+# 存储驱动访问云存储的 HTTP 客户端。
+httpx==0.28.1
+# SFTP 存储。
+paramiko==5.1.0
+# SMB 存储（Windows 共享、NAS），纯 Python。
+smbprotocol==1.17.0
+# OnlyOffice 和 SSO 的 JWT。
+PyJWT==2.15.1
+# 二维码（文件链接、两步验证），纯 Python。
+segno==1.6.6
+# 说明文档（README）和 Markdown 预览在服务器上渲染成 HTML，再用 nh3 只留安全的标签。
+mistune==3.4.0
+nh3==0.3.7
+# mysqlclient 和 Pillow 从 conda-forge 装（见 environment.yml）：用 pip 编译 mysqlclient 要先装 MySQL 的头文件。
+# 只用 pip 的话加上：mysqlclient==2.3.0  Pillow==13.0.0

@@ -1,0 +1,9 @@
+{% load ui %}{# {% language_menu %} (ui.py): the languages, each in its own words; language.js keeps the choice. #}
+{% if inline %}<div class="language-row" role="group" aria-label="{% translate "Language" %}" data-language-cookie="{{ cookie }}" data-max-age="{{ max_age }}">{% icon "language" %}{% for code, name in languages %}<button type="button" class="btn btn-text" lang="{{ code }}" data-language="{{ code }}"{% if code == current %} aria-pressed="true" disabled{% endif %}>{{ name }}</button>{% endfor %}</div>
+{% else %}<div class="menu-wrap">
+  <button type="button" class="icon-button" id="language-button" aria-haspopup="menu" aria-expanded="false" aria-controls="language-menu" aria-label="{% translate "Language" %}" data-tooltip="{% translate "Language" %}">{% icon "language" %}</button>
+  <div class="menu" id="language-menu" role="menu" aria-label="{% translate "Language" %}" data-language-cookie="{{ cookie }}" data-max-age="{{ max_age }}" hidden>{% for code, name in languages %}
+    <button type="button" class="menu-item" role="menuitemradio" aria-checked="{% if code == current %}true{% else %}false{% endif %}" lang="{{ code }}" data-language="{{ code }}">{{ name }}</button>{% endfor %}
+  </div>
+</div>
+{% endif %}

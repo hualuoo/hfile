@@ -1,0 +1,9 @@
+{% load ui %}{# 显示设置 → 公告, on public pages (base.html): Markdown with the admin's HTML (apps/core/markdown.py render_trusted). #}
+{# Hidden until public.js has looked whether this visitor closed this very text already (data-version). #}
+{% with html=site_settings.announcement_html %}{% if html %}
+<aside class="announcement" id="announcement" aria-label="{% translate 'Announcement' %}" data-version="{{ site_settings.announcement_version }}" hidden>
+  {% icon "campaign" "announcement-icon" %}
+  <div class="announcement-body markdown-body">{{ html|safe }}</div>
+  <button type="button" class="icon-button small announcement-close" aria-label="{% translate 'Close the announcement' %}" data-tooltip="{% translate 'Close the announcement' %}">{% icon "close" %}</button>
+</aside>
+{% endif %}{% endwith %}

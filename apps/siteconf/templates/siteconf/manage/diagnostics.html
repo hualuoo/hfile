@@ -1,0 +1,18 @@
+{% load ui %}{# /manage/#diagnostics (D42), manage_diagnostics.js: GET /api/v1/manage/diagnostics/. #}
+<div class="section-title-row">
+  <h2>{% translate "Diagnostics" %}</h2>
+  <button type="button" class="btn btn-small" id="diagnostics-refresh">{% icon "refresh" %}{% translate "Refresh" %}</button>
+</div>
+<p class="muted">{% translate "You as the site sees you in this request: the IP, scheme and address. Compare them with [site] url and [server] proxies in the settings file to see whether the reverse proxy is set up right. Cookies, login credentials and tokens in the headers are hidden, so it's safe to copy for others." %}</p>
+<div id="diagnostics-notes"></div>
+<dl class="facts" id="diagnostics-facts"><div><dt>{% translate "Your IP" %}</dt><dd>{% translate "Loading…" %}</dd></div></dl>
+<div class="section-title-row diagnostics-headers-title">
+  <h3>{% translate "Request headers" %}</h3>
+  <button type="button" class="btn btn-small" id="diagnostics-copy">{% icon "content_copy" %}{% translate "Copy" %}</button>
+</div>
+<div class="table-wrap">
+  <table class="data-table stack-table headers-table">
+    <thead><tr><th>{% translate "Name" %}</th><th>{% translate "Value" %}</th></tr></thead>
+    <tbody id="diagnostics-headers"></tbody>
+  </table>
+</div>

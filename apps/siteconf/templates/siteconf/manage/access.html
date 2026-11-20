@@ -1,0 +1,27 @@
+{% load ui siteconf_forms %}{% settings_fields "access" as f %}{# /manage/#access, manage_settings.js: GET and PATCH /api/v1/manage/settings/access/, POST .../access/test/. #}
+<div class="section-title-row"><h2>{% translate "Access control" %}</h2></div>
+<p class="muted">{% blocktranslate %}IPs and browsers on the lists get 403 for every address of this site. The IP the site sees depends on the settings file's [server] proxies; see "Diagnostics".{% endblocktranslate %}</p>
+<form class="settings-form" data-settings="access" data-section-key="access" novalidate>
+  <div class="form-error" role="alert" hidden></div>
+  <p class="notice notice-info" data-your-ip>{% translate "Your IP as the site sees it: …" %}</p>
+  {% include "siteconf/manage/_field.html" with field=f.ip_blocklist %}
+  <div class="rule-test" data-rule-test="ip">
+    <div class="field">
+      <label for="access-test-ip">{% translate "Test an IP" %}</label>
+      <input id="access-test-ip" inputmode="decimal" autocomplete="off" spellcheck="false" placeholder="{% translate 'Like 192.168.0.8' %}">
+    </div>
+    <p class="rule-result" data-rule-result role="status" aria-live="polite"></p>
+  </div>
+  <p class="notice notice-info" data-your-ua>{% translate "The browser you're using (User-Agent): …" %}</p>
+  {% include "siteconf/manage/_field.html" with field=f.ua_blocklist %}
+  <p class="field-tools"><button type="button" class="btn btn-small" data-thunder data-rules="{% thunder_rules %}">{% icon "block" %}{% translate "Block Thunder downloads" %}</button>
+    <span class="hint">{% translate "Downloads with Thunder can take up the server's CPU and bandwidth for a long time. Click to add Thunder's UA rules to the list, then save. It may not work forever: Thunder can change its UA." %}</span></p>
+  <div class="rule-test" data-rule-test="ua">
+    <div class="field">
+      <label for="access-test-ua">{% translate "Test a User-Agent" %}</label>
+      <input id="access-test-ua" autocomplete="off" spellcheck="false" placeholder="{% translate 'Like Mozilla/5.0 …' %}">
+    </div>
+    <p class="rule-result" data-rule-result role="status" aria-live="polite"></p>
+  </div>
+  {% include "siteconf/manage/_save.html" %}
+</form>

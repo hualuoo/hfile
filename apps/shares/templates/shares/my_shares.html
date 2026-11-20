@@ -1,0 +1,12 @@
+{% extends "web/base.html" %}{% load static ui %}
+{# /shares/ (apps/shares/pages.py MySharesPage): 我的分享, the list of shares/_list.html through /api/v1/shares/. #}
+{% block title %}{% translate "My shares" %}{% endblock %}
+{% block page %}my-shares{% endblock %}
+{% block head %}<link rel="stylesheet" href="{% static 'shares/css/shares.css' %}">{% endblock %}
+{% block heading %}{% translate "My shares" %}{% endblock %}
+{% block content %}
+<div class="panel share-mine">
+{% include "shares/_list.html" with mode="mine" api="/api/v1/shares/" storages=share_storages %}
+</div>
+{% endblock %}
+{% block scripts %}<script src="{% static 'shares/js/share_list.js' %}"></script>{% endblock %}

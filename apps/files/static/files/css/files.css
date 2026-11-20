@@ -1,0 +1,288 @@
+/* The file browser (files/js/files.js), on the tokens of web/css/m3.css and the components of
+ * web/css/app.css: the toolbar with the breadcrumb, the selection bar, the list, grid and gallery
+ * views, the readme, the context menu, the drop overlay and the 个人设置 side sheet. Layouts (显示设置 →
+ * 页面布局): full, center and card, on desktop and (below 768px) per 移动端页面布局. Densities: the
+ * 个人设置 size (data-size). No style attributes: what scripts set are custom properties. */
+
+/* The card of the 卡片 layout: white on the grey page in the light theme, lighter than the page in the
+   dark one (M3 raises surfaces by tone there). The same three selectors as m3.css. */
+:root, [data-theme="light"] { --files-card-bg: var(--md-sys-color-surface-container-lowest); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --files-card-bg: var(--md-sys-color-surface-container); }
+}
+[data-theme="dark"] { --files-card-bg: var(--md-sys-color-surface-container); }
+
+.files {
+  --row-height: 48px;
+  --tile-size: 128px;
+  --tile-icon: 48px;
+  position: relative; min-width: 0;
+}
+.files[data-size="small"] { --row-height: 40px; --tile-size: 104px; --tile-icon: 40px; }
+.files[data-size="large"] { --row-height: 60px; --tile-size: 160px; --tile-icon: 64px; }
+
+/* ---------- layouts */
+body[data-page="files"] .main { padding-top: 0; }
+@media (min-width: 768px) {
+  body:has(.files[data-layout="full"]) .main { max-width: none; }
+  .files[data-layout="center"] { width: 80%; margin: 0 auto; }
+  .files[data-layout="card"] { max-width: 80rem; margin: 0 auto; }
+  body:has(.files[data-layout="card"]), body:has(.files[data-layout="card"]) .topbar:not(.scrolled),
+  body:has(.files[data-layout="card"]) .nav { background: var(--md-sys-color-surface-container-low); }
+  .files[data-layout="card"] { --files-page-bg: var(--md-sys-color-surface-container-low); }
+  .files[data-layout="card"] .files-surface {
+    padding: 8px 0 40px; border-radius: var(--md-sys-shape-corner-large);
+    background: var(--files-card-bg); box-shadow: var(--md-sys-elevation-level1);
+  }
+}
+@media (max-width: 767px) {
+  .files[data-mobile-layout="center"] { width: 92%; margin: 0 auto; }
+  body:has(.files[data-mobile-layout="card"]) { background: var(--md-sys-color-surface-container-low); }
+  .files[data-mobile-layout="card"] { --files-page-bg: var(--md-sys-color-surface-container-low); }
+  .files[data-mobile-layout="card"] .files-surface {
+    padding: 4px 0 40px; border-radius: var(--md-sys-shape-corner-large);
+    background: var(--files-card-bg); box-shadow: var(--md-sys-elevation-level1);
+  }
+}
+
+/* ---------- the toolbar: where (breadcrumb) and how (sort, list or grid, gallery); it stays under the
+   top app bar, and the selection bar takes its place while items are chosen */
+.files { --files-page-bg: var(--md-sys-color-surface); }
+.files-head { position: sticky; top: var(--topbar-height); z-index: 9; margin: 0 0 4px; background: var(--files-page-bg); }
+body:has(.topbar.scrolled) .files-head { background: var(--md-sys-color-surface-container); }
+.files-toolbar {
+  display: flex; align-items: center; gap: 8px; min-height: 56px;
+}
+.files-crumbs { flex: 1 1 auto; min-width: 0; }
+/* Crumbs keep their (capped) width; while they don't fit, files.js moves middle ones into a ··· menu.
+   Only the last one shrinks further. */
+.files-crumb-list { flex-wrap: nowrap; overflow: hidden; }
+.files-crumb-list > li { flex: none; }
+.files-crumb-list > li:last-child { flex: 0 1 auto; min-width: 48px; }
+.files-crumb-list.files-measuring > li:last-child { flex: none; }
+.files-crumb-list .breadcrumb { max-width: 220px; }
+.files-crumb-list .breadcrumb > span { overflow: hidden; text-overflow: ellipsis; }
+.files-crumb-more { padding: 0 8px; }
+.files-tools { display: flex; align-items: center; gap: 4px; flex: none; }
+.files-views .segment { min-width: 44px; padding: 0 10px; height: 36px; }
+.files-views .segment[aria-pressed="true"]::after { display: none; }
+.files-views .segment[aria-pressed="true"] > .icon { display: inline; }
+.files-gallery-on .files-views .segment { background: none; color: var(--md-sys-color-on-surface); }
+
+/* ---------- the selection bar: M3's contextual action bar, over the toolbar while items are chosen */
+.files-selbar {
+  position: absolute; inset: 0; z-index: 1;
+  display: flex; align-items: center; gap: 4px; min-height: 56px; padding: 4px 8px 4px 4px;
+  border-radius: var(--md-sys-shape-corner-large);
+  background: var(--md-sys-color-secondary-container); color: var(--md-sys-color-on-secondary-container);
+}
+.files-selbar .icon-button { color: inherit; }
+.files-selbar .icon-button.files-danger { color: var(--md-sys-color-error); }
+.files-selbar-count { flex: 1 1 auto; min-width: 0; padding: 0 8px; font: var(--md-sys-typescale-title-medium); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.files-selbar-actions { display: flex; align-items: center; gap: 2px; flex: none; }
+
+.files-progress { position: absolute; left: 0; right: 0; bottom: -4px; z-index: 2; height: 4px; border-radius: 0; }
+
+/* ---------- the list view */
+/* room under the rows: a right click there is the folder's menu (新建文件夹, 上传, 刷新) */
+.files-surface { position: relative; min-height: 120px; padding-bottom: 40px; }
+.files-list { display: flex; flex-direction: column; }
+.files-row {
+  display: grid; grid-template-columns: 48px minmax(0, 1fr) 176px 104px 48px; align-items: center;
+  min-height: var(--row-height); padding: 0 4px 0 0;
+  border-bottom: 1px solid var(--md-sys-color-surface-container-high);
+}
+.files-head { min-height: 44px; color: var(--md-sys-color-on-surface-variant); font: var(--md-sys-typescale-title-small); border-bottom-color: var(--md-sys-color-outline-variant); }
+/* The column heads share the toolbar's class but scroll with the rows: sticky at the toolbar's top they
+   covered it, and the selection bar with it, once the list was scrolled. */
+.files-row.files-head { position: static; }
+.files-check { display: grid; place-items: center; }
+.files-sort {
+  display: inline-flex; align-items: center; gap: 4px; height: 32px; padding: 0 8px; margin-left: -8px;
+  border: 0; border-radius: var(--md-sys-shape-corner-full); background: none; color: inherit; font: inherit; cursor: pointer;
+}
+.files-sort:hover { background: color-mix(in srgb, var(--md-sys-color-on-surface) 8%, transparent); }
+.files-sort.on { color: var(--md-sys-color-primary); }
+.files-sort .icon { width: 16px; height: 16px; }
+.files-col.files-size, .files-row > .files-size { text-align: right; padding-right: 8px; }
+.files-col.files-size .files-sort { margin-left: auto; margin-right: -8px; }
+.files-time, .files-size { color: var(--md-sys-color-on-surface-variant); font: var(--md-sys-typescale-body-medium); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.files-time { padding-right: 8px; }
+.files-row-end { display: grid; place-items: center; }
+.files-item { position: relative; cursor: default; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; outline: 0; }
+.files-item::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none; background: var(--md-sys-color-on-surface);
+  opacity: 0; transition: opacity var(--md-sys-motion-duration-short2) linear;
+}
+.files-item:hover::before { opacity: var(--md-sys-state-hover-state-layer-opacity); }
+.files-item:focus-visible { box-shadow: inset 0 0 0 3px var(--md-sys-color-secondary); }
+.files-item[aria-selected="true"] { background: var(--md-sys-color-secondary-container); color: var(--md-sys-color-on-secondary-container); }
+.files-item[aria-selected="true"] :is(.files-time, .files-size) { color: inherit; }
+.files-name { display: flex; align-items: center; gap: 16px; min-width: 0; padding-right: 12px; }
+.files-icon { width: 24px; height: 24px; flex: none; color: var(--md-sys-color-on-surface-variant); }
+.files-icon.kind-folder, .files-icon.kind-storage { color: var(--md-sys-color-primary); }
+.files-icon.kind-image { color: var(--md-sys-color-tertiary); }
+.files-icon:is(.kind-video, .kind-audio) { color: var(--md-sys-color-secondary); }
+.files-icon.kind-pdf { color: var(--md-sys-color-error); }
+.files-item[aria-selected="true"] .files-icon { color: inherit; }
+.files-link, .files-label { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.files-link { color: inherit; text-decoration: none; }
+.files-link:hover { text-decoration: none; }
+.files-label { font: var(--md-sys-typescale-body-large); letter-spacing: var(--md-sys-typescale-body-large-tracking); }
+.files[data-size="small"] .files-label { font: var(--md-sys-typescale-body-medium); }
+.files-lock { display: inline-grid; place-items: center; flex: none; color: var(--md-sys-color-on-surface-variant); }
+.files-lock .icon { width: 16px; height: 16px; }
+.files-back .files-label { color: var(--md-sys-color-on-surface-variant); }
+.files-more-button { opacity: 0; }
+.files-item:is(:hover, :focus-within, [aria-selected="true"]) .files-more-button, .files-more-button:focus-visible { opacity: 1; }
+@media (pointer: coarse) { .files-more-button { opacity: 1; } }
+
+/* skeleton rows while the first answer is on its way */
+.files-skeleton-row { border-bottom-color: transparent; }
+.files-skeleton-bar {
+  display: block; height: 14px; width: 60%; border-radius: 7px;
+  background: linear-gradient(90deg, var(--md-sys-color-surface-container-high) 25%, var(--md-sys-color-surface-container-highest) 50%, var(--md-sys-color-surface-container-high) 75%);
+  background-size: 200% 100%; animation: files-shimmer 1.4s ease-in-out infinite;
+}
+.files-skeleton-row:nth-child(3n) .files-skeleton-bar { width: 40%; }
+.files-skeleton-row:nth-child(3n+1) .files-skeleton-bar { width: 72%; }
+@keyframes files-shimmer { from { background-position: 100% 0; } to { background-position: -100% 0; } }
+@media (prefers-reduced-motion: reduce) { .files-skeleton-bar { animation: none; } }
+
+/* ---------- the grid view: tiles with a large type icon and the name (no thumbnails, D25) */
+.files-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(var(--tile-size), 1fr)); gap: 8px; padding: 8px 0; }
+.files-tile {
+  display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 20px 8px 12px;
+  border-radius: var(--md-sys-shape-corner-medium); text-align: center;
+}
+.files-tile::before { border-radius: inherit; }
+.files-tile .files-check { position: absolute; top: 8px; left: 8px; opacity: 0; }
+.files-tile:is(:hover, :focus-within, [aria-selected="true"]) .files-check { opacity: 1; }
+@media (pointer: coarse) { .files-tile .files-check { opacity: 1; } }
+.files-tile .files-more-button { position: absolute; top: 4px; right: 4px; }
+.files-tile-icon { position: relative; display: grid; place-items: center; }
+.files-tile-icon .files-icon { width: var(--tile-icon); height: var(--tile-icon); }
+.files-tile-icon .files-lock { position: absolute; right: -6px; bottom: -2px; padding: 2px; border-radius: 50%; background: var(--md-sys-color-surface); }
+.files-tile-name { display: block; width: 100%; min-width: 0; }
+.files-tile-name :is(.files-link, .files-label) {
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2;
+  white-space: normal; overflow-wrap: anywhere; font: var(--md-sys-typescale-body-medium);
+}
+
+/* ---------- the gallery: the folder's pictures, originals loaded lazily, in columns */
+.files-gallery {
+  columns: var(--gallery-columns, 3); column-gap: var(--gallery-column-gap, 12px); padding: 8px 0;
+}
+.files-photo {
+  position: relative; display: block; margin: 0 0 var(--gallery-row-gap, 12px); break-inside: avoid;
+  overflow: hidden; cursor: zoom-in; background: var(--md-sys-color-surface-container);
+}
+.files[data-gallery-rounded="1"] .files-photo { border-radius: var(--md-sys-shape-corner-medium); }
+.files-photo img { display: block; width: 100%; height: auto; min-height: 48px; }
+.files-photo-missing { display: grid; place-items: center; height: 120px; color: var(--md-sys-color-outline); }
+.files-photo-missing .icon { width: 40px; height: 40px; }
+.files-photo-caption {
+  display: flex; justify-content: space-between; gap: 8px; padding: 6px 10px;
+  font: var(--md-sys-typescale-body-small); color: var(--md-sys-color-on-surface-variant);
+}
+.files-photo-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.files-photo-size { flex: none; }
+.files[data-gallery-names="none"] .files-photo-caption { display: none; }
+.files[data-gallery-names="hover"] .files-photo-caption {
+  position: absolute; left: 0; right: 0; bottom: 0; color: #fff;
+  background: linear-gradient(transparent, rgb(0 0 0 / .6)); opacity: 0; transition: opacity var(--md-sys-motion-duration-short4) linear;
+}
+.files[data-gallery-names="hover"] .files-photo:is(:hover, :focus-visible) .files-photo-caption { opacity: 1; }
+.files-photo[aria-selected="true"] { outline: 3px solid var(--md-sys-color-primary); outline-offset: -3px; }
+
+/* ---------- states, more, readme */
+.files-state { padding: 56px 16px; }
+.files-state-actions { justify-content: center; margin-top: 8px; }
+.files-loading-state { padding: 24px 0; }
+.files-more { display: flex; justify-content: center; padding: 16px 0 8px; }
+.files-readme {
+  margin: 8px 0 16px; padding: 16px 20px; border-radius: var(--md-sys-shape-corner-large);
+  background: var(--md-sys-color-surface-container-low); border: 1px solid var(--md-sys-color-outline-variant);
+}
+.files-readme-bottom { margin-top: 16px; }
+.files-readme-dialog-body { max-height: 70dvh; }
+.files-backtop { position: fixed; right: 24px; bottom: calc(24px + var(--navbar-height)); z-index: 12; }
+.files-prompt-text { margin: 0 0 20px; color: var(--md-sys-color-on-surface-variant); overflow-wrap: anywhere; }
+.files-prompt-text b { color: var(--md-sys-color-on-surface); }
+
+/* ---------- the context menu: at the pointer (or a row's overflow button) */
+.menu.files-context { position: fixed; right: auto; top: 0; left: 0; z-index: 60; transform-origin: top left; }
+
+/* ---------- the top app bar's entries; phones get one overflow menu instead (6U.1) */
+.files-storage-button { max-width: 240px; color: var(--md-sys-color-on-surface); }
+/* the upload panel's count on the 新建和上传 button opens the panel itself */
+#files-upload-badge { pointer-events: auto; cursor: pointer; }
+.files-storage-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.files-phone { display: none; }
+@media (max-width: 767px) {
+  .files-desktop, .files-storage-wrap { display: none !important; }
+  .files-phone { display: block; }
+  .files-row { grid-template-columns: 44px minmax(0, 1fr) 0 0 44px; }
+  .files[data-mobile-size="1"] .files-row { grid-template-columns: 44px minmax(0, 1fr) 0 84px 44px; }
+  .files-row > .files-time { visibility: hidden; width: 0; padding: 0; }
+  .files[data-mobile-size="0"] .files-row > .files-size { visibility: hidden; width: 0; padding: 0; }
+  .files-name { gap: 12px; }
+  .files-toolbar { flex-wrap: wrap; gap: 0 8px; min-height: 48px; padding-bottom: 4px; }
+  .files-crumbs { flex-basis: 100%; }
+  .files-tools { margin-left: auto; }
+  .files-crumb-list .breadcrumb { max-width: 160px; padding: 0 8px; }
+  .files-backtop { right: 16px; }
+}
+
+/* ---------- uploads dropped on the page */
+.files-drop {
+  position: fixed; inset: 0; z-index: 70; display: grid; place-items: center; padding: 24px;
+  background: color-mix(in srgb, var(--md-sys-color-primary) 16%, var(--scrim)); pointer-events: none;
+}
+.files-drop-box {
+  display: flex; flex-direction: column; align-items: center; gap: 12px; max-width: min(480px, 100%); padding: 32px 40px;
+  border: 2px dashed var(--md-sys-color-primary); border-radius: var(--md-sys-shape-corner-extra-large);
+  background: var(--md-sys-color-surface-container-high); color: var(--md-sys-color-on-surface); text-align: center;
+}
+.files-drop-box .icon { width: 48px; height: 48px; color: var(--md-sys-color-primary); }
+.files-drop-text { margin: 0; font: var(--md-sys-typescale-title-medium); overflow-wrap: anywhere; }
+
+/* ---------- 个人设置: M3's modal side sheet, from the right */
+.dialog.side-sheet {
+  margin: 0 0 0 auto; width: min(380px, 100vw); height: 100dvh; max-height: 100dvh;
+  border-radius: var(--md-sys-shape-corner-large) 0 0 var(--md-sys-shape-corner-large);
+  background: var(--md-sys-color-surface-container-low); --field-bg: var(--md-sys-color-surface-container-low);
+}
+.dialog.side-sheet[open] { animation: sheet-in var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-emphasized-decelerate); }
+@keyframes sheet-in { from { transform: translateX(100%); } }
+@media (prefers-reduced-motion: reduce) { .dialog.side-sheet[open] { animation: none; } }
+.side-sheet .dialog-box { height: 100%; }
+.side-sheet .dialog-body { flex: 1; }
+.files-settings-tip { margin: 0 0 8px; }
+.files-settings-group { padding: 8px 0 4px; border-top: 1px solid var(--md-sys-color-outline-variant); }
+.files-settings-group:first-of-type { border-top: 0; }
+.files-settings-group h3 { margin: 8px 0 12px; color: var(--md-sys-color-primary); font: var(--md-sys-typescale-title-small); }
+.files-setting.field { margin-bottom: 16px; }
+.files-setting .label { margin-bottom: 8px; }
+.files-setting .segmented { display: flex; width: 100%; }
+.files-setting .segment { flex: 1 1 0; padding: 0 8px; }
+.files-settings .switch-line { min-height: 44px; }
+.files-settings-actions { justify-content: flex-start; }
+
+/* ---------- the folder picker of 移动 and 复制; 批量操作结果 */
+.files-picker .dialog-body { display: flex; flex-direction: column; min-height: 0; }
+.files-picker-what { margin: 0 0 8px; overflow-wrap: anywhere; }
+.files-picker-crumbs .breadcrumb { max-width: 160px; }
+.files-picker-list {
+  max-height: min(360px, 50dvh); min-height: 120px; overflow-y: auto; margin: 8px -8px 0; padding: 4px 0;
+  border-top: 1px solid var(--md-sys-color-outline-variant); border-bottom: 1px solid var(--md-sys-color-outline-variant);
+}
+.files-picker-item { min-height: 48px; padding: 4px 16px 4px 12px; border-radius: var(--md-sys-shape-corner-small); }
+.files-picker-item .list-leading { color: var(--md-sys-color-primary); }
+.files-picker-item.disabled { opacity: .45; cursor: not-allowed; }
+.files-picker-status { margin: 8px 0 0; min-height: 1.5em; }
+.files-results-switch { margin-bottom: 8px; }
+.files-result-name { display: flex; align-items: center; gap: 8px; overflow-wrap: anywhere; }
+.files-result-name .icon { width: 20px; height: 20px; }
+.files-ok { color: var(--md-sys-color-success); }
+.files-bad { color: var(--md-sys-color-error); }

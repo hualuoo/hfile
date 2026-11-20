@@ -1,0 +1,100 @@
+{% load static ui sso %}<!doctype html>
+{% comment %}
+  The frame of every page: an M3 top app bar, a navigation rail on the left (a navigation bar at the
+  bottom on phones) and the page. Blocks for the pages:
+    title          the tab's title (before " · " and the site's name)
+    page           data-page on <body>, for styles and scripts that differ per page
+    head           more in <head> (a stylesheet of the page's own)
+    topbar_actions icon buttons in the top app bar, before the user menu
+    fab            the page's floating action button: on top of the rail, floating on phones
+    header         the page's header: <h1>{% block heading %}, and {% block page_actions %} beside it
+    content        the page
+    dialogs        the page's own <dialog>s
+    login_dialog   the login dialog for visitors (the login page leaves it out: it has the form itself)
+    login_button   the top app bar's 登录 button for visitors (the login page leaves it out too)
+    scripts        the page's own <script>s, after common.js and shell.js
+  The destinations of the rail are apps/web/navigation.py NAV (context processor apps.web.context_processors.shell).
+  Public pages (apps/siteconf/pages.py PublicPageMixin: the file browser, shares) set public_page: they show
+  the announcement and the footer, and link the admin's custom CSS and JS unless custom_code is false.
+  Where the custom JS is linked (custom_js_linked) there is no login or password dialog: 登录 goes to
+  the login page (/login/?next=…), 修改密码 to ?auth=password, a page without it (D33: no password typed
+  beside it); so do 两步验证 (?auth=totp) and single sign-on's 账号绑定 (?auth=sso: binding asks for the
+  password).
+{% endcomment %}
+{% get_current_language as lang %}<html lang="{{ lang }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
+  <meta name="csrf-token" content="{{ csrf_token }}">
+  <meta name="site-name" content="{{ site_settings.site_name }}">
+  <meta name="icons" content="{% static 'web/icons.svg' %}">
+  <title>{% block title %}{% endblock %} · {{ site_settings.site_name }}</title>
+  <link rel="icon" href="{{ site_settings.favicon_url }}"{% if not site_settings.favicon %} type="image/svg+xml"{% endif %}>
+  <script src="{% static 'web/js/theme.js' %}"></script>
+  <link rel="stylesheet" href="{% static 'web/css/m3.css' %}">
+  <link rel="stylesheet" href="{% static 'web/css/app.css' %}">
+  {% if public_page and custom_code and site_settings.custom_css_version %}<link rel="stylesheet" href="{% url 'siteconf:custom-css' %}?v={{ site_settings.custom_css_version }}">
+  {% endif %}{% block head %}{% endblock %}
+</head>
+<body class="shell" data-page="{% block page %}{% endblock %}" data-auth="{{ user.is_authenticated|yesno:'1,0' }}" data-user="{% if user.is_authenticated %}{{ user.pk }}{% endif %}">
+<a class="skip-link" href="#main">{% translate "Skip to content" %}</a>
+<header class="topbar" id="topbar">
+  {% include "web/_brand.html" %}
+  <div class="topbar-actions">{% block topbar_actions %}{% endblock %}</div>
+  <div class="topbar-end">
+    {% language_menu %}
+    {% if user.is_authenticated %}
+    <div class="menu-wrap">
+      <button type="button" class="user-button" id="user-button" aria-haspopup="menu" aria-expanded="false" aria-controls="user-menu" aria-label="{% blocktranslate with name=user.display_name %}Account: {{ name }}{% endblocktranslate %}">
+        <span class="avatar avatar-small" aria-hidden="true">{{ user.display_name|slice:":1" }}</span><span class="user-label">{{ user.display_name }}</span>{% icon "expand_more" "caret" %}
+      </button>
+      <div class="menu" id="user-menu" role="menu" aria-labelledby="user-button" hidden>
+        <p class="menu-head" role="none"><strong>{{ user.nickname }}</strong> <span class="muted">@{{ user.username }}</span></p>
+        {% if custom_js_linked %}<a class="menu-item" role="menuitem" href="?auth=password">{% icon "password" %}{% if user.has_usable_password %}{% translate "Change password" %}{% else %}{% translate "Set password" %}{% endif %}</a>{% else %}<button type="button" class="menu-item" role="menuitem" data-open="password-dialog">{% icon "password" %}{% if user.has_usable_password %}{% translate "Change password" %}{% else %}{% translate "Set password" %}{% endif %}</button>{% endif %}
+        {% if user.is_superuser or user.totp_enabled %}{% if custom_js_linked %}<a class="menu-item" role="menuitem" href="?auth=totp">{% icon "shield" %}{% translate "Two-step verification" %}</a>{% else %}<button type="button" class="menu-item" role="menuitem" id="totp-open">{% icon "shield" %}{% translate "Two-step verification" %}</button>{% endif %}{% endif %}
+        {% sso_links_offered as sso_links %}{% if sso_links %}{% if custom_js_linked %}<a class="menu-item" role="menuitem" href="?auth=sso">{% icon "link" %}{% translate "Linked accounts" %}</a>{% else %}<button type="button" class="menu-item" role="menuitem" id="sso-links-open">{% icon "link" %}{% translate "Linked accounts" %}</button>{% endif %}{% endif %}
+        <hr role="separator">
+        {% include "web/_theme_items.html" %}
+        <hr role="separator">
+        <button type="button" class="menu-item danger" role="menuitem" id="logout">{% icon "logout" %}{% translate "Log out" %}</button>
+      </div>
+    </div>
+    {% else %}
+    <div class="menu-wrap">
+      <button type="button" class="icon-button" id="theme-button" aria-haspopup="menu" aria-expanded="false" aria-controls="theme-menu" aria-label="{% translate 'Theme' %}" data-tooltip="{% translate 'Theme' %}">{% icon "contrast" %}</button>
+      <div class="menu" id="theme-menu" role="menu" aria-label="{% translate 'Theme' %}" hidden>{% include "web/_theme_items.html" %}</div>
+    </div>
+    {# 显示登录入口 off, or a secure login entry (only /login/<entry>/ logs in): no button. Beside the custom JS: a link to the login page, which doesn't run it (D33). #}
+    {% block login_button %}{% if site_settings.show_login and not site_settings.secure_login_entry %}{% if custom_js_linked %}<a class="btn btn-filled" href="/login/?next={{ request.get_full_path|urlencode }}">{% icon "login" %}{% translate "Log in" %}</a>{% else %}<button type="button" class="btn btn-filled" data-login>{% icon "login" %}{% translate "Log in" %}</button>{% endif %}{% endif %}{% endblock %}
+    {% endif %}
+  </div>
+</header>
+<nav class="nav" aria-label="{% translate 'Main navigation' %}">
+  {% block fab %}{% endblock %}
+  {% for entry in nav_items %}
+  <a class="nav-link" href="{{ entry.href }}"{% if entry.current %} aria-current="page"{% endif %}><span class="nav-indicator">{% icon entry.item.icon "off" %}{% with filled=entry.item.icon|add:"-fill" %}{% icon filled "on" %}{% endwith %}</span><span class="nav-label">{{ entry.item.label }}</span></a>
+  {% endfor %}
+</nav>
+<main class="main" id="main" tabindex="-1">
+  {% block header %}<div class="page-head"><h1>{% block heading %}{% endblock %}</h1><div class="page-actions">{% block page_actions %}{% endblock %}</div></div>{% endblock %}
+  {% if public_page %}{% include "siteconf/_announcement.html" %}{% endif %}
+  {% block content %}{% endblock %}
+  {% if public_page %}{% include "siteconf/_footer.html" %}{% endif %}
+</main>
+{% if not custom_js_linked %}{% if user.is_authenticated %}{% include "web/dialogs/password.html" %}{% sso_links_offered as sso_links %}{% if sso_links %}{% include "sso/links_dialog.html" %}{% endif %}{% else %}{% block login_dialog %}{% if not site_settings.secure_login_entry %}{% include "web/dialogs/login.html" %}{% endif %}{% endblock %}{% endif %}{% endif %}
+{% block dialogs %}{% endblock %}
+<div id="snackbar" class="snackbar" role="status" aria-live="polite" popover="manual" hidden></div>
+{% js_catalog %}
+<script src="{% static 'web/js/language.js' %}"></script>
+<script src="{% static 'web/js/common.js' %}"></script>
+<script src="{% static 'web/js/shell.js' %}"></script>
+{% if not user.is_authenticated %}<script src="{% static 'captchas/js/captcha.js' %}"></script>
+<script src="{% static 'accounts/js/login_steps.js' %}"></script>
+<script src="{% static 'sso/js/login.js' %}"></script>{% elif user.is_superuser or user.totp_enabled %}<script src="{% static 'accounts/js/totp.js' %}"></script>{% endif %}
+{% if user.is_authenticated and not custom_js_linked %}{% sso_links_offered as sso_links %}{% if sso_links %}<script src="{% static 'sso/js/links.js' %}"></script>{% endif %}{% endif %}
+{% block scripts %}{% endblock %}
+{% if public_page %}<script src="{% static 'siteconf/js/public.js' %}"></script>
+{% if custom_code and site_settings.custom_js_version %}<script src="{% url 'siteconf:custom-js' %}?v={{ site_settings.custom_js_version }}"></script>
+{% endif %}{% endif %}</body>
+</html>
