@@ -10,7 +10,7 @@ from apps.siteconf.models import SiteSettings
 
 from . import entry
 from . import totp
-from .models import LoginLog
+from apps.activity.models import ActivityLog
 from .test_totp import code_for, turn_on
 
 User = get_user_model()
@@ -81,7 +81,7 @@ class WithAnEntryTests(APITestCase):
             with self.subTest(body=body):
                 r = self.login(**body)
                 self.assertEqual((r.status_code, r.json()), (404, {"detail": "没有找到。"}))
-        self.assertFalse(LoginLog.objects.exists())  # never got to the password
+        self.assertFalse(ActivityLog.objects.exists())  # never got to the password
         self.assertEqual(self.login(entry=ENTRY).status_code, 201)
         self.assertEqual(APIClient().post(SESSION, ["x"], format="json").status_code, 404)
         self.assertEqual(APIClient().delete(SESSION).status_code, 204)  # logging out needs none
@@ -179,5 +179,5 @@ class MaskingTests(SimpleTestCase):
 
     def test_other_addresses_stay(self):
         for path, query in (("/login/", ""), ("/login/", "next=%2Fmanage%2F"), ("/sso/github/login/callback", ""),
-                            ("/api/v1/manage/login-logs/", ""), ("/files/login/notes.txt", "")):
+                            ("/api/v1/manage/activity/", ""), ("/files/login/notes.txt", "")):
             self.assertEqual(masking.mask_address(path, query), path + ("?" + query.replace("%2F", "/") if query else ""))

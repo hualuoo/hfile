@@ -37,6 +37,7 @@ from django.utils.translation import gettext, ngettext
 from rest_framework import status
 from rest_framework.exceptions import APIException, ErrorDetail
 
+from apps.activity import log as activity
 from apps.core import origin
 from apps.core.times import iso
 from apps.files import signing
@@ -189,6 +190,9 @@ def make_short_links(request, site, access, client_paths, seconds, *, password: 
     expires_at = None if seconds == FOREVER_SECONDS else now + datetime.timedelta(seconds=seconds)
     with transaction.atomic():
         links = _store(access.storage, access.actor.user, list(zip(storage_paths, unlocked)), now, expires_at)
+        activity.record_many(activity.Kind.SHORT_LINK, [
+            {"path": link.path, "key": link.key, "detail": {"expires_at": iso(link.expires_at)}} for link in links
+        ], actor=access.actor.user, storage=access.storage)
     return [{
         "path": access.relative(link.path),
         "name": paths.name(link.path),

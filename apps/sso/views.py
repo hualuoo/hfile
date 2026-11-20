@@ -39,6 +39,7 @@ from rest_framework.views import APIView
 
 from apps.accounts import entry as login_entry
 from apps.accounts import loginlog, managing
+from apps.activity import log as activity
 from apps.core.exceptions import Conflict
 from apps.core.permissions import IsAdmin, is_admin
 from apps.core.throttles import ScopedRateThrottle, UserRateThrottle
@@ -135,7 +136,7 @@ def login_start(request, code):
 @never_cache
 @require_GET
 def login_callback(request, code):
-    """Back from the provider (flow.complete). A login that fails is written to the login log."""
+    """Back from the provider (flow.complete). A login that fails is written to the activity log."""
     if (response := _throttled(request)) is not None:
         return response
     try:
@@ -241,6 +242,7 @@ class LinkView(APIView):
                     _("This is your only way to log in now: after unlinking you couldn't log in. Set a "
                       'password in "Set password" in the menu at the top right first, then unlink %(name)s.') % {"name": provider.name}
                 )
+            activity.record(activity.Kind.UNLINK_SSO, actor=user, detail={"provider": provider.name, "code": provider.code})
             identity.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -266,9 +268,19 @@ class ManageProviderViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, mi
 
     def _saved(self, serializer, code=status.HTTP_200_OK):
         serializer.is_valid(raise_exception=True)
+        before = serializer.instance
+        # What the activity log names: the fields that change (a secret sent changes it), never their values.
+        changed = [name for name, value in serializer.validated_data.items() if before is not None and (
+            (value is None or bool(value)) if name == "client_secret" else getattr(before, name) != value)]
         try:
             with transaction.atomic():
                 provider = serializer.save()
+                if before is None:
+                    activity.record(activity.Kind.CREATE_PROVIDER, actor=self.request.user,
+                                    detail={"provider": provider.name, "code": provider.code})
+                elif changed:
+                    activity.record(activity.Kind.UPDATE_PROVIDER, actor=self.request.user,
+                                    detail={"provider": provider.name, "code": provider.code, "fields": changed})
         except IntegrityError:  # the same code saved at the same moment
             if Provider.objects.filter(code=serializer.validated_data.get("code", "")).exists():
                 raise ValidationError({"code": [_("This short name is taken. Please choose another.")]}) from None
@@ -281,6 +293,12 @@ class ManageProviderViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, mi
     def partial_update(self, request, pk=None):
         return self._saved(self.get_serializer(self.get_object(), data=request.data, partial=True))
 
+    def perform_destroy(self, instance):
+        with transaction.atomic():
+            activity.record(activity.Kind.DELETE_PROVIDER, actor=self.request.user,
+                            detail={"provider": instance.name, "code": instance.code})
+            instance.delete()
+
     @action(detail=False, methods=["post"])
     def order(self, request):
         form = OrderSerializer(data=request.data)
@@ -290,8 +308,11 @@ class ManageProviderViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, mi
             existing = set(Provider.objects.select_for_update().values_list("pk", flat=True))
             if set(ids) != existing:
                 raise Conflict(_("The provider list just changed. Please reload the page and sort again."))
+            moved = 0
             for index, pk in enumerate(ids):
-                Provider.objects.filter(pk=pk).update(order=(index + 1) * 10)
+                moved += Provider.objects.filter(pk=pk).exclude(order=(index + 1) * 10).update(order=(index + 1) * 10)
+            if moved:
+                activity.record(activity.Kind.SORT_PROVIDERS, actor=request.user)
         return Response(self.get_serializer(self.get_queryset(), many=True).data)
 
 
@@ -379,6 +400,8 @@ class ManageIdentitiesView(APIView):
                     identity = Identity.objects.create(provider=provider, external_id=external_id, user=user)
             except IntegrityError:
                 raise ValidationError({"external_id": [_("This account was just linked. Please reload and look again.")]}) from None
+            activity.record(activity.Kind.LINK_IDENTITY, actor=request.user, target=user,
+                            detail={"provider": provider.name, "code": provider.code, "external_id": external_id})
         return Response(IdentitySerializer(identity).data, status=status.HTTP_201_CREATED)
 
 
@@ -388,10 +411,13 @@ class ManageIdentityView(APIView):
     permission_classes = [IsAdmin]
 
     def delete(self, request, user_id, pk):
-        identity = Identity.objects.select_related("user").filter(pk=pk, user_id=user_id).first()
+        identity = Identity.objects.select_related("user", "provider").filter(pk=pk, user_id=user_id).first()
         if identity is None:
             raise NotFound(_("This link doesn't exist any more."))
         if reason := _refusal(request.user, identity.user):
             raise PermissionDenied(reason)
-        identity.delete()
+        with transaction.atomic():
+            activity.record(activity.Kind.UNLINK_IDENTITY, actor=request.user, target=identity.user, detail={
+                "provider": identity.provider.name, "code": identity.provider.code, "external_id": identity.external_id})
+            identity.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)

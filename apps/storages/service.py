@@ -5,6 +5,9 @@ The connection test runs before anything is written: a candidate driver instance
 and checks them (apps/storages/instances.py); only when that works is the row saved, and the candidate then
 replaces the live instance. A disabled storage is saved without a test and has no instance; enabling it
 tests it first (decision D36).
+
+Each change is logged in the activity log, in the transaction that makes it: which fields and params changed,
+never their values (some are secrets), except the name and the alias.
 """
 
 from __future__ import annotations
@@ -17,6 +20,8 @@ from django.db import IntegrityError, transaction
 from django.db.models import Max
 from django.urls import reverse
 from django.utils.translation import gettext
+
+from apps.activity import log as activity
 
 from . import config as storage_config
 from . import drafts, grants, instances
@@ -241,8 +246,10 @@ def save(request, storage: StorageSource | None, data: dict) -> tuple[StorageSou
                         setattr(row, name, fields[name])
                 row.save()
                 extra["grants"] = grants.grant_new_storage(row)
+                activity.record(activity.Kind.CREATE_STORAGE, actor=request.user, storage=row, detail={"type": type_})
             else:
                 row = StorageSource.objects.select_for_update().get(pk=storage.pk)
+                logged = _changes(row, fields, type_, cleaned, stored)
                 for name in SITE_FIELDS:
                     if name in fields:
                         setattr(row, name, fields[name])
@@ -258,6 +265,8 @@ def save(request, storage: StorageSource | None, data: dict) -> tuple[StorageSou
                     row.config = storage_config.encode(cls, merged)
                     row.config_revision += 1
                 row.save()
+                if logged:
+                    activity.record(activity.Kind.UPDATE_STORAGE, actor=request.user, storage=row, detail=logged)
     except Exception as error:
         if handle is not None:
             handle.put_back(changes, _before)  # a token the test refreshed must not be lost with the save
@@ -281,6 +290,26 @@ def save(request, storage: StorageSource | None, data: dict) -> tuple[StorageSou
     return row, extra
 
 
+def _changes(row: StorageSource, fields: dict, type_: str, cleaned: dict, stored: dict) -> dict:
+    """What a save changes, for the activity log: [old, new] of the name and the alias, the other fields
+    and the params that differ (by name: a param may be a secret). {} when nothing changes."""
+    changes: dict[str, Any] = {}
+    others = []
+    for name in SITE_FIELDS:
+        if name not in fields or fields[name] == getattr(row, name):
+            continue
+        if name in ("name", "key"):
+            changes[name] = [getattr(row, name), fields[name]]
+        else:
+            others.append(name)
+    params = [key for key in cleaned if cleaned.get(key) != stored.get(key)]
+    if others:
+        changes["fields"] = others
+    if params:
+        changes["params"] = params
+    return {"type": type_, **changes} if changes else {}
+
+
 def _keep_changes(request, handle, draft, storage, type_, cls) -> str | None:
     """A candidate or temporary instance changed secrets (a refreshed token) but nothing was saved:
     the stored ones it replaced are saved now (instances.apply_temporary), the rest go to the draft,
@@ -297,7 +326,9 @@ def _keep_changes(request, handle, draft, storage, type_, cls) -> str | None:
 def set_enabled(storage: StorageSource, enabled: bool) -> StorageSource:
     """Enable (after a connection test) or disable a storage. Raises ActionError."""
     if not enabled:
-        StorageSource.objects.filter(pk=storage.pk).update(enabled=False)
+        with transaction.atomic():
+            if StorageSource.objects.filter(pk=storage.pk, enabled=True).update(enabled=False):
+                activity.record(activity.Kind.DISABLE_STORAGE, storage=storage)
         instances.drop(storage.pk)
         storage.enabled = False
         return storage
@@ -312,7 +343,9 @@ def set_enabled(storage: StorageSource, enabled: bool) -> StorageSource:
         handle.close()
         instances.record(storage.pk, False, problem)
         raise ActionError(gettext("Enabling failed; it couldn't connect: %(problem)s") % {"problem": problem}, code=CHECK_FAILED)
-    StorageSource.objects.filter(pk=storage.pk).update(enabled=True)
+    with transaction.atomic():
+        StorageSource.objects.filter(pk=storage.pk).update(enabled=True)
+        activity.record(activity.Kind.ENABLE_STORAGE, storage=storage)
     storage.enabled = True
     instances.publish(handle)
     instances.record(storage.pk, True, gettext("The connection works."))
@@ -349,6 +382,7 @@ def delete(storage: StorageSource) -> None:
     """Deletes the storage with its grants and rules (and, through their foreign keys, its links, shares
     and logs: decision D6)."""
     with transaction.atomic():
+        activity.record(activity.Kind.DELETE_STORAGE, storage=storage, detail={"type": storage.type})
         StorageSource.objects.filter(pk=storage.pk).delete()
     instances.forget(storage.pk)
 
@@ -403,6 +437,7 @@ def copy(storage: StorageSource, *, key: str, name: str) -> StorageSource:
             for rule in source.readme_rules.all()
         ])
         grants.copy_storage_grants(source, row)
+        activity.record(activity.Kind.COPY_STORAGE, storage=row, detail={"from": source.name, "type": source.type})
     return row
 
 
@@ -414,14 +449,19 @@ def sort(ids: list[int]) -> None:
         current = {row.pk: row.position for row in StorageSource.objects.select_for_update().only("position")}
         if sorted(ids) != sorted(current) or len(ids) != len(set(ids)):
             raise ActionError(gettext("Storage sources were added or removed. Please refresh the list and sort again."), code="conflict")
+        moved = [pk for position, pk in enumerate(ids, start=1) if current[pk] != position]
         for position, pk in enumerate(ids, start=1):
             if current[pk] != position:
                 StorageSource.objects.filter(pk=pk).update(position=position)
+        if moved:
+            activity.record(activity.Kind.SORT_STORAGES)
 
 
 def rotate_link_secret(storage: StorageSource) -> None:
     """换一个链接密钥: every permanent link of the storage stops working."""
-    StorageSource.objects.filter(pk=storage.pk).update(link_secret=new_link_secret())
+    with transaction.atomic():
+        StorageSource.objects.filter(pk=storage.pk).update(link_secret=new_link_secret())
+        activity.record(activity.Kind.ROTATE_LINK_SECRET, storage=storage)
 
 
 # --- the form's buttons --------------------------------------------------------------------------------

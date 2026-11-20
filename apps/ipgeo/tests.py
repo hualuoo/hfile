@@ -1,5 +1,5 @@
 """IP 归属地 (ipgeo app): looking addresses up, the names of the stored locations, storing them with the IPs
-(logins, the login log, the download log), the /manage/#ip-geo API, downloading the database and 补全.
+(logins, the activity log, the download log), the /manage/#ip-geo API, downloading the database and 补全.
 
 Nothing goes to the network: the databases are small real MaxMind DB files (apps/ipgeo/testing.py), and
 downloads come from a fake jobs.fetch(). Jobs run in place (jobs.run), except in ThreadTests.
@@ -23,7 +23,8 @@ from django.test.utils import CaptureQueriesContext
 from django.utils import timezone, translation
 from rest_framework.test import APIClient, APITestCase
 
-from apps.accounts.models import LoginLog, User
+from apps.accounts.models import User
+from apps.activity.models import ActivityLog
 from apps.core import net
 from apps.core.testing import admin_url
 from apps.links.models import DownloadLog
@@ -415,17 +416,17 @@ class RecordingTests(GeoTestMixin, APITestCase):
         self.assertEqual(self.login("2400:3200::1").status_code, 201)
         self.alice.refresh_from_db()
         self.assertEqual((self.alice.last_login_ip, self.alice.last_login_location), ("2400:3200::1", IN_HANGZHOU))
-        self.assertEqual(LoginLog.objects.get().ip_location, IN_HANGZHOU)
+        self.assertEqual(ActivityLog.objects.get().ip_location, IN_HANGZHOU)
         self.turn(False)
         self.assertEqual(self.login("8.8.8.8").status_code, 201)
         self.alice.refresh_from_db()
         self.assertEqual((self.alice.last_login_ip, self.alice.last_login_location), ("8.8.8.8", ""))
-        self.assertEqual(LoginLog.objects.latest("id").ip_location, "")
+        self.assertEqual(ActivityLog.objects.latest("id").ip_location, "")
 
     def test_failed_logins(self):
         self.install()
         self.assertEqual(self.login("168.95.1.1", password="wrong-2026").status_code, 400)
-        self.assertEqual((LoginLog.objects.get().result, LoginLog.objects.get().ip_location), ("failure", "TW"))
+        self.assertEqual((ActivityLog.objects.get().kind, ActivityLog.objects.get().ip_location), ("login_failed", "TW"))
 
     def test_a_file_maxminddb_chokes_on_doesnt_stop_logins(self):
         self.install()
@@ -434,7 +435,7 @@ class RecordingTests(GeoTestMixin, APITestCase):
                 for _ in range(3):
                     self.assertEqual(self.login("8.8.8.8").status_code, 201)
         self.assertEqual(opened.call_count, 1)  # remembered as unusable until the next download
-        self.assertEqual(set(LoginLog.objects.values_list("ip_location", flat=True)), {""})
+        self.assertEqual(set(ActivityLog.objects.values_list("ip_location", flat=True)), {""})
 
 
 class DownloadLogTests(GeoTestMixin, LinksTestCase):
@@ -456,7 +457,7 @@ class ShownTests(GeoTestMixin, LinksTestCase):
         self.admin, self.client = admin_client(last_login=timezone.now(), last_login_ip="8.8.8.8", last_login_location="US")
         for ip in ("8.8.8.8", "2001:4860:4860::8888", "202.175.3.3"):
             lookup.locate(ip)  # their names, as the lookups that stored the locations kept them
-        LoginLog.objects.create(username="boss", user=self.admin, ip="2001:4860:4860::8888", ip_location=IN_MOUNTAIN_VIEW, result="success")
+        ActivityLog.objects.create(kind="login", actor=self.admin, actor_name="boss", ip="2001:4860:4860::8888", ip_location=IN_MOUNTAIN_VIEW)
         DownloadLog.objects.create(kind="short", storage=self.storage, path="/top.txt", short_key="Ab3dE7fG", ip="202.175.3.3",
                                    ip_location="MO")
 
@@ -465,25 +466,25 @@ class ShownTests(GeoTestMixin, LinksTestCase):
         return (
             next(row for row in users if row["username"] == "boss")["last_login_location"],
             self.client.get(f"/api/v1/manage/users/{self.admin.pk}/").data["last_login_location"],
-            self.client.get("/api/v1/manage/login-logs/").data["results"][0]["ip_location"],
+            self.client.get("/api/v1/manage/activity/").data["results"][0]["ip_location"],
             self.client.get("/api/v1/manage/download-logs/").data["results"][0]["ip_location"],
         )
 
     def test_the_manage_api(self):
         self.assertEqual(self.located(), ("美国", "美国", "美国 加利福尼亚州 山景城", "中国澳门"))
-        self.assertEqual(self.client.get("/api/v1/manage/login-logs/", HTTP_ACCEPT_LANGUAGE="en").data["results"][0]["ip_location"],
+        self.assertEqual(self.client.get("/api/v1/manage/activity/", HTTP_ACCEPT_LANGUAGE="en").data["results"][0]["ip_location"],
                          "Mountain View, California, United States")
 
     def test_turned_off_they_are_kept_but_not_shown(self):
         self.turn(False)
         self.assertEqual(self.located(), ("", "", "", ""))
-        self.assertEqual(LoginLog.objects.get().ip_location, IN_MOUNTAIN_VIEW)
+        self.assertEqual(ActivityLog.objects.get().ip_location, IN_MOUNTAIN_VIEW)
 
     def test_the_settings_are_read_once_for_a_whole_list(self):
         for _ in range(5):
-            LoginLog.objects.create(username="boss", ip="2001:4860:4860::8888", ip_location=IN_MOUNTAIN_VIEW, result="success")
+            ActivityLog.objects.create(kind="login", actor_name="boss", ip="2001:4860:4860::8888", ip_location=IN_MOUNTAIN_VIEW)
         with CaptureQueriesContext(connection) as queries:
-            self.assertEqual(self.client.get("/api/v1/manage/login-logs/").status_code, 200)
+            self.assertEqual(self.client.get("/api/v1/manage/activity/").status_code, 200)
         self.assertEqual(sum("ipgeo_ipgeosettings" in query["sql"] for query in queries.captured_queries), 1)
         self.assertEqual(sum("ipgeo_placename" in query["sql"] for query in queries.captured_queries), 1)
 
@@ -533,7 +534,7 @@ class ApiTests(GeoTestMixin, APITestCase):
             {key: r.data[key] for key in ("enabled", "database", "job", "folder")},
             {"enabled": False, "database": None, "job": None, "folder": str(self.folder)},
         )
-        self.assertEqual([part["key"] for part in r.data["unfilled"]["parts"]], ["users", "logins", "downloads"])
+        self.assertEqual([part["key"] for part in r.data["unfilled"]["parts"]], ["users", "activity", "downloads"])
 
     def test_turning_it_on_and_off(self):
         r = self.admin_client.patch(API, {"enabled": True}, format="json")
@@ -612,6 +613,10 @@ class DownloadTests(GeoTestMixin, APITestCase):
         self.assertEqual(job["message"], "下载好了：数据日期 2025-11-05。")
         self.assertEqual(self.admin_client.get(API + "check/?ip=2001:4860:4860::8888").data["location"], "美国 加利福尼亚州 山景城")
         self.assertEqual(PlaceName.objects.get(code="5375480").names, {"en": "Mountain View", "zh-CN": "山景城"})
+        # In the activity log as the admin who started it did it, from where they did.
+        entry = ActivityLog.objects.get()
+        self.assertEqual((entry.kind, entry.actor, entry.ip, entry.detail),
+                         ("download_ip_geo", self.admin, "127.0.0.1", {"built_at": "2025-11-05T00:20:00+00:00"}))
 
     def test_the_answer_comes_at_once(self):
         # The job runs in the background; what the POST answers is the state when it started.
@@ -620,7 +625,8 @@ class DownloadTests(GeoTestMixin, APITestCase):
             r = self.download()
         self.assertEqual(r.status_code, 202)
         self.assertEqual((r.data["job"]["kind"], r.data["job"]["state"]), ("download", "running"))
-        self.assertEqual(start.call_args.args, (jobs.download, r.data["job"]["id"]))
+        self.assertEqual(start.call_args.args[:2], (jobs.download, r.data["job"]["id"]))
+        self.assertEqual(start.call_args.args[2]["actor"], self.admin)  # who started it, for the activity log
         self.assertContains(self.download(), "正在下载数据库，等它做完再试。", status_code=409)
         self.assertContains(self.admin_client.post(API + "fill/", {}, format="json"), "正在下载数据库", status_code=409)
 
@@ -635,6 +641,7 @@ class DownloadTests(GeoTestMixin, APITestCase):
         self.assertEqual((self.folder / FILE_NAME).stat().st_mtime_ns, mtime)
         self.assertEqual(sorted(path.name for path in self.folder.iterdir()), [FILE_NAME])  # the download is gone
         self.assertEqual(IpGeoSettings.load().downloaded_at, before.downloaded_at)
+        self.assertFalse(ActivityLog.objects.filter(kind="download_ip_geo").exists())  # nothing new: nothing to log
 
     def test_newer_data(self):
         self.install()
@@ -800,12 +807,12 @@ class FillTests(GeoTestMixin, LinksTestCase):
         self.run_jobs_in_place()
         self.boss, self.admin_client = admin_client()
         self.turn(True)
-        log = LoginLog.objects
-        self.blank_us = log.create(username="x", ip="8.8.8.8", result="failure")
-        self.blank_cn = log.create(username="x", ip="1.2.4.8", result="failure")
-        self.blank_lan = log.create(username="x", ip="192.168.1.1", result="failure")
-        self.filled = log.create(username="x", ip="8.8.8.8", ip_location="OLD", result="failure")
-        self.no_ip = log.create(username="x", ip=None, result="failure")
+        log = ActivityLog.objects
+        self.blank_us = log.create(kind="login_failed", target_name="x", ip="8.8.8.8")
+        self.blank_cn = log.create(kind="login_failed", target_name="x", ip="1.2.4.8")
+        self.blank_lan = log.create(kind="login_failed", target_name="x", ip="192.168.1.1")
+        self.filled = log.create(kind="login_failed", target_name="x", ip="8.8.8.8", ip_location="OLD")
+        self.no_ip = log.create(kind="login_failed", target_name="x", ip=None)
         User.objects.filter(pk=self.alice.pk).update(last_login_ip="2400:3200::1")
         self.download = DownloadLog.objects.create(kind="page", storage=self.storage, path="/top.txt", ip="202.175.3.3")
 
@@ -826,9 +833,12 @@ class FillTests(GeoTestMixin, LinksTestCase):
         self.assertEqual((job["state"], job["message"], job["done"], job["total"]), ("done", "补全了 5 条记录的归属地。", 5, 5))
         self.assertEqual(sorted(PlaceName.objects.values_list("code", flat=True)), ["1784764", "1808926", "CN", "MO", "US"])
         self.assertEqual(self.admin_client.get(API).data["unfilled"]["total"], 0)
-        # Again: nothing to do.
+        filled = ActivityLog.objects.get(kind="fill_ip_geo")
+        self.assertEqual((filled.actor, filled.detail, filled.ip_location), (self.boss, {"changed": 5, "redo": False, "addresses": 5}, "PRIVATE"))
+        # Again: nothing to do, nothing to log.
         self.admin_client.post(API + "fill/", {}, format="json")
         self.assertEqual(self.admin_client.get(API + "job/").data["job"]["message"], "没有要补全的记录。")
+        self.assertEqual(ActivityLog.objects.filter(kind="fill_ip_geo").count(), 1)
 
     def test_looking_everything_up_again(self):
         self.install()
@@ -836,10 +846,11 @@ class FillTests(GeoTestMixin, LinksTestCase):
         self.install(build_mmdb({"8.8.8.0/24": city(place(4030656, "U.S. Outlying Islands", "美国本土外小岛屿", iso_code="UM"))}))
         self.admin_client.post(API + "fill/", {"redo": True}, format="json")
         self.assertEqual([self.location(row) for row in (self.blank_us, self.filled, self.blank_cn, self.alice)], ["UM", "UM", UNKNOWN, UNKNOWN])
-        # 5 addresses; the two rows of 8.8.8.8, 1.2.4.8, Alice's login and the download changed, the private
-        # address stayed PRIVATE.
+        # 6 addresses (the first 补全's entry in the activity log has the admin's); the two rows of 8.8.8.8,
+        # 1.2.4.8, Alice's login and the download changed, the private addresses stayed PRIVATE.
         job = self.admin_client.get(API + "job/").data["job"]
-        self.assertEqual(job["message"], "重新查了 5 个 IP，5 条记录的归属地有变化。")
+        self.assertEqual(job["message"], "重新查了 6 个 IP，5 条记录的归属地有变化。")
+        self.assertEqual(ActivityLog.objects.filter(kind="fill_ip_geo").latest("id").detail, {"changed": 5, "redo": True, "addresses": 6})
 
     def test_an_ip_in_two_tables_is_looked_up_once(self):
         self.install()

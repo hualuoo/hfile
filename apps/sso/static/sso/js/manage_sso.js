@@ -121,7 +121,7 @@
     }
 
     panel.replaceChildren(...[
-      h('p', { class: 'muted', text: gettext('Once linked, they can log in with these providers\' accounts. When someone without a link fails to log in with single sign-on, the login log shows "short-name:user-ID", which you can link here; before linking, check with the provider that the ID really is theirs.') }),
+      h('p', { class: 'muted', text: gettext('Once linked, they can log in with these providers\' accounts. When someone without a link fails to log in with single sign-on, the activity log shows "short-name:user-ID", which you can link here; before linking, check with the provider that the ID really is theirs.') }),
       own ? h('p', { class: 'notice notice-info', text: gettext('This is your own account: to link or unlink, use "Linked accounts" in the menu at the top right (linking asks for your login password).') }) : null,
       error,
       items.length ? h('ul', { class: 'list list-divided sso-identity-list' }, items)

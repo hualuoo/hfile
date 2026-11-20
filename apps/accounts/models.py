@@ -4,14 +4,13 @@ from django.contrib.auth.models import AbstractUser, UserManager as DjangoUserMa
 from django.db import models
 from django.db.models import Q
 from django.db.models.functions import Lower
-from django.utils import timezone
 from django.utils.crypto import salted_hmac
 from django.utils.translation import gettext_lazy, gettext_noop
 
 from apps.ipgeo.sources import LOCATION_MAX
 
 from .permissions import ADMIN_DEFAULTS, validate_permissions
-from .validators import NICKNAME_MAX, USERNAME_MAX, validate_nickname
+from .validators import NICKNAME_MAX, validate_nickname
 
 
 class Kind(models.TextChoices):
@@ -174,35 +173,3 @@ class User(AbstractUser):
 
     def get_short_name(self):
         return self.display_name
-
-
-class LoginLog(models.Model):
-    """登录日志: one login attempt that was checked, and how it went. Never a password.
-
-    Written while SiteSettings.login_log is on (apps/accounts/loginlog.py). `username` is what was typed
-    (cut to its length); `user` the account it matched, a link that goes when the account is deleted.
-    `reason` and `source` are codes of loginlog.REASONS and loginlog.SOURCES, `ip_location` one of the ipgeo
-    app's (apps/ipgeo/places.py).
-    """
-
-    class Result(models.TextChoices):
-        SUCCESS = "success", gettext_lazy("Succeeded")
-        FAILURE = "failure", gettext_lazy("Failed")
-
-    created_at = models.DateTimeField(gettext_lazy("Time"), default=timezone.now, db_index=True)
-    username = models.CharField(gettext_lazy("Username entered"), max_length=USERNAME_MAX, blank=True)
-    user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, related_name="+", verbose_name=gettext_lazy("User"))
-    ip = models.GenericIPAddressField("IP", null=True, blank=True, unpack_ipv4=True)
-    # Its IP 归属地 (ipgeo app): looked up when the entry is written while that is turned on, or filled in
-    # later (补全 on /manage/#ip-geo).
-    ip_location = models.CharField(gettext_lazy("IP location"), max_length=LOCATION_MAX, blank=True)
-    user_agent = models.CharField(gettext_lazy("Browser"), max_length=500, blank=True)
-    result = models.CharField(gettext_lazy("Result"), max_length=10, choices=Result.choices)
-    reason = models.CharField(gettext_lazy("Reason"), max_length=32, blank=True)
-    source = models.CharField(gettext_lazy("Where"), max_length=16, blank=True)
-
-    class Meta:
-        verbose_name = verbose_name_plural = gettext_lazy("Login log")
-
-    def __str__(self):
-        return f"{self.username} {self.get_result_display()}"

@@ -33,6 +33,7 @@ apps.storages.access's and files' codes. The downloads themselves are pages: /sh
 
 from __future__ import annotations
 
+from django.db import transaction
 from django.utils.cache import add_never_cache_headers
 from django.utils.translation import gettext as _, gettext_lazy, ngettext
 from rest_framework import status
@@ -42,6 +43,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.accounts.models import Kind
+from apps.activity import log as activity
 from apps.core.auth import enforce_csrf
 from apps.core.exceptions import PayloadTooLarge
 from apps.core.permissions import IsAdmin
@@ -121,7 +123,17 @@ class ClearExpiredView(APIView):
     permission_classes = [IsMember]
 
     def post(self, request):
-        return Response({"deleted": service.clear_expired(owner=request.user)})
+        return Response({"deleted": _clear_expired(request, owner=request.user)})
+
+
+def _clear_expired(request, owner=None):
+    """清理所有已过期分享 (the owner's; owner None: everybody's), logged in the activity log when it deletes some."""
+    with transaction.atomic():
+        deleted = service.clear_expired(owner=owner)
+        if deleted:
+            activity.record(activity.Kind.CLEAR_SHARES, actor=request.user,
+                            detail={"count": deleted, **({"everyone": True} if owner is None else {})})
+    return deleted
 
 
 class _VisitorView(APIView):
@@ -170,7 +182,11 @@ def _delete(request, key):
         raise shares.ShareError(shares.SHARE_NOT_FOUND, _("The share link doesn't exist; it may have been deleted."), status=404)
     if not service.may_delete(request.user, share):
         raise shares.ShareError("not_owner", _("Only the person who shared it or a superuser can delete this share."), status=403)
-    share.delete()
+    with transaction.atomic():
+        activity.record(activity.Kind.DELETE_SHARE, actor=request.user,
+                        target=share.owner if share.owner_id != request.user.pk else None, storage=share.storage,
+                        path=share.folder, key=share.key, detail=service.log_detail(share))
+        share.delete()
     return Response(status=status.HTTP_204_NO_CONTENT)
 
 
@@ -252,4 +268,4 @@ class ManageClearExpiredView(APIView):
     permission_classes = [IsAdmin]
 
     def post(self, request):
-        return Response({"deleted": service.clear_expired()})
+        return Response({"deleted": _clear_expired(request)})

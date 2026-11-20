@@ -36,6 +36,7 @@ from django.db import DEFAULT_DB_ALIAS, DatabaseError, connections, transaction
 from django.utils.translation import gettext as _, ngettext
 
 from config import cli, configfile, database, private
+from apps.activity import log as activity
 from apps.siteconf.models import SiteSettings
 from apps.upgrades import service as upgrades
 
@@ -444,6 +445,7 @@ def install(*, username, password, site_name, db=None):
                 site = SiteSettings.load()
                 site.site_name = site_name
                 site.save(update_fields=["site_name", "updated_at"])
+                activity.record(activity.Kind.INSTALL, actor=admin)
         except DatabaseError as error:
             raise InstallError(upgrades.unreachable(error), log=out.getvalue()) from error
         return admin

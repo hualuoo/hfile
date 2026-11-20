@@ -12,7 +12,8 @@ from django.utils import timezone
 from PIL import Image
 from rest_framework.test import APIClient, APITestCase
 
-from apps.accounts.models import LoginLog
+from apps.activity.models import ActivityLog
+from apps.activity.testing import logins, only_login
 from apps.accounts.serializers import LOGIN_FAILED
 from apps.core.testing import admin_url
 from apps.siteconf.models import SiteSettings
@@ -176,17 +177,17 @@ class LoginTests(APITestCase):
         r = self.login()
         self.assertEqual((r.status_code, r.json()), (200, {
             "authenticated": False, "step": "captcha", "before_password": True, "detail": "还要图片验证码才能登录。"}))
-        self.assertFalse(LoginLog.objects.exists())  # nothing was checked yet
+        self.assertFalse(ActivityLog.objects.exists())  # nothing was checked yet
         self.assertFalse(self.client.get(SESSION).json()["authenticated"])
 
     def test_checked_before_the_password(self):
         r = self.login("wrong-password", **self.wrong())
         self.assertEqual((r.status_code, r.json()), (400, {"captcha": [service.WRONG]}))
-        entry = LoginLog.objects.get()
+        entry = only_login(self)
         self.assertEqual((entry.username, entry.reason, entry.user), ("alice", "captcha", None))
         r = self.login(captcha_key="", captcha="")  # sent but empty: not a try
         self.assertEqual(r.json(), {"captcha": [service.MISSING]})
-        self.assertEqual(LoginLog.objects.count(), 1)
+        self.assertEqual(len(logins()), 1)
 
     def test_a_wrong_password_uses_the_picture_up(self):
         fields = self.solved()
@@ -234,7 +235,7 @@ class AdminLoginTests(TestCase):
         self.assertContains(r, service.WRONG)
         self.assertFalse(Challenge.objects.filter(key=key).exists())
         self.assertNotIn("_auth_user_id", self.browser.session)
-        self.assertEqual(list(LoginLog.objects.values_list("reason", "source")), [("captcha", "admin")])
+        self.assertEqual([(entry.reason, entry.source) for entry in logins()], [("captcha", "admin")])
         # The page that says so has a new picture.
         new_key = re.search(r'name="captcha_key" value="([0-9a-f]{32})"', r.content.decode()).group(1)
         self.assertTrue(Challenge.objects.filter(key=new_key).exists())

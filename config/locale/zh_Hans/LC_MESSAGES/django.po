@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HFile\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-20 23:02+0800\n"
+"POT-Creation-Date: 2026-11-21 00:38+0800\n"
 "Language: zh_Hans\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -267,26 +267,6 @@ msgid "The password is at most {max_length} character."
 msgid_plural "The password is at most {max_length} characters."
 msgstr[0] "密码最多 {max_length} 个字符。"
 
-#: apps/accounts/manage_serializers.py apps/links/manage_serializers.py
-msgid "record"
-msgstr "记录"
-
-#: apps/accounts/manage_serializers.py apps/links/manage_serializers.py
-msgid "Write the start of an IP address, like 192.168. or 2001:db8:."
-msgstr "写 IP 地址的开头，比如 192.168. 或 2001:db8:。"
-
-#: apps/accounts/manage_serializers.py apps/links/manage_serializers.py
-msgid "The end date can't be before the start date."
-msgstr "结束日期不能早于开始日期。"
-
-#: apps/accounts/manage_serializers.py
-msgid "No records were selected to delete."
-msgstr "没有选中要删除的记录。"
-
-#: apps/accounts/manage_serializers.py apps/links/manage_serializers.py
-msgid "At most 1000 can be deleted at a time."
-msgstr "一次最多删除 1000 条。"
-
 #: apps/accounts/management/commands/resetadmin.py
 msgid ""
 "Gives a superuser a new password and turns off their two-step verification "
@@ -393,12 +373,12 @@ msgid "%(name)s: %(notes)s"
 msgstr "%(name)s：%(notes)s"
 
 #: apps/accounts/management/commands/resetadmin.py apps/accounts/permissions.py
-#: apps/core/cleanup.py apps/core/filters.py apps/core/images.py
-#: apps/core/parsers.py apps/core/query.py apps/installer/service.py
-#: apps/siteconf/serializers.py apps/siteconf/views.py
-#: apps/storages/drivers/s3.py apps/storages/instances.py
-#: apps/upgrades/management/commands/restore.py apps/upgrades/service.py
-#: apps/upgrades/startup.py config/configfile.py
+#: apps/activity/describe.py apps/core/cleanup.py apps/core/filters.py
+#: apps/core/images.py apps/core/parsers.py apps/core/query.py
+#: apps/installer/service.py apps/siteconf/serializers.py
+#: apps/siteconf/views.py apps/storages/drivers/s3.py
+#: apps/storages/instances.py apps/upgrades/management/commands/restore.py
+#: apps/upgrades/service.py apps/upgrades/startup.py config/configfile.py
 msgid ", "
 msgstr "、"
 
@@ -490,7 +470,7 @@ msgid "This user doesn't exist any more; it may have just been deleted."
 msgstr "这个用户已经不存在了，可能刚被删除。"
 
 #: apps/accounts/models.py apps/accounts/templates/accounts/manage/users.html
-#: apps/accounts/validators.py
+#: apps/accounts/validators.py apps/activity/describe.py
 msgid "Nickname"
 msgstr "昵称"
 
@@ -547,66 +527,19 @@ msgid "Two-step verification turned on at"
 msgstr "两步验证开启时间"
 
 #: apps/accounts/models.py apps/accounts/templates/accounts/manage/users.html
+#: apps/activity/models.py
+#: apps/activity/templates/activity/manage/activity_log.html
 #: apps/links/models.py apps/links/templates/links/manage/download_logs.html
 #: apps/sso/models.py apps/storages/drivers/microsoft.py
 msgid "User"
 msgstr "用户"
 
-#: apps/accounts/models.py
-#: apps/accounts/templates/accounts/manage/login_log.html
-msgid "Succeeded"
-msgstr "成功"
-
-#: apps/accounts/models.py
-#: apps/accounts/templates/accounts/manage/login_log.html apps/ipgeo/models.py
-#: apps/storages/drivers/sftp.py apps/uploads/models.py
-msgid "Failed"
-msgstr "失败"
-
-#: apps/accounts/models.py
-#: apps/accounts/templates/accounts/manage/login_log.html
-msgid "Time"
-msgstr "时间"
-
-#: apps/accounts/models.py
-msgid "Username entered"
-msgstr "输入的用户名"
-
-#: apps/accounts/models.py apps/ipgeo/apps.py
-#: apps/ipgeo/templates/ipgeo/manage/ip_geo.html apps/links/models.py
-#: apps/web/navigation.py
-msgid "IP location"
-msgstr "IP 归属地"
-
-#: apps/accounts/models.py
-#: apps/accounts/templates/accounts/manage/login_log.html
-msgid "Browser"
-msgstr "浏览器"
-
-#: apps/accounts/models.py
-#: apps/accounts/templates/accounts/manage/login_log.html
-msgid "Result"
-msgstr "结果"
-
-#: apps/accounts/models.py
-msgid "Reason"
-msgstr "原因"
-
-#: apps/accounts/models.py
-msgid "Where"
-msgstr "登录的地方"
-
-#: apps/accounts/models.py
-#: apps/accounts/templates/accounts/manage/login_log.html apps/ipgeo/jobs.py
-#: apps/web/navigation.py
-msgid "Login log"
-msgstr "登录日志"
-
-#: apps/accounts/permissions.py apps/files/templates/files/browser.html
+#: apps/accounts/permissions.py apps/activity/models.py
+#: apps/files/templates/files/browser.html
 msgid "New folder"
 msgstr "新建文件夹"
 
-#: apps/accounts/permissions.py apps/uploads/apps.py
+#: apps/accounts/permissions.py apps/activity/models.py apps/uploads/apps.py
 msgid "Upload"
 msgstr "上传"
 
@@ -622,21 +555,21 @@ msgstr "下载"
 msgid "Copy download link"
 msgstr "复制下载链接"
 
-#: apps/accounts/permissions.py apps/files/service.py
+#: apps/accounts/permissions.py apps/activity/models.py apps/files/service.py
 msgid "Rename"
 msgstr "重命名"
 
-#: apps/accounts/permissions.py apps/files/service.py
+#: apps/accounts/permissions.py apps/activity/models.py apps/files/service.py
 #: apps/siteconf/templates/siteconf/manage/diagnostics.html
 #: apps/sso/templates/sso/manage/providers.html
 msgid "Copy"
 msgstr "复制"
 
-#: apps/accounts/permissions.py apps/files/service.py
+#: apps/accounts/permissions.py apps/activity/models.py apps/files/service.py
 msgid "Move"
 msgstr "移动"
 
-#: apps/accounts/permissions.py apps/files/service.py
+#: apps/accounts/permissions.py apps/activity/models.py apps/files/service.py
 msgid "Delete"
 msgstr "删除"
 
@@ -779,9 +712,9 @@ msgid "Wrong password."
 msgstr "密码不对。"
 
 #: apps/accounts/templates/accounts/_login_fields.html
-#: apps/accounts/templates/accounts/manage/login_log.html
 #: apps/accounts/templates/accounts/manage/users.html
-#: apps/accounts/validators.py apps/installer/forms.py
+#: apps/accounts/validators.py apps/activity/describe.py
+#: apps/activity/models.py apps/installer/forms.py
 #: apps/storages/drivers/autoindex.py apps/storages/drivers/emby.py
 #: apps/storages/drivers/ftp.py apps/storages/drivers/kodbox.py
 #: apps/storages/drivers/openlist.py apps/storages/drivers/seafile.py
@@ -860,96 +793,6 @@ msgstr "已忘记你的登录凭证？"
 msgid "Log in to %(site_name)s"
 msgstr "登录 %(site_name)s"
 
-#: apps/accounts/templates/accounts/manage/login_log.html
-#: apps/links/templates/links/manage/download_logs.html
-#: apps/links/templates/links/manage/short_links.html
-#: apps/shares/templates/shares/_list.html
-#: apps/siteconf/templates/siteconf/manage/diagnostics.html
-#: apps/web/templates/web/manage/version.html
-msgid "Refresh"
-msgstr "刷新"
-
-#: apps/accounts/templates/accounts/manage/login_log.html
-msgid ""
-"Every login (the site's login box, the login page and the Django admin's "
-"login page) is logged with its time, the username entered, IP, browser and "
-"result, whether it succeeded or failed. Passwords aren't logged. Logins "
-"stopped by the rate limit are logged once a minute for each IP."
-msgstr ""
-"每次登录（网站的登录框、登录页和后台的登录页）的时间、输入的用户名、IP、浏览"
-"器和结果，成功和失败的都记。不记录密码。被频率限制拦下的，每个 IP 每分钟记一"
-"条。"
-
-#: apps/accounts/templates/accounts/manage/login_log.html
-msgid ""
-"Logins aren't being logged now: \"Log logins\" is off in \"Security "
-"settings\". Below is what was logged before."
-msgstr ""
-"现在没有记录登录日志：「安全设置」里关掉了「记录登录日志」。下面是以前记下"
-"的。"
-
-#: apps/accounts/templates/accounts/manage/login_log.html
-msgid "Username (contains)"
-msgstr "用户名（包含）"
-
-#: apps/accounts/templates/accounts/manage/login_log.html
-#: apps/links/templates/links/manage/download_logs.html
-msgid "IP starts with"
-msgstr "IP 的开头"
-
-#: apps/accounts/templates/accounts/manage/login_log.html
-msgid "All results"
-msgstr "全部结果"
-
-#: apps/accounts/templates/accounts/manage/login_log.html
-msgid "Date"
-msgstr "日期"
-
-#: apps/accounts/templates/accounts/manage/login_log.html
-#: apps/links/templates/links/manage/download_logs.html
-msgid "From date"
-msgstr "从哪天"
-
-#: apps/accounts/templates/accounts/manage/login_log.html
-#: apps/links/templates/links/manage/download_logs.html
-#: apps/links/templates/links/manage/short_links.html
-#: apps/shares/templates/shares/_list.html
-msgid "to"
-msgstr "至"
-
-#: apps/accounts/templates/accounts/manage/login_log.html
-#: apps/links/templates/links/manage/download_logs.html
-msgid "To date"
-msgstr "到哪天"
-
-#: apps/accounts/templates/accounts/manage/login_log.html
-#: apps/links/templates/links/manage/download_logs.html
-#: apps/links/templates/links/manage/short_links.html
-#: apps/shares/templates/shares/_list.html
-msgid "Clear filters"
-msgstr "清除条件"
-
-#: apps/accounts/templates/accounts/manage/login_log.html
-#: apps/links/templates/links/manage/download_logs.html
-#: apps/links/templates/links/manage/short_links.html
-msgid "Delete selected"
-msgstr "删除选中的"
-
-#: apps/accounts/templates/accounts/manage/login_log.html
-#: apps/links/templates/links/manage/download_logs.html
-msgid "Delete all found"
-msgstr "删除查到的全部"
-
-#: apps/accounts/templates/accounts/manage/login_log.html
-#: apps/links/templates/links/manage/download_logs.html
-#: apps/links/templates/links/manage/short_links.html
-msgid "Select this page"
-msgstr "选中这一页"
-
-#: apps/accounts/templates/accounts/manage/login_log.html
-msgid "Login log pages"
-msgstr "登录日志翻页"
-
 #: apps/accounts/templates/accounts/manage/users.html apps/web/navigation.py
 msgctxt "manage menu"
 msgid "Users"
@@ -1012,9 +855,9 @@ msgstr "最近登录的在前"
 msgid "By username"
 msgstr "按用户名"
 
-#: apps/accounts/templates/accounts/manage/users.html apps/ipgeo/models.py
-#: apps/sso/models.py apps/sso/templates/sso/manage/providers.html
-#: apps/storages/models.py
+#: apps/accounts/templates/accounts/manage/users.html apps/activity/describe.py
+#: apps/ipgeo/models.py apps/sso/models.py
+#: apps/sso/templates/sso/manage/providers.html apps/storages/models.py
 msgid "Enabled"
 msgstr "启用"
 
@@ -1166,6 +1009,616 @@ msgid ""
 "Two-step verification is already on. To move to another phone, turn it off "
 "and set it up again."
 msgstr "两步验证已经开着了。要换一部手机，先关掉再重新设置。"
+
+#: apps/activity/apps.py apps/activity/models.py
+#: apps/activity/templates/activity/manage/activity_log.html apps/ipgeo/jobs.py
+#: apps/web/navigation.py
+msgid "Activity log"
+msgstr "操作日志"
+
+#: apps/activity/describe.py apps/siteconf/views.py apps/storages/instances.py
+#: apps/storages/service.py
+msgid "; "
+msgstr "；"
+
+#: apps/activity/describe.py
+msgctxt "between the parts of one change"
+msgid ", "
+msgstr "，"
+
+#: apps/activity/describe.py
+#, python-format
+msgid "%(names)s, … (%(count)s in all)"
+msgid_plural "%(names)s, … (%(count)s in all)"
+msgstr[0] "%(names)s 等 %(count)s 项"
+
+#: apps/activity/describe.py apps/shares/templates/shares/share.html
+msgid "Never expires"
+msgstr "永久有效"
+
+#: apps/activity/describe.py
+#, python-format
+msgid "Expires %(time)s"
+msgstr "有效期到 %(time)s"
+
+#: apps/activity/describe.py
+msgid "(empty)"
+msgstr "（空）"
+
+#: apps/activity/describe.py
+#, python-format
+msgid "%(label)s: %(old)s → %(new)s"
+msgstr "%(label)s：%(old)s → %(new)s"
+
+#: apps/activity/describe.py
+#, python-format
+msgid "added %(items)s"
+msgstr "加上 %(items)s"
+
+#: apps/activity/describe.py
+#, python-format
+msgid "removed %(items)s"
+msgstr "去掉 %(items)s"
+
+#: apps/activity/describe.py
+#, python-format
+msgid "typed \"%(username)s\""
+msgstr "输入的是「%(username)s」"
+
+#: apps/activity/describe.py
+msgid "Set a password (there was none)"
+msgstr "设置了密码（以前没有）"
+
+#: apps/activity/describe.py
+msgid "For a folder upload"
+msgstr "上传文件夹时新建"
+
+#: apps/activity/describe.py
+msgid "The folder and everything in it"
+msgstr "文件夹，连同里面的东西"
+
+#: apps/activity/describe.py
+msgid "Replaced the file that was there"
+msgstr "替换了原来的文件"
+
+#: apps/activity/describe.py
+msgid "New file"
+msgstr "新文件"
+
+#: apps/activity/describe.py
+msgid "With a password"
+msgstr "有访问密码"
+
+#: apps/activity/describe.py
+#, python-format
+msgid "%(count)s share, everybody's"
+msgid_plural "%(count)s shares, everybody's"
+msgstr[0] "所有人的 %(count)s 个分享"
+
+#: apps/activity/describe.py
+#, python-format
+msgid "%(count)s share"
+msgid_plural "%(count)s shares"
+msgstr[0] "共 %(count)s 个分享"
+
+#: apps/activity/describe.py
+msgid "Disabled"
+msgstr "已停用"
+
+#: apps/activity/describe.py
+msgid "No password"
+msgstr "没有密码"
+
+#: apps/activity/describe.py apps/web/templates/web/dialogs/password.html
+msgid "New password"
+msgstr "新密码"
+
+#: apps/activity/describe.py
+#, python-format
+msgid "Default permissions: %(changes)s"
+msgstr "默认权限：%(changes)s"
+
+#: apps/activity/describe.py
+#, python-format
+msgid "Copied from %(username)s"
+msgstr "从 %(username)s 复制"
+
+#: apps/activity/describe.py
+msgid "allowed"
+msgstr "可以用"
+
+#: apps/activity/describe.py
+msgid "not allowed any more"
+msgstr "不能用了"
+
+#: apps/activity/describe.py apps/storages/models.py
+msgid "Root folder"
+msgstr "根目录"
+
+#: apps/activity/describe.py
+#, python-format
+msgid "%(storage)s: %(changes)s"
+msgstr "%(storage)s：%(changes)s"
+
+#: apps/activity/describe.py
+#, python-format
+msgid "settings (%(params)s)"
+msgstr "参数（%(params)s）"
+
+#: apps/activity/describe.py
+#, python-format
+msgid "Changed: %(fields)s"
+msgstr "改了：%(fields)s"
+
+#: apps/activity/describe.py
+#, python-format
+msgid "Copied from \"%(name)s\""
+msgstr "从「%(name)s」复制"
+
+#: apps/activity/describe.py
+msgid "Its permanent download links made before stop working"
+msgstr "以前生成的永久下载链接都失效了"
+
+#: apps/activity/describe.py
+#, python-format
+msgid "%(count)s added"
+msgid_plural "%(count)s added"
+msgstr[0] "加了 %(count)s 条"
+
+#: apps/activity/describe.py
+#, python-format
+msgid "%(count)s changed"
+msgid_plural "%(count)s changed"
+msgstr[0] "改了 %(count)s 条"
+
+#: apps/activity/describe.py
+#, python-format
+msgid "%(count)s removed"
+msgid_plural "%(count)s removed"
+msgstr[0] "删了 %(count)s 条"
+
+#: apps/activity/describe.py
+#, python-format
+msgid "%(count)s short link"
+msgid_plural "%(count)s short links"
+msgstr[0] "%(count)s 个短链"
+
+#: apps/activity/describe.py
+msgid "the expired ones"
+msgstr "过期的"
+
+#: apps/activity/describe.py
+#, python-format
+msgid "with %(count)s download log entry"
+msgid_plural "with %(count)s download log entries"
+msgstr[0] "连同 %(count)s 条下载日志"
+
+#: apps/activity/describe.py
+#, python-format
+msgid "%(count)s entry"
+msgid_plural "%(count)s entries"
+msgstr[0] "共 %(count)s 条"
+
+#: apps/activity/describe.py
+msgid "Turned on"
+msgstr "启用"
+
+#: apps/activity/describe.py
+msgid "Turned off"
+msgstr "停用"
+
+#: apps/activity/describe.py
+#, python-format
+msgid "Data of %(date)s"
+msgstr "数据日期 %(date)s"
+
+#: apps/activity/describe.py apps/ipgeo/jobs.py
+#, python-format
+msgid "Looked up %(count)s IP again"
+msgid_plural "Looked up %(count)s IPs again"
+msgstr[0] "重新查了 %(count)s 个 IP"
+
+#: apps/activity/describe.py
+#, python-format
+msgid "the location of %(count)s record changed"
+msgid_plural "the locations of %(count)s records changed"
+msgstr[0] "%(count)s 条记录的归属地有变化"
+
+#: apps/activity/describe.py
+#, python-format
+msgid "%(count)s record filled in"
+msgid_plural "%(count)s records filled in"
+msgstr[0] "补全了 %(count)s 条记录"
+
+#: apps/activity/describe.py
+msgid "two-step verification turned off"
+msgstr "关掉了两步验证"
+
+#: apps/activity/describe.py
+msgid "enabled again"
+msgstr "重新启用了"
+
+#: apps/activity/describe.py
+msgid "can open the Manage page again"
+msgstr "又能打开管理页了"
+
+#: apps/activity/log.py
+msgid "Account"
+msgstr "账号"
+
+#: apps/activity/log.py
+msgid "All account actions"
+msgstr "全部账号操作"
+
+#: apps/activity/log.py apps/files/apps.py
+#: apps/files/templates/files/browser.html
+msgid "Files"
+msgstr "文件"
+
+#: apps/activity/log.py
+msgid "All file actions"
+msgstr "全部文件操作"
+
+#: apps/activity/log.py
+msgid "Links and shares"
+msgstr "链接和分享"
+
+#: apps/activity/log.py
+msgid "All link and share actions"
+msgstr "全部链接和分享操作"
+
+#: apps/activity/log.py
+msgid "User management"
+msgstr "用户管理"
+
+#: apps/activity/log.py
+msgid "All user management"
+msgstr "全部用户管理"
+
+#: apps/activity/log.py
+msgid "Storage source management"
+msgstr "存储源管理"
+
+#: apps/activity/log.py
+msgid "All storage source management"
+msgstr "全部存储源管理"
+
+#: apps/activity/log.py
+msgid "Site management"
+msgstr "网站管理"
+
+#: apps/activity/log.py
+msgid "All site management"
+msgstr "全部网站管理"
+
+#: apps/activity/models.py
+msgid "Login"
+msgstr "登录"
+
+#: apps/activity/models.py
+msgid "Failed login"
+msgstr "登录失败"
+
+#: apps/activity/models.py
+msgid "Password change"
+msgstr "修改密码"
+
+#: apps/activity/models.py
+msgid "Two-step verification on"
+msgstr "开启两步验证"
+
+#: apps/activity/models.py
+msgid "Two-step verification off"
+msgstr "关闭两步验证"
+
+#: apps/activity/models.py
+msgid "Single sign-on linked"
+msgstr "绑定单点登录"
+
+#: apps/activity/models.py
+msgid "Single sign-on unlinked"
+msgstr "解除单点登录绑定"
+
+#: apps/activity/models.py
+msgid "Registered by single sign-on"
+msgstr "单点登录注册"
+
+#: apps/activity/models.py
+msgid "Online edit"
+msgstr "在线编辑"
+
+#: apps/activity/models.py
+msgid "Short link made"
+msgstr "生成短链"
+
+#: apps/activity/models.py
+msgid "Share created"
+msgstr "创建分享"
+
+#: apps/activity/models.py
+msgctxt "activity log"
+msgid "Share deleted"
+msgstr "删除分享"
+
+#: apps/activity/models.py
+msgid "Expired shares cleared"
+msgstr "清理过期分享"
+
+#: apps/activity/models.py
+msgid "User created"
+msgstr "新建用户"
+
+#: apps/activity/models.py
+msgid "User changed"
+msgstr "修改用户"
+
+#: apps/activity/models.py
+msgid "User copied"
+msgstr "复制用户"
+
+#: apps/activity/models.py
+msgid "User deleted"
+msgstr "删除用户"
+
+#: apps/activity/models.py
+msgid "Storage source permissions changed"
+msgstr "修改存储源权限"
+
+#: apps/activity/models.py
+msgid "Single sign-on linked for a user"
+msgstr "替用户绑定单点登录"
+
+#: apps/activity/models.py
+msgid "Single sign-on unlinked for a user"
+msgstr "替用户解除绑定"
+
+#: apps/activity/models.py
+msgid "Storage source created"
+msgstr "新建存储源"
+
+#: apps/activity/models.py
+msgid "Storage source changed"
+msgstr "修改存储源"
+
+#: apps/activity/models.py
+msgid "Storage source deleted"
+msgstr "删除存储源"
+
+#: apps/activity/models.py
+msgid "Storage source enabled"
+msgstr "启用存储源"
+
+#: apps/activity/models.py
+msgid "Storage source disabled"
+msgstr "停用存储源"
+
+#: apps/activity/models.py
+msgid "Storage source copied"
+msgstr "复制存储源"
+
+#: apps/activity/models.py
+msgid "Storage sources reordered"
+msgstr "调整存储源顺序"
+
+#: apps/activity/models.py
+msgid "Link secret replaced"
+msgstr "更换链接密钥"
+
+#: apps/activity/models.py
+msgid "Filter rules changed"
+msgstr "修改过滤规则"
+
+#: apps/activity/models.py
+msgid "Folder passwords changed"
+msgstr "修改目录密码"
+
+#: apps/activity/models.py
+msgid "Folder readmes changed"
+msgstr "修改目录文档"
+
+#: apps/activity/models.py
+msgid "Settings changed"
+msgstr "修改设置"
+
+#: apps/activity/models.py
+msgid "Single sign-on added"
+msgstr "新增单点登录"
+
+#: apps/activity/models.py
+msgid "Single sign-on changed"
+msgstr "修改单点登录"
+
+#: apps/activity/models.py
+msgid "Single sign-on deleted"
+msgstr "删除单点登录"
+
+#: apps/activity/models.py
+msgid "Single sign-on reordered"
+msgstr "调整单点登录顺序"
+
+#: apps/activity/models.py
+msgid "Short links deleted"
+msgstr "删除短链"
+
+#: apps/activity/models.py
+msgid "Download log entries deleted"
+msgstr "删除下载日志"
+
+#: apps/activity/models.py
+msgid "IP location turned on or off"
+msgstr "启用或停用 IP 归属地"
+
+#: apps/activity/models.py
+msgid "IP location database downloaded"
+msgstr "下载 IP 归属地数据库"
+
+#: apps/activity/models.py
+msgid "IP locations filled in"
+msgstr "补全 IP 归属地"
+
+#: apps/activity/models.py
+msgid "Installed"
+msgstr "安装"
+
+#: apps/activity/models.py
+msgid "Superuser reset (resetadmin)"
+msgstr "重置超级管理员（resetadmin）"
+
+#: apps/activity/models.py
+#: apps/activity/templates/activity/manage/activity_log.html
+msgid "Time"
+msgstr "时间"
+
+#: apps/activity/models.py
+#: apps/activity/templates/activity/manage/activity_log.html
+msgid "Action"
+msgstr "操作"
+
+#: apps/activity/models.py
+msgid "User it was about"
+msgstr "涉及的用户"
+
+#: apps/activity/models.py
+msgid "Username it was about"
+msgstr "涉及的用户名"
+
+#: apps/activity/models.py
+#: apps/activity/templates/activity/manage/activity_log.html
+#: apps/files/templates/files/browser.html apps/links/models.py
+#: apps/links/templates/links/manage/download_logs.html
+#: apps/links/templates/links/manage/short_links.html apps/office/models.py
+#: apps/shares/models.py apps/shares/templates/shares/_list.html
+#: apps/storages/apps.py apps/storages/models.py
+msgid "Storage source"
+msgstr "存储源"
+
+#: apps/activity/models.py apps/links/manage_views.py
+msgid "Storage source name"
+msgstr "存储源名称"
+
+#: apps/activity/models.py apps/office/models.py
+msgid "Path"
+msgstr "路径"
+
+#: apps/activity/models.py
+msgid "New path"
+msgstr "新路径"
+
+#: apps/activity/models.py
+#: apps/activity/templates/activity/manage/activity_log.html
+msgid "Details"
+msgstr "详情"
+
+#: apps/activity/models.py apps/ipgeo/apps.py
+#: apps/ipgeo/templates/ipgeo/manage/ip_geo.html apps/links/models.py
+#: apps/web/navigation.py
+msgid "IP location"
+msgstr "IP 归属地"
+
+#: apps/activity/models.py
+#: apps/activity/templates/activity/manage/activity_log.html
+msgid "Browser"
+msgstr "浏览器"
+
+#: apps/activity/serializers.py
+msgid "There is no such action."
+msgstr "没有这种操作。"
+
+#: apps/activity/serializers.py
+msgid "storage source"
+msgstr "存储源"
+
+#: apps/activity/serializers.py
+msgid "user"
+msgstr "用户"
+
+#: apps/activity/serializers.py
+msgid "That isn't an IP address."
+msgstr "这不是 IP 地址。"
+
+#: apps/activity/serializers.py apps/links/manage_serializers.py
+msgid "The end date can't be before the start date."
+msgstr "结束日期不能早于开始日期。"
+
+#: apps/activity/templates/activity/manage/activity_log.html
+#: apps/links/templates/links/manage/download_logs.html
+#: apps/links/templates/links/manage/short_links.html
+#: apps/shares/templates/shares/_list.html
+#: apps/siteconf/templates/siteconf/manage/diagnostics.html
+#: apps/web/templates/web/manage/version.html
+msgid "Refresh"
+msgstr "刷新"
+
+#: apps/activity/templates/activity/manage/activity_log.html
+msgid ""
+"Logins (also those that failed, with why); new folders, renaming, moving, "
+"copying, deleting, uploading and editing files; short links and shares; and "
+"every change admins make: each is logged here with its time, IP and browser, "
+"who did it and to what. Downloads are in \"Download log\". Passwords and "
+"other secrets are never logged. Nothing can change or delete the log. Click "
+"a user or an IP to see only theirs."
+msgstr ""
+"登录（也包括没成功的，连同原因）；文件的新建文件夹、重命名、移动、复制、删"
+"除、上传和在线编辑；短链和分享；以及管理员的每次修改：每一条都记着时间、IP 和"
+"浏览器，是谁、对什么做了什么。下载记在「下载日志」里。不记录密码和其他机密。"
+"日志只能新增，不能修改或删除。点用户或 IP 只看相关的记录。"
+
+#: apps/activity/templates/activity/manage/activity_log.html
+msgid "User, path, key or IP"
+msgstr "用户、路径、Key 或 IP"
+
+#: apps/activity/templates/activity/manage/activity_log.html
+msgid ""
+"Search: usernames, nicknames, storage source names, paths, keys or the start "
+"of an IP"
+msgstr "搜索用户名、昵称、存储源名称、路径、Key 或 IP 开头"
+
+#: apps/activity/templates/activity/manage/activity_log.html
+msgid "All actions"
+msgstr "全部操作"
+
+#: apps/activity/templates/activity/manage/activity_log.html
+#: apps/links/templates/links/manage/download_logs.html
+#: apps/links/templates/links/manage/short_links.html
+#: apps/shares/templates/shares/_list.html
+msgid "All storage sources"
+msgstr "全部存储源"
+
+#: apps/activity/templates/activity/manage/activity_log.html
+msgid "Date"
+msgstr "日期"
+
+#: apps/activity/templates/activity/manage/activity_log.html
+#: apps/links/templates/links/manage/download_logs.html
+msgid "From date"
+msgstr "从哪天"
+
+#: apps/activity/templates/activity/manage/activity_log.html
+#: apps/links/templates/links/manage/download_logs.html
+#: apps/links/templates/links/manage/short_links.html
+#: apps/shares/templates/shares/_list.html
+msgid "to"
+msgstr "至"
+
+#: apps/activity/templates/activity/manage/activity_log.html
+#: apps/links/templates/links/manage/download_logs.html
+msgid "To date"
+msgstr "到哪天"
+
+#: apps/activity/templates/activity/manage/activity_log.html
+#: apps/links/templates/links/manage/download_logs.html
+#: apps/links/templates/links/manage/short_links.html
+#: apps/shares/templates/shares/_list.html
+msgid "Clear filters"
+msgstr "清除条件"
+
+#: apps/activity/templates/activity/manage/activity_log.html
+msgid "About"
+msgstr "对象"
+
+#: apps/activity/templates/activity/manage/activity_log.html
+msgid "Activity log pages"
+msgstr "操作日志翻页"
 
 #: apps/captchas/serializers.py
 msgid "There is no such form."
@@ -1674,10 +2127,6 @@ msgstr ""
 msgid "No such file."
 msgstr "没有这个文件。"
 
-#: apps/files/apps.py apps/files/templates/files/browser.html
-msgid "Files"
-msgstr "文件"
-
 #: apps/files/download.py apps/links/delivery.py
 msgid "The file doesn't exist; it may have been deleted or renamed."
 msgstr "文件不存在，可能已经被删除或改名了。"
@@ -1849,14 +2298,6 @@ msgstr "切换存储源"
 #: apps/files/templates/files/browser.html
 msgid "Choose a storage source"
 msgstr "请选择存储源"
-
-#: apps/files/templates/files/browser.html apps/links/models.py
-#: apps/links/templates/links/manage/download_logs.html
-#: apps/links/templates/links/manage/short_links.html apps/office/models.py
-#: apps/shares/models.py apps/shares/templates/shares/_list.html
-#: apps/storages/apps.py apps/storages/models.py
-msgid "Storage source"
-msgstr "存储源"
 
 #: apps/files/templates/files/browser.html
 msgid "New and upload"
@@ -2959,12 +3400,6 @@ msgstr "没有能用的数据库：先启用 IP 归属地，再下载数据库�
 
 #: apps/ipgeo/jobs.py
 #, python-format
-msgid "Looked up %(count)s IP again"
-msgid_plural "Looked up %(count)s IPs again"
-msgstr[0] "重新查了 %(count)s 个 IP"
-
-#: apps/ipgeo/jobs.py
-#, python-format
 msgid "the location of %(count)s record changed."
 msgid_plural "the locations of %(count)s records changed."
 msgstr[0] "%(count)s 条记录的归属地有变化。"
@@ -3021,6 +3456,10 @@ msgstr "进行中"
 #: apps/ipgeo/models.py apps/uploads/models.py
 msgid "Done"
 msgstr "完成"
+
+#: apps/ipgeo/models.py apps/storages/drivers/sftp.py apps/uploads/models.py
+msgid "Failed"
+msgstr "失败"
 
 #: apps/ipgeo/models.py apps/siteconf/models.py
 msgid "File name"
@@ -3114,12 +3553,12 @@ msgstr "写一个 IP 地址，比如 8.8.8.8 或 2001:4860:4860::8888。"
 
 #: apps/ipgeo/templates/ipgeo/manage/ip_geo.html
 msgid ""
-"Turned on, the IPs of the user list, the login log and the download log show "
-"where they are: the country or region and, for many IPs, the province or "
-"state and the city. The lookup happens on this server, in MaxMind's GeoLite2-"
-"City database; IPs aren't sent anywhere."
+"Turned on, the IPs of the user list, the activity log and the download log "
+"show where they are: the country or region and, for many IPs, the province "
+"or state and the city. The lookup happens on this server, in MaxMind's "
+"GeoLite2-City database; IPs aren't sent anywhere."
 msgstr ""
-"启用后，用户列表、登录日志和下载日志里的 IP 旁边显示它在哪里：国家或地区，很"
+"启用后，用户列表、操作日志和下载日志里的 IP 旁边显示它在哪里：国家或地区，很"
 "多 IP 还有省（州）和城市。查询在本机完成，用的是 MaxMind 的 GeoLite2-City 数"
 "据库，IP 不会发给别人。"
 
@@ -3290,18 +3729,26 @@ msgid ""
 "later."
 msgstr "从存储源获取下载地址失败，请稍后再试。"
 
+#: apps/links/manage_serializers.py
+msgid "Write the start of an IP address, like 192.168. or 2001:db8:."
+msgstr "写 IP 地址的开头，比如 192.168. 或 2001:db8:。"
+
 #: apps/links/manage_serializers.py apps/shares/serializers.py
 msgctxt "inside a sentence"
 msgid "storage source"
 msgstr "存储源"
 
 #: apps/links/manage_serializers.py
+msgid "record"
+msgstr "记录"
+
+#: apps/links/manage_serializers.py
 msgid "Please select at least one entry."
 msgstr "请至少选择一条数据。"
 
-#: apps/links/manage_views.py
-msgid "Storage source name"
-msgstr "存储源名称"
+#: apps/links/manage_serializers.py
+msgid "At most 1000 can be deleted at a time."
+msgstr "一次最多删除 1000 条。"
 
 #: apps/links/manage_views.py
 msgid "Storage type"
@@ -3447,12 +3894,6 @@ msgstr ""
 "的。"
 
 #: apps/links/templates/links/manage/download_logs.html
-#: apps/links/templates/links/manage/short_links.html
-#: apps/shares/templates/shares/_list.html
-msgid "All storage sources"
-msgstr "全部存储源"
-
-#: apps/links/templates/links/manage/download_logs.html
 msgid "All types"
 msgstr "全部类型"
 
@@ -3471,12 +3912,30 @@ msgid "User (contains)"
 msgstr "用户（包含）"
 
 #: apps/links/templates/links/manage/download_logs.html
+msgid "IP starts with"
+msgstr "IP 的开头"
+
+#: apps/links/templates/links/manage/download_logs.html
 msgid "User-Agent (contains)"
 msgstr "User-Agent（包含）"
 
 #: apps/links/templates/links/manage/download_logs.html
 msgid "Referer (contains)"
 msgstr "Referer（包含）"
+
+#: apps/links/templates/links/manage/download_logs.html
+#: apps/links/templates/links/manage/short_links.html
+msgid "Delete selected"
+msgstr "删除选中的"
+
+#: apps/links/templates/links/manage/download_logs.html
+msgid "Delete all found"
+msgstr "删除查到的全部"
+
+#: apps/links/templates/links/manage/download_logs.html
+#: apps/links/templates/links/manage/short_links.html
+msgid "Select this page"
+msgstr "选中这一页"
 
 #: apps/links/templates/links/manage/download_logs.html
 msgid "Browser and referer"
@@ -3598,10 +4057,6 @@ msgstr "这是一个文件夹，不是文件。"
 #: apps/office/models.py
 msgid "Document key"
 msgstr "文档 key"
-
-#: apps/office/models.py
-msgid "Path"
-msgstr "路径"
 
 #: apps/office/models.py
 msgid "User for saving"
@@ -3997,10 +4452,6 @@ msgstr "来自 <strong>%(owner)s</strong>"
 msgid "%(entry_count)s item"
 msgid_plural "%(entry_count)s items"
 msgstr[0] "共 %(entry_count)s 项"
-
-#: apps/shares/templates/shares/share.html
-msgid "Never expires"
-msgstr "永久有效"
 
 #: apps/shares/templates/shares/share.html
 msgid "Password required"
@@ -4516,14 +4967,6 @@ msgstr "显示登录入口"
 #: apps/siteconf/models.py
 msgid "Home page for visitors"
 msgstr "匿名用户首页"
-
-#: apps/siteconf/models.py
-msgid "Log logins"
-msgstr "记录登录日志"
-
-#: apps/siteconf/models.py
-msgid "Passwords aren't logged."
-msgstr "不会记录密码。"
 
 #: apps/siteconf/models.py
 msgid "Captcha at login"
@@ -5173,13 +5616,6 @@ msgstr "没登录的人打开首页和文件页时看到什么。分享、直链
 
 #: apps/siteconf/serializers.py
 msgid ""
-"Logs each login's time, username, IP, browser and result, without passwords. "
-"See them in \"Login log\"."
-msgstr ""
-"记下每次登录的时间、用户名、IP、浏览器和结果，不记密码。在「登录日志」里看。"
-
-#: apps/siteconf/serializers.py
-msgid ""
 "Logging in with a password also asks for the characters in a picture, "
 "against mass password guessing. A strong password for every account still "
 "works best."
@@ -5404,12 +5840,12 @@ msgstr ""
 
 #: apps/siteconf/templates/siteconf/manage/security.html
 msgid ""
-"The login entrance, the home page for people who aren't logged in, the login "
-"log and the captcha. Admins set up their two-step verification in their own "
-"menu at the top right."
+"The login entrance, the home page for people who aren't logged in and the "
+"captcha. Admins set up their two-step verification in their own menu at the "
+"top right."
 msgstr ""
-"登录入口、没登录的人看到的首页、登录日志和图片验证码。管理员的两步验证在右上"
-"角自己的菜单里设。"
+"登录入口、没登录的人看到的首页和图片验证码。管理员的两步验证在右上角自己的菜"
+"单里设。"
 
 #: apps/siteconf/templates/siteconf/manage/site.html
 msgid ""
@@ -5557,10 +5993,6 @@ msgid ""
 msgstr ""
 "设置文件的 [site] url 是 %(site_url)s，这个请求看到的地址是 %(origin)s。用的"
 "就是 [site] url 这个地址的话，%(hints)s。"
-
-#: apps/siteconf/views.py apps/storages/instances.py apps/storages/service.py
-msgid "; "
-msgstr "；"
 
 #: apps/siteconf/views.py
 msgid ""
@@ -14045,10 +14477,6 @@ msgid "Allowed"
 msgstr "允许使用"
 
 #: apps/storages/models.py
-msgid "Root folder"
-msgstr "根目录"
-
-#: apps/storages/models.py
 msgid "Hide only"
 msgstr "仅隐藏"
 
@@ -15926,10 +16354,6 @@ msgid ""
 msgstr ""
 "你的账号还没有密码（比如是单点登录时自动建的），不用填原密码。设好以后，也能"
 "用用户名和密码登录。"
-
-#: apps/web/templates/web/dialogs/password.html
-msgid "New password"
-msgstr "新密码"
 
 #: apps/web/templates/web/dialogs/password.html
 msgid "New password again"

@@ -2,7 +2,8 @@
 two-step verification is turned off. A command, not a page: only someone on the server can do it.
 
 With no username: the only superuser, or a list to choose from. The account is enabled again (and
-made staff) if it wasn't. Its sessions end with the new password. Refused before HFile is installed.
+made staff) if it wasn't. Its sessions end with the new password. Refused before HFile is installed. The
+activity log says so, without an IP.
 """
 
 import getpass
@@ -17,6 +18,7 @@ from django.utils.translation import gettext, ngettext
 
 from apps.accounts import entry
 from apps.accounts.backends import find_user
+from apps.activity import log as activity
 from apps.accounts.models import Kind
 from apps.siteconf.models import SiteSettings
 
@@ -48,6 +50,8 @@ class Command(BaseCommand):
             user.totp_enabled_at = None
             user.is_active = user.is_staff = True
             user.save()
+            activity.record(activity.Kind.RESET_ADMIN, actor=None, target=user, ip=None, user_agent="",
+                            detail={"totp": had_totp, "enabled": not was_active, "staff": not was_staff})
         self.stdout.write(gettext("%(username)s has a new password; their logins elsewhere have ended.") % {"username": user.username})
         if had_totp:
             self.stdout.write(gettext("Their two-step verification is off; after logging in it can be set up again from the menu at the top right."))

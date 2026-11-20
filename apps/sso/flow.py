@@ -15,7 +15,7 @@
    by name. With the intent "link", the account is bound to the user who began (if it is still them).
 
 Every way this ends without logging in raises Failure, which views.py shows as an error page
-(apps.web.errors.error_page) and, for a login, writes to the login log. What a provider sent is never put on
+(apps.web.errors.error_page) and, for a login, writes to the activity log. What a provider sent is never put on
 the page: only the short error code of ?error=, checked.
 """
 
@@ -45,6 +45,7 @@ from apps.accounts.models import Kind, User
 from apps.accounts.permissions import usable
 from apps.accounts.signals import user_copied
 from apps.accounts.validators import NICKNAME_MAX, USERNAME_MAX, check_username, validate_nickname
+from apps.activity import log as activity
 from apps.core import origin
 from apps.core.text import is_invisible, single_line
 from apps.siteconf.models import SiteSettings
@@ -79,7 +80,7 @@ _CODE = re.compile(r"[\x21-\x7e]+")
 
 class Failure(Exception):
     """A login or binding that ends on an error page: `status`, `heading` and `message` (translated, never a
-    provider's text), and for the login log `reason` (a loginlog.REASONS code), `username` and `user`.
+    provider's text), and for the activity log `reason` (a loginlog.REASONS code), `username` and `user`.
     `retry`: offer to start again with the same provider."""
 
     def __init__(self, status, heading, message, *, reason="", username="", user=None, retry=True):
@@ -322,7 +323,7 @@ def _log_in(request, provider, entry, external_id, info):
     identity = find_identity(provider, external_id)
     if identity is None:
         if not SiteSettings.load().sso_auto_register:
-            # The id goes into the login log (for the admin, who may bind it), not on the page.
+            # The id goes into the activity log (for the admin, who may bind it), not on the page.
             raise Failure(
                 403, _("This %(name)s account isn't linked to a user") % {"name": provider.name},
                 _("No user on this site is linked to this %(name)s account, so it can't log in. If you have an "
@@ -378,6 +379,7 @@ def _link(request, provider, entry, external_id):
         try:
             with transaction.atomic():
                 Identity.objects.create(provider=provider, external_id=external_id, user=user)
+                activity.record(activity.Kind.LINK_SSO, actor=user, detail={"provider": provider.name, "code": provider.code})
         except IntegrityError:  # bound at the same moment by another request
             existing = find_identity(provider, external_id)
             if existing is None or existing.user_id != user.pk:
@@ -483,6 +485,7 @@ def register(provider, external_id, info):
             _save_with_free_username(user, username_candidates(provider, external_id, info))
             identity = Identity.objects.create(provider=provider, external_id=external_id, user=user)
             user_copied.send(sender=User, source=template, target=user)
+            activity.record(activity.Kind.SSO_REGISTER, actor=user, detail={"provider": provider.name, "code": provider.code})
     except IntegrityError:
         identity = find_identity(provider, external_id)  # registered by a request at the same moment
         if identity is None:

@@ -21,6 +21,9 @@ are refused (unsupported).
 
 Driver errors reach the client as plain messages by kind; a backend's own text (a server's reply,
 addresses) only for staff, and in the log.
+
+What was done goes into the activity log, one entry for each item (apps/activity): after the storage did it,
+so that an entry that can't be written doesn't fail what is done already.
 """
 
 from __future__ import annotations
@@ -35,6 +38,7 @@ from rest_framework.exceptions import APIException, ErrorDetail
 from django.utils.translation import gettext, gettext_lazy, ngettext, pgettext_lazy
 
 from apps.accounts.permissions import Permission
+from apps.activity import log as activity
 from apps.core.times import iso
 from apps.storages import access as policy
 from apps.storages import instances
@@ -305,6 +309,11 @@ def _changed(access, changed_paths: list[str]) -> None:
     signals.changed.send_robust(sender=type(access.storage), source=access.storage, paths=list(changed_paths))
 
 
+def _log(access, kind, items) -> None:
+    """Entries for what was done: items of path, to_path and maybe a folder's {"folder": True}."""
+    activity.record_many(kind, items, quiet=True, actor=access.actor.user, storage=access.storage)
+
+
 def _existing_name(name) -> str:
     """A name of something that exists, as the client sends it."""
     if not isinstance(name, str) or not name or "/" in name or name in (".", ".."):
@@ -365,6 +374,7 @@ def mkdir(access, folder_path: str | None, name, *, password: str | None = None)
     except DriverError as error:
         raise _driver_error(access, error, f"mkdir {target}") from None
     _changed(access, [target])
+    _log(access, activity.Kind.MKDIR, [{"path": target}])
     return {"name": new_name, "path": client_path(access, target), "type": "folder"}
 
 
@@ -396,6 +406,7 @@ def rename(access, folder_path: str | None, name, new_name, *, password: str | N
     except DriverError as error:
         raise _driver_error(access, error, f"rename {source}") from None
     _changed(access, [source, target])
+    _log(access, activity.Kind.RENAME, [{"path": source, "to_path": target, "detail": _folder_detail(entry)}])
     return {"name": new_name, "path": client_path(access, target), "type": "folder" if entry.is_dir else "file"}
 
 
@@ -598,7 +609,14 @@ def relocate(access, operation: str, folder_path: str | None, names, target_path
                 logger.warning("Storage %s: %s %s failed: %s", access.storage.key, operation, source, error.message)
             results[index] = _result(results[index]["name"], entry, False, code, message)
     _changed(access, changed)
+    _log(access, activity.Kind.MOVE if operation == MOVE else activity.Kind.COPY,
+         [{"path": source, "to_path": target, "detail": _folder_detail(entry)}
+          for index, source, target, entry in planned if results[index]["ok"]])
     return _summary(results)
+
+
+def _folder_detail(entry) -> dict | None:
+    return {"folder": True} if entry.is_dir else None
 
 
 def delete(access, folder_path: str | None, names, *, password: str | None = None) -> dict:
@@ -638,6 +656,8 @@ def delete(access, folder_path: str | None, names, *, password: str | None = Non
                 logger.warning("Storage %s: delete %s failed: %s", access.storage.key, source, error.message)
             results[index] = _result(results[index]["name"], entry, False, code, message)
     _changed(access, changed)
+    _log(access, activity.Kind.DELETE, [{"path": source, "detail": _folder_detail(entry)}
+                                        for index, source, entry in planned if results[index]["ok"]])
     return _summary(results)
 
 

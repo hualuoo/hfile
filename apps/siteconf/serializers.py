@@ -650,7 +650,7 @@ _ENTRY = re.compile(r"[A-Za-z0-9_-]{0,32}")
 
 
 class SecurityGroupSerializer(SettingsSerializer):
-    """安全设置. Their behaviour is the accounts app's (login, captcha, login log, secure entry)."""
+    """安全设置. Their behaviour is the accounts app's (login, captcha, secure entry)."""
 
     label = gettext_lazy("Security settings")
     superuser_fields = ("guest_home_html",)
@@ -672,14 +672,13 @@ class SecurityGroupSerializer(SettingsSerializer):
 
     class Meta:
         model = SiteSettings
-        fields = ["secure_login_entry", "show_login", "guest_home", "guest_home_html", "login_log", "login_captcha",
+        fields = ["secure_login_entry", "show_login", "guest_home", "guest_home_html", "login_captcha",
                   "sso_auto_register"]
         extra_kwargs = {
             "show_login": {
                 "help_text": gettext_lazy('Shows a "Log in" button at the top right of the page. Only the button: opening the login page "site address/login/" works either way. Never shown when a secure login entrance is set.'),
             },
             "guest_home": {"help_text": gettext_lazy("What people who aren't logged in see on the home and file pages. Shares, direct and short links aren't affected.")},
-            "login_log": {"help_text": gettext_lazy("Logs each login's time, username, IP, browser and result, without passwords. See them in \"Login log\".")},
             "login_captcha": {"help_text": gettext_lazy("Logging in with a password also asks for the characters in a picture, against mass password guessing. A strong password for every account still works best.")},
         }
 

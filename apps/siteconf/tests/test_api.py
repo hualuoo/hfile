@@ -458,8 +458,9 @@ class SecurityGroupTests(CheckTestCase):
         self.assertRefused({"guest_home": "elsewhere"}, "guest_home")
 
     def test_switches(self):
-        self.assertSaved({"login_log": False, "login_captcha": True, "show_login": False, "sso_auto_register": True},
-                         {"login_log": False, "login_captcha": True, "show_login": False, "sso_auto_register": True})
+        self.assertSaved({"login_captcha": True, "show_login": False, "sso_auto_register": True},
+                         {"login_captcha": True, "show_login": False, "sso_auto_register": True})
+        self.assertRefused({"login_log": False}, "login_log")  # gone: logins are always in the activity log
 
 
 class AccessGroupTests(CheckTestCase):

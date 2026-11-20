@@ -112,7 +112,7 @@ class EnglishTests(TestCase):
         self.assertEqual(r.json()["detail"], "Invalid JSON at line 1, column 2: expected a field name in double quotes.")
         # DRF's messages that name a type are read from DRF's own translations, once for each language
         self.client.force_login(self.admin)
-        url = "/api/v1/manage/login-logs/delete/"
+        url = "/api/v1/manage/download-logs/delete/"
         for headers, message in ((self.en, "Expected an array ([…]), not a string."), ({}, "要的是一个数组（[…]），不是字符串。"),
                                  (self.en, "Expected an array ([…]), not a string.")):
             with self.subTest(message):

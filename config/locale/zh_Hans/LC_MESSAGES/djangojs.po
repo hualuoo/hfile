@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HFile\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-20 23:02+0800\n"
+"POT-Creation-Date: 2026-11-21 00:38+0800\n"
 "Language: zh_Hans\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -40,203 +40,6 @@ msgstr "验证"
 #: apps/accounts/static/accounts/js/login_steps.js
 msgid "Please enter the 6 digits."
 msgstr "请输入 6 位数字。"
-
-#: apps/accounts/static/accounts/js/manage_login_log.js
-#: apps/links/static/links/js/manage_download_logs.js
-#: apps/links/static/links/js/manage_short_links.js
-msgid "Delete %(count)s selected"
-msgid_plural "Delete %(count)s selected"
-msgstr[0] "删除选中的 %(count)s 条"
-
-#: apps/accounts/static/accounts/js/manage_login_log.js
-#: apps/links/static/links/js/manage_download_logs.js
-#: apps/links/static/links/js/manage_short_links.js
-msgid "Delete selected"
-msgstr "删除选中的"
-
-#: apps/accounts/static/accounts/js/manage_login_log.js
-#: apps/links/static/links/js/manage_download_logs.js
-msgid "Delete the %(count)s found"
-msgid_plural "Delete all %(count)s found"
-msgstr[0] "删除查到的全部 %(count)s 条"
-
-#: apps/accounts/static/accounts/js/manage_login_log.js
-#: apps/links/static/links/js/manage_download_logs.js
-msgid "Delete the %(count)s entry"
-msgid_plural "Delete all %(count)s entries"
-msgstr[0] "清空全部 %(count)s 条"
-
-#: apps/accounts/static/accounts/js/manage_login_log.js
-#: apps/links/static/links/js/manage_download_logs.js
-msgid "Delete all found"
-msgstr "删除查到的全部"
-
-#: apps/accounts/static/accounts/js/manage_login_log.js
-#: apps/links/static/links/js/manage_download_logs.js
-msgid "Select the entry from %(when)s"
-msgstr "选中 %(when)s 这一条"
-
-#: apps/accounts/static/accounts/js/manage_login_log.js
-msgid "Time"
-msgstr "时间"
-
-#: apps/accounts/static/accounts/js/manage_login_log.js
-#: apps/web/static/web/js/common.js
-msgid "Username"
-msgstr "用户名"
-
-#: apps/accounts/static/accounts/js/manage_login_log.js
-msgid "(empty)"
-msgstr "（没填）"
-
-#: apps/accounts/static/accounts/js/manage_login_log.js
-msgid "Result"
-msgstr "结果"
-
-#: apps/accounts/static/accounts/js/manage_login_log.js
-msgid "Browser"
-msgstr "浏览器"
-
-#: apps/accounts/static/accounts/js/manage_login_log.js
-#: apps/accounts/static/accounts/js/manage_users.js
-#: apps/links/static/links/js/manage_download_logs.js
-#: apps/links/static/links/js/manage_short_links.js
-#: apps/shares/static/shares/js/share_list.js
-msgid "Previous page"
-msgstr "上一页"
-
-#: apps/accounts/static/accounts/js/manage_login_log.js
-#: apps/accounts/static/accounts/js/manage_users.js
-#: apps/links/static/links/js/manage_download_logs.js
-#: apps/links/static/links/js/manage_short_links.js
-#: apps/shares/static/shares/js/share_list.js
-msgid "Page %(page)s of %(pages)s"
-msgid_plural "Page %(page)s of %(pages)s"
-msgstr[0] "第 %(page)s / %(pages)s 页"
-
-#: apps/accounts/static/accounts/js/manage_login_log.js
-#: apps/accounts/static/accounts/js/manage_users.js
-#: apps/links/static/links/js/manage_download_logs.js
-#: apps/links/static/links/js/manage_short_links.js
-#: apps/shares/static/shares/js/share_list.js
-msgid "Next page"
-msgstr "下一页"
-
-#: apps/accounts/static/accounts/js/manage_login_log.js
-#: apps/accounts/static/accounts/js/manage_users.js
-#: apps/accounts/static/accounts/js/totp.js apps/files/static/files/js/files.js
-#: apps/links/static/links/js/manage_download_logs.js
-#: apps/links/static/links/js/manage_short_links.js
-#: apps/shares/static/shares/js/share_list.js apps/sso/static/sso/js/links.js
-#: apps/sso/static/sso/js/manage_sso.js
-#: apps/storages/static/storages/js/grants.js
-msgid "Loading…"
-msgstr "加载中…"
-
-#: apps/accounts/static/accounts/js/manage_login_log.js
-#: apps/links/static/links/js/manage_download_logs.js
-#: apps/links/static/links/js/manage_short_links.js
-msgid "%(count)s found"
-msgid_plural "%(count)s found"
-msgstr[0] "找到 %(count)s 条"
-
-#: apps/accounts/static/accounts/js/manage_login_log.js
-#: apps/links/static/links/js/manage_download_logs.js
-#: apps/links/static/links/js/manage_short_links.js
-msgid "%(count)s entry"
-msgid_plural "%(count)s entries"
-msgstr[0] "共 %(count)s 条"
-
-#: apps/accounts/static/accounts/js/manage_login_log.js
-#: apps/links/static/links/js/manage_download_logs.js
-msgid "Nothing matches."
-msgstr "没有符合条件的记录。"
-
-#: apps/accounts/static/accounts/js/manage_login_log.js
-msgid "No logins logged yet."
-msgstr "还没有登录记录。"
-
-#: apps/accounts/static/accounts/js/manage_login_log.js
-#: apps/accounts/static/accounts/js/manage_users.js
-#: apps/accounts/static/accounts/js/totp.js
-#: apps/ipgeo/static/ipgeo/js/manage_ip_geo.js
-#: apps/links/static/links/js/manage_download_logs.js
-#: apps/links/static/links/js/manage_short_links.js
-#: apps/shares/static/shares/js/share_list.js
-#: apps/siteconf/static/siteconf/js/manage_diagnostics.js
-#: apps/siteconf/static/siteconf/js/manage_settings.js
-#: apps/sso/static/sso/js/links.js apps/sso/static/sso/js/manage_sso.js
-#: apps/storages/static/storages/js/manage_storages.js
-#: apps/web/static/web/js/manage_version.js
-msgid "Failed to load: %(message)s"
-msgstr "加载失败：%(message)s"
-
-#: apps/accounts/static/accounts/js/manage_login_log.js
-msgid "Delete the %(count)s selected login log entry?"
-msgid_plural "Delete the %(count)s selected login log entries?"
-msgstr[0] "删除选中的 %(count)s 条登录日志？"
-
-#: apps/accounts/static/accounts/js/manage_login_log.js
-#: apps/links/static/links/js/manage_download_logs.js
-#: apps/sso/static/sso/js/manage_sso.js
-msgid "This can't be undone."
-msgstr "删除以后不能恢复。"
-
-#: apps/accounts/static/accounts/js/manage_login_log.js
-#: apps/accounts/static/accounts/js/manage_users.js
-#: apps/files/static/files/js/files.js
-#: apps/links/static/links/js/manage_download_logs.js
-#: apps/links/static/links/js/manage_short_links.js
-#: apps/shares/static/shares/js/share_list.js
-#: apps/siteconf/static/siteconf/js/manage_settings.js
-#: apps/sso/static/sso/js/manage_sso.js
-#: apps/storages/static/storages/js/manage_storages.js
-msgid "Delete"
-msgstr "删除"
-
-#: apps/accounts/static/accounts/js/manage_login_log.js
-#: apps/links/static/links/js/manage_download_logs.js
-msgid "Deleted %(deleted)s entry."
-msgid_plural "Deleted %(deleted)s entries."
-msgstr[0] "删除了 %(deleted)s 条。"
-
-#: apps/accounts/static/accounts/js/manage_login_log.js
-msgid "Delete the %(count)s login log entry found?"
-msgid_plural "Delete the %(count)s login log entries found?"
-msgstr[0] "删除查到的 %(count)s 条登录日志？"
-
-#: apps/accounts/static/accounts/js/manage_login_log.js
-msgid "Delete the whole login log (%(count)s entry)?"
-msgid_plural "Delete the whole login log (%(count)s entries)?"
-msgstr[0] "清空全部 %(count)s 条登录日志？"
-
-#: apps/accounts/static/accounts/js/manage_login_log.js
-#: apps/links/static/links/js/manage_download_logs.js
-msgid ""
-"Everything the current filters find is deleted, not only this page; entries "
-"logged after the list loaded are kept. This can't be undone."
-msgstr ""
-"会删除列表现在显示的这些条件找到的所有记录，不只是这一页；在那之后才记下的不"
-"会删除。删除以后不能恢复。"
-
-#: apps/accounts/static/accounts/js/manage_login_log.js
-msgid ""
-"No filters are set: every entry in the list is deleted (except those logged "
-"after it loaded). This can't be undone."
-msgstr ""
-"没有设条件：列表里的登录日志都会删除（在那之后才记下的除外）。删除以后不能恢"
-"复。"
-
-#: apps/accounts/static/accounts/js/manage_login_log.js
-#: apps/links/static/links/js/manage_download_logs.js
-msgid "Delete all"
-msgstr "全部删除"
-
-#: apps/accounts/static/accounts/js/manage_login_log.js
-#: apps/links/static/links/js/manage_download_logs.js
-msgctxt "the whole list"
-msgid "Delete all"
-msgstr "清空"
 
 #: apps/accounts/static/accounts/js/manage_users.js
 msgid "Default permissions"
@@ -364,6 +167,58 @@ msgid "Copy"
 msgstr "复制"
 
 #: apps/accounts/static/accounts/js/manage_users.js
+msgid "Activity log"
+msgstr "操作日志"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+#: apps/files/static/files/js/files.js
+#: apps/links/static/links/js/manage_download_logs.js
+#: apps/links/static/links/js/manage_short_links.js
+#: apps/shares/static/shares/js/share_list.js
+#: apps/siteconf/static/siteconf/js/manage_settings.js
+#: apps/sso/static/sso/js/manage_sso.js
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Delete"
+msgstr "删除"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+#: apps/activity/static/activity/js/manage_activity_log.js
+#: apps/links/static/links/js/manage_download_logs.js
+#: apps/links/static/links/js/manage_short_links.js
+#: apps/shares/static/shares/js/share_list.js
+msgid "Previous page"
+msgstr "上一页"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+#: apps/activity/static/activity/js/manage_activity_log.js
+#: apps/links/static/links/js/manage_download_logs.js
+#: apps/links/static/links/js/manage_short_links.js
+#: apps/shares/static/shares/js/share_list.js
+msgid "Page %(page)s of %(pages)s"
+msgid_plural "Page %(page)s of %(pages)s"
+msgstr[0] "第 %(page)s / %(pages)s 页"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+#: apps/activity/static/activity/js/manage_activity_log.js
+#: apps/links/static/links/js/manage_download_logs.js
+#: apps/links/static/links/js/manage_short_links.js
+#: apps/shares/static/shares/js/share_list.js
+msgid "Next page"
+msgstr "下一页"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+#: apps/accounts/static/accounts/js/totp.js
+#: apps/activity/static/activity/js/manage_activity_log.js
+#: apps/files/static/files/js/files.js
+#: apps/links/static/links/js/manage_download_logs.js
+#: apps/links/static/links/js/manage_short_links.js
+#: apps/shares/static/shares/js/share_list.js apps/sso/static/sso/js/links.js
+#: apps/sso/static/sso/js/manage_sso.js
+#: apps/storages/static/storages/js/grants.js
+msgid "Loading…"
+msgstr "加载中…"
+
+#: apps/accounts/static/accounts/js/manage_users.js
 msgid "%(count)s user found"
 msgid_plural "%(count)s users found"
 msgstr[0] "找到 %(count)s 个用户"
@@ -380,6 +235,21 @@ msgstr "没有符合条件的用户。"
 #: apps/accounts/static/accounts/js/manage_users.js
 msgid "No users yet."
 msgstr "还没有用户。"
+
+#: apps/accounts/static/accounts/js/manage_users.js
+#: apps/accounts/static/accounts/js/totp.js
+#: apps/activity/static/activity/js/manage_activity_log.js
+#: apps/ipgeo/static/ipgeo/js/manage_ip_geo.js
+#: apps/links/static/links/js/manage_download_logs.js
+#: apps/links/static/links/js/manage_short_links.js
+#: apps/shares/static/shares/js/share_list.js
+#: apps/siteconf/static/siteconf/js/manage_diagnostics.js
+#: apps/siteconf/static/siteconf/js/manage_settings.js
+#: apps/sso/static/sso/js/links.js apps/sso/static/sso/js/manage_sso.js
+#: apps/storages/static/storages/js/manage_storages.js
+#: apps/web/static/web/js/manage_version.js
+msgid "Failed to load: %(message)s"
+msgstr "加载失败：%(message)s"
 
 #: apps/accounts/static/accounts/js/manage_users.js
 msgid ""
@@ -588,10 +458,10 @@ msgstr "删除用户「%(username)s」？"
 #: apps/accounts/static/accounts/js/manage_users.js
 msgid ""
 "Their permissions on every storage source and their shares are deleted too; "
-"their login log entries stay. This can't be undone."
+"their entries in the activity log stay. This can't be undone."
 msgstr ""
-"他在每个存储源上的权限和他的分享会一起删除，登录日志里的记录留着。删除以后不"
-"能恢复。"
+"这个用户在每个存储源上的权限和分享会一起删除，操作日志里的记录留着。删除以后"
+"不能恢复。"
 
 #: apps/accounts/static/accounts/js/manage_users.js
 msgid "%(username)s deleted."
@@ -726,6 +596,103 @@ msgstr "关闭两步验证"
 #: apps/accounts/static/accounts/js/totp.js
 msgid "Two-step verification is off."
 msgstr "两步验证已经关闭。"
+
+#: apps/activity/static/activity/js/manage_activity_log.js
+msgid "This account has been deleted"
+msgstr "这个账号已经删除了"
+
+#: apps/activity/static/activity/js/manage_activity_log.js
+msgid "Show only %(name)s's entries"
+msgstr "只看 %(name)s 的记录"
+
+#: apps/activity/static/activity/js/manage_activity_log.js
+msgid "Not logged in"
+msgstr "未登录"
+
+#: apps/activity/static/activity/js/manage_activity_log.js
+msgid "A command on the server, or OnlyOffice saving"
+msgstr "服务器上的命令，或者 OnlyOffice 保存"
+
+#: apps/activity/static/activity/js/manage_activity_log.js
+msgctxt "activity log"
+msgid "System"
+msgstr "系统"
+
+#: apps/activity/static/activity/js/manage_activity_log.js
+msgid "No account has this name now"
+msgstr "现在没有这个名字的账号"
+
+#: apps/activity/static/activity/js/manage_activity_log.js
+msgid "Open the storage source"
+msgstr "打开这个存储源的设置"
+
+#: apps/activity/static/activity/js/manage_activity_log.js
+msgid "This storage source has been deleted"
+msgstr "这个存储源已经删除了"
+
+#: apps/activity/static/activity/js/manage_activity_log.js
+msgid "Show only the entries from this IP"
+msgstr "只看这个 IP 的记录"
+
+#: apps/activity/static/activity/js/manage_activity_log.js
+msgid "Time"
+msgstr "时间"
+
+#: apps/activity/static/activity/js/manage_activity_log.js
+#: apps/links/static/links/js/manage_download_logs.js
+msgid "User"
+msgstr "用户"
+
+#: apps/activity/static/activity/js/manage_activity_log.js
+msgid "Action"
+msgstr "操作"
+
+#: apps/activity/static/activity/js/manage_activity_log.js
+msgid "About"
+msgstr "对象"
+
+#: apps/activity/static/activity/js/manage_activity_log.js
+msgid "Details"
+msgstr "详情"
+
+#: apps/activity/static/activity/js/manage_activity_log.js
+msgid "Browser"
+msgstr "浏览器"
+
+#: apps/activity/static/activity/js/manage_activity_log.js
+msgid "User %(name)s"
+msgstr "用户 %(name)s"
+
+#: apps/activity/static/activity/js/manage_activity_log.js
+msgid "IP %(ip)s"
+msgstr "IP %(ip)s"
+
+#: apps/activity/static/activity/js/manage_activity_log.js
+msgid "Remove the filter \"%(filter)s\""
+msgstr "去掉条件「%(filter)s」"
+
+#: apps/activity/static/activity/js/manage_activity_log.js
+#: apps/links/static/links/js/manage_download_logs.js
+#: apps/links/static/links/js/manage_short_links.js
+msgid "%(count)s found"
+msgid_plural "%(count)s found"
+msgstr[0] "找到 %(count)s 条"
+
+#: apps/activity/static/activity/js/manage_activity_log.js
+#: apps/links/static/links/js/manage_download_logs.js
+#: apps/links/static/links/js/manage_short_links.js
+msgid "%(count)s entry"
+msgid_plural "%(count)s entries"
+msgstr[0] "共 %(count)s 条"
+
+#: apps/activity/static/activity/js/manage_activity_log.js
+#: apps/links/static/links/js/manage_download_logs.js
+msgid "Nothing matches."
+msgstr "没有符合条件的记录。"
+
+#: apps/activity/static/activity/js/manage_activity_log.js
+msgid "Nothing logged yet."
+msgstr "还没有记录。"
 
 #: apps/captchas/static/captchas/js/captcha.js
 msgid "Not case-sensitive. Can't read it? Click the picture for another one."
@@ -1666,9 +1633,9 @@ msgid_plural "the last login IPs of %(count)s users"
 msgstr[0] "%(count)s 个用户的最近登录 IP"
 
 #: apps/ipgeo/static/ipgeo/js/manage_ip_geo.js
-msgid "%(count)s login log entry"
-msgid_plural "%(count)s login log entries"
-msgstr[0] "%(count)s 条登录日志"
+msgid "%(count)s activity log entry"
+msgid_plural "%(count)s activity log entries"
+msgstr[0] "%(count)s 条操作日志"
 
 #: apps/ipgeo/static/ipgeo/js/manage_ip_geo.js
 msgid "%(count)s download log entry"
@@ -1908,6 +1875,35 @@ msgstr "%(site)s 直链导出 %(stamp)s.csv"
 
 #: apps/links/static/links/js/manage_download_logs.js
 #: apps/links/static/links/js/manage_short_links.js
+msgid "Delete %(count)s selected"
+msgid_plural "Delete %(count)s selected"
+msgstr[0] "删除选中的 %(count)s 条"
+
+#: apps/links/static/links/js/manage_download_logs.js
+#: apps/links/static/links/js/manage_short_links.js
+msgid "Delete selected"
+msgstr "删除选中的"
+
+#: apps/links/static/links/js/manage_download_logs.js
+msgid "Delete the %(count)s found"
+msgid_plural "Delete all %(count)s found"
+msgstr[0] "删除查到的全部 %(count)s 条"
+
+#: apps/links/static/links/js/manage_download_logs.js
+msgid "Delete the %(count)s entry"
+msgid_plural "Delete all %(count)s entries"
+msgstr[0] "清空全部 %(count)s 条"
+
+#: apps/links/static/links/js/manage_download_logs.js
+msgid "Delete all found"
+msgstr "删除查到的全部"
+
+#: apps/links/static/links/js/manage_download_logs.js
+msgid "Select the entry from %(when)s"
+msgstr "选中 %(when)s 这一条"
+
+#: apps/links/static/links/js/manage_download_logs.js
+#: apps/links/static/links/js/manage_short_links.js
 msgid "Copy %(url)s"
 msgstr "复制 %(url)s"
 
@@ -1924,10 +1920,6 @@ msgstr "类型"
 #: apps/links/static/links/js/manage_short_links.js
 msgid "File path"
 msgstr "文件路径"
-
-#: apps/links/static/links/js/manage_download_logs.js
-msgid "User"
-msgstr "用户"
 
 #: apps/links/static/links/js/manage_download_logs.js
 msgid "Browser and referer"
@@ -1964,6 +1956,16 @@ msgid_plural "Delete the %(count)s selected download log entries?"
 msgstr[0] "是否确认删除选中的 %(count)s 条下载日志？"
 
 #: apps/links/static/links/js/manage_download_logs.js
+#: apps/sso/static/sso/js/manage_sso.js
+msgid "This can't be undone."
+msgstr "删除以后不能恢复。"
+
+#: apps/links/static/links/js/manage_download_logs.js
+msgid "Deleted %(deleted)s entry."
+msgid_plural "Deleted %(deleted)s entries."
+msgstr[0] "删除了 %(deleted)s 条。"
+
+#: apps/links/static/links/js/manage_download_logs.js
 msgid "Delete the %(count)s download log entry these filters find?"
 msgid_plural "Delete the %(count)s download log entries these filters find?"
 msgstr[0] "是否确认删除当前查询条件下的 %(count)s 条下载日志？"
@@ -1974,6 +1976,14 @@ msgid_plural "Delete the whole download log (%(count)s entries)?"
 msgstr[0] "清空全部 %(count)s 条下载日志？"
 
 #: apps/links/static/links/js/manage_download_logs.js
+msgid ""
+"Everything the current filters find is deleted, not only this page; entries "
+"logged after the list loaded are kept. This can't be undone."
+msgstr ""
+"会删除列表现在显示的这些条件找到的所有记录，不只是这一页；在那之后才记下的不"
+"会删除。删除以后不能恢复。"
+
+#: apps/links/static/links/js/manage_download_logs.js
 msgctxt "download log"
 msgid ""
 "No filters are set: every entry in the list is deleted (except those logged "
@@ -1981,6 +1991,15 @@ msgid ""
 msgstr ""
 "没有设条件：列表里的下载日志都会删除（在那之后才记下的除外）。删除以后不能恢"
 "复。"
+
+#: apps/links/static/links/js/manage_download_logs.js
+msgid "Delete all"
+msgstr "全部删除"
+
+#: apps/links/static/links/js/manage_download_logs.js
+msgctxt "the whole list"
+msgid "Delete all"
+msgstr "清空"
 
 #: apps/links/static/links/js/manage_short_links.js
 msgid "Select short link %(key)s"
@@ -3401,13 +3420,13 @@ msgstr "已经绑定了 %(name)s 的账号 %(external_id)s。"
 #: apps/sso/static/sso/js/manage_sso.js
 msgid ""
 "Once linked, they can log in with these providers' accounts. When someone "
-"without a link fails to log in with single sign-on, the login log shows "
+"without a link fails to log in with single sign-on, the activity log shows "
 "\"short-name:user-ID\", which you can link here; before linking, check with "
 "the provider that the ID really is theirs."
 msgstr ""
-"绑定以后，他可以用这些服务商的账号登录。没绑定的人用单点登录失败时，登录日志"
-"里记着「简称:用户 ID」，可以照着在这里绑定；绑定前在服务商那里核对一下这个 "
-"ID 确实是他的。"
+"绑定以后，这个用户可以用这些服务商的账号登录。没绑定的人用单点登录失败时，操"
+"作日志里记着「简称:用户 ID」，可以照着在这里绑定；绑定前在服务商那里核对一下"
+"这个 ID 确实是这个用户的。"
 
 #: apps/sso/static/sso/js/manage_sso.js
 msgid ""
@@ -5129,6 +5148,10 @@ msgstr "文件夹已经建好。"
 #: apps/uploads/static/uploads/js/uploads.js
 msgid "Reading the dropped files failed."
 msgstr "读取拖进来的文件失败了。"
+
+#: apps/web/static/web/js/common.js
+msgid "Username"
+msgstr "用户名"
 
 #: apps/web/static/web/js/common.js
 msgid "Current password"

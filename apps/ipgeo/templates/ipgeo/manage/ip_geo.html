@@ -1,7 +1,7 @@
 {% load static ui ipgeo %}{% ipgeo_source as geo %}{# /manage/#ip-geo (apps/web/navigation.py SECTIONS), run by ipgeo/js/manage_ip_geo.js through /api/v1/manage/ip-geo/. #}
 <link rel="stylesheet" href="{% static 'ipgeo/css/ipgeo.css' %}">
 <div class="section-title-row"><h2>{% translate "IP location" %}</h2></div>
-<p class="muted">{% translate "Turned on, the IPs of the user list, the login log and the download log show where they are: the country or region and, for many IPs, the province or state and the city. The lookup happens on this server, in MaxMind's GeoLite2-City database; IPs aren't sent anywhere." %}</p>
+<p class="muted">{% translate "Turned on, the IPs of the user list, the activity log and the download log show where they are: the country or region and, for many IPs, the province or state and the city. The lookup happens on this server, in MaxMind's GeoLite2-City database; IPs aren't sent anywhere." %}</p>
 <div class="ip-geo" id="ip-geo">
   <div class="form-error" role="alert" id="ip-geo-error" hidden></div>
   <label class="switch-line">

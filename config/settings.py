@@ -63,6 +63,7 @@ ADMIN_PATH = _site["admin_path"] or admin_path.path_from_key(SECRET_KEY)
 # (apps/upgrades/service.py own_table).
 HFILE_APPS = [
     "apps.accounts",
+    "apps.activity",
     "apps.captchas",
     "apps.files",
     "apps.ipgeo",

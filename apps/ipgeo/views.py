@@ -19,6 +19,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from apps.activity import log as activity
 from apps.core.exceptions import Conflict
 from apps.core.permissions import IsAdmin
 from apps.core.times import iso
@@ -74,6 +75,8 @@ class IpGeoView(APIView):
                 config.enabled = enabled
                 config.save(update_fields=["enabled", "updated_at"])
                 lookup.forget_settings()
+                # After: turning it off, the entry gets no location (it is off), turning it on, it does.
+                activity.record(activity.Kind.UPDATE_IP_GEO, actor=request.user, detail={"enabled": enabled})
         return Response(describe(config))
 
 
@@ -82,7 +85,7 @@ class IpGeoDownloadView(APIView):
 
     def post(self, request):
         try:
-            jobs.start_download()
+            jobs.start_download(jobs.started_by(request))
         except (jobs.NotReady, jobs.Busy) as exc:
             raise Conflict(str(exc)) from None
         return Response(describe(IpGeoSettings.load()), status=status.HTTP_202_ACCEPTED)
@@ -95,7 +98,7 @@ class IpGeoFillView(APIView):
         serializer = FillSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         try:
-            jobs.start_fill(serializer.validated_data["redo"])
+            jobs.start_fill(serializer.validated_data["redo"], jobs.started_by(request))
         except (jobs.NotReady, jobs.Busy) as exc:
             raise Conflict(str(exc)) from None
         return Response(describe(IpGeoSettings.load()), status=status.HTTP_202_ACCEPTED)

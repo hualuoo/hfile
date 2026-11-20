@@ -2,7 +2,9 @@
 MySQL or SQLite. What only one of them has is tested on it alone.
 
 A "new version" is siteconf with test migrations (settings.MIGRATION_MODULES): migrations_ok brings a
-0002 that adds a table and changes a row; migrations_failing a 0003 after it that fails half way. The
+0003 that adds a table and changes a row (numbered after siteconf's own: the ones the database has from
+this version are then older ones, not a newer version's); migrations_failing a 0004 after it that fails
+half way. The
 upgrades change tables, which MySQL can't roll back, so these are TransactionTestCases (Django runs
 them after the others); each test that applies a test migration takes it back when it ends.
 """
@@ -124,7 +126,7 @@ class StatusTests(TestCase):
 
     def test_a_migration_not_applied_yet(self):
         with override_settings(MIGRATION_MODULES=NEW_VERSION):
-            self.assertEqual(service.status().pending, ["siteconf.0002_upgrade_test"])
+            self.assertEqual(service.status().pending, ["siteconf.0003_upgrade_test"])
 
     def test_migrations_from_a_newer_version(self):
         self.recorder.record_applied(*FUTURE)
@@ -184,7 +186,7 @@ class VersionApiTests(TestCase):
         self.client.force_login(self.admin)
         with override_settings(MIGRATION_MODULES=NEW_VERSION):
             data = self.client.get(self.url).json()
-        self.assertEqual((data["pending"], data["newer"]), (["siteconf.0002_upgrade_test"], ["siteconf.0099_from_a_newer_version"]))
+        self.assertEqual((data["pending"], data["newer"]), (["siteconf.0003_upgrade_test"], ["siteconf.0099_from_a_newer_version"]))
         self.assertEqual(data["upgrades"], [])
 
     def test_the_django_admin_only_shows_it(self):
@@ -224,7 +226,7 @@ class UpgradeTestBase(TransactionTestCase):
             override.disable()
             with override_settings(MIGRATION_MODULES=modules):
                 call_command("migrate", "siteconf", "0001_initial", verbosity=0)
-            self.drop("siteconf_half_done")  # what a failed 0003 may have left (MySQL can't take DDL back)
+            self.drop("siteconf_half_done")  # what a failed 0004 may have left (MySQL can't take DDL back)
 
         self.addCleanup(back)
 
@@ -264,7 +266,7 @@ class UpgradeTests(UpgradeTestBase):
 
         row = self.upgrade()
 
-        self.assertEqual((row.previous, row.version, row.migrations), ("0.0.9", VERSION, ["siteconf.0002_upgrade_test"]))
+        self.assertEqual((row.previous, row.version, row.migrations), ("0.0.9", VERSION, ["siteconf.0003_upgrade_test"]))
         self.assertEqual(service.status().pending, [])
         self.assertEqual(SiteSettings.load().site_name, "升级后的名字")
         with connection.cursor() as cursor:
@@ -282,7 +284,7 @@ class UpgradeTests(UpgradeTestBase):
         self.assertNotIn("siteconf_upgrade_test", text)  # taken before the upgrade
 
         output = self.out.getvalue()
-        for line in ("先备份整个数据库", "已备份", "升级数据库到", "Applying siteconf.0002_upgrade_test... OK", "数据库已升级到"):
+        for line in ("先备份整个数据库", "已备份", "升级数据库到", "Applying siteconf.0003_upgrade_test... OK", "数据库已升级到"):
             self.assertIn(line, output)
 
     def test_a_failed_migration_puts_the_backup_back(self):
@@ -294,8 +296,8 @@ class UpgradeTests(UpgradeTestBase):
         with self.assertRaises(service.UpgradeError) as caught:
             self.upgrade()
 
-        # Every table as it was, django_migrations and the log too: 0002 went through and 0003 half,
-        # and neither is left. The table 0002 made is gone, the row it changed is back.
+        # Every table as it was, django_migrations and the log too: 0003 went through and 0004 half,
+        # and neither is left. The table 0003 made is gone, the row it changed is back.
         self.assertEqual(snapshot(), before)
         self.assertFalse(self.table_exists("siteconf_upgrade_test"))
         self.assertFalse(self.table_exists("siteconf_half_done"))
@@ -304,7 +306,7 @@ class UpgradeTests(UpgradeTestBase):
         self.assertIn("升级失败：RuntimeError: 这个迁移故意失败（升级的测试）", message)
         self.assertIn("数据库已经恢复到升级前，原来的版本（0.0.9）可以接着用", message)
         output = self.out.getvalue()
-        self.assertIn("Applying siteconf.0002_upgrade_test... OK", output)
+        self.assertIn("Applying siteconf.0003_upgrade_test... OK", output)
         self.assertIn("正在把数据库恢复到升级前", output)
         self.assertEqual(len(self.files()), 1)  # the backup stays
 
@@ -555,7 +557,7 @@ class StartupTests(UpgradeTestBase):
             upgrade_on_start(self.out)
         self.assertEqual(service.status().pending, [])
         row = UpgradeLog.objects.get()
-        self.assertEqual((row.version, row.migrations), (VERSION, ["siteconf.0002_upgrade_test"]))
+        self.assertEqual((row.version, row.migrations), (VERSION, ["siteconf.0003_upgrade_test"]))
         self.assertTrue(Path(row.backup).is_file())  # backed up first
 
     def test_does_not_start_on_a_database_it_cannot_use(self):
@@ -591,9 +593,9 @@ class StartupTests(UpgradeTestBase):
         upgrade.assert_not_called()
         self.assertEqual(caught.exception.code, 1)
         output = self.out.getvalue()
-        self.assertIn("数据库要升级：还差 1 个迁移（siteconf.0002_upgrade_test）", output)
+        self.assertIn("数据库要升级：还差 1 个迁移（siteconf.0003_upgrade_test）", output)
         self.assertIn("先运行 python -B manage.py upgrade（会先备份整个数据库）", output)
-        self.assertEqual(service.status().pending, ["siteconf.0002_upgrade_test"])  # nothing was done
+        self.assertEqual(service.status().pending, ["siteconf.0003_upgrade_test"])  # nothing was done
         with override_settings(FROZEN=True), mock.patch.object(sys, "executable", "/srv/hfile/hfile"):
             self.assertEqual(startup.upgrade_command(), "hfile upgrade")  # the single executable: its own
 

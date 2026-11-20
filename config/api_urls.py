@@ -34,9 +34,8 @@
     GET    manage/users/             staff: users (?search= &is_active= &kind= &ordering= &page=), POST creates one
     GET    manage/users/{id}/        one user; PATCH changes them, DELETE deletes them (apps/accounts/manage_views.py)
     POST   manage/users/{id}/copy/   a new user with their default permissions and grants
-    GET    manage/login-logs/        staff: the login log (?username= &ip= &result= &since= &until=); DELETE
-                                     with the same filters deletes what they find
-    POST   manage/login-logs/delete/ staff: {"ids": [...]} deletes those entries
+    GET    manage/activity/          staff: the 操作日志, newest first (?search= &kind= &category= &storage= &user=
+                                     &ip= &since= &until= &page=); nothing changes or deletes it (apps/activity/views.py)
     GET    manage/ip-geo/            staff: IP 归属地: on or off, the database in use, the last job, how many stored
                                      IPs have no location yet; PATCH {"enabled"}; POST download/, fill/; GET job/,
                                      check/ (apps/ipgeo/views.py)
@@ -79,7 +78,7 @@ only logged-in users unless a view says otherwise (settings.REST_FRAMEWORK).
 from django.urls import include, path, re_path
 from rest_framework.routers import SimpleRouter
 
-from apps.accounts.manage_views import ManageLoginLogDeleteView, ManageLoginLogView, ManageUserViewSet
+from apps.accounts.manage_views import ManageUserViewSet
 from apps.accounts.views import PasswordView, SessionView, TotpDisableView, TotpSetupView, TotpView
 from apps.captchas.views import CaptchaView
 from apps.siteconf.views import AccessTestView, DiagnosticsView, SettingsView, SiteImageView, SiteView
@@ -107,8 +106,6 @@ urlpatterns = [
     path("captcha/", CaptchaView.as_view(), name="captcha"),
     path("site/", SiteView.as_view(), name="site"),
     path("manage/version/", VersionView.as_view(), name="manage-version"),
-    path("manage/login-logs/", ManageLoginLogView.as_view(), name="manage-login-logs"),
-    path("manage/login-logs/delete/", ManageLoginLogDeleteView.as_view(), name="manage-login-logs-delete"),
     path("manage/settings/access/test/", AccessTestView.as_view(), name="manage-settings-access-test"),
     path("manage/settings/site/<str:field>/", SiteImageView.as_view(), name="manage-settings-image"),
     re_path(r"^manage/settings/(?P<group>[a-z]+)/$", SettingsView.as_view(), name="manage-settings"),
@@ -119,6 +116,7 @@ urlpatterns = [
     path("manage/sso/discover/", DiscoverView.as_view(), name="manage-sso-discover"),
     path("manage/users/<int:user_id>/identities/", ManageIdentitiesView.as_view(), name="manage-user-identities"),
     path("manage/users/<int:user_id>/identities/<int:pk>/", ManageIdentityView.as_view(), name="manage-user-identity"),
+    path("", include("apps.activity.api_urls")),
     path("", include("apps.storages.api_urls")),
     path("", include("apps.files.api_urls")),
     path("", include("apps.uploads.api_urls")),

@@ -11,6 +11,9 @@ ip.adysec.com publishes no checksum, so updating downloads the whole file again;
 in use changes nothing. A download replaces nothing until it has passed two checks: a size limit, and
 opening it as a city database (lookup.open_reader), which a file cut short fails. It is written next to its
 final name and then renamed over it.
+
+A download of new data and a 补全 that changed something are logged in the activity log when they end, as the
+admin who started them did it, from where they did (`who`, apps.activity.log's actor, ip and user_agent).
 """
 
 import hashlib
@@ -241,11 +244,24 @@ def fetch(request):
     return _opener.open(request, timeout=READ_TIMEOUT)
 
 
-def start_download():
+def started_by(request):
+    """`who` of a job: the activity log's actor, ip and user_agent of the request starting it."""
+    from apps.core.net import client_ip
+
+    return {"actor": request.user, "ip": client_ip(request), "user_agent": request.META.get("HTTP_USER_AGENT", "")}
+
+
+def _log(kind, who, detail):
+    from apps.activity import log as activity
+
+    activity.record(kind, **(who or {"actor": None, "ip": None, "user_agent": ""}), detail=detail)
+
+
+def start_download(who=None):
     """Download the database (or a newer one), in the background. Raises NotReady or Busy."""
     _ready_config()
     config = claim(Job.DOWNLOAD)
-    start_thread(download, config.job_id)
+    start_thread(download, config.job_id, who)
 
 
 def _open(url):
@@ -351,7 +367,7 @@ def data_date(moment):
     return timezone.localtime(moment).date().isoformat() if moment else pgettext("date", "unknown")
 
 
-def download(progress):
+def download(progress, who=None):
     """The download job (see the top). Finishes the job itself, together with the database's fields."""
     folder = Path(settings.GEOIP_DIR)
     final = folder / FILE_NAME
@@ -378,15 +394,19 @@ def download(progress):
     finally:
         part.unlink(missing_ok=True)
 
-    progress.finish(
-        State.DONE,
-        _("Downloaded: data of %(date)s.") % {"date": data_date(built_at)},
-        file_name=FILE_NAME,
-        sha256=digest,
-        size=size,
-        built_at=built_at,
-        downloaded_at=timezone.now(),
-    )
+    from apps.activity import log as activity
+
+    with transaction.atomic():
+        progress.finish(
+            State.DONE,
+            _("Downloaded: data of %(date)s.") % {"date": data_date(built_at)},
+            file_name=FILE_NAME,
+            sha256=digest,
+            size=size,
+            built_at=built_at,
+            downloaded_at=timezone.now(),
+        )
+        _log(activity.Kind.DOWNLOAD_IP_GEO, who, {"built_at": built_at.isoformat()})
     logger.info("IP location database downloaded: %s, data of %s, from %s", FILE_NAME, data_date(built_at), HOST)
     lookup.forget_cached()
     return None
@@ -411,7 +431,7 @@ class Target:
 
 TARGETS = (
     Target("users", gettext_lazy("Users' last login IPs"), "accounts.User", "last_login_ip", "last_login_location"),
-    Target("logins", gettext_lazy("Login log"), "accounts.LoginLog", "ip", "ip_location"),
+    Target("activity", gettext_lazy("Activity log"), "activity.ActivityLog", "ip", "ip_location"),
     Target("downloads", gettext_lazy("Download log"), "links.DownloadLog", "ip", "ip_location"),
 )
 
@@ -422,18 +442,18 @@ def unfilled():
     return {"total": sum(part["count"] for part in parts), "parts": parts}
 
 
-def start_fill(redo=False):
+def start_fill(redo=False, who=None):
     """补全 in the background: every stored IP without a location (with `redo`, every stored IP) looked up
     in the database in use. Raises NotReady or Busy."""
     config = _ready_config()
     if lookup.locator(config) is None:
         raise NotReady(_("There is no usable database yet; download one first."))
     config = claim(Job.FILL)
-    start_thread(fill, config.job_id, redo)
+    start_thread(fill, config.job_id, redo, who)
 
 
-def fill(progress, redo=False):
-    """The 补全 job. Each address is looked up once (a login's IP is in the login log and on the user too),
+def fill(progress, redo=False, who=None):
+    """The 补全 job. Each address is looked up once (a login's IP is in the activity log and on the user too),
     then each table gets one UPDATE per location and FILL_CHUNK addresses. Only the location columns
     change. The progress counts the addresses looked up."""
     config = IpGeoSettings.load()
@@ -473,6 +493,12 @@ def fill(progress, redo=False):
         message = ngettext("Filled in the location of %(count)s record.", "Filled in the locations of %(count)s records.", changed) % {"count": f"{changed:,}"}
     else:
         message = _("There was nothing to fill in.")
-    if changed:
-        logger.info("IP location: %s", message)
-    return message
+    if not changed:
+        return message
+    from apps.activity import log as activity
+
+    logger.info("IP location: %s", message)
+    with transaction.atomic():
+        progress.finish(State.DONE, message)
+        _log(activity.Kind.FILL_IP_GEO, who, {"changed": changed, "redo": redo, "addresses": len(addresses)})
+    return None

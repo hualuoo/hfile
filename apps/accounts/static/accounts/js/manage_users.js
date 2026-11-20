@@ -95,6 +95,7 @@
       h('td', { class: 'row-actions' },
         iconButton('edit', gettext('Edit'), () => openUser(user.id), user.why.edit),
         iconButton('content_copy', gettext('Copy'), () => copyUser(user), user.why.copy),
+        iconButton('history', gettext('Activity log'), () => showActivity(user)),
         iconButton('delete', gettext('Delete'), () => deleteUser(user), user.why.delete)));
     // The whole row opens the user, but its own controls keep working and selecting text doesn't.
     tr.addEventListener('click', (e) => {
@@ -489,10 +490,15 @@
     load();
   }
 
+  // The activity log, only what this user did and what was about them (activity/js/manage_activity_log.js).
+  function showActivity(user) {
+    if (window.App.showActivity) window.App.showActivity({ user: { id: user.id, username: user.kind === 'guest' ? user.nickname : user.username } });
+  }
+
   async function deleteUser(user) {
     const ok = await confirmDialog({
       title: interpolate(gettext('Delete user "%(username)s"?'), { username: user.username }, true),
-      message: gettext("Their permissions on every storage source and their shares are deleted too; their login log entries stay. This can't be undone."),
+      message: gettext("Their permissions on every storage source and their shares are deleted too; their entries in the activity log stay. This can't be undone."),
       confirmText: gettext('Delete'),
       danger: true,
     });

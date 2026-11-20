@@ -30,6 +30,7 @@ from django.utils import timezone
 from django.utils.translation import gettext
 
 from apps.accounts.permissions import Permission
+from apps.activity import log as activity
 from apps.core import origin
 from apps.core.times import iso
 from apps.files import transfer
@@ -130,12 +131,15 @@ def create(request, user, body: dict) -> Share:
 
 
 def _save(share: Share, custom_key: str) -> Share:
-    """With the custom key, or a new random one (another one when it is taken)."""
+    """With the custom key, or a new random one (another one when it is taken); logged in the activity log."""
     for _ in range(1 if custom_key else KEY_TRIES):
         share.key = custom_key or new_key()
         try:
             with transaction.atomic():
                 share.save()
+                activity.record(activity.Kind.CREATE_SHARE, actor=share.owner, storage=share.storage, path=share.folder,
+                                key=share.key, detail=log_detail(share, password=share.has_password,
+                                                                 expires_at=iso(share.expires_at)))
             return share
         except IntegrityError:
             if Share.objects.filter(key=share.key).exists():
@@ -373,6 +377,11 @@ def filtered(shares_qs, query: dict, *, now=None):
     if user:
         shares_qs = shares_qs.filter(Q(owner__username__icontains=user) | Q(owner__nickname__icontains=user))
     return shares_qs.order_by("-created_at", "-id")
+
+
+def log_detail(share: Share, **more) -> dict:
+    """What the activity log keeps of a share: the names of what it holds, and `more`."""
+    return {"items": activity.some(entry.get("name") for entry in share.entries or [] if isinstance(entry, dict)), **more}
 
 
 def may_delete(user, share: Share) -> bool:

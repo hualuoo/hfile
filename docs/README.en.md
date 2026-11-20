@@ -56,8 +56,8 @@ HFile is built with Django:
   - direct and short links have download rate limits, Referer-based hotlink protection and download logs;
   - shares can have a password and an expiry date, and what a share shows follows the permissions of the person who shared it.
 - **Permissions**: each user has their own root folder and 15 permissions on each storage source. There are also filter rules (hidden, inaccessible, not downloadable), folder passwords and folder readme documents.
-- **Accounts and security**: image CAPTCHA, two-factor authentication (TOTP) for superusers, a secret login entrance, single sign-on (GitHub, Gitee, GitLab, OpenID Connect), login logs, IP and user-agent blocklists.
-- **Operations**: setup wizard, database backup and restore commands, scheduled cleanup, a diagnostics page; tokens and signatures in the access log are masked automatically; IP location: the IPs of the user list, the login log and the download log show their country or region, and for many the province and city, looked up on the server in MaxMind's GeoLite2-City database.
+- **Accounts and security**: image CAPTCHA, two-factor authentication (TOTP) for superusers, a secret login entrance, single sign-on (GitHub, Gitee, GitLab, OpenID Connect), IP and user-agent blocklists.
+- **Operations**: setup wizard, database backup and restore commands, scheduled cleanup, a diagnostics page; tokens and signatures in the access log are masked automatically; an activity log of logins, changes to files, short links and shares, and every change admins make, which nothing can edit or delete; IP location: the IPs of the user list, the activity log and the download log show their country or region, and for many the province and city, looked up on the server in MaxMind's GeoLite2-City database.
 
 Every feature is described in detail in [features](features.md) (Chinese).
 
@@ -288,7 +288,8 @@ The documentation is in Chinese.
 ```
 hfile/
 ├── apps/                  Django apps, one folder per feature
-│   ├── accounts/          users, login, two-factor authentication, permissions, login logs
+│   ├── accounts/          users, login, two-factor authentication, permissions
+│   ├── activity/          the activity log
 │   ├── captchas/          image CAPTCHA
 │   ├── core/              shared parts: middleware, JSON parsing, error handling, pagination, encrypted secrets, …
 │   ├── crosscheck/        cross-app tests of the access rules

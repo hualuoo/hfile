@@ -21,6 +21,7 @@ from django.test import Client, TransactionTestCase
 from django.utils import timezone
 
 from apps.accounts.models import User
+from apps.activity.testing import entries
 from apps.core import secrets
 from apps.files import signals as file_signals
 from apps.siteconf.models import SiteSettings
@@ -62,6 +63,7 @@ class TokenTests(_Opened):
         self.assertEqual(self.answer(response), 1)
         self.assertEqual(self.disk(), DOCX)
         self.assertTrue(OfficeSession.objects.filter(key=self.key).exists())
+        self.assertEqual(entries("edit"), [])
 
     def payload(self, **extra):
         return {"key": self.key, "status": 2, "url": self.saved_document(), **extra}
@@ -69,6 +71,10 @@ class TokenTests(_Opened):
     def test_a_valid_one_saves(self):  # the reference for the others
         self.assertEqual(self.answer(self.callback(self.payload())), 0)
         self.assertEqual(self.disk(), EDITED)
+        # As the session's user did it, without the Document Server's address.
+        entry = entries("edit")[0]
+        self.assertEqual((entry.actor, entry.path, entry.ip, entry.user_agent, entry.detail),
+                         (self.alice, "/docs/a.docx", None, "", {"size": len(EDITED), "via": "onlyoffice"}))
 
     def test_no_secret(self):
         self.configure(secret="")

@@ -63,7 +63,7 @@
 
   const PARTS = {
     users: (n) => interpolate(ngettext('the last login IP of %(count)s user', 'the last login IPs of %(count)s users', n), { count: fmtNum(n) }, true),
-    logins: (n) => interpolate(ngettext('%(count)s login log entry', '%(count)s login log entries', n), { count: fmtNum(n) }, true),
+    activity: (n) => interpolate(ngettext('%(count)s activity log entry', '%(count)s activity log entries', n), { count: fmtNum(n) }, true),
     downloads: (n) => interpolate(ngettext('%(count)s download log entry', '%(count)s download log entries', n), { count: fmtNum(n) }, true),
   };
 

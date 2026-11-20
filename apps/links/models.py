@@ -82,7 +82,7 @@ class DownloadLog(models.Model):
     path = models.TextField(gettext_lazy("File path"))
     short_key = KeyField(gettext_lazy("Short link key"), max_length=KEY_MAX, blank=True, db_index=True)  # "" for path links
     ip = models.GenericIPAddressField("IP", null=True, blank=True, unpack_ipv4=True)
-    # Its IP 归属地 (ipgeo app), as for the login log.
+    # Its IP 归属地 (ipgeo app), as for the activity log.
     ip_location = models.CharField(gettext_lazy("IP location"), max_length=LOCATION_MAX, blank=True)
     username = models.CharField(gettext_lazy("User"), max_length=USERNAME_MAX, blank=True)
     user_agent = models.CharField("User-Agent", max_length=TEXT_MAX, blank=True)

@@ -186,7 +186,7 @@ def clean_path(value: str) -> str:
 
 def clean_external_id(value) -> str:
     """An id at a provider, as text: stripped, 1 to EXTERNAL_ID_MAX characters, no control or invisible
-    characters (an id with a text-direction override would read as another one in the login log and in
+    characters (an id with a text-direction override would read as another one in the activity log and in
     the user dialog). Compared exactly (models.key_of), so nothing else is changed."""
     if not isinstance(value, str):
         raise ValidationError(_("Should be text."))

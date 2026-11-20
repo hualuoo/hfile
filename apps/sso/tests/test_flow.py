@@ -13,9 +13,10 @@ from django.core.cache import cache
 from django.test import TestCase
 from django.utils import timezone
 
-from apps.accounts.models import Kind, LoginLog
+from apps.accounts.models import Kind
 from apps.accounts.signals import user_copied
 from apps.accounts.test_totp import code_for, turn_on
+from apps.activity.testing import entries, logins, only_login
 from apps.core import masking
 from apps.siteconf.models import SiteSettings
 from apps.sso import flow, outbound
@@ -70,7 +71,7 @@ class LoginTests(FakeIdpMixin, TestCase):
         self.assertEqual(form["redirect_uri"], query["redirect_uri"])
         self.assertEqual((form["client_id"], form["client_secret"], form["grant_type"]), (self.idp.client_id, "hfile-secret", "authorization_code"))
         self.assertEqual(len(form["code_verifier"]), 64)
-        entry = LoginLog.objects.get()
+        entry = only_login(self)
         self.assertEqual((entry.result, entry.source, entry.user, entry.username), ("success", "sso", self.alice, "alice"))
         self.alice.refresh_from_db()
         self.assertEqual(self.alice.last_login_ip, "127.0.0.1")
@@ -186,7 +187,7 @@ class StateTests(FakeIdpMixin, TestCase):
         address = self.begin()
         response = self.come_back(address, error="access_denied", state=query_of(address)["state"])
         self.assertContains(response, "服务商拒绝了这次登录（access_denied）", status_code=400)
-        entry = LoginLog.objects.get()
+        entry = only_login(self)
         self.assertEqual((entry.result, entry.reason, entry.source), ("failure", "sso_denied", "sso"))
         address = self.begin()
         response = self.come_back(address, error="<b>Evil</b> text", state=query_of(address)["state"])
@@ -228,7 +229,7 @@ class ProviderAnswerTests(FakeIdpMixin, TestCase):
         self.fails("单点登录失败：获取 Token 时服务商返回 500", status_token=500)
         self.fails("单点登录失败：获取 Token 时服务商返回 401", status_token=401)
         self.fails("单点登录失败：获取用户信息时服务商返回 403", status_userinfo=403)
-        entry = LoginLog.objects.order_by("id").last()
+        entry = logins()[-1]
         self.assertEqual((entry.reason, entry.source), ("sso_provider", "sso"))
 
     def test_token_types_and_errors(self):
@@ -281,7 +282,7 @@ class ProviderAnswerTests(FakeIdpMixin, TestCase):
                 with self.assertLogs("hfile.sso", "WARNING"):
                     self.assertContains(self.login_via_sso(), text, status_code=502)
                 self.assertFalse(self.client.get("/api/v1/session/").json()["authenticated"])
-        self.assertEqual(LoginLog.objects.order_by("id").last().reason, "sso_userinfo")
+        self.assertEqual(logins()[-1].reason, "sso_userinfo")
 
     def test_invisible_characters_in_ids(self):
         for sub in ("a\u202eb", "a\u200bb", "a\x00b"):
@@ -340,14 +341,14 @@ class RefusedTests(FakeIdpMixin, TestCase):
         Identity.objects.create(provider=self.provider, external_id="alice-1", user=alice)
         response = self.login_via_sso()
         self.assertContains(response, "已经停用", status_code=403)
-        entry = LoginLog.objects.get()
+        entry = only_login(self)
         self.assertEqual((entry.reason, entry.user, entry.source), ("inactive", alice, "sso"))
 
     def test_a_builtin_user(self):
         template = User.objects.template()
         Identity.objects.create(provider=self.provider, external_id="alice-1", user=template)  # never made by the site
         self.assertContains(self.login_via_sso(), "内置用户不能登录", status_code=403)
-        self.assertEqual(LoginLog.objects.get().reason, "builtin")
+        self.assertEqual(only_login(self).reason, "builtin")
         self.assertFalse(self.client.get("/api/v1/session/").json()["authenticated"])
 
     def test_not_bound_while_auto_register_is_off(self):
@@ -358,7 +359,7 @@ class RefusedTests(FakeIdpMixin, TestCase):
         self.assertContains(response, "/login/?next=", status_code=403)  # 用密码登录
         self.assertNotContains(response, "alice-1", status_code=403)  # the provider's id isn't shown
         self.assertEqual(User.objects.count(), 3)  # the guest, the template, alice
-        entry = LoginLog.objects.get()
+        entry = only_login(self)
         self.assertEqual((entry.reason, entry.username, entry.user), ("sso_not_bound", "fake:alice-1", None))
         self.assertFalse(self.client.get("/api/v1/session/").json()["authenticated"])
 
@@ -398,11 +399,14 @@ class AutoRegisterTests(FakeIdpMixin, TestCase):
         self.assertEqual(Identity.objects.get(user=user).external_id, "alice-1")
         self.assertEqual(self.copies, [(self.template, user)])
         self.assertEqual(self.client.get("/api/v1/session/").json()["user"]["username"], "alice")
+        self.assertEqual([(entry.kind, entry.actor) for entry in entries()], [("sso_register", user), ("login", user)])
+        self.assertEqual(entries()[0].detail, {"provider": self.provider.name, "code": "fake"})
         # The next time: the same user, nobody new.
         self.client.logout()
         self.assertEqual(self.login_via_sso().status_code, 302)
         self.assertEqual(User.objects.filter(kind=Kind.NORMAL).count(), 1)
         self.assertEqual(len(self.copies), 1)
+        self.assertEqual([entry.kind for entry in entries()], ["sso_register", "login", "login"])
 
     def test_the_template_s_grants_are_copied(self):
         # The storages app answers user_copied: the new user can use what the template can.
@@ -508,7 +512,7 @@ class TwoStepTests(FakeIdpMixin, TestCase):
         self.finish()
         self.identity.refresh_from_db()
         self.assertIsNotNone(self.identity.last_login_at)
-        entry = LoginLog.objects.get()
+        entry = only_login(self)
         self.assertEqual((entry.result, entry.source, entry.user), ("success", "sso", self.boss))
 
     def test_with_a_secure_entry(self):
@@ -525,7 +529,7 @@ class TwoStepTests(FakeIdpMixin, TestCase):
         self.login_via_sso()
         response = self.client.post("/api/v1/session/", {"step": "totp", "code": "000000"}, content_type="application/json")
         self.assertEqual(response.status_code, 400)
-        entry = LoginLog.objects.get()
+        entry = only_login(self)
         self.assertEqual((entry.reason, entry.source), ("totp", "sso"))
 
     def test_someone_else_logged_in_meanwhile(self):

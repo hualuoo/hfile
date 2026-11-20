@@ -36,6 +36,9 @@
     "\"%(where)s\" already exists. Overwriting a file needs the \"Delete\" permission, so it can only be skipped.": "\u300c%(where)s\u300d\u5df2\u7ecf\u5b58\u5728\u4e86\u3002\u8986\u76d6\u539f\u6765\u7684\u6587\u4ef6\u8981\u6709\u300c\u5220\u9664\u300d\u7684\u6743\u9650\uff0c\u53ea\u80fd\u8df3\u8fc7\u3002",
     "\"%(where)s\" already exists. Overwriting replaces the file that is there.": "\u300c%(where)s\u300d\u5df2\u7ecf\u5b58\u5728\u4e86\u3002\u8986\u76d6\u4f1a\u628a\u539f\u6765\u7684\u6587\u4ef6\u6362\u6389\u3002",
     "\"%(where)s\" already exists. You don't have the \"Delete\" permission, so you can't overwrite it; please upload it with another name.": "\u300c%(where)s\u300d\u5df2\u7ecf\u5b58\u5728\u4e86\u3002\u4f60\u6ca1\u6709\u300c\u5220\u9664\u300d\u6743\u9650\uff0c\u4e0d\u80fd\u8986\u76d6\u5b83\uff0c\u8bf7\u6362\u4e2a\u540d\u5b57\u518d\u4e0a\u4f20\u3002",
+    "%(count)s activity log entry": [
+      "%(count)s \u6761\u64cd\u4f5c\u65e5\u5fd7"
+    ],
     "%(count)s download log entry": [
       "%(count)s \u6761\u4e0b\u8f7d\u65e5\u5fd7"
     ],
@@ -62,9 +65,6 @@
     ],
     "%(count)s item needs changing; see what's marked in red.": [
       "\u6709 %(count)s \u9879\u8981\u6539\u4e00\u4e0b\uff0c\u89c1\u6807\u7ea2\u7684\u5730\u65b9\u3002"
-    ],
-    "%(count)s login log entry": [
-      "%(count)s \u6761\u767b\u5f55\u65e5\u5fd7"
     ],
     "%(count)s migration applied": [
       "\u6267\u884c\u4e86 %(count)s \u4e2a\u8fc1\u79fb"
@@ -190,7 +190,6 @@
     "%(username)s saved.": "\u5df2\u4fdd\u5b58 %(username)s\u3002",
     "%(version)s (first entry)": "%(version)s\uff08\u7b2c\u4e00\u6761\u8bb0\u5f55\uff09",
     "%(who)s To change who can use it and from which folder, set it for each user in \"Users\".": "%(who)s\u8981\u8c03\u6574\u8c01\u80fd\u4f7f\u7528\u5b83\u3001\u4ece\u54ea\u4e2a\u6587\u4ef6\u5939\u5f00\u59cb\uff0c\u5230\u300c\u7528\u6237\u300d\u91cc\u7ed9\u6bcf\u4e2a\u7528\u6237\u8bbe\u7f6e\u3002",
-    "(empty)": "\uff08\u6ca1\u586b\uff09",
     "(none)": "\uff08\u6ca1\u6709\uff09",
     "(unreadable)": "\uff08\u8bfb\u4e0d\u51fa\u6765\uff09",
     ", ": "\u3001",
@@ -204,6 +203,7 @@
     "6 digits": "6 \u4f4d\u6570\u5b57",
     "; ": "\uff1b",
     "<short-name>": "<\u7b80\u79f0>",
+    "A command on the server, or OnlyOffice saving": "\u670d\u52a1\u5668\u4e0a\u7684\u547d\u4ee4\uff0c\u6216\u8005 OnlyOffice \u4fdd\u5b58",
     "A file name can't be only dots and spaces.": "\u6587\u4ef6\u540d\u4e0d\u80fd\u53ea\u6709\u70b9\u548c\u7a7a\u683c\u3002",
     "A file name can't contain / or \\.": "\u6587\u4ef6\u540d\u91cc\u4e0d\u80fd\u6709 / \u6216 \\\u3002",
     "A folder name can't contain / (nested folders can't be created at once)": "\u6587\u4ef6\u5939\u540d\u79f0\u4e0d\u80fd\u5305\u542b / (\u4e0d\u652f\u6301\u591a\u7ea7\u521b\u5efa)",
@@ -212,14 +212,17 @@
     "A path in the storage source, like /music/rock/a.mp3.": "\u5b58\u50a8\u6e90\u91cc\u7684\u8def\u5f84\uff0c\u4f8b\u5982 /music/rock/a.mp3\u3002",
     "A script didn't load. Please reload the page and try again.": "\u811a\u672c\u52a0\u8f7d\u5931\u8d25\uff0c\u8bf7\u5237\u65b0\u9875\u9762\u518d\u8bd5\u3002",
     "A shorter link, easy to copy and pass on.": "\u7f29\u77ed\u7248\u76f4\u94fe\u5730\u5740\uff0c\u4fbf\u4e8e\u590d\u5236\u5206\u53d1.",
+    "About": "\u5bf9\u8c61",
     "Absolute path": "\u7edd\u5bf9\u8def\u5f84",
     "Access password": "\u8bbf\u95ee\u5bc6\u7801",
     "Access password copied to the clipboard": "\u8bbf\u95ee\u5bc6\u7801\u5df2\u590d\u5236\u5230\u526a\u8d34\u677f",
     "Access without logging in is allowed now (with the anonymous user's permissions).": "\u5df2\u5141\u8bb8\u6ca1\u767b\u5f55\u7684\u4eba\u8bbf\u95ee\uff08\u6309\u533f\u540d\u7528\u6237\u7684\u6743\u9650\uff09\u3002",
     "Accounts that single sign-on creates later start with a copy of its default permissions and storage source permissions.": "\u4ee5\u540e\u5355\u70b9\u767b\u5f55\u65b0\u5efa\u7684\u8d26\u53f7\uff0c\u4e00\u5f00\u59cb\u590d\u5236\u5b83\u7684\u9ed8\u8ba4\u6743\u9650\u548c\u5b58\u50a8\u6e90\u6743\u9650\u3002",
+    "Action": "\u64cd\u4f5c",
     "Actions": "\u64cd\u4f5c",
     "Actions for %(label)s": "%(label)s \u7684\u64cd\u4f5c",
     "Actions for the selected items": "\u9009\u4e2d\u9879\u76ee\u7684\u64cd\u4f5c",
+    "Activity log": "\u64cd\u4f5c\u65e5\u5fd7",
     "Add a storage source on the Manage page": "\u524d\u5f80\u7ba1\u7406\u9875\u6dfb\u52a0\u5b58\u50a8\u6e90",
     "Add rule": "\u6dfb\u52a0\u89c4\u5219",
     "Add single sign-on": "\u65b0\u589e\u5355\u70b9\u767b\u5f55",
@@ -444,14 +447,8 @@
     "Delete the %(count)s found": [
       "\u5220\u9664\u67e5\u5230\u7684\u5168\u90e8 %(count)s \u6761"
     ],
-    "Delete the %(count)s login log entry found?": [
-      "\u5220\u9664\u67e5\u5230\u7684 %(count)s \u6761\u767b\u5f55\u65e5\u5fd7\uff1f"
-    ],
     "Delete the %(count)s selected download log entry?": [
       "\u662f\u5426\u786e\u8ba4\u5220\u9664\u9009\u4e2d\u7684 %(count)s \u6761\u4e0b\u8f7d\u65e5\u5fd7\uff1f"
-    ],
-    "Delete the %(count)s selected login log entry?": [
-      "\u5220\u9664\u9009\u4e2d\u7684 %(count)s \u6761\u767b\u5f55\u65e5\u5fd7\uff1f"
     ],
     "Delete the %(count)s selected short link?": [
       "\u5220\u9664\u9009\u4e2d\u7684 %(count)s \u4e2a\u77ed\u94fe\uff1f"
@@ -459,9 +456,6 @@
     "Delete the single sign-on \"%(name)s\"?": "\u5220\u9664\u5355\u70b9\u767b\u5f55\u300c%(name)s\u300d\uff1f",
     "Delete the whole download log (%(count)s entry)?": [
       "\u6e05\u7a7a\u5168\u90e8 %(count)s \u6761\u4e0b\u8f7d\u65e5\u5fd7\uff1f"
-    ],
-    "Delete the whole login log (%(count)s entry)?": [
-      "\u6e05\u7a7a\u5168\u90e8 %(count)s \u6761\u767b\u5f55\u65e5\u5fd7\uff1f"
     ],
     "Delete this item": "\u5220\u9664\u8fd9\u4e00\u9879",
     "Delete this share?": "\u786e\u8ba4\u5220\u9664\u8be5\u5206\u4eab\uff1f",
@@ -485,6 +479,7 @@
     "Description": "\u63cf\u8ff0",
     "Deselect": "\u53d6\u6d88\u9009\u62e9",
     "Deselect (Esc)": "\u53d6\u6d88\u9009\u62e9 (Esc)",
+    "Details": "\u8be6\u60c5",
     "Direct link": "\u76f4\u94fe",
     "Direct link address: %(origin)s/%(prefix)s/storage-alias/folder/file-name": "\u76f4\u94fe\u7684\u5730\u5740\uff1a%(origin)s/%(prefix)s/\u5b58\u50a8\u6e90\u522b\u540d/\u6587\u4ef6\u5939/\u6587\u4ef6\u540d",
     "Disable": "\u505c\u7528",
@@ -613,6 +608,7 @@
     "How long download links signed by this site and the storage's own signed links last: 1800 seconds (half an hour) by default, 7 days at most.": "\u672c\u7ad9\u7b7e\u540d\u7684\u4e0b\u8f7d\u94fe\u63a5\u548c\u5b58\u50a8\u81ea\u5df1\u7684\u7b7e\u540d\u94fe\u63a5\u591a\u4e45\u4ee5\u540e\u5931\u6548\uff0c\u9ed8\u8ba4 1800 \u79d2\uff08\u534a\u5c0f\u65f6\uff09\uff0c\u6700\u957f 7 \u5929\u3002",
     "How many downloads through this site the storage source sends at once. Every connection counts: each of the connections a download tool opens, and each picture a gallery page loads.": "\u8fd9\u4e2a\u5b58\u50a8\u6e90\u7ecf\u8fc7\u672c\u7ad9\u540c\u65f6\u53d1\u9001\u51e0\u4e2a\u4e0b\u8f7d\u3002\u6bcf\u4e2a\u8fde\u63a5\u90fd\u7b97\u4e00\u4e2a\uff1a\u4e0b\u8f7d\u5de5\u5177\u5f00\u7684\u6bcf\u4e2a\u8fde\u63a5\uff0c\u753b\u5eca\u52a0\u8f7d\u7684\u6bcf\u5f20\u56fe\u7247\u3002",
     "How the Client Secret is sent": "Client Secret \u7684\u53d1\u9001\u65b9\u5f0f",
+    "IP %(ip)s": "IP %(ip)s",
     "IP location is off": "\u5df2\u505c\u7528 IP \u5f52\u5c5e\u5730",
     "IP location is on": "\u5df2\u542f\u7528 IP \u5f52\u5c5e\u5730",
     "IP location is on; now download a database": "\u5df2\u542f\u7528 IP \u5f52\u5c5e\u5730\uff0c\u63a5\u4e0b\u6765\u4e0b\u8f7d\u4e00\u4e2a\u6570\u636e\u5e93",
@@ -730,6 +726,7 @@
     "Nickname field": "\u6635\u79f0\u5b57\u6bb5",
     "No access": "\u4e0d\u8bb8\u8bbf\u95ee",
     "No access: it and what's below it can't be opened.": "\u4e0d\u80fd\u8bbf\u95ee\uff1a\u5b83\u548c\u5b83\u4e0b\u9762\u7684\u4e1c\u897f\u90fd\u6253\u4e0d\u5f00\u3002",
+    "No account has this name now": "\u73b0\u5728\u6ca1\u6709\u8fd9\u4e2a\u540d\u5b57\u7684\u8d26\u53f7",
     "No content yet": "\u8fd8\u6ca1\u6709\u5185\u5bb9",
     "No downloads in the last %(seconds)s second.": [
       "%(seconds)s \u79d2\u5185\u6ca1\u6709\u4efb\u4f55\u4e0b\u8f7d\u8bb0\u5f55\u3002"
@@ -737,12 +734,10 @@
     "No downloads logged yet.": "\u8fd8\u6ca1\u6709\u4e0b\u8f7d\u8bb0\u5f55\u3002",
     "No downloads: downloads, previews, direct and short links don't work.": "\u4e0d\u80fd\u4e0b\u8f7d\uff1a\u4e0b\u8f7d\u3001\u9884\u89c8\u3001\u76f4\u94fe\u548c\u77ed\u94fe\u90fd\u4e0d\u884c\u3002",
     "No filter rules yet.": "\u8fd8\u6ca1\u6709\u8fc7\u6ee4\u89c4\u5219\u3002",
-    "No filters are set: every entry in the list is deleted (except those logged after it loaded). This can't be undone.": "\u6ca1\u6709\u8bbe\u6761\u4ef6\uff1a\u5217\u8868\u91cc\u7684\u767b\u5f55\u65e5\u5fd7\u90fd\u4f1a\u5220\u9664\uff08\u5728\u90a3\u4e4b\u540e\u624d\u8bb0\u4e0b\u7684\u9664\u5916\uff09\u3002\u5220\u9664\u4ee5\u540e\u4e0d\u80fd\u6062\u590d\u3002",
     "No folder passwords yet.": "\u8fd8\u6ca1\u6709\u76ee\u5f55\u5bc6\u7801\u3002",
     "No folder readmes yet.": "\u8fd8\u6ca1\u6709\u76ee\u5f55\u6587\u6863\u3002",
     "No folders": "\u65e0\u6587\u4ef6\u5939",
     "No images in this folder": "\u5f53\u524d\u6587\u4ef6\u5939\u65e0\u56fe\u7247",
-    "No logins logged yet.": "\u8fd8\u6ca1\u6709\u767b\u5f55\u8bb0\u5f55\u3002",
     "No one has created a share yet.": "\u8fd8\u6ca1\u6709\u4eba\u521b\u5efa\u5206\u4eab\u3002",
     "No password": "\u6ca1\u6709\u5bc6\u7801",
     "No password needed.": "\u4e0d\u9700\u8981\u5bc6\u7801\u3002",
@@ -777,10 +772,12 @@
     "Not found.": "\u6ca1\u6709\u627e\u5230\u3002",
     "Not linked": "\u6ca1\u6709\u7ed1\u5b9a",
     "Not linked (this single sign-on isn't enabled now)": "\u6ca1\u6709\u7ed1\u5b9a\uff08\u8fd9\u4e2a\u5355\u70b9\u767b\u5f55\u73b0\u5728\u6ca1\u6709\u542f\u7528\uff09",
+    "Not logged in": "\u672a\u767b\u5f55",
     "Not set": "\u672a\u8bbe\u7f6e",
     "Not shown in lists.": "\u5217\u8868\u91cc\u4e0d\u663e\u793a\u3002",
     "Note": "\u63d0\u793a",
     "Nothing changed.": "\u6ca1\u6709\u4fee\u6539\u3002",
+    "Nothing logged yet.": "\u8fd8\u6ca1\u6709\u8bb0\u5f55\u3002",
     "Nothing matches.": "\u6ca1\u6709\u7b26\u5408\u6761\u4ef6\u7684\u8bb0\u5f55\u3002",
     "Nothing to choose.": "\u6ca1\u6709\u53ef\u4ee5\u9009\u7684\u3002",
     "Now reading README.md": "\u5df2\u6539\u4e3a\u8bfb\u53d6 README.md",
@@ -800,7 +797,7 @@
     "Once deleted, this short link stops working. Its download log entries are kept.": "\u5220\u9664\u4ee5\u540e\u8fd9\u4e2a\u77ed\u94fe\u5c31\u6253\u4e0d\u5f00\u4e86\uff0c\u5b83\u7684\u4e0b\u8f7d\u65e5\u5fd7\u4f1a\u4fdd\u7559\u3002",
     "Once disabled, the user can't log in, and is logged out right away where already logged in.": "\u505c\u7528\u540e\u4e0d\u80fd\u767b\u5f55\uff0c\u5df2\u7ecf\u767b\u5f55\u7684\u4e5f\u4f1a\u9a6c\u4e0a\u9000\u51fa\u3002",
     "Once disabled, users can't see it or open its files, direct links and shares; its settings and permissions are kept.": "\u505c\u7528\u4ee5\u540e\u7528\u6237\u770b\u4e0d\u5230\u5b83\uff0c\u4e5f\u6253\u4e0d\u5f00\u5b83\u7684\u6587\u4ef6\u3001\u76f4\u94fe\u548c\u5206\u4eab\uff1b\u8bbe\u7f6e\u548c\u6743\u9650\u90fd\u4fdd\u7559\u3002",
-    "Once linked, they can log in with these providers' accounts. When someone without a link fails to log in with single sign-on, the login log shows \"short-name:user-ID\", which you can link here; before linking, check with the provider that the ID really is theirs.": "\u7ed1\u5b9a\u4ee5\u540e\uff0c\u4ed6\u53ef\u4ee5\u7528\u8fd9\u4e9b\u670d\u52a1\u5546\u7684\u8d26\u53f7\u767b\u5f55\u3002\u6ca1\u7ed1\u5b9a\u7684\u4eba\u7528\u5355\u70b9\u767b\u5f55\u5931\u8d25\u65f6\uff0c\u767b\u5f55\u65e5\u5fd7\u91cc\u8bb0\u7740\u300c\u7b80\u79f0:\u7528\u6237 ID\u300d\uff0c\u53ef\u4ee5\u7167\u7740\u5728\u8fd9\u91cc\u7ed1\u5b9a\uff1b\u7ed1\u5b9a\u524d\u5728\u670d\u52a1\u5546\u90a3\u91cc\u6838\u5bf9\u4e00\u4e0b\u8fd9\u4e2a ID \u786e\u5b9e\u662f\u4ed6\u7684\u3002",
+    "Once linked, they can log in with these providers' accounts. When someone without a link fails to log in with single sign-on, the activity log shows \"short-name:user-ID\", which you can link here; before linking, check with the provider that the ID really is theirs.": "\u7ed1\u5b9a\u4ee5\u540e\uff0c\u8fd9\u4e2a\u7528\u6237\u53ef\u4ee5\u7528\u8fd9\u4e9b\u670d\u52a1\u5546\u7684\u8d26\u53f7\u767b\u5f55\u3002\u6ca1\u7ed1\u5b9a\u7684\u4eba\u7528\u5355\u70b9\u767b\u5f55\u5931\u8d25\u65f6\uff0c\u64cd\u4f5c\u65e5\u5fd7\u91cc\u8bb0\u7740\u300c\u7b80\u79f0:\u7528\u6237 ID\u300d\uff0c\u53ef\u4ee5\u7167\u7740\u5728\u8fd9\u91cc\u7ed1\u5b9a\uff1b\u7ed1\u5b9a\u524d\u5728\u670d\u52a1\u5546\u90a3\u91cc\u6838\u5bf9\u4e00\u4e0b\u8fd9\u4e2a ID \u786e\u5b9e\u662f\u8fd9\u4e2a\u7528\u6237\u7684\u3002",
     "Once off, people who aren't logged in see no storage sources.": "\u5173\u6389\u4ee5\u540e\uff0c\u6ca1\u767b\u5f55\u7684\u4eba\u5c31\u770b\u4e0d\u5230\u4efb\u4f55\u5b58\u50a8\u6e90\u4e86\u3002",
     "Once remembered, this browser won't ask again for 30 days (it remembers that the folder is unlocked, not the password).": "\u8bb0\u4f4f\u4ee5\u540e\uff0c\u8fd9\u4e2a\u6d4f\u89c8\u5668 30 \u5929\u5185\u4e0d\u7528\u518d\u8f93\u5165\uff08\u53ea\u8bb0\u4f4f\u5df2\u7ecf\u89e3\u9501\uff0c\u4e0d\u4fdd\u5b58\u5bc6\u7801\uff09\u3002",
     "One more step is needed.": "\u8fd8\u8981\u518d\u9a8c\u8bc1\u4e00\u6b65\u3002",
@@ -821,6 +818,7 @@
     "Open share": "\u6253\u5f00\u5206\u4eab",
     "Open short link %(key)s": "\u6253\u5f00\u77ed\u94fe %(key)s",
     "Open the download link": "\u6253\u5f00\u4e0b\u8f7d\u94fe\u63a5",
+    "Open the storage source": "\u6253\u5f00\u8fd9\u4e2a\u5b58\u50a8\u6e90\u7684\u8bbe\u7f6e",
     "Open with OnlyOffice": "\u7528 OnlyOffice \u6253\u5f00",
     "Opening the document failed.": "\u6253\u5f00\u6587\u6863\u5931\u8d25\u3002",
     "Opens gallery view whenever you switch to this storage source; good for storage sources of pictures.": "\u6bcf\u6b21\u5207\u6362\u5230\u8fd9\u4e2a\u5b58\u50a8\u6e90\u65f6\u81ea\u52a8\u6253\u5f00\u753b\u5eca\u6a21\u5f0f\uff0c\u9002\u5408\u653e\u56fe\u7247\u7684\u5b58\u50a8\u6e90\u3002",
@@ -904,6 +902,7 @@
     "Remark": "\u5907\u6ce8",
     "Remember password": "\u8bb0\u4f4f\u5bc6\u7801",
     "Remove": "\u79fb\u9664",
+    "Remove the filter \"%(filter)s\"": "\u53bb\u6389\u6761\u4ef6\u300c%(filter)s\u300d",
     "Rename": "\u91cd\u547d\u540d",
     "Rename %(name)s to:": "\u5c06 %(name)s \u4fee\u6539\u4e3a\uff1a",
     "Renamed": "\u91cd\u547d\u540d\u6210\u529f",
@@ -916,7 +915,6 @@
     "Restart the program and it upgrades by itself.": "\u91cd\u542f\u7a0b\u5e8f\u5c31\u4f1a\u81ea\u52a8\u5347\u7ea7\u3002",
     "Restore the default": "\u6062\u590d\u9ed8\u8ba4",
     "Restore the default?": "\u6062\u590d\u9ed8\u8ba4\uff1f",
-    "Result": "\u7ed3\u679c",
     "Results": "\u6279\u91cf\u64cd\u4f5c\u7ed3\u679c",
     "Retry": "\u91cd\u8bd5",
     "Role": "\u8eab\u4efd",
@@ -987,6 +985,8 @@
     "Show another captcha picture": "\u6362\u4e00\u5f20\u9a8c\u8bc1\u7801\u56fe\u7247",
     "Show names": "\u663e\u793a\u540d\u79f0",
     "Show one": "\u663e\u793a\u5355\u5f20",
+    "Show only %(name)s's entries": "\u53ea\u770b %(name)s \u7684\u8bb0\u5f55",
+    "Show only the entries from this IP": "\u53ea\u770b\u8fd9\u4e2a IP \u7684\u8bb0\u5f55",
     "Show password": "\u663e\u793a\u5bc6\u7801",
     "Shown": "\u663e\u793a\u4f4d\u7f6e",
     "Shows it": "\u663e\u793a\u5b83",
@@ -1104,7 +1104,7 @@
     "The user ID at the provider is required.": "\u8981\u586b\u670d\u52a1\u5546\u90a3\u8fb9\u7684\u7528\u6237 ID\u3002",
     "The value of the \"User ID field\" in the user info": "\u7528\u6237\u4fe1\u606f\u91cc\u300c\u7528\u6237 ID \u5b57\u6bb5\u300d\u7684\u503c",
     "The video didn't load: %(message)s": "\u89c6\u9891\u52a0\u8f7d\u5931\u8d25\uff1a%(message)s",
-    "Their permissions on every storage source and their shares are deleted too; their login log entries stay. This can't be undone.": "\u4ed6\u5728\u6bcf\u4e2a\u5b58\u50a8\u6e90\u4e0a\u7684\u6743\u9650\u548c\u4ed6\u7684\u5206\u4eab\u4f1a\u4e00\u8d77\u5220\u9664\uff0c\u767b\u5f55\u65e5\u5fd7\u91cc\u7684\u8bb0\u5f55\u7559\u7740\u3002\u5220\u9664\u4ee5\u540e\u4e0d\u80fd\u6062\u590d\u3002",
+    "Their permissions on every storage source and their shares are deleted too; their entries in the activity log stay. This can't be undone.": "\u8fd9\u4e2a\u7528\u6237\u5728\u6bcf\u4e2a\u5b58\u50a8\u6e90\u4e0a\u7684\u6743\u9650\u548c\u5206\u4eab\u4f1a\u4e00\u8d77\u5220\u9664\uff0c\u64cd\u4f5c\u65e5\u5fd7\u91cc\u7684\u8bb0\u5f55\u7559\u7740\u3002\u5220\u9664\u4ee5\u540e\u4e0d\u80fd\u6062\u590d\u3002",
     "There are no expired short links.": "\u6ca1\u6709\u8fc7\u671f\u7684\u77ed\u94fe\u3002",
     "There are no single sign-on providers yet: add one in \"Single sign-on\" on the Manage page first.": "\u8fd8\u6ca1\u6709\u5355\u70b9\u767b\u5f55\u670d\u52a1\u5546\uff1a\u5148\u5728\u7ba1\u7406\u9875\u7684\u300c\u5355\u70b9\u767b\u5f55\u300d\u91cc\u6dfb\u52a0\u3002",
     "There are no storage sources visitors can browse. If you have an account, log in first.": "\u6ca1\u6709\u53ef\u4ee5\u533f\u540d\u6d4f\u89c8\u7684\u5b58\u50a8\u6e90\u3002\u6709\u8d26\u53f7\u7684\u8bdd\uff0c\u5148\u767b\u5f55\u3002",
@@ -1116,6 +1116,7 @@
     "They have no password now and can't log in with one": "\u4ed6\u73b0\u5728\u6ca1\u6709\u5bc6\u7801\uff0c\u4e0d\u80fd\u7528\u5bc6\u7801\u767b\u5f55",
     "They have no password, so this is their only way to log in: after unlinking they couldn't log in (you can give them a password in \"Basic info\").": "\u4ed6\u6ca1\u6709\u5bc6\u7801\uff0c\u8fd9\u662f\u4ed6\u552f\u4e00\u7684\u767b\u5f55\u65b9\u5f0f\uff1a\u89e3\u9664\u4ee5\u540e\u4ed6\u5c31\u767b\u5f55\u4e0d\u4e86\u4e86\uff08\u53ef\u4ee5\u5728\u300c\u57fa\u672c\u4fe1\u606f\u300d\u91cc\u7ed9\u4ed6\u8bbe\u4e00\u4e2a\u5bc6\u7801\uff09\u3002",
     "This PDF has a password": "\u8fd9\u4e2a PDF \u6709\u5bc6\u7801",
+    "This account has been deleted": "\u8fd9\u4e2a\u8d26\u53f7\u5df2\u7ecf\u5220\u9664\u4e86",
     "This browser can't play m3u8.": "\u8fd9\u4e2a\u6d4f\u89c8\u5668\u4e0d\u80fd\u64ad\u653e m3u8\u3002",
     "This can't be undone.": "\u5220\u9664\u4ee5\u540e\u4e0d\u80fd\u6062\u590d\u3002",
     "This file has NUL characters (U+0000), and the online editor can't save text with them. Most likely the encoding is wrong (UTF-16 without a BOM, say), so try another one; to edit it anyway, delete those characters before saving.": "\u8fd9\u4e2a\u6587\u4ef6\u91cc\u6709 NUL \u5b57\u7b26\uff08U+0000\uff09\uff0c\u5728\u7ebf\u7f16\u8f91\u4e0d\u80fd\u4fdd\u5b58\u5e26 NUL \u7684\u6587\u672c\u3002\u591a\u534a\u662f\u7f16\u7801\u4e0d\u5bf9\uff08\u6bd4\u5982\u6ca1\u6709 BOM \u7684 UTF-16\uff09\uff0c\u6362\u4e00\u79cd\u7f16\u7801\u770b\u770b\uff1b\u4ecd\u7136\u7f16\u8f91\u7684\u8bdd\uff0c\u8981\u5148\u5220\u6389\u8fd9\u4e9b\u5b57\u7b26\u624d\u80fd\u4fdd\u5b58\u3002",
@@ -1142,6 +1143,7 @@
     "This storage source doesn't support copying folders.": "\u5f53\u524d\u5b58\u50a8\u6e90\u4e0d\u652f\u6301\u590d\u5236\u6587\u4ef6\u5939\uff01",
     "This storage source doesn't support moving.": "\u5f53\u524d\u5b58\u50a8\u6e90\u4e0d\u652f\u6301\u79fb\u52a8\uff01",
     "This storage source doesn't support renaming folders.": "\u5f53\u524d\u5b58\u50a8\u6e90\u4e0d\u652f\u6301\u91cd\u547d\u540d\u6587\u4ef6\u5939\uff01",
+    "This storage source has been deleted": "\u8fd9\u4e2a\u5b58\u50a8\u6e90\u5df2\u7ecf\u5220\u9664\u4e86",
     "This video can't play in the browser (its format or codec isn't supported). You can download it, or open it in one of the external players below.": "\u8fd9\u4e2a\u89c6\u9891\u4e0d\u80fd\u5728\u6d4f\u89c8\u5668\u91cc\u64ad\u653e\uff08\u683c\u5f0f\u6216\u7f16\u7801\u4e0d\u652f\u6301\uff09\uff0c\u53ef\u4ee5\u4e0b\u8f7d\uff0c\u6216\u8005\u7528\u4e0b\u9762\u7684\u5916\u90e8\u64ad\u653e\u5668\u6253\u5f00\u3002",
     "Thunder": "\u8fc5\u96f7",
     "Time": "\u65f6\u95f4",
@@ -1197,6 +1199,7 @@
     "Uploads finished": "\u4e0a\u4f20\u5b8c\u6210",
     "Use this user's default permissions": "\u7528\u8fd9\u4e2a\u7528\u6237\u7684\u9ed8\u8ba4\u6743\u9650",
     "User": "\u7528\u6237",
+    "User %(name)s": "\u7528\u6237 %(name)s",
     "User %(username)s created. Next, set their permissions on each storage source.": "\u5df2\u521b\u5efa\u7528\u6237 %(username)s\u3002\u63a5\u7740\u8bbe\u7f6e\u4ed6\u5728\u6bcf\u4e2a\u5b58\u50a8\u6e90\u4e0a\u7684\u6743\u9650\u3002",
     "User ID": "\u7528\u6237 ID",
     "User ID at the provider": "\u670d\u52a1\u5546\u90a3\u8fb9\u7684\u7528\u6237 ID",
@@ -1281,6 +1284,7 @@
     "[server] proxies: %(proxies)s": "[server] proxies\uff1a%(proxies)s",
     "[site] url: %(url)s": "[site] url\uff1a%(url)s",
     "above the list": "\u5217\u8868\u4e0a\u9762",
+    "activity log\u0004System": "\u7cfb\u7edf",
     "and others (%(entry_count)s item)": [
       "\u7b49 %(entry_count)s \u9879"
     ],

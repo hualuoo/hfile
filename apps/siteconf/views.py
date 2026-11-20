@@ -22,6 +22,7 @@ from rest_framework.response import Response
 from rest_framework.utils import html
 from rest_framework.views import APIView
 
+from apps.activity import log as activity
 from apps.core import images, masking, net
 from apps.core.exceptions import Unavailable
 from apps.core.permissions import IsAdmin
@@ -45,7 +46,8 @@ class SiteView(APIView):
 
 class SettingsView(LockedSettingsMixin, generics.RetrieveUpdateAPIView):
     """GET and PATCH /manage/settings/<group>/. A change reads the row again under its lock first
-    (apps.core.views.LockedSettingsMixin): two admins saving at once don't undo each other's fields."""
+    (apps.core.views.LockedSettingsMixin): two admins saving at once don't undo each other's fields. The
+    activity log names the fields that changed, not their values."""
 
     permission_classes = [IsAdmin]
     http_method_names = ["get", "patch", "head", "options"]
@@ -56,6 +58,17 @@ class SettingsView(LockedSettingsMixin, generics.RetrieveUpdateAPIView):
             return GROUPS[self.kwargs["group"]]
         except KeyError:
             raise NotFound(_("There is no such page of settings.")) from None
+
+    def perform_update(self, serializer):
+        site = serializer.instance
+        sent = [name for name in serializer.validated_data if hasattr(site, name)]
+        before = {name: getattr(site, name) for name in sent}
+        site = serializer.save()
+        # A write-only one (the OnlyOffice secret) is stored encrypted: sending it counts as a change.
+        changed = [name for name in sent if serializer.fields[name].write_only or getattr(site, name) != before[name]]
+        if changed:
+            activity.record(activity.Kind.UPDATE_SETTINGS, actor=self.request.user,
+                            detail={"group": self.kwargs["group"], "fields": changed})
 
 
 class _ImageUpload(serializers.Serializer):
@@ -123,6 +136,7 @@ class SiteImageView(APIView):
             if old != value:
                 setattr(site, field, value)
                 site.save(update_fields=[field, "updated_at"])
+                activity.record(activity.Kind.UPDATE_SETTINGS, detail={"group": "site", "fields": [field]})
                 forget_upload(old)
         return site
 

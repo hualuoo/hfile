@@ -11,6 +11,7 @@ from unittest import mock
 
 import httpx
 
+from apps.activity.testing import entries
 from apps.storages import config as storage_config
 from apps.storages.drivers import microsoft
 from apps.storages.drivers.s3 import S3Driver
@@ -88,6 +89,9 @@ class S3Tests(DirectTestCase):
         self.assertEqual((body["state"], body["item"]["size"], body["item"]["path"]), ("done", 5000, "/album/照片.jpg"))
         self.assertIn("album/照片.jpg", moto.keys(self.bucket))
         self.assertEqual(self.signals, [("bucket", ["/album", "/album/照片.jpg"])])
+        self.assertEqual(self.complete(session).json()["state"], "done")  # asked again: logged once
+        self.assertEqual([(entry.storage, entry.path, entry.detail) for entry in entries("upload")],
+                         [(self.s3, "/album/照片.jpg", {"size": 5000})])
 
     def test_complete_before_the_bytes_and_a_wrong_size(self):
         session = self.create_in(self.s3, "a.bin", 100).json()

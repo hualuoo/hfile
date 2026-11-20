@@ -978,7 +978,7 @@ a.list-item:hover { text-decoration: none; }
   .page-head h1 { font: var(--md-sys-typescale-title-large); }
 }
 
-/* ---------- lists in /manage/ with a search box and pages (users, the login log) */
+/* ---------- lists in /manage/ with a search box and pages (users, the activity log) */
 .list-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin: 0 0 8px; }
 .list-toolbar input:not([type="checkbox"]) { flex: 1 1 200px; width: auto; min-width: 0; }
 .list-toolbar select { flex: 0 1 auto; width: auto; min-width: 0; }
@@ -994,7 +994,7 @@ a.list-item:hover { text-decoration: none; }
 .reason-wrap > :disabled { pointer-events: none; }
 .data-table td.row-actions { width: 1%; padding-top: 4px; padding-bottom: 4px; text-align: right; white-space: nowrap; vertical-align: middle; }
 code.ip { font-size: 12px; }
-/* an IP with its location (apps/ipgeo), in the user list, the login log and the download log */
+/* an IP with its location (apps/ipgeo), in the user list, the activity log and the download log */
 .ip-line { display: inline-flex; flex-wrap: wrap; align-items: baseline; gap: 0 6px; max-width: 100%; }
 .ip-place { color: var(--md-sys-color-on-surface-variant); font: var(--md-sys-typescale-body-small); }
 
@@ -1031,12 +1031,6 @@ code.ip { font-size: 12px; }
 .totp-state { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; margin: 0 0 12px; }
 .login-step-text { margin: 0 0 16px; }
 
-/* ---------- accounts: /manage/#login-log */
-.login-log-table .cell-ua { max-width: 320px; }
-.login-log-table .ua { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--md-sys-color-on-surface-variant); font-size: 13px; }
-.login-log-table .login-reason { display: block; margin-top: 2px; }
-.login-log-table .source-badge { margin-left: 6px; }
-
 /* ---------- accounts: /manage/#users and its user dialog */
 .user-cell { display: flex; align-items: center; gap: 12px; min-width: 0; }
 .user-names { display: flex; flex-direction: column; min-width: 0; }
@@ -1055,8 +1049,6 @@ code.ip { font-size: 12px; }
   .stack-table td.row-actions { width: auto; justify-content: flex-start; padding-top: 4px; }
   .stack-table td.cell-switch { align-items: center; }
   .stack-table td.cell-check { width: auto; }
-  .login-log-table .cell-ua { max-width: none; }
-  .login-log-table .ua { white-space: normal; overflow-wrap: anywhere; }
 }
 @media (max-width: 640px) {
   .list-toolbar input:not([type="checkbox"]) { flex-basis: 100%; }

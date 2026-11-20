@@ -16,7 +16,8 @@ from apps.siteconf.models import SiteSettings
 
 from . import login as steps
 from . import totp
-from .models import LoginLog
+from apps.activity.models import ActivityLog
+from apps.activity.testing import logins
 
 User = get_user_model()
 SESSION = "/api/v1/session/"
@@ -202,11 +203,11 @@ class LoginTests(APITestCase):
         wrong = "000000" if code_for(self.boss) != "000000" else "111111"
         r = self.client.post(SESSION, {"step": "totp", "code": wrong})
         self.assertEqual(r.json(), {"code": ["两步验证码不对，或者已经用过了，请输入新的。"]})
-        self.assertEqual(list(LoginLog.objects.values_list("reason", "user")), [("totp", self.boss.pk)])
+        self.assertEqual([(entry.reason, entry.user) for entry in logins()], [("totp", self.boss)])
         r = self.client.post(SESSION, {"step": "totp", "code": code_for(self.boss)})
         self.assertEqual(r.status_code, 201, r.json())
         self.assertTrue(self.client.get(SESSION).json()["authenticated"])
-        self.assertEqual(LoginLog.objects.filter(result="success").count(), 1)
+        self.assertEqual(ActivityLog.objects.filter(kind="login").count(), 1)
 
     def test_a_code_works_once(self):
         code = code_for(self.boss)

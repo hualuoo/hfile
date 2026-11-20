@@ -16,7 +16,7 @@ Only admins get here (apps.core.permissions.IsAdmin: active staff). Then:
 
 Each change locks the rows it depends on (the user and the active superusers, in id order) and checks
 again on what is there now, so two admins changing users at the same moment can't both pass a check
-that only one of them should.
+that only one of them should. Each change is logged in the activity log in the same transaction.
 """
 
 from django.contrib.auth.hashers import make_password
@@ -24,6 +24,8 @@ from django.db import IntegrityError, transaction
 from django.db.models import Q
 from django.utils.translation import gettext as _, gettext_lazy
 from rest_framework.exceptions import NotFound, PermissionDenied, ValidationError
+
+from apps.activity import log as activity
 
 from .models import Kind, User
 from .permissions import usable
@@ -124,9 +126,34 @@ def create_user(actor, data):
         default_permissions=data.get("default_permissions", []),
     )
     user.password = make_password(data.get("password") or None)
+    detail = {}
+    if not user.is_active:
+        detail["enabled"] = False
+    if not data.get("password"):
+        detail["password"] = False
     with transaction.atomic():
         _save(user)
+        activity.record(activity.Kind.CREATE_USER, actor=actor, target=user, detail=detail)
     return user
+
+
+def _changes(target, data):
+    """What `data` changes on `target`, for the activity log: [old, new] of the names, "enabled", the
+    permissions added and removed, "password": True; never the password itself."""
+    changes = {}
+    for name in ("username", "nickname"):
+        if name in data and data[name] != getattr(target, name):
+            changes[name] = [getattr(target, name), data[name]]
+    if "is_active" in data and data["is_active"] != target.is_active:
+        changes["enabled"] = data["is_active"]
+    if "default_permissions" in data:
+        old, new = list(target.default_permissions or []), list(data["default_permissions"])
+        added, removed = [code for code in new if code not in old], [code for code in old if code not in new]
+        if added or removed:
+            changes["permissions"] = {"added": added, "removed": removed}
+    if data.get("password"):
+        changes["password"] = True
+    return changes
 
 
 def update_user(actor, target_id, data):
@@ -155,6 +182,7 @@ def update_user(actor, target_id, data):
                 errors["is_active"] = [LAST_DISABLE]
         if errors:
             raise ValidationError(errors)
+        changes = _changes(target, data)
         for name in ("username", "nickname", "is_active", "default_permissions"):
             if name in data:
                 setattr(target, name, data[name])
@@ -162,6 +190,8 @@ def update_user(actor, target_id, data):
             # A new password ends the sessions the user has (the session hash is made from it).
             target.set_password(data["password"])
         _save(target)
+        if changes:
+            activity.record(activity.Kind.UPDATE_USER, actor=actor, target=target, detail=changes)
     return target
 
 
@@ -186,15 +216,17 @@ def copy_user(actor, source_id, data):
         target.password = make_password(data.get("password") or None)
         _save(target)
         user_copied.send(sender=User, source=source, target=target)
+        activity.record(activity.Kind.COPY_USER, actor=actor, target=target, detail={"from": source.username})
     return target
 
 
 def delete_user(actor, target_id):
     """Deletes a user and what is theirs (their grants and shares, through the foreign keys). Their
-    login log entries stay, with the username. Raises PermissionDenied with the reason."""
+    entries in the activity log stay, with the username. Raises PermissionDenied with the reason."""
     with transaction.atomic():
         target, admins = _lock(target_id)
         reason = rights(actor, target, admins=len(admins))["delete"]
         if reason:
             raise PermissionDenied(reason)
+        activity.record(activity.Kind.DELETE_USER, actor=actor, target=target)
         target.delete()

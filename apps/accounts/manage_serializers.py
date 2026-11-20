@@ -5,12 +5,12 @@ from django.core.exceptions import ValidationError as DjangoValidationError
 from django.utils.translation import gettext as _, gettext_lazy, ngettext_lazy
 from rest_framework import serializers
 
-from apps.core.fields import BoundedListField, StringField, SwitchField
-from apps.core.query import ChoiceParam, DateParam, IdParam, TextParam
+from apps.core.fields import StringField, SwitchField
+from apps.core.query import ChoiceParam, TextParam
 from apps.ipgeo.lookup import shown
 
-from . import loginlog, managing
-from .models import BUILTIN_NICKNAMES, Kind, LoginLog, User
+from . import managing
+from .models import BUILTIN_NICKNAMES, Kind, User
 from .permissions import check_requires, clean_permissions, usable
 from .serializers import PASSWORD_MAX
 from .validators import check_username, clean_nickname
@@ -174,73 +174,3 @@ class UserListQuery(serializers.Serializer):
     search = TextParam()
     is_active = ChoiceParam(["true", "false"])
     kind = ChoiceParam(Kind.values)
-
-
-# ------------------------------------------------------------ the login log (/manage/#login-log)
-
-
-class LoginLogSerializer(serializers.ModelSerializer):
-    """One entry. `user` is the account the typed name matched, while it exists."""
-
-    result_label = StringField(source="get_result_display", read_only=True)
-    reason_label = serializers.SerializerMethodField()
-    source_label = serializers.SerializerMethodField()
-    user = serializers.SerializerMethodField()
-    ip_location = serializers.SerializerMethodField()
-
-    class Meta:
-        model = LoginLog
-        fields = [
-            "id", "created_at", "username", "user", "ip", "ip_location", "user_agent", "result", "result_label",
-            "reason", "reason_label", "source", "source_label",
-        ]
-        read_only_fields = fields
-
-    def get_ip_location(self, obj):
-        return shown(obj.ip_location)
-
-    def get_reason_label(self, obj):
-        return loginlog.REASONS.get(obj.reason, obj.reason)
-
-    def get_source_label(self, obj):
-        return loginlog.SOURCES.get(obj.source, obj.source)
-
-    def get_user(self, obj):
-        user = obj.user
-        return {"id": user.pk, "username": user.username, "nickname": user.nickname} if user else None
-
-
-IP_START = "0123456789abcdefABCDEF.:"
-
-
-class LoginLogQuery(serializers.Serializer):
-    """GET and DELETE manage/login-logs/: ?username= (part of it), ?ip= (its start), ?result=,
-    ?since= and ?until= (days, both included, in the site's time zone); DELETE also ?newest= (the newest
-    id the list showed: what was logged after it stays, API-10)."""
-
-    username = TextParam(max_length=150)
-    ip = TextParam(max_length=64)
-    result = ChoiceParam(LoginLog.Result.choices)
-    since = DateParam()
-    until = DateParam()
-    newest = IdParam(gettext_lazy("record"))
-
-    def validate_ip(self, value):
-        if value and any(char not in IP_START for char in value):
-            raise serializers.ValidationError(_("Write the start of an IP address, like 192.168. or 2001:db8:."))
-        return value.lower()
-
-    def validate(self, attrs):
-        if attrs["since"] and attrs["until"] and attrs["since"] > attrs["until"]:
-            raise serializers.ValidationError({"until": [_("The end date can't be before the start date.")]})
-        return attrs
-
-
-class LoginLogIdsSerializer(serializers.Serializer):
-    """POST manage/login-logs/delete/: {"ids": [...]}, the entries ticked on the page."""
-
-    ids = BoundedListField(
-        child=serializers.IntegerField(min_value=1, max_value=2**63 - 1),
-        allow_empty=False, max_length=1000,
-        error_messages={"empty": gettext_lazy("No records were selected to delete."), "max_length": gettext_lazy("At most 1000 can be deleted at a time.")},
-    )

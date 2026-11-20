@@ -6,7 +6,7 @@ def fail(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-    dependencies = [("siteconf", "0002_upgrade_test")]
+    dependencies = [("siteconf", "0003_upgrade_test")]
 
     operations = [
         migrations.RunSQL("CREATE TABLE siteconf_half_done (id integer)", reverse_sql="DROP TABLE siteconf_half_done"),

@@ -1,0 +1,38 @@
+{% load static ui activity %}{% activity_categories as categories %}{# /manage/#activity (apps/web/navigation.py SECTIONS), run by activity/js/manage_activity_log.js through /api/v1/manage/activity/. #}
+<link rel="stylesheet" href="{% static 'activity/css/activity.css' %}">
+<div class="section-title-row">
+  <h2>{% translate "Activity log" %}</h2>
+  <button type="button" class="btn btn-small" id="activity-refresh">{% icon "refresh" %}{% translate "Refresh" %}</button>
+</div>
+<p class="muted">{% blocktranslate %}Logins (also those that failed, with why); new folders, renaming, moving, copying, deleting, uploading and editing files; short links and shares; and every change admins make: each is logged here with its time, IP and browser, who did it and to what. Downloads are in "Download log". Passwords and other secrets are never logged. Nothing can change or delete the log. Click a user or an IP to see only theirs.{% endblocktranslate %}</p>
+<form class="list-toolbar" id="activity-filters" role="search" novalidate>
+  <input type="search" name="search" placeholder="{% translate 'User, path, key or IP' %}" aria-label="{% translate 'Search: usernames, nicknames, storage source names, paths, keys or the start of an IP' %}" maxlength="100" spellcheck="false">
+  <select name="kind" aria-label="{% translate 'Action' %}">
+    <option value="">{% translate "All actions" %}</option>
+    {% for category in categories %}
+    <optgroup label="{{ category.label }}">
+      <option value="category:{{ category.key }}">{{ category.all_label }}</option>
+      {% for value, label in category.choices %}<option value="{{ value }}">{{ label }}</option>
+      {% endfor %}
+    </optgroup>
+    {% endfor %}
+  </select>
+  <select name="storage" aria-label="{% translate 'Storage source' %}"><option value="">{% translate "All storage sources" %}</option></select>
+  <span class="date-range" role="group" aria-label="{% translate 'Date' %}">
+    <input type="date" name="since" aria-label="{% translate 'From date' %}" title="{% translate 'From date' %}">
+    <span class="muted" aria-hidden="true">{% translate "to" %}</span>
+    <input type="date" name="until" aria-label="{% translate 'To date' %}" title="{% translate 'To date' %}">
+  </span>
+  <button type="reset" class="btn btn-text">{% translate "Clear filters" %}</button>
+</form>
+<div class="chips activity-chips" id="activity-chips" hidden></div>
+<p class="muted small list-summary" id="activity-summary" role="status"></p>
+<div class="table-wrap">
+  <table class="data-table stack-table activity-table">
+    <thead><tr>
+      <th>{% translate "Time" %}</th><th>{% translate "User" %}</th><th>{% translate "Action" %}</th><th>{% translate "About" %}</th><th>{% translate "Details" %}</th><th>IP</th><th class="cell-ua">{% translate "Browser" %}</th>
+    </tr></thead>
+    <tbody id="activity-rows"></tbody>
+  </table>
+</div>
+<nav class="pager" id="activity-pager" aria-label="{% translate 'Activity log pages' %}" hidden></nav>

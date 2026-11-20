@@ -277,7 +277,6 @@ class SiteSettings(models.Model):
     show_login = models.BooleanField(gettext_lazy("Show the login button"), default=True)
     guest_home = models.CharField(gettext_lazy("Home page for visitors"), max_length=10, choices=GuestHome.choices, default=GuestHome.NORMAL)
     guest_home_html = models.TextField(gettext_lazy("Custom page"), blank=True)
-    login_log = models.BooleanField(gettext_lazy("Log logins"), default=True, help_text=gettext_lazy("Passwords aren't logged."))
     login_captcha = models.BooleanField(gettext_lazy("Captcha at login"), default=False)
     sso_auto_register = models.BooleanField(
         gettext_lazy("Let single sign-on register new users"), default=False,

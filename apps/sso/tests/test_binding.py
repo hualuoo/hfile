@@ -7,7 +7,7 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase, override_settings
 from rest_framework.test import APIClient
 
-from apps.accounts.models import LoginLog
+from apps.activity.testing import entries, logins
 from apps.core.testing import TO_THE_SECOND
 from apps.sso.models import Identity
 
@@ -44,7 +44,7 @@ class LinkTests(FakeIdpMixin, TestCase):
         self.assertEqual(self.client_class().get(LINKS).status_code, 401)
 
     def test_binding(self):
-        logged = LoginLog.objects.count()  # force_login's
+        logged = len(logins())  # force_login's
         answer = self.begin_link()
         self.assertEqual(answer.status_code, 200, answer.content)
         address = answer.json()["url"]
@@ -53,7 +53,9 @@ class LinkTests(FakeIdpMixin, TestCase):
         self.assertEqual((response.status_code, response["Location"]), (302, "/files/?auth=sso&sso_linked=fake"))
         identity = Identity.objects.get()
         self.assertEqual((identity.user, identity.external_id), (self.alice, "alice-1"))
-        self.assertEqual(LoginLog.objects.count(), logged)  # binding isn't a login
+        self.assertEqual(len(logins()), logged)  # binding isn't a login
+        linked = entries("link_sso")
+        self.assertEqual([(entry.actor, entry.detail) for entry in linked], [(self.alice, {"provider": self.provider.name, "code": "fake"})])
         row = self.client.get(LINKS).json()["providers"][0]
         self.assertEqual((row["linked"], row["external_id"]), (True, "alice-1"))
         # Now it logs in.

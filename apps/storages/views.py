@@ -31,6 +31,7 @@ from rest_framework.views import APIView
 
 from apps.accounts import managing
 from apps.accounts.permissions import ALL, REQUIRES, Permission, help_for, usable
+from apps.activity import log as activity
 from apps.core.auth import enforce_csrf
 from apps.core.fields import StringField
 from apps.core.permissions import IsAdmin, is_admin
@@ -307,6 +308,8 @@ class CheckPathView(AdminView):
 # --- rules ---------------------------------------------------------------------------------------------
 
 RULE_MODELS = {"filters": FilterRule, "passwords": FolderPassword, "readmes": ReadmeRule}
+RULE_KINDS = {"filters": activity.Kind.UPDATE_FILTERS, "passwords": activity.Kind.UPDATE_PASSWORDS,
+              "readmes": activity.Kind.UPDATE_READMES}
 RULE_FIELDS = {
     "filters": ("expression", "description", "mode"),
     "passwords": ("expression", "description", "password"),
@@ -321,7 +324,8 @@ def rule_data(kind: str, rule) -> dict:
 class RulesView(AdminView):
     """GET the rules of one kind in order; PUT the whole list. A rule sent with its id is changed in
     place (a folder password keeps what visitors unlocked unless its expression or password changes);
-    the others are new; rules left out are deleted."""
+    the others are new; rules left out are deleted. The activity log counts what was added, changed and
+    removed (not what the rules say: a folder password is a secret)."""
 
     kind = ""
 
@@ -340,18 +344,26 @@ class RulesView(AdminView):
             StorageSource.objects.select_for_update().filter(pk=storage.pk).first()
             existing = {rule.pk: rule for rule in model.objects.filter(storage=storage)}
             keep = set()
+            counts = {"added": 0, "changed": 0, "removed": 0}
             for position, item in enumerate(body.validated_data, start=1):
                 rule = existing.get(item.get("id")) if item.get("id") else None
                 if rule is None:
                     rule = model(storage=storage)
-                elif self.kind == "passwords" and (rule.expression != item["expression"] or rule.password != item["password"]):
-                    rule.revision += 1
+                    counts["added"] += 1
+                else:
+                    if self.kind == "passwords" and (rule.expression != item["expression"] or rule.password != item["password"]):
+                        rule.revision += 1
+                    if rule.position != position or any(getattr(rule, name) != item[name] for name in fields):
+                        counts["changed"] += 1
                 rule.position = position
                 for name in fields:
                     setattr(rule, name, item[name])
                 rule.save()
                 keep.add(rule.pk)
-            model.objects.filter(storage=storage).exclude(pk__in=keep).delete()
+            _total, deleted = model.objects.filter(storage=storage).exclude(pk__in=keep).delete()
+            counts["removed"] = deleted.get(model._meta.label, 0)
+            if any(counts.values()):
+                activity.record(RULE_KINDS[self.kind], actor=request.user, storage=storage, detail=counts)
         return Response([rule_data(self.kind, rule) for rule in model.objects.filter(storage=storage)])
 
 
@@ -457,18 +469,44 @@ class UserGrantsView(AdminView):
         body.is_valid(raise_exception=True)
         with transaction.atomic():
             existing = {grant.storage_id: grant for grant in Grant.objects.select_for_update().filter(user=user)}
+            changes = []
             for item in body.validated_data:
                 grant = existing.get(item["storage"])
                 if not item["granted"]:
                     if grant is not None:
                         grant.delete()
+                        changes.append({"storage": item["storage"], "change": "removed"})
                     continue
+                change = _grant_change(grant, item)
+                if change:
+                    changes.append({"storage": item["storage"], **change})
                 grant = grant or Grant(user=user, storage_id=item["storage"])
                 grant.enabled = item["enabled"]
                 grant.root_path = item["root_path"]
                 grant.permissions = item["permissions"]
                 grant.save()
+            if changes:
+                names = dict(StorageSource.objects.filter(pk__in=[change["storage"] for change in changes]).values_list("pk", "name"))
+                for change in changes:
+                    change["name"] = names.get(change["storage"], "")
+                activity.record(activity.Kind.SET_GRANTS, actor=request.user, target=user, detail={"storages": changes})
         return Response(grants.rows_for(user))
+
+
+def _grant_change(grant, item) -> dict:
+    """What saving `item` changes of `grant` (None: a new one), for the activity log; {} when nothing."""
+    if grant is None:
+        return {"change": "added"}
+    change = {}
+    if grant.enabled != item["enabled"]:
+        change["enabled"] = item["enabled"]
+    if grant.root_path != item["root_path"]:
+        change["root"] = [grant.root_path, item["root_path"]]
+    old, new = list(grant.permissions or []), list(item["permissions"])
+    added, removed = [code for code in new if code not in old], [code for code in old if code not in new]
+    if added or removed:
+        change["permissions"] = {"added": added, "removed": removed}
+    return {"change": "changed", **change} if change else {}
 
 
 class GrantOptionsView(AdminView):

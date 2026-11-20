@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 from rest_framework.test import APIClient
 
-from apps.accounts.models import LoginLog
+from apps.activity.models import ActivityLog
 from apps.sso.models import Identity, Provider
 
 from .helpers import FakeIdpMixin
@@ -157,9 +157,9 @@ class ProviderApiTests(TestCase):
         self.assertEqual(answer.json(), [{"code": "a", "name": "A", "icon": ""}, {"code": "b", "name": "B", "icon": "https://img.example/b.png"}])
 
     def test_login_log_labels(self):
-        LoginLog.objects.create(username="fake:a-1", result="failure", reason="sso_not_bound", source="sso")
-        entry = self.client.get("/api/v1/manage/login-logs/").json()["results"][0]
-        self.assertEqual((entry["reason_label"], entry["source_label"]), ("单点登录：账号还没有绑定", "单点登录"))
+        ActivityLog.objects.create(kind="login_failed", target_name="fake:a-1", detail={"reason": "sso_not_bound", "source": "sso"})
+        entry = self.client.get("/api/v1/manage/activity/").json()["results"][0]
+        self.assertEqual((entry["target"]["username"], entry["detail_text"]), ("fake:a-1", "单点登录：账号还没有绑定"))
 
 
 class DiscoveryTests(FakeIdpMixin, TestCase):

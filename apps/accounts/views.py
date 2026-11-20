@@ -1,6 +1,7 @@
 import time
 
 from django.contrib.auth import logout, update_session_auth_hash
+from django.db import transaction
 from django.http import Http404, HttpResponseRedirect
 from django.middleware.csrf import get_token
 from django.utils import timezone
@@ -13,6 +14,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from apps.activity import log as activity
 from apps.core import secrets
 from apps.core.auth import enforce_csrf
 from apps.core.exceptions import Conflict
@@ -48,7 +50,7 @@ class SessionView(APIView):
         return [LoginThrottle()] if self.request.method == "POST" else []
 
     def throttled(self, request, wait):
-        # In the login log once per address and minute (loginlog.record_throttled), then the 429.
+        # In the activity log once per address and minute (loginlog.record_throttled), then the 429.
         try:
             username = loginlog.typed_username(request.data)
         except APIException:  # a body that can't be read: still a 429, not its own error
@@ -109,8 +111,11 @@ class PasswordView(APIView):
         serializer = PasswordChangeSerializer(data=request.data, context={"request": request})
         serializer.is_valid(raise_exception=True)
         user = request.user
+        first = not user.has_usable_password()
         user.set_password(serializer.validated_data["new_password"])
-        user.save(update_fields=["password"])
+        with transaction.atomic():
+            user.save(update_fields=["password"])
+            activity.record(activity.Kind.CHANGE_PASSWORD, actor=user, detail={"first": True} if first else None)
         update_session_auth_hash(request._request, user)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -173,7 +178,9 @@ class TotpView(TotpThrottled):
         user.totp_secret = secrets.encrypt(secret)
         user.totp_last_step = step  # the code just shown can't log in as well
         user.totp_enabled_at = timezone.now()
-        user.save(update_fields=["totp_secret", "totp_last_step", "totp_enabled_at"])
+        with transaction.atomic():
+            user.save(update_fields=["totp_secret", "totp_last_step", "totp_enabled_at"])
+            activity.record(activity.Kind.TOTP_ON, actor=user)
         request.session.pop(totp.SETUP_KEY, None)
         return Response(totp_state(user))
 
@@ -209,10 +216,14 @@ class TotpDisableView(TotpThrottled):
         form = TotpDisableSerializer(data=request.data, context={"request": request})
         form.is_valid(raise_exception=True)
         keep_session_after_check(request, user, stored)
+        had = user.totp_enabled
         user.totp_secret = ""
         user.totp_last_step = None
         user.totp_enabled_at = None
-        user.save(update_fields=["totp_secret", "totp_last_step", "totp_enabled_at"])
+        with transaction.atomic():
+            user.save(update_fields=["totp_secret", "totp_last_step", "totp_enabled_at"])
+            if had:
+                activity.record(activity.Kind.TOTP_OFF, actor=user)
         return Response(totp_state(user))
 
 

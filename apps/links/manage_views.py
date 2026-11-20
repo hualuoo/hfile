@@ -18,7 +18,8 @@
                                               find that the list could have shown (none logged after it)
     POST   manage/download-logs/delete/       {"ids": [...]}
 
-The deletes answer {"deleted": n}. Text filters are Django lookups (LIKE with its wildcards escaped).
+The deletes answer {"deleted": n} and are logged in the activity log (how many, not which). Text filters are
+Django lookups (LIKE with its wildcards escaped).
 """
 
 from __future__ import annotations
@@ -27,6 +28,7 @@ import csv
 import datetime
 import io
 
+from django.db import transaction
 from django.db.models import F, Max
 from django.db.models.functions import Lower
 from django.http import StreamingHttpResponse
@@ -38,6 +40,7 @@ from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from apps.activity import log as activity
 from apps.core.filters import StableOrderingFilter
 from apps.core.permissions import IsAdmin
 from apps.core.query import QueryParamsMixin
@@ -143,7 +146,11 @@ class ShortLinkView(APIView):
     http_method_names = ["delete", "options"]
 
     def delete(self, request, pk):
-        get_object_or_404(ShortLink, pk=pk).delete()
+        link = get_object_or_404(ShortLink.objects.select_related("storage", "created_by"), pk=pk)
+        with transaction.atomic():
+            activity.record(activity.Kind.DELETE_SHORT_LINKS, actor=request.user, target=link.created_by,
+                            storage=link.storage, path=link.path, key=link.key, detail={"count": 1})
+            link.delete()
         return Response({"deleted": 1})
 
 
@@ -153,7 +160,10 @@ class ShortLinkDeleteView(APIView):
     def post(self, request):
         form = IdsSerializer(data=request.data)
         form.is_valid(raise_exception=True)
-        deleted, _ = ShortLink.objects.filter(pk__in=form.validated_data["ids"]).delete()
+        with transaction.atomic():
+            deleted, _ = ShortLink.objects.filter(pk__in=form.validated_data["ids"]).delete()
+            if deleted:
+                activity.record(activity.Kind.DELETE_SHORT_LINKS, actor=request.user, detail={"count": deleted})
         return Response({"deleted": deleted})
 
 
@@ -163,7 +173,11 @@ class ShortLinkExpiredView(APIView):
     permission_classes = [IsAdmin]
 
     def post(self, request):
-        deleted, logs = service.delete_expired(timezone.now())
+        with transaction.atomic():
+            deleted, logs = service.delete_expired(timezone.now())
+            if deleted:
+                activity.record(activity.Kind.DELETE_SHORT_LINKS, actor=request.user,
+                                detail={"count": deleted, "expired": True, "logs": logs})
         return Response({"deleted": deleted, "logs": logs})
 
 
@@ -261,7 +275,10 @@ class DownloadLogListView(QueryParamsMixin, ListAPIView):
         logs = download_logs(query)
         if query["newest"]:
             logs = logs.filter(pk__lte=query["newest"])
-        deleted, _ = logs.delete()
+        with transaction.atomic():
+            deleted, _ = logs.delete()
+            if deleted:
+                activity.record(activity.Kind.DELETE_DOWNLOAD_LOGS, actor=request.user, detail={"count": deleted})
         return Response({"deleted": deleted})
 
 
@@ -271,6 +288,9 @@ class DownloadLogDeleteView(APIView):
     def post(self, request):
         form = IdsSerializer(data=request.data)
         form.is_valid(raise_exception=True)
-        deleted, _ = DownloadLog.objects.filter(pk__in=form.validated_data["ids"]).delete()
+        with transaction.atomic():
+            deleted, _ = DownloadLog.objects.filter(pk__in=form.validated_data["ids"]).delete()
+            if deleted:
+                activity.record(activity.Kind.DELETE_DOWNLOAD_LOGS, actor=request.user, detail={"count": deleted})
         return Response({"deleted": deleted})
 

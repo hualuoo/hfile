@@ -27,6 +27,9 @@ Requests that write a chunk or finish take the session with a lease (locked_unti
 UPDATE, renewed by a thread while a file is written to the storage): two requests on one session, in one
 process or several, never write at once; a process that died lets go when its lease runs out; cancelling
 and the cleanup leave a held session alone.
+
+The activity log gets an entry for each file that arrives (by the request that marks the session done), each
+folder a folder upload makes and each text save.
 """
 
 from __future__ import annotations
@@ -51,6 +54,7 @@ from rest_framework import status
 from rest_framework.exceptions import APIException, ErrorDetail
 
 from apps.accounts.permissions import Permission
+from apps.activity import log as activity
 from apps.core import net
 from apps.core.throttles import UNKNOWN, address_key
 from apps.core.times import iso
@@ -257,6 +261,13 @@ def _changed(storage, changed: Iterable[str]) -> None:
     for _receiver, outcome in file_signals.changed.send_robust(sender=UploadSession, source=storage, paths=changed):
         if isinstance(outcome, Exception):
             logger.error("A receiver of files.signals.changed failed: %r", outcome, exc_info=outcome)
+
+
+def _log_upload(session: UploadSession) -> None:
+    """The activity log's entry for a file that arrived (written after it, see apps/activity/log.py)."""
+    detail = {"size": session.size, **({"replaced": True} if session.overwrite else {})}
+    activity.record(activity.Kind.UPLOAD, quiet=True, actor=session.user, storage=session.storage, path=session.path,
+                    detail=detail)
 
 
 # --- the cleanup ---------------------------------------------------------------------------------------
@@ -684,6 +695,7 @@ def finish(session: UploadSession, access: policy.Access) -> None:
     except OSError as error:
         logger.warning("Couldn't remove the spool file of upload %s: %s", session.id, error)
     _changed(session.storage, [*session.created_folders, session.path])
+    _log_upload(session)
 
 
 def complete(request, session: UploadSession, *, overwrite: bool = False) -> tuple[UploadSession, policy.Access]:
@@ -721,6 +733,7 @@ def complete(request, session: UploadSession, *, overwrite: bool = False) -> tup
         raise
     if _done(lease, session, item_of(access, session.path, entry)):
         _changed(session.storage, [*session.created_folders, session.path])
+        _log_upload(session)
     session.refresh_from_db()
     return session, access
 
@@ -882,6 +895,8 @@ def make_folders(request, *, storage: str, folder: str | None, folders: list[str
         created.append(_relative_or_none(access, targets[rel]))
         made.append(targets[rel])
     _changed(access.storage, made)
+    activity.record_many(activity.Kind.MKDIR, [{"path": path, "detail": {"upload": True}} for path in made], quiet=True,
+                         actor=access.actor.user, storage=access.storage)
     return {
         "created": created,
         "existing": [_relative_or_none(access, targets[rel]) for rel in ordered if state[rel] == "exists"],
@@ -976,4 +991,6 @@ def save_text(request, *, storage: str, path: str, content: str, encoding: str =
         item["size"] = len(data)
     item["encoding"] = codec.name
     _changed(access.storage, [target])
+    activity.record(activity.Kind.EDIT, quiet=True, actor=access.actor.user, storage=access.storage, path=target,
+                    detail={"size": len(data), **({"new": True} if entry is None else {})})
     return item

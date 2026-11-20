@@ -1,0 +1,38 @@
+/* /manage/#activity: the 操作日志 (activity/js/manage_activity_log.js). */
+.activity-chips { margin: 0 0 8px; }
+.activity-table .when { white-space: nowrap; }
+.activity-table .when-time { display: block; color: var(--md-sys-color-on-surface-variant); font-size: 13px; }
+.activity-table .cell-user { min-width: 4.5em; }
+/* A long kind (English has some) wraps inside its badge rather than widening the column. */
+.activity-table .cell-kind .badge { height: auto; min-height: 20px; max-width: 11em; padding: 2px 8px; white-space: normal; }
+.activity-table .cell-about { min-width: 10em; }
+.activity-table .cell-detail { min-width: 8em; overflow-wrap: anywhere; }
+.activity-about { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; min-width: 0; }
+.activity-about code { font-size: 12px; overflow-wrap: anywhere; }
+.activity-table .link-key { font-family: var(--mono); }
+.activity-table .gone { color: var(--md-sys-color-on-surface-variant); text-decoration: line-through; }
+/* a user or an IP: a click narrows the list down to theirs */
+.activity-table .person, .activity-table .ip-button {
+  padding: 0; border: 0; background: none; color: var(--md-sys-color-primary); font: inherit; text-align: left; cursor: pointer;
+}
+.activity-table button.person:hover .person-name, .activity-table .ip-button:hover code { text-decoration: underline; }
+.activity-table span.person { color: inherit; cursor: default; }
+.activity-table .person-name { overflow-wrap: anywhere; }
+.activity-table .ip-button { white-space: nowrap; }
+.activity-table .ip-button code { color: inherit; }
+.activity-table .ellipsis {
+  display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  color: var(--md-sys-color-on-surface-variant); font-size: 13px;
+}
+.activity-table tr.login-failed .badge { font-weight: 500; }
+@media (min-width: 861px) {
+  /* The browser takes what is left (its line cut short, whole on hover), so that the IP and its location keep
+     their room. */
+  .activity-table .cell-ip { min-width: 8em; }
+  .activity-table .cell-ua { width: 18%; min-width: 6em; }
+  .activity-table .cell-ua .ellipsis { width: 0; min-width: 100%; }
+}
+@media (max-width: 860px) {
+  .activity-table .when-time { display: inline; margin-left: 6px; }
+  .activity-table .ellipsis { white-space: normal; overflow-wrap: anywhere; }
+}

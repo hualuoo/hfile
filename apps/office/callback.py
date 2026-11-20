@@ -24,7 +24,8 @@ the document is downloaded from the OnlyOffice server only (apps/office/fetch.py
 must look like a document of the file's type; the session and the user are checked once more, the
 storage must still have the params the document was opened with (and the write goes to the driver
 instance made from them), the file must still be there, and the driver's write() replaces it from that
-file.
+file. The activity log gets an entry as the session's user did it, without an IP (the request is the
+Document Server's).
 
 One save of a file at a time: a lease on its sessions' rows (saving_until, taken in a short transaction
 that locks them, renewed by a heartbeat thread while the save runs, checked before the write and let go
@@ -49,6 +50,7 @@ from django.db import OperationalError, connection, transaction
 from django.utils import timezone
 from django.utils.translation import gettext
 
+from apps.activity import log as activity
 from apps.files import kinds
 from apps.files import signals as file_signals
 from apps.siteconf.models import SiteSettings
@@ -374,6 +376,8 @@ def _write(lease: Lease, callback: tokens.Callback) -> bool:
     if callback.status == 6:
         sessions.saved(fresh, written)
     logger.info("OnlyOffice saved %s:%s (%d bytes, status %d)", fresh.storage.key, fresh.path, size, callback.status)
+    activity.record(activity.Kind.EDIT, quiet=True, actor=fresh.user, storage=fresh.storage, path=fresh.path,
+                    detail={"size": size, "via": "onlyoffice"}, ip=None, user_agent="")
     for _receiver, outcome in file_signals.changed.send_robust(sender=OfficeSession, source=fresh.storage,
                                                                  paths=[fresh.path]):
         if isinstance(outcome, Exception):

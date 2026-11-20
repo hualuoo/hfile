@@ -1,5 +1,5 @@
-"""On every login (the API, the Django admin): the IP it came from, the login log, and now and then a
-clean-up of the sessions that have ended. On every failed password login: the login log."""
+"""On every login (the API, the Django admin): the IP it came from, an entry in the activity log, and now and
+then a clean-up of the sessions that have ended. On every failed password login: an entry in the activity log."""
 
 import logging
 import threading
@@ -51,7 +51,7 @@ def clear_expired_sessions():
 
 def on_login(sender, request, user, **kwargs):
     """Stores the address the login came from, and its location while IP 归属地 is on (Django's own
-    receiver stores the time, last_login), and writes the login log."""
+    receiver stores the time, last_login), and logs the login (loginlog.py)."""
     if request is None:
         return
     from . import loginlog
@@ -65,7 +65,7 @@ def on_login(sender, request, user, **kwargs):
 
 
 def on_login_failed(sender, credentials, request=None, **kwargs):
-    """A password that didn't log in (authenticate() found no account it opens): the login log says
+    """A password that didn't log in (authenticate() found no account it opens): the activity log says
     whom it was for and why. Django has replaced the password in `credentials` already."""
     if request is None:  # authenticate() called outside a request
         return
