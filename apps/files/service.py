@@ -38,7 +38,7 @@ from apps.accounts.permissions import Permission
 from apps.core.times import iso
 from apps.storages import access as policy
 from apps.storages import instances
-from apps.storages.access import COPY, DELETE, LINK, LIST, MKDIR, MOVE, READ, RENAME, SHORT_LINK, STAT, AccessDenied
+from apps.storages.access import COPY, DELETE, LINK, LIST, MKDIR, MOVE, PREVIEW, READ, RENAME, SHORT_LINK, STAT, AccessDenied
 from apps.storages.drivers import paths
 from apps.storages.drivers.base import (
     AlreadyExists,
@@ -203,9 +203,10 @@ def needs_bypass(access, storage_path: str) -> bool:
 
 
 def permissions(access) -> dict[str, bool]:
-    """What the caller may do here, as the policy will apply it (§6.8 change): the grant's codes, links
-    with the download permission they need too (D40a), the bypasses only where they apply."""
+    """What the caller may do here, as the policy will apply it (§6.8 change): the grant's codes, previews and
+    links with the download permission they need too (D40a), the bypasses only where they apply."""
     granted = {code: access.has(code) for code in Permission.values}
+    granted[Permission.PREVIEW] = access.may(PREVIEW)
     granted[Permission.GENERATE_LINK] = access.may(LINK)
     granted[Permission.GENERATE_SHORT_LINK] = access.may(SHORT_LINK)
     granted[Permission.IGNORE_HIDDEN] = access.bypass_filters

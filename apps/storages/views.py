@@ -503,7 +503,7 @@ class PublicStoragesView(APIView):
                 "key": storage.key, "name": storage.name, "type": storage.type, "type_label": storage.type_label,
                 "gallery_default": storage.gallery_default,
                 "capabilities": instances.capabilities(storage),
-                "permissions": list(grant.permissions or []),
+                "permissions": usable(grant.permissions or []),
             })
         return Response(answer)
 

@@ -105,7 +105,7 @@ class AccessDenied(APIException):
 
 LIST = "list"  # list a folder
 STAT = "stat"  # see one file or folder (no content)
-READ = "read"  # the content, to preview or download (preview or download permission)
+READ = "read"  # the content, to preview or download (the download permission, which previews need too)
 PREVIEW = "preview"
 DOWNLOAD = "download"
 UPLOAD = "upload"
@@ -122,7 +122,7 @@ SHARE = "share"
 _NEEDS: dict[str, tuple[str, ...]] = {
     LIST: (),
     STAT: (),
-    READ: (Permission.PREVIEW, Permission.DOWNLOAD),
+    READ: (Permission.DOWNLOAD,),
     PREVIEW: (Permission.PREVIEW,),
     DOWNLOAD: (Permission.DOWNLOAD,),
     UPLOAD: (Permission.UPLOAD,),
@@ -137,8 +137,9 @@ _NEEDS: dict[str, tuple[str, ...]] = {
     SHARE: (Permission.CREATE_SHARE_LINK,),
 }
 OPERATIONS = frozenset(_NEEDS)
-# ...and also these: a direct or short link hands out the file's content, like a download.
-_ALSO_NEEDS: dict[str, tuple[str, ...]] = {LINK: (Permission.DOWNLOAD,), SHORT_LINK: (Permission.DOWNLOAD,)}
+# ...and also these: a preview, a direct or a short link hands out the file's content, like a download.
+_ALSO_NEEDS: dict[str, tuple[str, ...]] = {PREVIEW: (Permission.DOWNLOAD,), LINK: (Permission.DOWNLOAD,),
+                                           SHORT_LINK: (Permission.DOWNLOAD,)}
 _READS = frozenset({READ, PREVIEW, DOWNLOAD, LINK, SHORT_LINK, OPEN_LINK})  # disable_download applies
 # Links are handed to others: the filter rules apply to them whatever the actor's 忽略隐藏 says (it is his
 # own view of the storage), as they do when the signed /pd/ link a link redirects to is served (W1: links
@@ -548,8 +549,6 @@ class Access:
                     message = _("This storage source is read-only.")
                 elif self.no_uploads and missing == Permission.UPLOAD:
                     message = _("Files can't be uploaded to this storage source.")
-                elif operation == READ:
-                    message = _("You don't have permission to preview or download.")
                 else:
                     message = _("You don't have the \"%(label)s\" permission.") % {"label": Permission(missing).label}
             else:

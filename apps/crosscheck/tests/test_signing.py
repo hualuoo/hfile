@@ -330,9 +330,9 @@ class ShareSharerTests(CrossCase):
         self.assertStopped(403, "no_grant")
 
     def test_his_preview_and_download(self):
-        self.grant(self.alice, but(Permission.DOWNLOAD))
+        self.grant(self.alice, but(Permission.DOWNLOAD))  # and so no 预览 either: it needs 下载
         self.assertRefused(self.vdownload(self.anon, self.share, "/docs/a.txt"), 403)
-        self.assertEqual(self.vpreview(self.anon, self.share, "/docs/a.txt").status_code, 302)
+        self.assertRefused(self.vpreview(self.anon, self.share, "/docs/a.txt"), 403)
         self.assertIsNone(self.vitems(self.anon, self.share, "/docs")["a.txt"]["download_url"])
         self.grant(self.alice, but(Permission.PREVIEW))
         self.assertRefused(self.vpreview(self.anon, self.share, "/docs/a.txt"), 403)

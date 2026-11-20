@@ -64,22 +64,23 @@ class PermissionTests(TestCase):
     def test_what_a_permission_needs_first(self):
         # D55: one of these is ticked first.
         self.assertEqual(REQUIRES, {
-            "copy_download_link": ("preview", "download"), "generate_link": ("download",),
+            "preview": ("download",), "copy_download_link": ("download",), "generate_link": ("download",),
             "generate_short_link": ("download",), "custom_share_key": ("create_share_link",),
         })
         self.assertTrue(set(ADMIN_DEFAULTS) >= {code for needs in REQUIRES.values() for code in needs})
         self.assertEqual(unmet(ADMIN_DEFAULTS), [])
-        guest = ["preview", "copy_download_link", "generate_link"]  # 2026-11-09: no 下载
-        self.assertEqual(unmet(guest), ["generate_link"])
-        self.assertEqual(usable(guest), ["preview", "copy_download_link"])
+        guest = ["upload", "preview", "copy_download_link", "generate_link"]  # no 下载
+        self.assertEqual(unmet(guest), ["preview", "copy_download_link", "generate_link"])
+        self.assertEqual(usable(guest), ["upload"])
         self.assertEqual(usable(["copy_download_link", "generate_short_link", "custom_share_key", "upload"]), ["upload"])
         with self.assertRaises(ValidationError) as caught:
-            check_requires(["copy_download_link", "generate_link", "custom_share_key"])
+            check_requires(["preview", "copy_download_link", "generate_link", "custom_share_key"])
         self.assertEqual(caught.exception.messages, [
-            "「复制下载链接」要先有「预览」或「下载」的权限。", "「获取直链」要先有「下载」的权限。",
+            "「预览」要先有「下载」的权限。", "「复制下载链接」要先有「下载」的权限。", "「获取直链」要先有「下载」的权限。",
             "「自定义分享链接 key」要先有「创建分享链接」的权限。",
         ])
-        check_requires(["download", "generate_link", "generate_short_link"])
+        check_requires(["preview", "download", "copy_download_link", "generate_link", "generate_short_link"])
+        self.assertTrue(help_for("preview").startswith("要先勾选「下载」。在网页上预览"))
         self.assertEqual(help_for("generate_link"), "要先勾选「下载」。")
         self.assertEqual(help_for("custom_share_key"), "要先勾选「创建分享链接」。创建分享链接时可以自己定链接里的 key，而不是由系统生成。")
         self.assertEqual(help_for("rename"), "")

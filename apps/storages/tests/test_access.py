@@ -179,7 +179,7 @@ class PermissionTests(PolicyTestCase):
                 self.grant(self.alice, [c for c in EVERYTHING if c != code])
                 error = self.denied(access.PERMISSION_DENIED, self.open(self.alice).check, operation, "/x", is_dir=False)
                 self.assertEqual(error.detail["permission"], code)
-                self.grant(self.alice, [code, "download"] if operation in (LINK, SHORT_LINK) else [code])
+                self.grant(self.alice, [code, "download"] if operation in (LINK, SHORT_LINK, PREVIEW) else [code])
                 self.open(self.alice).check(operation, "/x", is_dir=False)
 
     def test_listing_needs_only_the_grant(self):
@@ -189,10 +189,15 @@ class PermissionTests(PolicyTestCase):
         a.check(STAT, "/x")
         self.denied(access.PERMISSION_DENIED, a.check, READ, "/x")
 
-    def test_read_takes_preview_or_download(self):
-        for codes in (["preview"], ["download"], ["preview", "download"]):
+    def test_read_takes_download(self):
+        # A preview hands out the content too: 预览 needs 下载 (apps/accounts/permissions.py).
+        for codes in (["download"], ["preview", "download"]):
             self.grant(self.alice, codes)
             self.open(self.alice).check(READ, "/x")
+        self.grant(self.alice, ["preview"])
+        for operation in (READ, PREVIEW):
+            error = self.denied(access.PERMISSION_DENIED, self.open(self.alice).check, operation, "/x", is_dir=False)
+            self.assertEqual(error.detail["permission"], "download")
 
     def test_uploading_folders_needs_new_folder(self):
         self.grant(self.alice, ["upload"])

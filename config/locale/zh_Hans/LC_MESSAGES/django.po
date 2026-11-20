@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HFile\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-20 19:09+0800\n"
+"POT-Creation-Date: 2026-11-20 20:19+0800\n"
 "Language: zh_Hans\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -666,9 +666,11 @@ msgstr "在网页上预览图片、视频、音频、文本、Office 等文件�
 
 #: apps/accounts/permissions.py
 msgid ""
-"Allowing previews but not downloads only hides the download buttons; it "
-"can't fully stop a file from being downloaded."
-msgstr "允许预览但不允许下载时，只是不显示下载按钮，并不能完全防止文件被下载。"
+"Download files. Previewing, copying download links and getting direct or "
+"short links hand out the files' content too, so they need it first."
+msgstr ""
+"下载文件。预览、复制下载链接、获取直链和生成短链也会把文件内容交出去，所以要"
+"先有它。"
 
 #: apps/accounts/permissions.py
 msgid ""
@@ -6321,10 +6323,6 @@ msgstr "这个存储源是只读的。"
 #: apps/storages/access.py
 msgid "Files can't be uploaded to this storage source."
 msgstr "这个存储源不能上传文件。"
-
-#: apps/storages/access.py
-msgid "You don't have permission to preview or download."
-msgstr "没有预览或下载的权限。"
 
 #: apps/storages/access.py
 #, python-format

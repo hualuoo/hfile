@@ -261,7 +261,7 @@ class StatusTests(_Opened):
         self.assertEqual(self.disk(), DOCX)
 
     def test_a_read_only_session_never_saves(self):
-        self.grant(self.alice, ["preview"])
+        self.grant(self.alice, ["preview", "download"])
         key = self.ok_config("/docs/b.xlsx")["document"]["key"]
         self.assertEqual(self.save(key, 6), 1)
         self.assertEqual(self.save(key, 2), 1)
@@ -775,7 +775,7 @@ class ForgetTests(_Opened):
 
     def test_our_own_save_keeps_the_editing_key_and_ends_the_viewing_one(self):
         bob = User.objects.create_user("bob", password="pw-bob-2026")
-        self.grant(bob, ["preview"])
+        self.grant(bob, ["preview", "download"])
         self.client.force_login(bob)
         self.csrf()
         viewing = self.ok_config()["document"]["key"]
@@ -788,7 +788,7 @@ class ForgetTests(_Opened):
 
     def test_a_save_gives_viewers_the_new_version(self):
         bob = User.objects.create_user("bob", password="pw-bob-2026")
-        self.grant(bob, ["preview"])
+        self.grant(bob, ["preview", "download"])
         self.client.force_login(bob)
         self.csrf()
         viewing = self.ok_config()["document"]["key"]

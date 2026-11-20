@@ -6,8 +6,8 @@
 Checks, through apps.storages.access (D8), before anything is handed out:
 - 显示设置 has an OnlyOffice 服务地址 (else onlyoffice_off);
 - the storage, the actor, the grant, the root; the file is of the kind office (W3, the admin's list);
-- preview or download (READ), the filter rules and the folder password, as for any read: the config
-  holds a link the Document Server downloads the file by;
+- download (READ, which previewing needs too), the filter rules and the folder password, as for any read:
+  the config holds a link the Document Server downloads the file by;
 - the file exists and is a file.
 
 Editing is offered only with an OnlyOffice secret (the config and the callbacks are signed with it),
@@ -156,7 +156,7 @@ def build(request, access, storage_path: str, *, session, can_edit: bool, viewer
             "key": session.key,
             "title": name,
             "url": origin.absolute(link, request),
-            # What the editor offers besides reading (D37: preview without download offers no download).
+            # What the editor offers besides reading: downloading and printing follow 下载 (D37).
             "permissions": {"edit": can_edit, "download": downloads, "print": downloads},
         },
         "editorConfig": editor_config,

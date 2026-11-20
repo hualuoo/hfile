@@ -7,7 +7,7 @@ has why).
 
 open_session() joins the file's current session or makes one. Openers who may edit share the editing
 session (co-editing); each of them becomes the identity that saves (the last authorised editor saves,
-inventory 7.3). Openers who may only view (preview-only users, visitors, shares) share another key, the
+inventory 7.3). Openers who may only view (users who may not edit, visitors, shares) share another key, the
 viewing session: it never saves, and they see the file as it was last saved, not the editors' names nor
 their changes not saved yet. Every save through the site ends the viewing key (forget_changed), so the
 next viewer gets the new version. A file whose size or time differs from what a session saw (while

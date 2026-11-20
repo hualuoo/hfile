@@ -49,10 +49,16 @@ class RefusalTests(OfficeTestCase):
         self.assertEqual((response.status_code, self.code(response)), (403, "permission_denied"))
         self.assertFalse(OfficeSession.objects.exists())
 
-    def test_preview_alone_is_enough_and_offers_no_download(self):
+    def test_preview_needs_download(self):
+        # 预览 needs 下载 (apps/accounts/permissions.py): saved without it, it opens nothing; with it, the editor
+        # offers downloading and printing (D37).
         self.grant(self.alice, ["preview"])
+        response = self.config()
+        self.assertEqual((response.status_code, self.code(response)), (403, "permission_denied"))
+        self.assertFalse(OfficeSession.objects.exists())
+        self.grant(self.alice, ["preview", "download"])
         config = self.ok_config()
-        self.assertEqual(config["document"]["permissions"], {"edit": False, "download": False, "print": False})
+        self.assertEqual(config["document"]["permissions"], {"edit": False, "download": True, "print": True})
 
     def test_download_alone_is_enough(self):
         self.grant(self.alice, ["download"])
@@ -93,13 +99,13 @@ class RefusalTests(OfficeTestCase):
         self.assertEqual((response.status_code, self.code(response)), (401, "login_required"))
 
     def test_guest_with_preview(self):
-        self.grant(self.guest, ["preview"])
+        self.grant(self.guest, ["preview", "download"])
         config = self.ok_config(login=False)
         self.assertEqual(config["editorConfig"]["user"], {"name": "匿名用户"})
         self.assertEqual(config["editorConfig"]["mode"], "view")
 
     def test_the_guest_may_edit_with_the_permissions(self):
-        self.grant(self.guest, ["preview", "upload", "delete"])
+        self.grant(self.guest, ["preview", "download", "upload", "delete"])
         config = self.ok_config(login=False)
         self.assertTrue(config["document"]["permissions"]["edit"])
         self.assertEqual(self.session_of().user, self.guest)
@@ -275,7 +281,7 @@ class ConfigTests(OfficeTestCase):
         plain = self.ok_config()
         self.assertNotIn("type", plain)
         self.assertEqual(plain["editorConfig"]["customization"], {"forcesave": True})
-        self.grant(self.alice, ["preview"])
+        self.grant(self.alice, ["preview", "download"])
         self.assertEqual(self.ok_config(dark=True)["editorConfig"]["customization"], {"uiTheme": "theme-dark"})
         self.assertEqual(self.config(mobile="yes please").status_code, 400)
 
@@ -288,7 +294,7 @@ class SessionTests(OfficeTestCase):
     def setUp(self):
         super().setUp()
         self.bob = User.objects.create_user("bob", password="pw-bob-2026")
-        self.grant(self.bob, ["preview"])
+        self.grant(self.bob, ["preview", "download"])
 
     def as_user(self, user, path="/docs/a.docx"):
         self.client.force_login(user)

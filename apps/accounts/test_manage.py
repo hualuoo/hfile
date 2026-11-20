@@ -158,8 +158,8 @@ class CreateTests(ManageTestBase):
             ({"username": "zedekiah", "password": "Zedekiah1"}, "password", None),  # too like the username
             ({"username": "zed", "default_permissions": ["fly"]}, "default_permissions", "不认识的权限：fly"),
             ({"username": "zed", "default_permissions": "upload"}, "default_permissions", "权限应该是一个列表。"),
-            ({"username": "zed", "default_permissions": ["preview", "generate_link"]}, "default_permissions",
-             "「获取直链」要先有「下载」的权限。"),  # D55
+            ({"username": "zed", "default_permissions": ["preview"]}, "default_permissions",
+             "「预览」要先有「下载」的权限。"),  # D55
             ({"username": "zed", "is_active": "sometimes"}, "is_active", None),
         ):
             with self.subTest(body=body):
@@ -190,11 +190,12 @@ class UpdateTests(ManageTestBase):
         self.assertEqual(self.client.patch(self.detail(self.alice), {"username": "BOSS"}).json(), {"username": ["这个用户名已经被别人用了。"]})
 
     def test_permissions_that_need_another_first(self):
-        # D55: refused alone; a list saved before comes without them (alone they did nothing).
+        # D55: refused alone; a list saved before comes without them (alone they did nothing, or 预览 since it
+        # needs 下载 too).
         r = self.client.patch(self.detail(self.alice), {"default_permissions": ["generate_short_link"]})
         self.assertEqual((r.status_code, r.json()["default_permissions"]), (400, ["「生成短链」要先有「下载」的权限。"]))
-        User.objects.filter(pk=self.alice.pk).update(default_permissions=["preview", "copy_download_link", "generate_link"])
-        self.assertEqual(self.client.get(self.detail(self.alice)).json()["default_permissions"], ["preview", "copy_download_link"])
+        User.objects.filter(pk=self.alice.pk).update(default_permissions=["upload", "preview", "copy_download_link", "generate_link"])
+        self.assertEqual(self.client.get(self.detail(self.alice)).json()["default_permissions"], ["upload"])
         r = self.client.patch(self.detail(self.alice), {"default_permissions": ["download", "generate_link", "generate_short_link"]})
         self.assertEqual((r.status_code, r.json()["default_permissions"]), (200, ["download", "generate_link", "generate_short_link"]))
 
@@ -231,10 +232,10 @@ class UpdateTests(ManageTestBase):
                 r = self.client.patch(self.detail(user), {"username": "visitor", "nickname": "访客", "password": STRONG})
                 self.assertEqual(r.status_code, 400)
                 self.assertEqual(set(r.json()), {"username", "nickname", "password"})
-                r = self.client.patch(self.detail(user), {"username": user.username, "default_permissions": ["preview"]})
+                r = self.client.patch(self.detail(user), {"username": user.username, "default_permissions": ["preview", "download"]})
                 self.assertEqual(r.status_code, 200, r.json())  # an unchanged name is fine
                 user.refresh_from_db()
-                self.assertEqual(user.default_permissions, ["preview"])
+                self.assertEqual(user.default_permissions, ["preview", "download"])
                 self.assertFalse(user.has_usable_password())
         r = self.client.patch(self.detail(self.template), {"is_active": False})
         self.assertEqual(r.json(), {"is_active": ["虚拟新用户不登录，没有启用和停用。"]})
@@ -329,12 +330,12 @@ class CopyTests(ManageTestBase):
 
     def test_with_a_password_and_from_the_builtins(self):
         self.guest.is_active = False
-        self.guest.default_permissions = ["preview"]
+        self.guest.default_permissions = ["preview", "download"]
         self.guest.save()
         r = self.client.post(self.detail(self.guest) + "copy/", {"username": "visitor", "password": STRONG})
         self.assertEqual(r.status_code, 201)
         visitor = User.objects.get(username="visitor")
-        self.assertEqual((visitor.kind, visitor.is_active, visitor.default_permissions), (Kind.NORMAL, True, ["preview"]))
+        self.assertEqual((visitor.kind, visitor.is_active, visitor.default_permissions), (Kind.NORMAL, True, ["preview", "download"]))
         self.assertTrue(visitor.check_password(STRONG))
         r = self.client.post(self.detail(self.boss) + "copy/", {"username": "boss-copy"})
         copy = User.objects.get(username="boss-copy")
@@ -492,11 +493,12 @@ class PageTests(ManageTestBase):
             self.assertIn(f'<input type="checkbox" name="default_permissions" value="{code}"', page)
         self.assertIn("忽略这个存储源的所有过滤规则", page)  # the permissions' help
         # D55: what a permission needs first, for App.applyRequires, and said under it.
-        self.assertIn('value="copy_download_link" data-requires="preview download"', page)
+        self.assertIn('value="preview" data-requires="download"', page)
+        self.assertIn('value="copy_download_link" data-requires="download"', page)
         self.assertIn('value="generate_link" data-requires="download"', page)
         self.assertIn('value="custom_share_key" data-requires="create_share_link"', page)
         self.assertNotIn('value="download" data-requires', page)
-        self.assertIn("要先勾选「预览」或「下载」。", page)
+        self.assertIn("要先勾选「下载」。在网页上预览", page)
         for tab in ("基本信息", "默认权限", "存储源权限"):
             self.assertIn(tab, page)
 

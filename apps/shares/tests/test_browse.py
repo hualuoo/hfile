@@ -198,16 +198,25 @@ class VisitorRuleTests(SharesTestCase):
 
     def test_preview_and_download_are_the_owners(self):
         share = self.files_share()
-        self.grant(self.alice, [code for code in EVERYTHING if code != Permission.DOWNLOAD])
+        self.grant(self.alice, EVERYTHING)
         listed = {item["name"]: item for item in self.vlist(share, "/docs").json()["items"]}
         self.assertTrue(listed["a.txt"]["url"].startswith(f"/share/{share.key}/preview?path="))
-        self.assertIsNone(listed["a.txt"]["download_url"])
+        self.assertTrue(listed["a.txt"]["download_url"].startswith(f"/share/{share.key}/download?path="))
         permissions = self.vlist(share).json()["permissions"]
         self.assertEqual((permissions["preview"], permissions["download"], permissions["copy_download_link"]),
-                         (True, False, False))
-        self.assertEqual(self.visitor.get(f"/share/{share.key}/download", {"path": "/docs/a.txt"}).status_code, 403)
+                         (True, True, True))
         self.assertEqual(self.visitor.get(f"/share/{share.key}/preview", {"path": "/docs/a.txt"}).status_code, 302)
         self.assertTrue(self.vget(share, "item", path="/docs/a.txt").json()["inline_url"])
+        # Without 下载 nothing of the content: 预览 needs it too.
+        self.grant(self.alice, [code for code in EVERYTHING if code != Permission.DOWNLOAD])
+        listed = {item["name"]: item for item in self.vlist(share, "/docs").json()["items"]}
+        self.assertEqual((listed["a.txt"]["url"], listed["a.txt"]["download_url"]), (None, None))
+        permissions = self.vlist(share).json()["permissions"]
+        self.assertEqual((permissions["preview"], permissions["download"], permissions["copy_download_link"]),
+                         (False, False, False))
+        self.assertEqual(self.visitor.get(f"/share/{share.key}/download", {"path": "/docs/a.txt"}).status_code, 403)
+        self.assertEqual(self.visitor.get(f"/share/{share.key}/preview", {"path": "/docs/a.txt"}).status_code, 403)
+        self.assertIsNone(self.vget(share, "item", path="/docs/a.txt").json()["inline_url"])
         self.grant(self.alice, [code for code in EVERYTHING if code != Permission.PREVIEW])
         listed = {item["name"]: item for item in self.vlist(share, "/docs").json()["items"]}
         self.assertTrue(listed["a.txt"]["url"].startswith(f"/share/{share.key}/download?path="))

@@ -189,7 +189,7 @@ def visitor_permissions(access) -> dict[str, bool]:
     """What the share page offers (files' permission map): the owner's preview and download (the server
     checks them again, D32), 复制下载链接 with both copy_download_link and download, and no operation."""
     granted = dict.fromkeys(Permission.values, False)
-    granted[Permission.PREVIEW] = access.has(Permission.PREVIEW)
+    granted[Permission.PREVIEW] = access.may(PREVIEW)  # with download, which it needs too
     granted[Permission.DOWNLOAD] = access.has(Permission.DOWNLOAD)
     granted[Permission.COPY_DOWNLOAD_LINK] = access.has(Permission.COPY_DOWNLOAD_LINK) and access.has(Permission.DOWNLOAD)
     return granted
@@ -206,7 +206,7 @@ def _item(access, share: Share, entry, kinds: Kinds) -> dict:
     if data["type"] == "file" and not data.get("locked") and not _download_disabled(access, entry.path):
         if access.has(Permission.DOWNLOAD):
             data["download_url"] = file_url(share, data["path"], "download")
-        if access.has(Permission.PREVIEW):
+        if access.may(PREVIEW):
             data["url"] = file_url(share, data["path"], "preview")
         else:
             data["url"] = data["download_url"]
@@ -287,7 +287,7 @@ def item(request, share: Share, visit: shares.Visit, path: Any) -> dict:
     if storage_path == access.root:
         data["name"] = ""
     data["inline_url"] = None
-    if not entry.is_dir and access.has(Permission.PREVIEW):
+    if not entry.is_dir and access.may(PREVIEW):
         access.check(PREVIEW, storage_path, is_dir=False)
         data["inline_url"] = share_link(request, share, storage_path, inline=True, same_origin=True)
         _counted(share, "download_count")

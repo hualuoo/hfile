@@ -416,18 +416,18 @@ class AutoRegisterTests(FakeIdpMixin, TestCase):
         self.assertEqual((grant.root_path, grant.permissions, grant.enabled), ("/public", ["preview", "download"], True))
 
     def test_without_what_the_template_saved_without_its_prerequisite(self):
-        # D55: lists saved before, with a permission that misses what it needs first (获取直链 without 下载),
+        # D55: lists saved before, with a permission that misses what it needs first (预览 or 获取直链 without 下载),
         # are copied without it, the default permissions as the grants.
         from apps.storages.models import Grant, StorageSource
 
-        User.objects.filter(pk=self.template.pk).update(default_permissions=["preview", "generate_link"])
+        User.objects.filter(pk=self.template.pk).update(default_permissions=["upload", "preview", "generate_link"])
         storage = StorageSource.objects.create(key="docs", name="文档", type="local", config={})
         Grant.objects.update_or_create(user=self.template, storage=storage, defaults={
-            "root_path": "/", "permissions": ["preview", "copy_download_link", "generate_link"], "enabled": True})
+            "root_path": "/", "permissions": ["upload", "preview", "copy_download_link", "generate_link"], "enabled": True})
         self.assertEqual(self.login_via_sso().status_code, 302)
         user = User.objects.get(username="alice")
-        self.assertEqual(user.default_permissions, ["preview"])
-        self.assertEqual(Grant.objects.get(user=user, storage=storage).permissions, ["preview", "copy_download_link"])
+        self.assertEqual(user.default_permissions, ["upload"])
+        self.assertEqual(Grant.objects.get(user=user, storage=storage).permissions, ["upload"])
 
     def test_never_by_name_and_names_taken(self):
         alice = User.objects.create_user("Alice", password="pw-alice-2026", is_staff=True)

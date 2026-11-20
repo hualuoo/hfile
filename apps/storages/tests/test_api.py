@@ -990,9 +990,9 @@ class GrantApiTests(ApiTestCase):
         self.assertFalse(data[1]["granted"])
         self.assertFalse(Grant.objects.filter(user=self.alice, storage=self.two).exists())
         # The storage may be given by its id; storages left out keep their grants.
-        data = self.client.put(self.url, [{"storage": self.two.pk, "enabled": True, "permissions": ["preview"]}],
+        data = self.client.put(self.url, [{"storage": self.two.pk, "enabled": True, "permissions": ["preview", "download"]}],
                                format="json").json()
-        self.assertEqual((data[0]["enabled"], data[1]["enabled"], data[1]["permissions"]), (True, True, ["preview"]))
+        self.assertEqual((data[0]["enabled"], data[1]["enabled"], data[1]["permissions"]), (True, True, ["preview", "download"]))
 
     def test_validation(self):
         bad = self.client.put(self.url, [{"storage": self.one.pk, "root_path": "/a/../b", "permissions": ["fly"]}],
@@ -1019,12 +1019,13 @@ class GrantApiTests(ApiTestCase):
         self.assertIn("已经不存在了", str(r.json()))
 
     def test_a_permission_needs_what_it_needs_first(self):
-        # D55: 获取直链 and 生成短链 need 下载, 复制下载链接 预览 or 下载, 自定义分享链接 key 创建分享链接.
+        # D55: 预览, 复制下载链接, 获取直链 and 生成短链 need 下载, 自定义分享链接 key 创建分享链接.
         rows = self.client.get(self.url).json()
         rows[0].update(enabled=True, permissions=["preview", "copy_download_link", "generate_link", "custom_share_key"])
         bad = self.client.put(self.url, rows, format="json")
         self.assertEqual(bad.status_code, 400)
-        self.assertEqual(bad.json()["0"]["permissions"], ["「获取直链」要先有「下载」的权限。",
+        self.assertEqual(bad.json()["0"]["permissions"], ["「预览」要先有「下载」的权限。", "「复制下载链接」要先有「下载」的权限。",
+                                                          "「获取直链」要先有「下载」的权限。",
                                                           "「自定义分享链接 key」要先有「创建分享链接」的权限。"])
         self.assertEqual(Grant.objects.get(user=self.alice, storage=self.one).permissions, [])
         rows[0]["permissions"] = ["custom_share_key", "create_share_link", "generate_link", "download", "copy_download_link"]
@@ -1033,21 +1034,21 @@ class GrantApiTests(ApiTestCase):
                                                   "custom_share_key"])
 
     def test_saved_before_the_prerequisites(self):
-        # A grant saved before D55 is listed without what misses its prerequisite (alone it did nothing), and
-        # saving the list as given keeps the rest.
+        # A grant saved before D55 is listed without what misses its prerequisite (alone it did nothing, or 预览
+        # since it needs 下载 too), and saving the list as given keeps the rest.
         Grant.objects.filter(user=self.alice, storage=self.one).update(
-            enabled=True, permissions=["preview", "copy_download_link", "generate_link"])
+            enabled=True, permissions=["upload", "preview", "copy_download_link", "generate_link"])
         rows = self.client.get(self.url).json()
-        self.assertEqual(rows[0]["permissions"], ["preview", "copy_download_link"])
+        self.assertEqual(rows[0]["permissions"], ["upload"])
         self.assertEqual(self.client.put(self.url, rows, format="json").status_code, 200)
-        self.assertEqual(Grant.objects.get(user=self.alice, storage=self.one).permissions, ["preview", "copy_download_link"])
+        self.assertEqual(Grant.objects.get(user=self.alice, storage=self.one).permissions, ["upload"])
         # New storages: default permissions saved before give what is usable of them.
-        User.objects.filter(pk=self.alice.pk).update(default_permissions=["preview", "generate_link"])
+        User.objects.filter(pk=self.alice.pk).update(default_permissions=["upload", "preview", "generate_link"])
         bob = User.objects.create_user("bob", password=None)
         User.objects.filter(pk=bob.pk).update(default_permissions=["generate_short_link"])
         three = self.create("three")
         mine, bobs = (Grant.objects.get(user=user, storage=three) for user in (self.alice, bob))
-        self.assertEqual((mine.enabled, mine.permissions), (True, ["preview"]))
+        self.assertEqual((mine.enabled, mine.permissions), (True, ["upload"]))
         self.assertEqual((bobs.enabled, bobs.permissions), (False, []))
 
     def test_the_guest_and_the_template_have_grants_too(self):
@@ -1065,13 +1066,14 @@ class GrantApiTests(ApiTestCase):
         self.assertNotIn("default_permissions", self.client.get(f"{API}manage/grant-options/").json())
         # D55: what each needs first (one of them), said in its help too.
         by_code = {p["code"]: p for p in data["permissions"]}
-        self.assertEqual((by_code["copy_download_link"]["requires"], by_code["generate_link"]["requires"],
-                          by_code["custom_share_key"]["requires"], by_code["upload"]["requires"]),
-                         (["preview", "download"], ["download"], ["create_share_link"], []))
+        self.assertEqual((by_code["preview"]["requires"], by_code["copy_download_link"]["requires"],
+                          by_code["generate_link"]["requires"], by_code["custom_share_key"]["requires"],
+                          by_code["upload"]["requires"]),
+                         (["download"], ["download"], ["download"], ["create_share_link"], []))
         self.assertEqual(by_code["generate_short_link"]["help"], "要先勾选「下载」。")
-        User.objects.filter(pk=self.admin.pk).update(default_permissions=["preview", "generate_link"])
+        User.objects.filter(pk=self.admin.pk).update(default_permissions=["upload", "preview", "generate_link"])
         data = self.client.get(f"{API}manage/grant-options/", {"user": self.admin.pk}).json()
-        self.assertEqual(data["default_permissions"], ["preview"])
+        self.assertEqual(data["default_permissions"], ["upload"])
 
     def test_copying_a_user_copies_his_grants(self):
         """Contract 2: accounts sends user_copied inside the transaction that makes the copy."""

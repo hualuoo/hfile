@@ -8,8 +8,9 @@ The codes' labels and help texts are shown on the user edit page.
 
 Some codes are of no use without another (REQUIRES, decision D55): the pickers on the user pages offer
 them only once one of their prerequisites is ticked, and the API refuses them alone. Lists saved before
-are shown without them (usable()): alone they never did anything (storages.access refuses links without
-下载, a file has no download address without 预览 or 下载, a share needs 创建分享链接 first).
+are shown without them (usable()): alone they do nothing (storages.access refuses previews and links
+without 下载, a file has no download address without 下载, a share needs 创建分享链接 first). A 预览 saved
+without 下载 did preview before 预览 needed it.
 """
 
 from __future__ import annotations
@@ -43,7 +44,7 @@ HELP = {
     Permission.NEW_FOLDER: gettext_lazy("Turning this off also turns off uploading folders."),
     Permission.UPLOAD: gettext_lazy('Upload files, and save after editing online. Overwriting an existing file also needs the "Delete" permission.'),
     Permission.PREVIEW: gettext_lazy("Preview images, video, audio, text, Office files and more in the browser."),
-    Permission.DOWNLOAD: gettext_lazy("Allowing previews but not downloads only hides the download buttons; it can't fully stop a file from being downloaded."),
+    Permission.DOWNLOAD: gettext_lazy("Download files. Previewing, copying download links and getting direct or short links hand out the files' content too, so they need it first."),
     Permission.COPY_DOWNLOAD_LINK: gettext_lazy("Adds \"Copy download link\" to the right-click menu: it copies the file's current download address, not a direct or short link."),
     Permission.CREATE_SHARE_LINK: gettext_lazy("Allows creating share links."),
     Permission.CUSTOM_SHARE_KEY: gettext_lazy("When creating a share link, the key in the link can be chosen instead of generated."),
@@ -51,11 +52,12 @@ HELP = {
     Permission.IGNORE_HIDDEN: gettext_lazy("Ignores every filter rule of this storage source; every folder and file can be seen."),
 }
 
-# What a permission needs first: one of these. 复制下载链接 copies the listing's download address, which
-# needs 预览 or 下载 (storages.access READ); a link hands out the file (D40a); a key of one's own is for
-# creating shares.
+# What a permission needs first: one of these. 预览, 复制下载链接 and the links hand out the file's content, as a
+# download does (D40a): a preview without 下载 only hid the download buttons, the file could still be saved from
+# it. A key of one's own is for creating shares.
 REQUIRES: dict[str, tuple[str, ...]] = {
-    Permission.COPY_DOWNLOAD_LINK: (Permission.PREVIEW, Permission.DOWNLOAD),
+    Permission.PREVIEW: (Permission.DOWNLOAD,),
+    Permission.COPY_DOWNLOAD_LINK: (Permission.DOWNLOAD,),
     Permission.GENERATE_LINK: (Permission.DOWNLOAD,),
     Permission.GENERATE_SHORT_LINK: (Permission.DOWNLOAD,),
     Permission.CUSTOM_SHARE_KEY: (Permission.CREATE_SHARE_LINK,),

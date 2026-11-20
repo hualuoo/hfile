@@ -71,7 +71,7 @@ class WhoTests(FilesTestCase):
         self.grant(self.alice, ["preview", "generate_link", "generate_short_link", "ignore_hidden"])
         self.login()
         permissions = self.listing()["permissions"]
-        self.assertTrue(permissions["preview"])
+        self.assertFalse(permissions["preview"])  # it needs download too
         self.assertFalse(permissions["download"])
         self.assertFalse(permissions["generate_link"])  # D40a: links need download too
         self.assertFalse(permissions["generate_short_link"])
@@ -627,12 +627,13 @@ class ListingTests(FilesTestCase):
                 self.assertEqual({item["modified"] for item in self.listing("/docs")["items"]}, {expected})
                 self.assertEqual(self.get("item", path="/docs/a.txt").json()["modified"], expected)
 
-    def test_no_url_without_preview_or_download(self):
-        self.grant(self.alice, ["rename"])
-        self.assertEqual({i["url"] for i in self.listing("/docs")["items"]}, {None})
-        item = self.get("item", path="/docs/a.txt").json()
-        self.assertEqual((item["url"], item["inline_url"]), (None, None))
-        self.grant(self.alice, ["preview"])
+    def test_no_url_without_download(self):
+        for codes in (["rename"], ["preview"]):  # 预览 alone too: it needs 下载
+            self.grant(self.alice, codes)
+            self.assertEqual({i["url"] for i in self.listing("/docs")["items"]}, {None})
+            item = self.get("item", path="/docs/a.txt").json()
+            self.assertEqual((item["url"], item["inline_url"]), (None, None))
+        self.grant(self.alice, ["download"])
         self.assertTrue(all(i["url"] for i in self.listing("/docs")["items"] if i["type"] == "file"))
 
     def test_a_file_is_not_a_folder(self):
