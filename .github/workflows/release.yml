@@ -71,6 +71,11 @@ jobs:
         with:
           persist-credentials: false
 
+      - name: Let git work in the checkout
+        # The job runs as root in the container and the checkout belongs to the runner's user: git refuses to work
+        # in a repository someone else owns ("dubious ownership"), and actions/checkout allows it in its own step only.
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
       - name: Install Miniforge
         run: |
           curl -fsSL --retry 3 -o "$RUNNER_TEMP/miniforge.sh" \

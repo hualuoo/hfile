@@ -20,7 +20,7 @@ if [ "${OS:-}" = Windows_NT ]; then
 fi
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 PYTHON="${PYTHON:-python}"
-if ! commit="$(git -C "$ROOT" rev-parse --short HEAD 2>/dev/null)"; then
+if ! commit="$(git -C "$ROOT" rev-parse --short HEAD)"; then
   echo "scripts/build.sh 要在 HFile 的 git 仓库里运行：打包的是最后一次提交里的代码。" >&2
   exit 1
 fi
