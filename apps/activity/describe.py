@@ -332,8 +332,11 @@ def _ip_geo(entry, detail):
 
 
 def _ip_geo_download(entry, detail):
+    from apps.ipgeo.sources import EDITIONS
+
+    edition = EDITIONS.get(detail.get("edition"))  # which database: not in entries of before there was a choice
     day = _day(detail.get("built_at"))
-    return _("Data of %(date)s") % {"date": day} if day else ""
+    return _sentences([edition.file if edition else "", _("Data of %(date)s") % {"date": day} if day else ""])
 
 
 def _ip_geo_fill(entry, detail):

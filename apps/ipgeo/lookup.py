@@ -3,8 +3,9 @@
 locate(ip) gives the location stored next to an IP ("CN 1809935 1795565", "US", "PRIVATE", "unknown";
 apps/ipgeo/places.py), or "" while IP 归属地 is turned off or no database has been downloaded
 (/manage/#ip-geo); shown(location) its name for a page, in the page's language, "" while IP 归属地 is off.
-The lookup happens on this server, in the GeoLite2-City file downloaded from ip.adysec.com
-(apps/ipgeo/sources.py); addresses are never sent anywhere.
+The lookup happens on this server, in the GeoLite2-City or GeoLite2-Country file downloaded from
+ip.adysec.com (apps/ipgeo/sources.py); addresses are never sent anywhere. With the country one, a location
+is the country or region only ("CN").
 
 The names come with the records: a lookup keeps the names of the places it met (remember(),
 models.PlaceName), once per place and process. Reading them all out of the file when it is downloaded would
@@ -22,13 +23,13 @@ from pathlib import Path
 import maxminddb
 from django.conf import settings
 from django.db import DatabaseError, connection, transaction
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext as _, gettext_lazy
 
 from apps.core import net
 
 from . import places
 from .places import PRIVATE
-from .sources import LOCATION_MAX, UNKNOWN
+from .sources import EDITION_OF_FILE, LOCATION_MAX, UNKNOWN
 
 logger = logging.getLogger(__name__)
 
@@ -106,8 +107,16 @@ class Locator:
         return place_for(record)
 
 
-def open_reader(path):
-    """Read a database file into memory and check that it is a city database that knows IPv6 too.
+# What a file of another kind than the one asked for is told, by Edition.key.
+NOT_THE_KIND = {
+    "city": gettext_lazy("It isn't a city database such as GeoLite2-City (type %(type)s, IPv%(version)s)."),
+    "country": gettext_lazy("It isn't a country database such as GeoLite2-Country (type %(type)s, IPv%(version)s)."),
+}
+
+
+def open_reader(path, edition):
+    """Read a database file into memory and check that it is of the kind of `edition` (sources.EDITIONS) and
+    knows IPv6 too.
 
     Raises DatabaseProblem.
     """
@@ -119,9 +128,8 @@ def open_reader(path):
         raise DatabaseProblem(_("The database file %(path)s isn't there.") % {"path": path}) from None
     except Exception as exc:  # maxminddb raises TypeError, KeyError ... too on a damaged file
         raise DatabaseProblem(_("It isn't a MaxMind database, or the file is damaged (%(error)s).") % {"error": exc}) from None
-    if "City" not in database_type or ip_version != 6:
-        raise DatabaseProblem(_("It isn't a city database such as GeoLite2-City (type %(type)s, IPv%(version)s).")
-                              % {"type": database_type, "version": ip_version})
+    if edition.kind not in database_type or ip_version != 6:
+        raise DatabaseProblem(NOT_THE_KIND[edition.key] % {"type": database_type, "version": ip_version})
     try:
         for address in ("1.1.1.1", "2001:4860:4860::8888"):
             reader.get(address)
@@ -146,7 +154,7 @@ def locator(config):
     with _lock:
         if key not in _cached:
             try:
-                found = Locator(open_reader(path))
+                found = Locator(open_reader(path, EDITION_OF_FILE[config.file_name]))
             except Exception as exc:  # remembered: the file isn't read again until the next download
                 logger.warning("The IP location database can't be used: %s", exc)
                 found = None

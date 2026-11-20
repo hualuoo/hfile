@@ -18,7 +18,7 @@ from unittest import mock
 
 import maxminddb
 from django.db import connection, transaction
-from django.test import RequestFactory, SimpleTestCase, TestCase, TransactionTestCase, override_settings
+from django.test import Client, RequestFactory, SimpleTestCase, TestCase, TransactionTestCase, override_settings
 from django.test.utils import CaptureQueriesContext
 from django.utils import timezone, translation
 from rest_framework.test import APIClient, APITestCase
@@ -33,9 +33,12 @@ from apps.links.tests.helpers import LinksTestCase
 from . import jobs, lookup, places
 from .lookup import Locator, open_reader, place_for
 from .models import IpGeoSettings, PlaceName
-from .sources import FILE_NAME, LOCATION_MAX, UNKNOWN, URL
-from .testing import CHINA, ENGLAND, HANGZHOU, IPSWICH, NETWORKS, UNITED_KINGDOM, ZHEJIANG, build_mmdb, city, place, sample_database
+from .sources import CITY, COUNTRY, LOCATION_MAX, UNKNOWN
+from .testing import (CHINA, ENGLAND, HANGZHOU, IPSWICH, NETWORKS, UNITED_KINGDOM, ZHEJIANG, build_mmdb, city, place,
+                      sample_country_database, sample_database)
 
+# The city database, which the tests download and install unless they say otherwise.
+FILE_NAME, URL = CITY.file, CITY.url
 API = "/api/v1/manage/ip-geo/"
 SESSION = "/api/v1/session/"
 
@@ -244,7 +247,7 @@ class DatabaseFileTestCase(SimpleTestCase):
 class LocatorTests(DatabaseFileTestCase):
     def setUp(self):
         super().setUp()
-        self.find = Locator(open_reader(self.write(sample_database())))
+        self.find = Locator(open_reader(self.write(sample_database()), CITY))
 
     def test_locations(self):
         cases = {
@@ -288,7 +291,7 @@ class LocatorTests(DatabaseFileTestCase):
 
 class OpenReaderTests(DatabaseFileTestCase):
     def test_a_city_database(self):
-        meta = open_reader(self.write(sample_database(build_epoch=1_762_302_000))).metadata()
+        meta = open_reader(self.write(sample_database(build_epoch=1_762_302_000)), CITY).metadata()
         self.assertEqual((meta.database_type, meta.ip_version, meta.build_epoch), ("GeoLite2-City", 6, 1_762_302_000))
 
     def test_files_that_are_not_one(self):
@@ -302,9 +305,26 @@ class OpenReaderTests(DatabaseFileTestCase):
         }
         for message, data in cases.items():
             with self.subTest(message=message), self.assertRaisesMessage(lookup.DatabaseProblem, message):
-                open_reader(self.write(data))
+                open_reader(self.write(data), CITY)
         with self.assertRaisesMessage(lookup.DatabaseProblem, "找不到数据库文件"):
-            open_reader(self.folder / "missing.mmdb")
+            open_reader(self.folder / "missing.mmdb", CITY)
+
+    def test_a_country_database(self):
+        meta = open_reader(self.write(sample_country_database()), COUNTRY).metadata()
+        self.assertEqual((meta.database_type, meta.ip_version), ("GeoLite2-Country", 6))
+        cases = {
+            "不是 GeoLite2-Country 这样的国家数据库（类型 GeoLite2-City，IPv6）": sample_database(),
+            "不是 GeoLite2-Country 这样的国家数据库（类型 GeoLite2-Country，IPv4）": build_mmdb({"8.8.8.0/24": {"country": CHINA}}, database_type="GeoLite2-Country", ip_version=4),
+        }
+        for message, data in cases.items():
+            with self.subTest(message=message), self.assertRaisesMessage(lookup.DatabaseProblem, message):
+                open_reader(self.write(data), COUNTRY)
+
+    def test_the_country_databases_locations(self):
+        find = Locator(open_reader(self.write(sample_country_database()), COUNTRY))
+        self.assertEqual([find(ip) for ip in ("223.5.5.5", "2001:4860:4860::8888", "202.67.240.1", "45.83.1.1", "192.168.1.1", "10.20.30.40")],
+                         ["CN", "US", "HK", "NL", "PRIVATE", "PRIVATE"])
+        self.assertEqual(find.place("223.5.5.5"), ("CN", {"CN": {"en": "China", "zh-CN": "中国"}}))
 
 
 class LocateTests(GeoTestMixin, TestCase):
@@ -536,6 +556,13 @@ class ApiTests(GeoTestMixin, APITestCase):
         )
         self.assertEqual([part["key"] for part in r.data["unfilled"]["parts"]], ["users", "activity", "downloads"])
 
+    def test_the_page_offers_both_databases(self):
+        browser = Client()
+        browser.force_login(self.admin)
+        page = browser.get("/manage/").content.decode()
+        self.assertIn('<input type="radio" name="edition" value="city">城市数据库：GeoLite2-City.mmdb，约 50 MB</label>', page)
+        self.assertIn('<input type="radio" name="edition" value="country">国家数据库：GeoLite2-Country.mmdb，约 3 MB</label>', page)
+
     def test_turning_it_on_and_off(self):
         r = self.admin_client.patch(API, {"enabled": True}, format="json")
         self.assertEqual((r.status_code, r.data["enabled"]), (200, True))
@@ -553,8 +580,8 @@ class ApiTests(GeoTestMixin, APITestCase):
         self.install(data)
         database = self.admin_client.get(API).data["database"]
         self.assertEqual(
-            {key: database[key] for key in ("file", "size", "sha256", "missing")},
-            {"file": FILE_NAME, "size": len(data), "sha256": hashlib.sha256(data).hexdigest(), "missing": False},
+            {key: database[key] for key in ("file", "edition", "size", "sha256", "missing")},
+            {"file": FILE_NAME, "edition": "city", "size": len(data), "sha256": hashlib.sha256(data).hexdigest(), "missing": False},
         )
         (self.folder / FILE_NAME).unlink()
         self.assertTrue(self.admin_client.get(API).data["database"]["missing"])
@@ -610,13 +637,13 @@ class DownloadTests(GeoTestMixin, APITestCase):
         )
         job = self.job()
         self.assertEqual((job["kind"], job["state"], job["done"], job["total"]), ("download", "done", len(data), len(data)))
-        self.assertEqual(job["message"], "下载好了：数据日期 2025-11-05。")
+        self.assertEqual(job["message"], "下载好了 GeoLite2-City.mmdb：数据日期 2025-11-05。")
         self.assertEqual(self.admin_client.get(API + "check/?ip=2001:4860:4860::8888").data["location"], "美国 加利福尼亚州 山景城")
         self.assertEqual(PlaceName.objects.get(code="5375480").names, {"en": "Mountain View", "zh-CN": "山景城"})
         # In the activity log as the admin who started it did it, from where they did.
         entry = ActivityLog.objects.get()
         self.assertEqual((entry.kind, entry.actor, entry.ip, entry.detail),
-                         ("download_ip_geo", self.admin, "127.0.0.1", {"built_at": "2025-11-05T00:20:00+00:00"}))
+                         ("download_ip_geo", self.admin, "127.0.0.1", {"built_at": "2025-11-05T00:20:00+00:00", "edition": "city"}))
 
     def test_the_answer_comes_at_once(self):
         # The job runs in the background; what the POST answers is the state when it started.
@@ -627,6 +654,7 @@ class DownloadTests(GeoTestMixin, APITestCase):
         self.assertEqual((r.data["job"]["kind"], r.data["job"]["state"]), ("download", "running"))
         self.assertEqual(start.call_args.args[:2], (jobs.download, r.data["job"]["id"]))
         self.assertEqual(start.call_args.args[2]["actor"], self.admin)  # who started it, for the activity log
+        self.assertEqual(start.call_args.args[3], "city")  # without a choice: the database in use
         self.assertContains(self.download(), "正在下载数据库，等它做完再试。", status_code=409)
         self.assertContains(self.admin_client.post(API + "fill/", {}, format="json"), "正在下载数据库", status_code=409)
 
@@ -666,7 +694,7 @@ class DownloadTests(GeoTestMixin, APITestCase):
     def test_in_the_language_of_who_started_it(self):
         self.serve({URL: sample_database(build_epoch=1_762_302_000)})
         self.download(HTTP_ACCEPT_LANGUAGE="en")
-        self.assertEqual(IpGeoSettings.load().job_message, "Downloaded: data of 2025-11-05.")
+        self.assertEqual(IpGeoSettings.load().job_message, "Downloaded GeoLite2-City.mmdb: data of 2025-11-05.")
 
     def assertFailed(self, message):
         job = self.job()
@@ -680,10 +708,60 @@ class DownloadTests(GeoTestMixin, APITestCase):
         self.download()
         self.assertFailed("下载的文件用不了：不是 MaxMind 格式的数据库")
 
-    def test_a_country_database(self):
+    def test_a_country_database_where_the_city_one_was_asked_for(self):
         self.serve({URL: build_mmdb({"8.8.8.0/24": {"country": CHINA}}, database_type="GeoLite2-Country")})
         self.download()
         self.assertFailed("下载的文件用不了：不是 GeoLite2-City 这样的城市数据库")
+
+    def choose(self, edition):
+        return self.admin_client.post(API + "download/", {"edition": edition}, format="json")
+
+    def test_switching_to_the_country_database_and_back(self):
+        city_data, country_data = sample_database(), sample_country_database(build_epoch=1_762_302_000)
+        self.install(city_data)
+        self.assertEqual(lookup.locate("223.5.5.5"), IN_HANGZHOU)
+        server = self.serve({COUNTRY.url: country_data, URL: city_data})
+        self.assertEqual(self.choose("country").status_code, 202)
+        self.assertEqual(server.asked, [COUNTRY.url])
+        self.assertEqual(self.job()["message"], "下载好了 GeoLite2-Country.mmdb：数据日期 2025-11-05。")
+        # In place of the city database, whose file is gone.
+        self.assertEqual(sorted(path.name for path in self.folder.iterdir()), [COUNTRY.file])
+        database = self.admin_client.get(API).data["database"]
+        self.assertEqual((database["file"], database["edition"], database["sha256"], database["missing"]),
+                         (COUNTRY.file, "country", hashlib.sha256(country_data).hexdigest(), False))
+        self.assertEqual(lookup.locate("223.5.5.5"), "CN")  # the country only
+        self.assertEqual(self.admin_client.get(API + "check/?ip=2001:4860:4860::8888").data["location"], "美国")
+        self.assertEqual(ActivityLog.objects.get().detail, {"built_at": "2025-11-05T00:20:00+00:00", "edition": "country"})
+        # Updating without a choice keeps to the database in use.
+        self.download()
+        self.assertEqual(server.asked, [COUNTRY.url, COUNTRY.url])
+        self.assertTrue(self.job()["message"].startswith("已经是最新的了"), self.job())
+        # And back.
+        self.choose("city")
+        self.assertEqual(server.asked[-1], URL)
+        self.assertEqual(sorted(path.name for path in self.folder.iterdir()), [FILE_NAME])
+        self.assertEqual(IpGeoSettings.load().file_name, FILE_NAME)
+        self.assertEqual(lookup.locate("223.5.5.5"), IN_HANGZHOU)
+        self.assertEqual([entry.detail["edition"] for entry in ActivityLog.objects.order_by("pk")], ["country", "city"])
+
+    def test_a_city_database_where_the_country_one_was_asked_for(self):
+        self.install()
+        self.serve({COUNTRY.url: sample_database()})
+        self.choose("country")
+        job = self.job()
+        self.assertEqual(job["state"], "failed", job)
+        self.assertIn("下载的文件用不了：不是 GeoLite2-Country 这样的国家数据库（类型 GeoLite2-City，IPv6）", job["message"])
+        # The database in use stays.
+        self.assertEqual(sorted(path.name for path in self.folder.iterdir()), [FILE_NAME])
+        self.assertEqual(IpGeoSettings.load().file_name, FILE_NAME)
+        self.assertEqual(lookup.locate("223.5.5.5"), IN_HANGZHOU)
+
+    def test_the_databases_there_are(self):
+        for edition in ("asn", "", None, "City"):
+            with self.subTest(edition=edition):
+                self.assertContains(self.choose(edition), "edition", status_code=400)
+        self.assertContains(self.choose("asn"), "数据库只能是 city 或 country。", status_code=400)
+        self.assertEqual(IpGeoSettings.load().job, "")  # nothing started
 
     def test_cut_short_without_a_length(self):
         # ip.adysec.com doesn't say how long the file is: a file cut short is found out when it is opened.
@@ -780,9 +858,9 @@ class JobStateTests(GeoTestMixin, TestCase):
         config = jobs.claim(IpGeoSettings.Job.DOWNLOAD)
         real = lookup.open_reader
 
-        def taken_over(path):
+        def taken_over(path, edition):
             IpGeoSettings.objects.filter(pk=1).update(job_id="another")  # a newer job, while this one checks the file
-            return real(path)
+            return real(path, edition)
 
         with mock.patch.object(jobs, "fetch", FakeServer({URL: sample_database()})), mock.patch.object(lookup, "open_reader", taken_over):
             jobs.run(jobs.download, config.job_id)
@@ -886,4 +964,4 @@ class ThreadTests(GeoTestMixin, TransactionTestCase):
         self.assertFalse(threads[0].is_alive())
         config = IpGeoSettings.load()
         self.assertEqual((config.job_state, config.file_name), ("done", FILE_NAME))
-        self.assertEqual(config.job_message, "Downloaded: data of 2025-11-05.")  # the starter's language
+        self.assertEqual(config.job_message, "Downloaded GeoLite2-City.mmdb: data of 2025-11-05.")  # the starter's language

@@ -1,6 +1,6 @@
 /* /manage/#ip-geo: IP 归属地 (GET and PATCH /api/v1/manage/ip-geo/). Turning it on, downloading or updating the
- * database (POST download/), looking one IP up (check/), and 补全: filling in the locations of IPs stored before
- * (POST fill/). Downloads and 补全 run on the server in the background; the page asks job/ every second until
+ * database, the city one or the country one (POST download/ {edition}), looking one IP up (check/), and 补全:
+ * filling in the locations of IPs stored before (POST fill/). Downloads and 补全 run on the server in the background; the page asks job/ every second until
  * the job ends. What changes the locations the lists show (turning it on or off, a download, a 补全) is
  * announced as "hfile:ip-locations": the user list and the logs load again when next shown. */
 (function () {
@@ -17,6 +17,8 @@
   const enabledBox = document.getElementById('ip-geo-enabled');
   const downloadForm = document.getElementById('ip-geo-download');
   const downloadButton = downloadForm.querySelector('[type="submit"]');
+  const editionsBox = document.getElementById('ip-geo-editions');
+  const switchNote = document.getElementById('ip-geo-switch');
   const facts = document.getElementById('ip-geo-facts');
   const missing = document.getElementById('ip-geo-missing');
   const checkForm = document.getElementById('ip-geo-check-form');
@@ -30,6 +32,7 @@
   let loading = null;
   let watching = null; // the job this page started, or found running: its result is shown when it ends
   let pollTimer = null;
+  let picked = null; // the database chosen here (sources.EDITIONS); until then the one in use, or the city one
 
   const fact = (label, ...value) => h('div', {}, h('dt', { text: label }), h('dd', {}, ...value));
   const wideFact = (label, ...value) => h('div', { class: 'wide' }, h('dt', { text: label }), h('dd', {}, ...value));
@@ -56,9 +59,15 @@
     missing.hidden = !missing.textContent;
   }
 
-  function renderButton() {
+  // The database to download: the button updates the one in use, or downloads the other one in its place.
+  const chosen = () => downloadForm.elements.edition.value;
+
+  function renderEdition() {
     const db = data.database;
-    downloadButton.querySelector('span').textContent = db && !db.missing ? gettext('Update the database') : gettext('Download the database');
+    const inUse = db && !db.missing ? db.edition : null;
+    downloadForm.elements.edition.value = picked || (db && db.edition) || 'city';
+    switchNote.hidden = !inUse || chosen() === inUse;
+    downloadButton.querySelector('span').textContent = chosen() === inUse ? gettext('Update the database') : gettext('Download the database');
   }
 
   const PARTS = {
@@ -113,7 +122,8 @@
     enabledBox.disabled = false;
     renderFacts();
     downloadButton.disabled = !data.enabled || busy;
-    renderButton();
+    editionsBox.disabled = !data.enabled || busy;
+    renderEdition();
     checkForm.elements.ip.disabled = !usable();
     checkForm.querySelector('[type="submit"]').disabled = !usable();
     fillForm.elements.redo.disabled = !usable() || busy;
@@ -198,9 +208,14 @@
     }
   });
 
+  editionsBox.addEventListener('change', () => {
+    picked = chosen();
+    renderEdition();
+  });
+
   handleSubmit(downloadForm, async () => {
     clearResults();
-    data = await api('POST', `${API}download/`, {});
+    data = await api('POST', `${API}download/`, { edition: chosen() });
     follow();
     return true; // render() decides when the button comes back
   });

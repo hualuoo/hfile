@@ -3,7 +3,8 @@
     GET    manage/ip-geo/            the settings, the database in use, the last job and how many stored IPs
                                      have no location yet
     PATCH  manage/ip-geo/            {"enabled": true|false}
-    POST   manage/ip-geo/download/   download (or update) the database in the background (202)
+    POST   manage/ip-geo/download/   {"edition": "city"|"country"}: download (or update) that database in the
+                                     background (202); without it the one in use, or the city one
     POST   manage/ip-geo/fill/       {"redo": false}: 补全 the stored IPs in the background (202)
     GET    manage/ip-geo/job/        the last job: {"job": {"kind", "state", "done", "total", "message", ...}}
     GET    manage/ip-geo/check/      ?ip= -> {"ip", "code", "location"}
@@ -26,15 +27,18 @@ from apps.core.times import iso
 
 from . import jobs, lookup, places
 from .models import IpGeoSettings
-from .serializers import CheckQuery, FillSerializer, IpGeoSettingsSerializer
+from .serializers import CheckQuery, DownloadSerializer, FillSerializer, IpGeoSettingsSerializer
+from .sources import EDITION_OF_FILE
 
 
 def describe(config):
     """GET manage/ip-geo/."""
     database = None
     if config.file_name:
+        edition = EDITION_OF_FILE.get(config.file_name)
         database = {
             "file": config.file_name,
+            "edition": edition.key if edition else None,
             "size": config.size,
             "sha256": config.sha256,
             "built_at": iso(config.built_at),
@@ -84,8 +88,10 @@ class IpGeoDownloadView(APIView):
     permission_classes = [IsAdmin]
 
     def post(self, request):
+        serializer = DownloadSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
         try:
-            jobs.start_download(jobs.started_by(request))
+            jobs.start_download(jobs.started_by(request), serializer.validated_data.get("edition"))
         except (jobs.NotReady, jobs.Busy) as exc:
             raise Conflict(str(exc)) from None
         return Response(describe(IpGeoSettings.load()), status=status.HTTP_202_ACCEPTED)

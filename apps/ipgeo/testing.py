@@ -9,6 +9,7 @@ import ipaddress
 
 METADATA_MARKER = b"\xab\xcd\xefMaxMind.com"
 CITY_TYPE = "GeoLite2-City"
+COUNTRY_TYPE = "GeoLite2-Country"
 
 
 class U16(int):
@@ -161,3 +162,10 @@ NETWORKS = {
 
 def sample_database(**kwargs):
     return build_mmdb(NETWORKS, **kwargs)
+
+
+def sample_country_database(**kwargs):
+    """GeoLite2-Country of the same networks: their records' countries, nothing smaller."""
+    countries = {network: {key: value for key, value in record.items() if key in ("country", "registered_country")}
+                 for network, record in NETWORKS.items()}
+    return build_mmdb(countries, database_type=COUNTRY_TYPE, **kwargs)

@@ -1,5 +1,5 @@
 """The slow parts of /manage/#ip-geo, run in a background thread so the page doesn't wait for them:
-downloading the database (about 50 MB) and 补全 (looking stored IPs up again).
+downloading the database (the city one is about 50 MB) and 补全 (looking stored IPs up again).
 
 One job at a time for the whole site: claim() takes the job fields of IpGeoSettings in a transaction
 and raises Busy while another job runs. The thread writes its progress there (job_done of job_total:
@@ -9,8 +9,9 @@ new one may start. The thread speaks the language of the admin who started it: i
 
 ip.adysec.com publishes no checksum, so updating downloads the whole file again; one the same as the file
 in use changes nothing. A download replaces nothing until it has passed two checks: a size limit, and
-opening it as a city database (lookup.open_reader), which a file cut short fails. It is written next to its
-final name and then renamed over it.
+opening it as the kind of database asked for (lookup.open_reader), which a file cut short fails. It is
+written next to its final name and then renamed over it. Downloading the other database (sources.EDITIONS)
+switches to it: once the settings name the new file, the old one is deleted.
 
 A download of new data and a 补全 that changed something are logged in the activity log when they end, as the
 admin who started them did it, from where they did (`who`, apps.activity.log's actor, ip and user_agent).
@@ -44,7 +45,7 @@ from config.version import VERSION
 
 from . import lookup
 from .models import IpGeoSettings
-from .sources import FILE_NAME, HOST, URL
+from .sources import CITY, EDITION_OF_FILE, EDITIONS, HOST
 
 logger = logging.getLogger(__name__)
 
@@ -55,7 +56,7 @@ STALE = timedelta(minutes=3)  # a running job that hasn't written progress for t
 PROGRESS_EVERY = 0.5  # seconds between progress writes
 READ_TIMEOUT = 30  # seconds without data before a download gives up
 DEADLINE = 30 * 60  # seconds for a whole download
-MAX_BYTES = 256 * 1024 * 1024  # the file is about 50 MB
+MAX_BYTES = 256 * 1024 * 1024  # the city database is about 50 MB
 CHUNK = 64 * 1024
 FILL_CHUNK = 200  # addresses per UPDATE
 PART_PREFIX = ".download-"
@@ -257,11 +258,14 @@ def _log(kind, who, detail):
     activity.record(kind, **(who or {"actor": None, "ip": None, "user_agent": ""}), detail=detail)
 
 
-def start_download(who=None):
-    """Download the database (or a newer one), in the background. Raises NotReady or Busy."""
-    _ready_config()
+def start_download(who=None, edition=None):
+    """Download a database (or a newer one) in the background: `edition`, a key of sources.EDITIONS, or the
+    one in use, or the city one. Raises NotReady or Busy."""
+    config = _ready_config()
+    if edition is None:
+        edition = EDITION_OF_FILE.get(config.file_name, CITY).key
     config = claim(Job.DOWNLOAD)
-    start_thread(download, config.job_id, who)
+    start_thread(download, config.job_id, who, edition)
 
 
 def _open(url):
@@ -367,24 +371,26 @@ def data_date(moment):
     return timezone.localtime(moment).date().isoformat() if moment else pgettext("date", "unknown")
 
 
-def download(progress, who=None):
-    """The download job (see the top). Finishes the job itself, together with the database's fields."""
+def download(progress, who=None, edition=CITY.key):
+    """The download job (see the top) of the database `edition` (a key of sources.EDITIONS). Finishes the job
+    itself, together with the database's fields."""
+    edition = EDITIONS[edition]
     folder = Path(settings.GEOIP_DIR)
-    final = folder / FILE_NAME
+    final = folder / edition.file
     try:
         folder.mkdir(parents=True, exist_ok=True)
         for leftover in folder.glob(PART_PREFIX + "*"):  # from a job that died half way
             leftover.unlink(missing_ok=True)
     except OSError as exc:
         raise JobFailed(_("Can't write files in %(folder)s (%(error)s).") % {"folder": folder, "error": exc}) from None
-    part, size, digest = _fetch_file(URL, folder, progress)
+    part, size, digest = _fetch_file(edition.url, folder, progress)
     try:
         config = IpGeoSettings.load()
         # The file in use is checked too: a damaged one is replaced even by the same download.
         if config.sha256 == digest and _sha256_of(final) == digest:
             return _("Already up to date (data of %(date)s); nothing changed.") % {"date": data_date(config.built_at)}
         try:
-            reader = lookup.open_reader(part)
+            reader = lookup.open_reader(part, edition)
         except lookup.DatabaseProblem as exc:
             raise JobFailed(_("The downloaded file can't be used: %(problem)s") % {"problem": exc}) from None
         built_at = datetime.fromtimestamp(reader.metadata().build_epoch, dt_timezone.utc)
@@ -399,16 +405,23 @@ def download(progress, who=None):
     with transaction.atomic():
         progress.finish(
             State.DONE,
-            _("Downloaded: data of %(date)s.") % {"date": data_date(built_at)},
-            file_name=FILE_NAME,
+            _("Downloaded %(file)s: data of %(date)s.") % {"file": edition.file, "date": data_date(built_at)},
+            file_name=edition.file,
             sha256=digest,
             size=size,
             built_at=built_at,
             downloaded_at=timezone.now(),
         )
-        _log(activity.Kind.DOWNLOAD_IP_GEO, who, {"built_at": built_at.isoformat()})
-    logger.info("IP location database downloaded: %s, data of %s, from %s", FILE_NAME, data_date(built_at), HOST)
+        _log(activity.Kind.DOWNLOAD_IP_GEO, who, {"built_at": built_at.isoformat(), "edition": edition.key})
+    logger.info("IP location database downloaded: %s, data of %s, from %s", edition.file, data_date(built_at), HOST)
     lookup.forget_cached()
+    # The other database is used no more (after a switch): its file goes.
+    for other in EDITIONS.values():
+        if other is not edition:
+            try:
+                (folder / other.file).unlink(missing_ok=True)
+            except OSError as exc:
+                logger.warning("IP location: %s, used no more, couldn't be deleted: %s", other.file, exc)
     return None
 
 

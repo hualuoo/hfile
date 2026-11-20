@@ -9,5 +9,5 @@ register = template.Library()
 
 @register.simple_tag
 def ipgeo_source():
-    """{"file", "host", "site_url"} of apps/ipgeo/sources.py."""
-    return {"file": sources.FILE_NAME, "host": sources.HOST, "site_url": sources.SITE_URL}
+    """{"host", "site_url", "city", "country"} of apps/ipgeo/sources.py: the site, and the two databases' file names."""
+    return {"host": sources.HOST, "site_url": sources.SITE_URL, "city": sources.CITY.file, "country": sources.COUNTRY.file}

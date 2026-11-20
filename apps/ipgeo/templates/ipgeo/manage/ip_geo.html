@@ -1,7 +1,7 @@
 {% load static ui ipgeo %}{% ipgeo_source as geo %}{# /manage/#ip-geo (apps/web/navigation.py SECTIONS), run by ipgeo/js/manage_ip_geo.js through /api/v1/manage/ip-geo/. #}
 <link rel="stylesheet" href="{% static 'ipgeo/css/ipgeo.css' %}">
 <div class="section-title-row"><h2>{% translate "IP location" %}</h2></div>
-<p class="muted">{% translate "Turned on, the IPs of the user list, the activity log and the download log show where they are: the country or region and, for many IPs, the province or state and the city. The lookup happens on this server, in MaxMind's GeoLite2-City database; IPs aren't sent anywhere." %}</p>
+<p class="muted">{% translate "Turned on, the IPs of the user list, the activity log and the download log show where they are: the country or region and, with the city database, for many IPs the province or state and the city too. The lookup happens on this server, in MaxMind's GeoLite2 database; IPs aren't sent anywhere." %}</p>
 <div class="ip-geo" id="ip-geo">
   <div class="form-error" role="alert" id="ip-geo-error" hidden></div>
   <label class="switch-line">
@@ -11,9 +11,17 @@
 
   <form class="ip-geo-part" id="ip-geo-download" novalidate>
     <h3>{% translate "Database" %}</h3>
-    <p class="muted">{% blocktranslate with file=geo.file host=geo.host url=geo.site_url %}It can be downloaded once IP location is on: {{ file }}, about 50 MB, from <a href="{{ url }}" target="_blank" rel="noopener noreferrer">{{ host }}</a>, which copies MaxMind's file every day. MaxMind updates the data every Tuesday and Friday; the site doesn't update it by itself. "Update the database" downloads the whole file again, and changes nothing when it is the same.{% endblocktranslate %}</p>
+    <p class="muted">{% blocktranslate with host=geo.host url=geo.site_url %}It can be downloaded once IP location is on, from <a href="{{ url }}" target="_blank" rel="noopener noreferrer">{{ host }}</a>, which copies MaxMind's files every day. MaxMind updates the data every Tuesday and Friday; the site doesn't update it by itself. "Update the database" downloads the whole file again, and changes nothing when it is the same.{% endblocktranslate %}</p>
     <div class="notice" id="ip-geo-missing" hidden></div>
     <dl class="facts ip-geo-facts" id="ip-geo-facts"><div><dt>{% translate "Database in use" %}</dt><dd>{% translate "Loading…" %}</dd></div></dl>
+    <fieldset class="ip-geo-editions" id="ip-geo-editions" disabled>
+      <legend>{% translate "Which database" %}</legend>
+      <label class="check-line"><input type="radio" name="edition" value="city">{% blocktranslate with file=geo.city %}City database: {{ file }}, about 50 MB{% endblocktranslate %}</label>
+      <p class="hint">{% translate "The country or region and, for many IPs, the province or state and the city." %}</p>
+      <label class="check-line"><input type="radio" name="edition" value="country">{% blocktranslate with file=geo.country %}Country database: {{ file }}, about 3 MB{% endblocktranslate %}</label>
+      <p class="hint">{% translate "The country or region only. The site reads the database into memory: this one takes much less." %}</p>
+    </fieldset>
+    <p class="notice notice-info" id="ip-geo-switch" hidden>{% translate 'Once downloaded, it takes the place of the database in use, whose file is deleted. Locations recorded before stay as they are; "Fill in locations" below, with its box ticked, looks them up again.' %}</p>
     <div class="job-progress" id="ip-geo-download-progress" hidden>
       <progress class="linear-progress" max="100" aria-label="{% translate 'Download progress' %}"></progress>
       <p class="hint" role="status"></p>

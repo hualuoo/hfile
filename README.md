@@ -55,7 +55,7 @@ HFile 用 Django 写成：
   - 分享可以设访问密码和有效期，能看到什么跟着分享者的权限走。
 - **权限**：每个用户在每个存储源上有自己的根目录和 15 种权限。另有过滤规则（隐藏、不可访问、不可下载）、目录密码和目录文档。
 - **账号和安全**：图片验证码、超级管理员的两步验证（TOTP）、登录安全入口、单点登录（GitHub、Gitee、GitLab、OpenID Connect）、IP 和 UA 黑名单。
-- **运维**：安装向导、数据库备份和恢复命令、定时清理、诊断信息页；访问记录里的口令和签名自动打码；操作日志：登录、文件的改动、短链和分享、管理员的每次修改，只增不改；IP 归属地：用户、操作日志和下载日志里的 IP 显示国家或地区，很多还有省和城市，数据库是 MaxMind 的 GeoLite2-City，在本机查询。
+- **运维**：安装向导、数据库备份和恢复命令、定时清理、诊断信息页；访问记录里的口令和签名自动打码；操作日志：登录、文件的改动、短链和分享、管理员的每次修改，只增不改；IP 归属地：用户、操作日志和下载日志里的 IP 显示国家或地区，用城市数据库时很多还有省和城市，数据库是 MaxMind 的 GeoLite2-City 或 GeoLite2-Country（二选一），在本机查询。
 
 每个功能的详细说明见[功能说明](docs/features.md)。
 
@@ -360,5 +360,5 @@ HFile 以 [Apache License 2.0](LICENSE) 发布。
 
 - [Django](https://www.djangoproject.com/)、[Django REST Framework](https://www.django-rest-framework.org/)、[waitress](https://github.com/Pylons/waitress)、[WhiteNoise](https://github.com/evansd/whitenoise)、[httpx](https://www.python-httpx.org/)、[paramiko](https://www.paramiko.org/)、[PyInstaller](https://pyinstaller.org/) 等开源项目。
 - [hls.js](https://github.com/video-dev/hls.js)、[pdf.js](https://github.com/mozilla/pdf.js)、[highlight.js](https://github.com/highlightjs/highlight.js)。
-- IP 归属地的数据：MaxMind 的 GeoLite2-City（This product includes GeoLite Data created by MaxMind, available from [https://www.maxmind.com](https://www.maxmind.com)），从 [adysec/IP_database](https://github.com/adysec/IP_database) 的 [ip.adysec.com](https://ip.adysec.com/) 下载，用 MaxMind 的 [maxminddb](https://github.com/maxmind/MaxMind-DB-Reader-python) 读。
+- IP 归属地的数据：MaxMind 的 GeoLite2-City 和 GeoLite2-Country（This product includes GeoLite Data created by MaxMind, available from [https://www.maxmind.com](https://www.maxmind.com)），从 [adysec/IP_database](https://github.com/adysec/IP_database) 的 [ip.adysec.com](https://ip.adysec.com/) 下载，用 MaxMind 的 [maxminddb](https://github.com/maxmind/MaxMind-DB-Reader-python) 读。
 - [Material Design 3](https://m3.material.io/)。
