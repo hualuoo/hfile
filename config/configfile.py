@@ -10,7 +10,8 @@ Every setting is one row of OPTIONS: its section and name, its default, the func
 it and the lines written above it in a new file, translated then (config/i18n.py: the system's language
 before Django starts, a page's in the installer). render() writes the file from the table
 (config.example.toml too, in Chinese, a test keeps them equal), clean() checks a file against it,
-listing every mistake at once, so a typo stops the program with a message instead of being ignored.
+listing every mistake at once, so a typo stops the program with a message instead of being ignored; a file
+mostly of other things than HFile's sections and settings is said to be another program's instead.
 The installer writes the file again with what it was given (update): first config.toml.part, read
 back and compared, then renamed over the old one, mode 600. Comments written by hand are lost.
 
@@ -502,9 +503,32 @@ def defaults():
     return {section: {o.key: o.default for o in options} for section, options in SECTIONS.items()}
 
 
+def _looks_like_hfiles(raw):
+    """Whether at least half of the entries at the top of a parsed file are HFile's: one of its sections, one of its
+    settings written outside a section, or a table holding one of its settings (a misspelled section, as [sever]
+    with port in it), in any case. Another program's config.toml may share a few of these names, as port or [server]."""
+    ours = {name.lower() for name in SECTIONS} | {option.key.lower() for option in OPTIONS}
+    hfile = sum(
+        name.lower() in ours or (isinstance(value, dict) and any(key.lower() in ours for key in value))
+        for name, value in raw.items()
+    )
+    return 2 * hfile >= len(raw)
+
+
 def clean(raw, path="config.toml"):
     """The settings from a parsed file (a dict): checked, with defaults for what is left out.
     Raises ConfigError listing every problem."""
+    if not _looks_like_hfiles(raw):
+        # Another program's config.toml, like one in the downloads folder HFile was started in: its settings
+        # listed as HFile's mistakes would have it changed for HFile, which would break it.
+        raise ConfigError("\n".join([
+            _("The settings file %(path)s doesn't seem to be HFile's: most of what is in it isn't one of HFile's "
+              "sections (%(sections)s) or settings, so it is probably another program's file of the same name. "
+              "HFile leaves it as it is.")
+            % {"path": path, "sections": _(", ").join(f"[{s}]" for s in SECTIONS)},
+            _("Put HFile in a folder of its own and start it there, where it creates a settings file of its own; "
+              "or choose another settings file with --config."),
+        ]))
     problems = []
     for name, value in raw.items():
         if name not in SECTIONS:

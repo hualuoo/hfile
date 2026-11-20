@@ -214,8 +214,11 @@ class FileTests(TempDirMixin, SimpleTestCase):
             ("[server]\nprot = 8080\n", "[server] prot：没有这个设置，看看是不是写错了。这一节可以有：host、port、threads、proxies、log_requests。"),
             ("[server]\nlog_files = true\n", "[server] log_files：没有这个设置"),
             ("[sever]\nport = 8080\n", "[sever]：没有这一节，看看是不是写错了。"),
-            ("[mail]\nfile_dir = \"x\"\n", "[mail]：没有这一节"),
+            ("[Server]\nPort = 8080\n", "[Server]：没有这一节"),  # HFile's still (not another program's file)
+            ('[mail]\nhost = "smtp.example.com"\n', "[mail]：没有这一节"),
+            ('[server]\nport = 8080\n[mail]\nfile_dir = "x"\n', "[mail]：没有这一节"),  # half of it HFile's: HFile's still
             ("port = 8080\n", "port：要写在某一节下面"),
+            ("", None),
             ('[server]\nhost = " "\n', "[server] host：要写一个 IP"),
             ("[server]\nproxies = 6\n", "[server] proxies：要写 0 到 5 之间的整数"),
             ('[site]\ndebug = "yes"\n', '[site] debug：要写 true 或 false（小写，不加引号），现在是 "yes"。'),
@@ -270,6 +273,34 @@ class FileTests(TempDirMixin, SimpleTestCase):
             configfile.load(self.path)
         self.assertEqual(len(caught.exception.problems), 3)
         self.assertIn("里有 3 处要改", str(caught.exception))
+
+    def test_another_programs_file(self):
+        """A config.toml mostly of other things than HFile's sections and settings, like another program's in the
+        downloads folder HFile was started in: said to be one, not its settings listed as HFile's mistakes, which
+        would have them changed. A few of its names may be HFile's too."""
+        others = [
+            # settings at the top, a nested table (the one reported)
+            'model = "m"\nmodel_provider = "relay"\n\n[model_providers.relay]\nbase_url = "https://relay.example.com/v1"\n',
+            'MusicFolder = "D:/Music"\nPort = 4533\nLogLevel = "info"\n',  # settings at the top only, one named as HFile's
+            # an array of tables
+            'concurrent = 4\n\n[session_server]\nsession_timeout = 1800\n\n[[runners]]\nname = "build"\nurl = "https://ci.example.com"\n',
+            # tables holding settings named as HFile's
+            'serverAddr = "203.0.113.10"\nserverPort = 7000\n\n[webServer]\nport = 7400\nuser = "admin"\npassword = "admin"\n\n'
+            '[log]\nlevel = "info"\n\n[[proxies]]\nname = "web"\nlocalPort = 8080\n',
+            '[server]\nport = 8501\nheadless = true\n\n[browser]\ngatherUsageStats = false\n\n[theme]\nbase = "dark"\n',  # one of HFile's sections
+            # a table named as one of HFile's settings (debug)
+            'version = 2\nroot = "/var/lib/x"\n\n[grpc]\naddress = "/run/x.sock"\n\n[debug]\nlevel = "info"\n\n[metrics]\naddress = ""\n',
+        ]
+        for text in others:
+            with self.subTest(text=text):
+                self.write(text)
+                with self.assertRaises(configfile.ConfigError) as caught:
+                    configfile.load(self.path)
+                self.assertEqual(str(caught.exception), "\n".join([
+                    f"设置文件 {self.path} 看起来不是 HFile 的：里面的内容大多不是 HFile 的节（[server]、[database]、[site]、[paths]、[upgrade]）"
+                    "或设置，多半是别的程序的同名文件。HFile 不会改动它。",
+                    "把 HFile 放进一个单独的文件夹里再运行，它会在那里新建自己的设置文件；或者用 --config 指定另一个设置文件。",
+                ]))
 
     def test_secrets_arent_repeated(self):
         for text, secret in (("[database]\npassword = 987654321\n", "987654321"),
