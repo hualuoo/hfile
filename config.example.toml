@@ -61,6 +61,8 @@ debug = false
 uploads = "media"
 # 数据库的备份：升级前自动做的，和 backup 命令做的
 backups = "backups"
+# IP 归属地数据库：管理页「IP 归属地」下载的文件放在这里
+geoip = "geoip"
 
 [upgrade]
 # 启动时数据库要升级的话，先备份再自动升级（README「升级」）。

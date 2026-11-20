@@ -477,6 +477,7 @@ OPTIONS = (
            gettext_noop("The files uploaded to the site itself (such as its logo and icon) are kept in this folder. Their addresses are /media/….\n"
            "When you change it, move the files of the old folder there too.")),
     Option("paths", "backups", "backups", _path, gettext_noop("Database backups: those made before an upgrade, and those of the backup command")),
+    Option("paths", "geoip", "geoip", _path, gettext_noop('The IP location database: the file downloaded on the admin page "IP location" is kept in this folder')),
     Option("upgrade", "auto", None, _boolean,
            gettext_noop('When the database needs an upgrade at start: back it up, then upgrade it by itself (README, "Upgrading").\n'
            "Left out: true for the single-file program; false when running "

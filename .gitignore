@@ -248,6 +248,9 @@ backups/
 /media/
 /upload-spool/
 
+# 管理页「IP 归属地」下载的数据库（[paths] geoip，默认 geoip/）
+/geoip/
+
 # 测试放在设置文件旁边的文件夹
 /uploads-tests/
 /crosscheck-tests/

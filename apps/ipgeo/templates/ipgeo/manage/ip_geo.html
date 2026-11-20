@@ -1,0 +1,52 @@
+{% load static ui ipgeo %}{% ipgeo_source as geo %}{# /manage/#ip-geo (apps/web/navigation.py SECTIONS), run by ipgeo/js/manage_ip_geo.js through /api/v1/manage/ip-geo/. #}
+<link rel="stylesheet" href="{% static 'ipgeo/css/ipgeo.css' %}">
+<div class="section-title-row"><h2>{% translate "IP location" %}</h2></div>
+<p class="muted">{% translate "Turned on, the IPs of the user list, the login log and the download log show where they are: the country or region and, for many IPs, the province or state and the city. The lookup happens on this server, in MaxMind's GeoLite2-City database; IPs aren't sent anywhere." %}</p>
+<div class="ip-geo" id="ip-geo">
+  <div class="form-error" role="alert" id="ip-geo-error" hidden></div>
+  <label class="switch-line">
+    <span class="switch-text"><span class="switch-label">{% translate "Turn on IP location" %}</span><span class="hint">{% translate "Takes effect at once. Turned off, nothing is looked up or shown; the locations stored stay, and show again when it is turned on again." %}</span></span>
+    <input type="checkbox" class="switch" role="switch" id="ip-geo-enabled" disabled>
+  </label>
+
+  <form class="ip-geo-part" id="ip-geo-download" novalidate>
+    <h3>{% translate "Database" %}</h3>
+    <p class="muted">{% blocktranslate with file=geo.file host=geo.host url=geo.site_url %}It can be downloaded once IP location is on: {{ file }}, about 50 MB, from <a href="{{ url }}" target="_blank" rel="noopener noreferrer">{{ host }}</a>, which copies MaxMind's file every day. MaxMind updates the data every Tuesday and Friday; the site doesn't update it by itself. "Update the database" downloads the whole file again, and changes nothing when it is the same.{% endblocktranslate %}</p>
+    <div class="notice" id="ip-geo-missing" hidden></div>
+    <dl class="facts ip-geo-facts" id="ip-geo-facts"><div><dt>{% translate "Database in use" %}</dt><dd>{% translate "Loading…" %}</dd></div></dl>
+    <div class="job-progress" id="ip-geo-download-progress" hidden>
+      <progress class="linear-progress" max="100" aria-label="{% translate 'Download progress' %}"></progress>
+      <p class="hint" role="status"></p>
+    </div>
+    <p class="notice" id="ip-geo-download-result" role="status" hidden></p>
+    <div class="form-error" role="alert" hidden></div>
+    <div class="ip-geo-actions"><button class="btn btn-filled" type="submit" disabled>{% icon "download" %}<span>{% translate "Download the database" %}</span></button></div>
+    <p class="hint ip-geo-credit">{% blocktranslate %}This product includes GeoLite Data created by MaxMind, available from <a href="https://www.maxmind.com" target="_blank" rel="noopener noreferrer">https://www.maxmind.com</a>.{% endblocktranslate %}</p>
+  </form>
+
+  <form class="ip-geo-part" id="ip-geo-check-form" novalidate>
+    <h3>{% translate "Look up an IP" %}</h3>
+    <p class="muted">{% translate "Where an IP is, by the database in use." %}</p>
+    <div class="ip-geo-check-row">
+      <input name="ip" maxlength="64" required disabled autocomplete="off" spellcheck="false" placeholder="{% translate 'Like 8.8.8.8 or 2400:3200::1' %}" aria-label="{% translate 'IP address' %}">
+      <button class="btn" type="submit" disabled>{% icon "search" %}{% translate "Look up" %}</button>
+    </div>
+    <div class="form-error" role="alert" hidden></div>
+    <p class="notice notice-info" id="ip-geo-check-result" role="status" hidden></p>
+  </form>
+
+  <form class="ip-geo-part" id="ip-geo-fill-form" novalidate>
+    <h3>{% translate "Fill in past records" %}</h3>
+    <p class="muted">{% translate "IPs recorded before IP location was turned on, or while there was no database yet, have no location. Filling in looks them up in the database in use: only the locations are written, nothing else of the records changes." %}</p>
+    <p class="ip-geo-unfilled" id="ip-geo-unfilled"></p>
+    <label class="check-line"><input type="checkbox" name="redo" disabled> {% translate "Look up the IPs that have a location already again too" %}</label>
+    <p class="hint">{% translate "After updating the database, for older records to show the new data too." %}</p>
+    <div class="job-progress" id="ip-geo-fill-progress" hidden>
+      <progress class="linear-progress" max="100" aria-label="{% translate 'Progress of filling in' %}"></progress>
+      <p class="hint" role="status"></p>
+    </div>
+    <p class="notice" id="ip-geo-fill-result" role="status" hidden></p>
+    <div class="form-error" role="alert" hidden></div>
+    <div class="ip-geo-actions"><button class="btn btn-filled" type="submit" disabled>{% icon "history" %}{% translate "Fill in locations" %}</button></div>
+  </form>
+</div>

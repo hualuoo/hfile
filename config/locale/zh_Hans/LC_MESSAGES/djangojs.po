@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HFile\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-14 18:54+0800\n"
+"POT-Creation-Date: 2026-11-20 23:02+0800\n"
 "Language: zh_Hans\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -159,6 +159,7 @@ msgstr "还没有登录记录。"
 #: apps/accounts/static/accounts/js/manage_login_log.js
 #: apps/accounts/static/accounts/js/manage_users.js
 #: apps/accounts/static/accounts/js/totp.js
+#: apps/ipgeo/static/ipgeo/js/manage_ip_geo.js
 #: apps/links/static/links/js/manage_download_logs.js
 #: apps/links/static/links/js/manage_short_links.js
 #: apps/shares/static/shares/js/share_list.js
@@ -1565,6 +1566,7 @@ msgid "Still to fill in: %(fields)s"
 msgstr "还要填：%(fields)s"
 
 #: apps/installer/static/installer/install.js
+#: apps/ipgeo/static/ipgeo/js/manage_ip_geo.js
 #: apps/sso/static/sso/js/manage_sso.js
 #: apps/storages/static/storages/js/grants.js
 #: apps/storages/static/storages/js/manage_storages.js
@@ -1608,6 +1610,123 @@ msgid ""
 "command-line window, or stop the program and run it again."
 msgstr ""
 "一分钟了程序还没有启动好。请看看命令行窗口里的输出，或者关掉程序再运行一次。"
+
+#: apps/ipgeo/static/ipgeo/js/manage_ip_geo.js
+msgid "Database in use"
+msgstr "当前数据库"
+
+#: apps/ipgeo/static/ipgeo/js/manage_ip_geo.js
+msgid "None downloaded yet"
+msgstr "还没有下载"
+
+#: apps/ipgeo/static/ipgeo/js/manage_ip_geo.js
+msgid "Data date"
+msgstr "数据日期"
+
+#: apps/ipgeo/static/ipgeo/js/manage_ip_geo.js
+msgctxt "date"
+msgid "unknown"
+msgstr "未知"
+
+#: apps/ipgeo/static/ipgeo/js/manage_ip_geo.js
+msgid "File size"
+msgstr "文件大小"
+
+#: apps/ipgeo/static/ipgeo/js/manage_ip_geo.js
+msgctxt "size"
+msgid "unknown"
+msgstr "未知"
+
+#: apps/ipgeo/static/ipgeo/js/manage_ip_geo.js
+#: apps/links/static/links/js/manage_download_logs.js
+msgid "Downloaded at"
+msgstr "下载时间"
+
+#: apps/ipgeo/static/ipgeo/js/manage_ip_geo.js
+#: apps/shares/static/shares/js/create.js
+msgid "Folder"
+msgstr "文件夹"
+
+#: apps/ipgeo/static/ipgeo/js/manage_ip_geo.js
+msgid ""
+"The database file is gone (it should be in %(folder)s). Download it again."
+msgstr "数据库文件不见了（应该在 %(folder)s 里）。重新下载一次就好。"
+
+#: apps/ipgeo/static/ipgeo/js/manage_ip_geo.js
+msgid "Update the database"
+msgstr "更新数据库"
+
+#: apps/ipgeo/static/ipgeo/js/manage_ip_geo.js
+msgid "Download the database"
+msgstr "下载数据库"
+
+#: apps/ipgeo/static/ipgeo/js/manage_ip_geo.js
+msgid "the last login IP of %(count)s user"
+msgid_plural "the last login IPs of %(count)s users"
+msgstr[0] "%(count)s 个用户的最近登录 IP"
+
+#: apps/ipgeo/static/ipgeo/js/manage_ip_geo.js
+msgid "%(count)s login log entry"
+msgid_plural "%(count)s login log entries"
+msgstr[0] "%(count)s 条登录日志"
+
+#: apps/ipgeo/static/ipgeo/js/manage_ip_geo.js
+msgid "%(count)s download log entry"
+msgid_plural "%(count)s download log entries"
+msgstr[0] "%(count)s 条下载日志"
+
+#: apps/ipgeo/static/ipgeo/js/manage_ip_geo.js
+msgid "Every IP recorded has a location."
+msgstr "记下的 IP 都有归属地了。"
+
+#: apps/ipgeo/static/ipgeo/js/manage_ip_geo.js
+msgid "%(count)s record has no location yet: %(parts)s."
+msgid_plural "%(count)s records have no location yet: %(parts)s."
+msgstr[0] "还有 %(count)s 条记录没有归属地：%(parts)s。"
+
+#: apps/ipgeo/static/ipgeo/js/manage_ip_geo.js
+msgid "Connecting to the download address…"
+msgstr "正在连接下载地址…"
+
+#: apps/ipgeo/static/ipgeo/js/manage_ip_geo.js
+msgid "Downloading: %(done)s of %(total)s"
+msgstr "正在下载：%(done)s / %(total)s"
+
+#: apps/ipgeo/static/ipgeo/js/manage_ip_geo.js
+msgid "Downloading: %(done)s"
+msgstr "正在下载：%(done)s"
+
+#: apps/ipgeo/static/ipgeo/js/manage_ip_geo.js
+msgid "Filling in: %(done)s of %(total)s IPs looked up"
+msgstr "正在补全：查了 %(done)s / %(total)s 个 IP"
+
+#: apps/ipgeo/static/ipgeo/js/manage_ip_geo.js
+msgid "Finding the records without a location…"
+msgstr "正在找没有归属地的记录…"
+
+#: apps/ipgeo/static/ipgeo/js/manage_ip_geo.js
+msgid "%(job)s failed (%(time)s): "
+msgstr "%(job)s失败（%(time)s）："
+
+#: apps/ipgeo/static/ipgeo/js/manage_ip_geo.js
+msgid "IP location is off"
+msgstr "已停用 IP 归属地"
+
+#: apps/ipgeo/static/ipgeo/js/manage_ip_geo.js
+msgid "IP location is on"
+msgstr "已启用 IP 归属地"
+
+#: apps/ipgeo/static/ipgeo/js/manage_ip_geo.js
+msgid "IP location is on; now download a database"
+msgstr "已启用 IP 归属地，接下来下载一个数据库"
+
+#: apps/ipgeo/static/ipgeo/js/manage_ip_geo.js
+msgid "Write an IP address first."
+msgstr "先填一个 IP 地址。"
+
+#: apps/ipgeo/static/ipgeo/js/manage_ip_geo.js
+msgid "%(ip)s: %(location)s"
+msgstr "%(ip)s：%(location)s"
 
 #: apps/links/static/links/js/links.js
 msgid "Short link lifetime"
@@ -1795,10 +1914,6 @@ msgstr "复制 %(url)s"
 #: apps/links/static/links/js/manage_download_logs.js
 msgid "Open the download link"
 msgstr "打开下载链接"
-
-#: apps/links/static/links/js/manage_download_logs.js
-msgid "Downloaded at"
-msgstr "下载时间"
 
 #: apps/links/static/links/js/manage_download_logs.js
 #: apps/storages/static/storages/js/manage_storages.js
@@ -2594,10 +2709,6 @@ msgstr "30 天后过期"
 #: apps/shares/static/shares/js/create.js
 msgid "Custom"
 msgstr "自定义"
-
-#: apps/shares/static/shares/js/create.js
-msgid "Folder"
-msgstr "文件夹"
 
 #: apps/shares/static/shares/js/create.js
 msgid "Share files"

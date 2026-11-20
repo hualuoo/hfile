@@ -24,11 +24,11 @@
 | POST | `/api/v1/users/me/totp/` | `{"code", "password"}`：手机上的 6 位数字对了才开启，密钥加密保存，以后不再发回 |
 | POST | `/api/v1/users/me/totp/disable/` | `{"password"}`：关掉。这三个每人每小时最多 20 次 |
 | POST | `/api/v1/captcha/` | 不用登录：`{"scene": "login"}` 取一张验证码图片 `{"required": true, "key", "image", "width", "height", "length", "expires_in"}`，不要验证码时 `{"required": false}`。每个 IP 每分钟最多 30 张，Django 后台的登录页每显示一次也算一张 |
-| GET | `/api/v1/manage/users/` | 管理员：用户列表，`?search=`（用户名、昵称或 ID）、`?is_active=true/false`、`?kind=normal/guest/template`、`?ordering=`（`id`、`username`、`date_joined`、`last_login`，前面加 `-` 倒序）。每个用户带 `can` 和 `why`：这个管理员能对他做什么、不能的原因 |
+| GET | `/api/v1/manage/users/` | 管理员：用户列表，`?search=`（用户名、昵称或 ID）、`?is_active=true/false`、`?kind=normal/guest/template`、`?ordering=`（`id`、`username`、`date_joined`、`last_login`，前面加 `-` 倒序）。每个用户带 `can` 和 `why`：这个管理员能对他做什么、不能的原因；`last_login_location` 是最近登录 IP 的归属地（按页面的语言，比如 `"中国 浙江 杭州"`，英文是 `"Hangzhou, Zhejiang, China"`；没启用 IP 归属地或者不知道时是 `""`） |
 | POST | `/api/v1/manage/users/` | 管理员：新建用户 `{"username", "nickname", "password", "is_active", "default_permissions"}`，回答 201。密码空着就是不能用密码登录；`default_permissions` 里缺前置的权限回答 400（比如「「获取直链」要先有「下载」的权限。」，前置见 `grant-options`） |
 | GET / PATCH / DELETE | `/api/v1/manage/users/{id}/` | 管理员：一个用户；改（字段同上，都可以不写，`"password": ""` 表示不改）；删除（204） |
 | POST | `/api/v1/manage/users/{id}/copy/` | 管理员：复制成新用户 `{"username", "nickname", "password"}`，回答 201 |
-| GET | `/api/v1/manage/login-logs/` | 管理员：登录日志，新的在前，`?username=`（包含）、`?ip=`（开头）、`?result=success/failure`、`?since=`、`?until=`（YYYY-MM-DD，都含当天）；回答里的 `newest` 是符合条件的最新一条的 ID |
+| GET | `/api/v1/manage/login-logs/` | 管理员：登录日志，新的在前，`?username=`（包含）、`?ip=`（开头）、`?result=success/failure`、`?since=`、`?until=`（YYYY-MM-DD，都含当天）；回答里的 `newest` 是符合条件的最新一条的 ID；每条的 `ip_location` 是 IP 的归属地，规则同用户列表的 `last_login_location` |
 | DELETE | `/api/v1/manage/login-logs/` | 管理员：删除同样的条件查到的全部（不带条件就是清空），带上列表给的 `?newest=` 时只删到那一条为止（列表显示以后才记下的不删），回答 `{"deleted": 条数}`。不认识的参数（写错的、`since[0]` 这种写法、`page`）和请求体都回答 400，什么也不删：它们不会被当成「没有条件」 |
 | POST | `/api/v1/manage/login-logs/delete/` | 管理员：`{"ids": [...]}` 删除选中的（一次最多 1000 条），回答 `{"deleted": 条数}` |
 | GET | `/api/v1/sso/providers/` | 不用登录：登录框下面的单点登录按钮，启用的服务商按顺序 `[{"code", "name", "icon"}]` |
@@ -49,6 +49,11 @@
 | POST | `/api/v1/manage/settings/access/test/` | 管理员：`{"ip_blocklist", "ua_blocklist", "ip", "user_agent"}`（都可以不发：不发名单用保存的，不发 IP 和 UA 用自己的），回答 `{"ip": {"value", "rule"}, "user_agent": {"value", "rule"}}`，`rule` 是挡住它的那条规则或 null。什么都不改 |
 | GET | `/api/v1/manage/diagnostics/` | 管理员：网站看到的这个请求：`client_ip`、`remote_addr`、`forwarded_for`、`scheme`、`host`、`origin`、`site_url`、`proxies`、`allowed_hosts`、请求头 `headers`（Cookie 只留名字，`Authorization` 和名字里有 token、key、secret 等的值写成 `<已隐藏>`），和看出来的问题 `notes`（`kind` 是 warning、info 或 ok） |
 | GET | `/api/v1/manage/version/` | 管理员：程序版本、Django 和 Python 的版本、数据库的种类和版本、`auto_upgrade`、`frozen`（是不是单文件程序）、`backup_dir`，数据库还差的迁移（`pending`）和来自更新版本的迁移（`newer`），以及最近 100 条升级记录（`upgrades`） |
+| GET / PATCH | `/api/v1/manage/ip-geo/` | 管理员：IP 归属地。`enabled`、`folder`（`[paths] geoip`）、正在用的数据库 `database`（`file`、`size`、`sha256`、`built_at` 数据日期、`downloaded_at`、`missing` 文件不见了；没下载过是 `null`）、最近一个后台任务 `job`（见下面的 `job/`），以及还没有归属地的记录数 `unfilled`（`{"total", "parts": [{"key": "users"/"logins"/"downloads", "label", "count"}]}`）/ 启用或停用 `{"enabled": true}` |
+| POST | `/api/v1/manage/ip-geo/download/` | 管理员：在后台下载（或更新）数据库 GeoLite2-City，没有参数，回答 202 和上面的状态。没启用、或者已经有任务在跑时 409 |
+| POST | `/api/v1/manage/ip-geo/fill/` | 管理员：在后台补全归属地 `{"redo": false}`（`true` 时已有归属地的也重查），回答 202。没启用、没有能用的数据库、或者已经有任务在跑时 409 |
+| GET | `/api/v1/manage/ip-geo/job/` | 管理员：最近一个后台任务 `{"job": {"id", "kind": "download"/"fill", "kind_label", "state": "running"/"done"/"failed", "done", "total", "message", "started_at", "finished_at"}}`，没有过任务时 `{"job": null}`。`done`/`total` 下载时是字节数，补全时是 IP 个数。3 分钟没有进展的「进行中」算失败 |
+| GET | `/api/v1/manage/ip-geo/check/` | 管理员：`?ip=` 的归属地 `{"ip", "code", "location"}`（`code` 是存进记录的代码，比如 `"CN 1784764 1808926"`（国家，再加上省和城市的 GeoNames 编号）、`"US"`、`"PRIVATE"`、`"unknown"`；`location` 是按页面语言的名字）。没启用或没有能用的数据库时 409 |
 
 存储源（管理员；都在 `/api/v1/manage/` 下，`apps/storages/views.py` 开头有完整列表）：
 
@@ -125,7 +130,7 @@
 | POST | `/api/v1/manage/short-links/delete-expired/` | 管理员：删除现在已经过期的短链和它们的下载日志（同一个事务），回答 `{"deleted": 短链数, "logs": 日志条数}` |
 | GET | `/api/v1/manage/short-links/export/` | 管理员：和列表一样的筛选，回答全部匹配的短链（不分页），CSV，UTF-8 带 BOM，`=`、`+`、`-`、`@` 开头的格子前面加 `'`，防止表格软件当成公式 |
 | GET | `/api/v1/manage/link-limits/` | 管理员：下载频率限制的「统计信息」：`{"seconds", "downloads", "count", "windows": [{"address", "count", "started_at", "expires_at"}]}`，次数最多的在前，最多 500 个 |
-| GET | `/api/v1/manage/download-logs/` | 管理员：下载日志，新的在前，`?storage=`、`?kind=path/short/page`、`?key=`、`?path=`、`?user=`、`?user_agent=`、`?referer=`（包含，不分大小写）、`?ip=`（开头）、`?since=`、`?until=`；回答里的 `newest` 是符合条件的最新一条的 ID；每条带 `username`（下载时登录着的账号，没有是 `""`）和 `url`（短链，或者用现在的前缀算出的直链；页面下载是 `null`） |
+| GET | `/api/v1/manage/download-logs/` | 管理员：下载日志，新的在前，`?storage=`、`?kind=path/short/page`、`?key=`、`?path=`、`?user=`、`?user_agent=`、`?referer=`（包含，不分大小写）、`?ip=`（开头）、`?since=`、`?until=`；回答里的 `newest` 是符合条件的最新一条的 ID；每条带 `username`（下载时登录着的账号，没有是 `""`）和 `url`（短链，或者用现在的前缀算出的直链；页面下载是 `null`），`ip_location` 是 IP 的归属地，规则同用户列表的 `last_login_location` |
 | DELETE | `/api/v1/manage/download-logs/` | 管理员：删除同样的条件查到的全部，带上列表给的 `?newest=` 时只删到那一条为止（列表显示以后才记下的不删），回答 `{"deleted": 条数}`。不认识的参数和请求体都回答 400，什么也不删 |
 | POST | `/api/v1/manage/download-logs/delete/` | 管理员：`{"ids": [...]}` 删除选中的（一次最多 1000 条），回答 `{"deleted": 条数}` |
 

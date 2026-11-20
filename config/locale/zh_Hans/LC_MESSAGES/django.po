@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HFile\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-20 20:19+0800\n"
+"POT-Creation-Date: 2026-11-20 23:02+0800\n"
 "Language: zh_Hans\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -74,6 +74,15 @@ msgstr "权限"
 #: apps/web/templates/web/dialogs/login.html
 msgid "Log in"
 msgstr "登录"
+
+#: apps/accounts/admin.py apps/accounts/models.py
+msgid "Last login IP"
+msgstr "最近登录 IP"
+
+#: apps/accounts/admin.py
+#, python-format
+msgid "%(ip)s (%(location)s)"
+msgstr "%(ip)s（%(location)s）"
 
 #: apps/accounts/admin.py
 msgid "Not every working superuser can be deleted; nothing was deleted."
@@ -492,8 +501,8 @@ msgid ""
 msgstr "只用于显示，可以和别人重复；登录用用户名。"
 
 #: apps/accounts/models.py
-msgid "Last login IP"
-msgstr "最近登录 IP"
+msgid "Last login IP location"
+msgstr "最近登录 IP 归属地"
 
 #: apps/accounts/models.py apps/links/templates/links/manage/download_logs.html
 #: apps/storages/models.py
@@ -549,7 +558,7 @@ msgid "Succeeded"
 msgstr "成功"
 
 #: apps/accounts/models.py
-#: apps/accounts/templates/accounts/manage/login_log.html
+#: apps/accounts/templates/accounts/manage/login_log.html apps/ipgeo/models.py
 #: apps/storages/drivers/sftp.py apps/uploads/models.py
 msgid "Failed"
 msgstr "失败"
@@ -562,6 +571,12 @@ msgstr "时间"
 #: apps/accounts/models.py
 msgid "Username entered"
 msgstr "输入的用户名"
+
+#: apps/accounts/models.py apps/ipgeo/apps.py
+#: apps/ipgeo/templates/ipgeo/manage/ip_geo.html apps/links/models.py
+#: apps/web/navigation.py
+msgid "IP location"
+msgstr "IP 归属地"
 
 #: apps/accounts/models.py
 #: apps/accounts/templates/accounts/manage/login_log.html
@@ -582,7 +597,7 @@ msgid "Where"
 msgstr "登录的地方"
 
 #: apps/accounts/models.py
-#: apps/accounts/templates/accounts/manage/login_log.html
+#: apps/accounts/templates/accounts/manage/login_log.html apps/ipgeo/jobs.py
 #: apps/web/navigation.py
 msgid "Login log"
 msgstr "登录日志"
@@ -997,8 +1012,9 @@ msgstr "最近登录的在前"
 msgid "By username"
 msgstr "按用户名"
 
-#: apps/accounts/templates/accounts/manage/users.html apps/sso/models.py
-#: apps/sso/templates/sso/manage/providers.html apps/storages/models.py
+#: apps/accounts/templates/accounts/manage/users.html apps/ipgeo/models.py
+#: apps/sso/models.py apps/sso/templates/sso/manage/providers.html
+#: apps/storages/models.py
 msgid "Enabled"
 msgstr "启用"
 
@@ -2018,6 +2034,7 @@ msgid "Install token"
 msgstr "安装口令"
 
 #: apps/installer/forms.py apps/installer/templates/installer/install.html
+#: apps/ipgeo/templates/ipgeo/manage/ip_geo.html
 #: apps/web/templates/web/manage/version.html
 msgid "Database"
 msgstr "数据库"
@@ -2824,6 +2841,394 @@ msgstr "已经装好了，正在等程序重新启动。"
 msgid "Unknown step to check."
 msgstr "不知道要检查哪一步。"
 
+#: apps/ipgeo/jobs.py
+msgid "A database is being downloaded. Try again when that is done."
+msgstr "正在下载数据库，等它做完再试。"
+
+#: apps/ipgeo/jobs.py
+msgid "Locations are being filled in. Try again when that is done."
+msgstr "正在补全归属地，等它做完再试。"
+
+#: apps/ipgeo/jobs.py
+msgid ""
+"It stopped before it was done; the program may have been restarted. It can "
+"be started again."
+msgstr "没有做完就停了，可能是中途重启了程序。可以重新开始。"
+
+#: apps/ipgeo/jobs.py
+#, python-format
+msgid "Something went wrong: %(error)s"
+msgstr "出错了：%(error)s"
+
+#: apps/ipgeo/jobs.py apps/ipgeo/views.py
+msgid "Turn IP location on first."
+msgstr "先启用 IP 归属地。"
+
+#: apps/ipgeo/jobs.py
+#, python-format
+msgid ""
+"%(host)s answered %(status)s; the file wasn't downloaded. Try again later."
+msgstr "%(host)s 回答 %(status)s，没有拿到文件。请稍后再试。"
+
+#: apps/ipgeo/jobs.py
+#, python-format
+msgid "no answer in %(seconds)s seconds"
+msgstr "%(seconds)s 秒没有回应"
+
+#: apps/ipgeo/jobs.py
+#, python-format
+msgid "Couldn't connect to %(host)s (%(reason)s). Try again later."
+msgstr "连不上 %(host)s（%(reason)s）。请稍后再试。"
+
+#: apps/ipgeo/jobs.py
+#, python-format
+msgid "The download broke off: no data for %(seconds)s seconds. Try again."
+msgstr "下载中断了：%(seconds)s 秒没有收到数据。请重试。"
+
+#: apps/ipgeo/jobs.py
+#, python-format
+msgid "The download broke off (%(error)s). Try again."
+msgstr "下载中断了（%(error)s）。请重试。"
+
+#: apps/ipgeo/jobs.py
+#, python-format
+msgid ""
+"The file is %(size)s MB, over the limit of %(limit)s MB; it wasn't "
+"downloaded."
+msgstr "文件有 %(size)s MB，超过了 %(limit)s MB 的上限，没有下载。"
+
+#: apps/ipgeo/jobs.py
+#, python-format
+msgid "The file is over the limit of %(limit)s MB; the download was stopped."
+msgstr "文件超过了 %(limit)s MB 的上限，停止下载。"
+
+#: apps/ipgeo/jobs.py
+#, python-format
+msgid ""
+"The download is too slow: not done after %(minutes)s minutes. Try again "
+"later."
+msgstr "下载太慢，%(minutes)s 分钟还没下完。请稍后再试。"
+
+#: apps/ipgeo/jobs.py
+#, python-format
+msgid ""
+"The download is incomplete: %(got)s bytes came of %(size)s. Please try again."
+msgstr "下载不完整：收到 %(got)s 字节，应该有 %(size)s 字节。请重试。"
+
+#: apps/ipgeo/jobs.py
+msgctxt "date"
+msgid "unknown"
+msgstr "未知"
+
+#: apps/ipgeo/jobs.py
+#, python-format
+msgid "Can't write files in %(folder)s (%(error)s)."
+msgstr "不能在 %(folder)s 里写文件（%(error)s）。"
+
+#: apps/ipgeo/jobs.py
+#, python-format
+msgid "Already up to date (data of %(date)s); nothing changed."
+msgstr "已经是最新的了（数据日期 %(date)s），没有变化。"
+
+#: apps/ipgeo/jobs.py
+#, python-format
+msgid "The downloaded file can't be used: %(problem)s"
+msgstr "下载的文件用不了：%(problem)s"
+
+#: apps/ipgeo/jobs.py
+#, python-format
+msgid "Downloaded: data of %(date)s."
+msgstr "下载好了：数据日期 %(date)s。"
+
+#: apps/ipgeo/jobs.py
+msgid "Users' last login IPs"
+msgstr "用户的最近登录 IP"
+
+#: apps/ipgeo/jobs.py apps/links/models.py
+#: apps/links/templates/links/manage/download_logs.html apps/web/navigation.py
+msgid "Download log"
+msgstr "下载日志"
+
+#: apps/ipgeo/jobs.py apps/ipgeo/views.py
+msgid "There is no usable database yet; download one first."
+msgstr "还没有能用的数据库，先下载一个。"
+
+#: apps/ipgeo/jobs.py
+msgid "No usable database: turn IP location on, then download a database."
+msgstr "没有能用的数据库：先启用 IP 归属地，再下载数据库。"
+
+#: apps/ipgeo/jobs.py
+#, python-format
+msgid "Looked up %(count)s IP again"
+msgid_plural "Looked up %(count)s IPs again"
+msgstr[0] "重新查了 %(count)s 个 IP"
+
+#: apps/ipgeo/jobs.py
+#, python-format
+msgid "the location of %(count)s record changed."
+msgid_plural "the locations of %(count)s records changed."
+msgstr[0] "%(count)s 条记录的归属地有变化。"
+
+#: apps/ipgeo/jobs.py
+#, python-format
+msgid "%(looked)s; %(result)s"
+msgstr "%(looked)s，%(result)s"
+
+#: apps/ipgeo/jobs.py
+#, python-format
+msgid "Filled in the location of %(count)s record."
+msgid_plural "Filled in the locations of %(count)s records."
+msgstr[0] "补全了 %(count)s 条记录的归属地。"
+
+#: apps/ipgeo/jobs.py
+msgid "There was nothing to fill in."
+msgstr "没有要补全的记录。"
+
+#: apps/ipgeo/lookup.py
+#, python-format
+msgid "The database file %(path)s isn't there."
+msgstr "找不到数据库文件 %(path)s。"
+
+#: apps/ipgeo/lookup.py
+#, python-format
+msgid "It isn't a MaxMind database, or the file is damaged (%(error)s)."
+msgstr "不是 MaxMind 格式的数据库，或者文件坏了（%(error)s）。"
+
+#: apps/ipgeo/lookup.py
+#, python-format
+msgid ""
+"It isn't a city database such as GeoLite2-City (type %(type)s, "
+"IPv%(version)s)."
+msgstr "不是 GeoLite2-City 这样的城市数据库（类型 %(type)s，IPv%(version)s）。"
+
+#: apps/ipgeo/lookup.py
+#, python-format
+msgid "The database can't be read (%(error)s)."
+msgstr "数据库读不出来（%(error)s）。"
+
+#: apps/ipgeo/models.py
+msgid "Downloading the database"
+msgstr "下载数据库"
+
+#: apps/ipgeo/models.py
+msgid "Filling in locations"
+msgstr "补全归属地"
+
+#: apps/ipgeo/models.py
+msgid "Running"
+msgstr "进行中"
+
+#: apps/ipgeo/models.py apps/uploads/models.py
+msgid "Done"
+msgstr "完成"
+
+#: apps/ipgeo/models.py apps/siteconf/models.py
+msgid "File name"
+msgstr "文件名"
+
+#: apps/ipgeo/models.py apps/siteconf/models.py
+msgid "File size"
+msgstr "文件大小"
+
+#: apps/ipgeo/models.py
+msgid "Data date"
+msgstr "数据日期"
+
+#: apps/ipgeo/models.py apps/links/models.py
+#: apps/links/templates/links/manage/download_logs.html
+msgid "Downloaded at"
+msgstr "下载时间"
+
+#: apps/ipgeo/models.py
+msgid "Job"
+msgstr "任务"
+
+#: apps/ipgeo/models.py
+msgid "Job state"
+msgstr "任务状态"
+
+#: apps/ipgeo/models.py
+msgid "Job result"
+msgstr "任务结果"
+
+#: apps/ipgeo/models.py
+msgid "IP location settings"
+msgstr "IP 归属地设置"
+
+#: apps/ipgeo/models.py
+msgctxt "IP location"
+msgid "Turned on"
+msgstr "已启用"
+
+#: apps/ipgeo/models.py
+msgctxt "IP location"
+msgid "Turned off"
+msgstr "未启用"
+
+#: apps/ipgeo/models.py
+msgid "Code"
+msgstr "代码"
+
+#: apps/ipgeo/models.py
+msgid "Names"
+msgstr "名字"
+
+#: apps/ipgeo/models.py
+msgid "Place names"
+msgstr "地名"
+
+#: apps/ipgeo/places.py
+msgctxt "IP location"
+msgid "Private network"
+msgstr "内网"
+
+#: apps/ipgeo/places.py
+msgctxt "IP location"
+msgid "Unknown"
+msgstr "未知"
+
+#: apps/ipgeo/places.py
+msgctxt "IP location"
+msgid "Hong Kong"
+msgstr "中国香港"
+
+#: apps/ipgeo/places.py
+msgctxt "IP location"
+msgid "Macao"
+msgstr "中国澳门"
+
+#: apps/ipgeo/places.py
+msgctxt "IP location"
+msgid "Taiwan"
+msgstr "中国台湾"
+
+#: apps/ipgeo/places.py
+#, python-format
+msgctxt "IP location: a place in a larger one"
+msgid "%(smaller)s, %(larger)s"
+msgstr "%(larger)s %(smaller)s"
+
+#: apps/ipgeo/serializers.py
+msgid "Write an IP address, like 8.8.8.8 or 2001:4860:4860::8888."
+msgstr "写一个 IP 地址，比如 8.8.8.8 或 2001:4860:4860::8888。"
+
+#: apps/ipgeo/templates/ipgeo/manage/ip_geo.html
+msgid ""
+"Turned on, the IPs of the user list, the login log and the download log show "
+"where they are: the country or region and, for many IPs, the province or "
+"state and the city. The lookup happens on this server, in MaxMind's GeoLite2-"
+"City database; IPs aren't sent anywhere."
+msgstr ""
+"启用后，用户列表、登录日志和下载日志里的 IP 旁边显示它在哪里：国家或地区，很"
+"多 IP 还有省（州）和城市。查询在本机完成，用的是 MaxMind 的 GeoLite2-City 数"
+"据库，IP 不会发给别人。"
+
+#: apps/ipgeo/templates/ipgeo/manage/ip_geo.html
+msgid "Turn on IP location"
+msgstr "启用 IP 归属地"
+
+#: apps/ipgeo/templates/ipgeo/manage/ip_geo.html
+msgid ""
+"Takes effect at once. Turned off, nothing is looked up or shown; the "
+"locations stored stay, and show again when it is turned on again."
+msgstr ""
+"打开后马上生效。停用后不再查询，也不显示；已经记下的归属地会留着，再启用时照"
+"常显示。"
+
+#: apps/ipgeo/templates/ipgeo/manage/ip_geo.html
+#, python-format
+msgid ""
+"It can be downloaded once IP location is on: %(file)s, about 50 MB, from <a "
+"href=\"%(url)s\" target=\"_blank\" rel=\"noopener noreferrer\">%(host)s</a>, "
+"which copies MaxMind's file every day. MaxMind updates the data every "
+"Tuesday and Friday; the site doesn't update it by itself. \"Update the "
+"database\" downloads the whole file again, and changes nothing when it is "
+"the same."
+msgstr ""
+"启用 IP 归属地以后才能下载：%(file)s，约 50 MB，从 <a href=\"%(url)s\" "
+"target=\"_blank\" rel=\"noopener noreferrer\">%(host)s</a> 下载，它每天转存一"
+"次 MaxMind 的文件。MaxMind 每周二、周五更新数据，网站不会自己更新。「更新数据"
+"库」会把整个文件重新下一遍，和正在用的一样时什么都不改。"
+
+#: apps/ipgeo/templates/ipgeo/manage/ip_geo.html
+msgid "Database in use"
+msgstr "当前数据库"
+
+#: apps/ipgeo/templates/ipgeo/manage/ip_geo.html
+#: apps/siteconf/templates/siteconf/manage/diagnostics.html
+#: apps/storages/templates/storages/manage/storages.html
+#: apps/web/templates/web/manage/version.html
+msgid "Loading…"
+msgstr "加载中…"
+
+#: apps/ipgeo/templates/ipgeo/manage/ip_geo.html
+msgid "Download progress"
+msgstr "下载进度"
+
+#: apps/ipgeo/templates/ipgeo/manage/ip_geo.html
+msgid "Download the database"
+msgstr "下载数据库"
+
+#: apps/ipgeo/templates/ipgeo/manage/ip_geo.html
+msgid ""
+"This product includes GeoLite Data created by MaxMind, available from <a "
+"href=\"https://www.maxmind.com\" target=\"_blank\" rel=\"noopener "
+"noreferrer\">https://www.maxmind.com</a>."
+msgstr ""
+"本产品包含 MaxMind 制作的 GeoLite 数据，可从 <a href=\"https://"
+"www.maxmind.com\" target=\"_blank\" rel=\"noopener noreferrer\">https://"
+"www.maxmind.com</a> 获取。"
+
+#: apps/ipgeo/templates/ipgeo/manage/ip_geo.html
+msgid "Look up an IP"
+msgstr "查一个 IP"
+
+#: apps/ipgeo/templates/ipgeo/manage/ip_geo.html
+msgid "Where an IP is, by the database in use."
+msgstr "用现在的数据库查一个 IP 在哪里。"
+
+#: apps/ipgeo/templates/ipgeo/manage/ip_geo.html
+msgid "Like 8.8.8.8 or 2400:3200::1"
+msgstr "比如 8.8.8.8 或 2400:3200::1"
+
+#: apps/ipgeo/templates/ipgeo/manage/ip_geo.html
+msgid "IP address"
+msgstr "IP 地址"
+
+#: apps/ipgeo/templates/ipgeo/manage/ip_geo.html
+msgid "Look up"
+msgstr "查询"
+
+#: apps/ipgeo/templates/ipgeo/manage/ip_geo.html
+msgid "Fill in past records"
+msgstr "补全历史记录"
+
+#: apps/ipgeo/templates/ipgeo/manage/ip_geo.html
+msgid ""
+"IPs recorded before IP location was turned on, or while there was no "
+"database yet, have no location. Filling in looks them up in the database in "
+"use: only the locations are written, nothing else of the records changes."
+msgstr ""
+"启用之前记下的 IP，以及还没有数据库时记下的，都没有归属地。补全就是用现在的数"
+"据库把它们查一遍：只写入归属地，记录的其他内容不变。"
+
+#: apps/ipgeo/templates/ipgeo/manage/ip_geo.html
+msgid "Look up the IPs that have a location already again too"
+msgstr "已有归属地的也重新查一遍"
+
+#: apps/ipgeo/templates/ipgeo/manage/ip_geo.html
+msgid ""
+"After updating the database, for older records to show the new data too."
+msgstr "更新了数据库，想让以前的记录也按新数据显示时勾选。"
+
+#: apps/ipgeo/templates/ipgeo/manage/ip_geo.html
+msgid "Progress of filling in"
+msgstr "补全进度"
+
+#: apps/ipgeo/templates/ipgeo/manage/ip_geo.html
+msgid "Fill in locations"
+msgstr "补全归属地"
+
 #: apps/links/apps.py apps/siteconf/serializers.py
 #: apps/siteconf/templates/siteconf/manage/links.html apps/web/navigation.py
 msgid "Direct and short links"
@@ -2967,15 +3372,6 @@ msgstr "页面下载"
 #: apps/links/models.py apps/links/templates/links/manage/download_logs.html
 msgid "Download type"
 msgstr "下载类型"
-
-#: apps/links/models.py apps/links/templates/links/manage/download_logs.html
-msgid "Downloaded at"
-msgstr "下载时间"
-
-#: apps/links/models.py apps/links/templates/links/manage/download_logs.html
-#: apps/web/navigation.py
-msgid "Download log"
-msgstr "下载日志"
 
 #: apps/links/referer.py
 msgid ""
@@ -3761,14 +4157,6 @@ msgstr "单击进入"
 #: apps/siteconf/models.py
 msgid "Double click"
 msgstr "双击进入"
-
-#: apps/siteconf/models.py
-msgid "File name"
-msgstr "文件名"
-
-#: apps/siteconf/models.py
-msgid "File size"
-msgstr "文件大小"
 
 #: apps/siteconf/models.py apps/sso/models.py apps/storages/models.py
 msgid "Modified"
@@ -4965,12 +5353,6 @@ msgstr ""
 #: apps/siteconf/templates/siteconf/manage/diagnostics.html
 msgid "Your IP"
 msgstr "你的 IP"
-
-#: apps/siteconf/templates/siteconf/manage/diagnostics.html
-#: apps/storages/templates/storages/manage/storages.html
-#: apps/web/templates/web/manage/version.html
-msgid "Loading…"
-msgstr "加载中…"
 
 #: apps/siteconf/templates/siteconf/manage/diagnostics.html
 msgid "Request headers"
@@ -14992,10 +15374,6 @@ msgid "Writing to storage"
 msgstr "写入存储中"
 
 #: apps/uploads/models.py
-msgid "Done"
-msgstr "完成"
-
-#: apps/uploads/models.py
 msgid "Upload session"
 msgstr "上传会话"
 
@@ -17400,6 +17778,12 @@ msgid ""
 "Database backups: those made before an upgrade, and those of the backup "
 "command"
 msgstr "数据库的备份：升级前自动做的，和 backup 命令做的"
+
+#: config/configfile.py
+msgid ""
+"The IP location database: the file downloaded on the admin page \"IP "
+"location\" is kept in this folder"
+msgstr "IP 归属地数据库：管理页「IP 归属地」下载的文件放在这里"
 
 #: config/configfile.py
 msgid ""

@@ -93,7 +93,7 @@ PY
 for module in $tests; do
   args+=(--exclude-module "$module")
 done
-for library in rest_framework whitenoise waitress; do
+for library in rest_framework whitenoise waitress maxminddb; do
   args+=(--collect-submodules "$library")
 done
 args+=(--collect-data rest_framework)
@@ -139,7 +139,8 @@ BIN="$WORK/dist/hfile$exe"
 # it doesn't know (config/codec_cache.py).
 mkdir "$WORK/no-zoneinfo"
 PYTHONTZPATH="$WORK/no-zoneinfo" "$BIN" --config "$WORK/config.toml" shell -c "
-import os, ssl, sqlite3, zoneinfo, certifi, MySQLdb
+import os, ssl, sqlite3, zoneinfo, certifi, MySQLdb, maxminddb
+assert maxminddb.MODE_MEMORY
 zoneinfo.ZoneInfo('Asia/Shanghai')
 assert os.path.isfile(certifi.where()), certifi.where()
 assert ssl.create_default_context().cert_store_stats()['x509_ca'], 'no CA certificates'

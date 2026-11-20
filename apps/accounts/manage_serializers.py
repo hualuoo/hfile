@@ -7,6 +7,7 @@ from rest_framework import serializers
 
 from apps.core.fields import BoundedListField, StringField, SwitchField
 from apps.core.query import ChoiceParam, DateParam, IdParam, TextParam
+from apps.ipgeo.lookup import shown
 
 from . import loginlog, managing
 from .models import BUILTIN_NICKNAMES, Kind, LoginLog, User
@@ -64,6 +65,7 @@ class ManagedUserSerializer(serializers.ModelSerializer):
     has_password = serializers.SerializerMethodField()
     totp_enabled = serializers.BooleanField(read_only=True)
     default_permissions = PermissionsField(read_only=True)
+    last_login_location = serializers.SerializerMethodField()
     can = serializers.SerializerMethodField()
     why = serializers.SerializerMethodField()
 
@@ -72,7 +74,7 @@ class ManagedUserSerializer(serializers.ModelSerializer):
         fields = [
             "id", "username", "nickname", "kind", "kind_label", "role", "role_label", "is_active", "is_staff",
             "is_superuser", "has_password", "totp_enabled", "default_permissions", "date_joined", "last_login",
-            "last_login_ip", "can", "why",
+            "last_login_ip", "last_login_location", "can", "why",
         ]
         read_only_fields = fields
 
@@ -87,6 +89,10 @@ class ManagedUserSerializer(serializers.ModelSerializer):
 
     def get_has_password(self, obj):
         return obj.has_usable_password()
+
+    def get_last_login_location(self, obj):
+        """The IP's location in the page's language, "" while IP 归属地 is off (apps/ipgeo/lookup.py)."""
+        return shown(obj.last_login_location)
 
     def _rights(self, obj):
         cache = self.context.setdefault("_rights", {})
@@ -180,14 +186,18 @@ class LoginLogSerializer(serializers.ModelSerializer):
     reason_label = serializers.SerializerMethodField()
     source_label = serializers.SerializerMethodField()
     user = serializers.SerializerMethodField()
+    ip_location = serializers.SerializerMethodField()
 
     class Meta:
         model = LoginLog
         fields = [
-            "id", "created_at", "username", "user", "ip", "user_agent", "result", "result_label", "reason",
-            "reason_label", "source", "source_label",
+            "id", "created_at", "username", "user", "ip", "ip_location", "user_agent", "result", "result_label",
+            "reason", "reason_label", "source", "source_label",
         ]
         read_only_fields = fields
+
+    def get_ip_location(self, obj):
+        return shown(obj.ip_location)
 
     def get_reason_label(self, obj):
         return loginlog.REASONS.get(obj.reason, obj.reason)

@@ -81,7 +81,8 @@
         short ? h('code', { class: 'link-key', text: ` ${entry.short_key}` }) : null),
       h('td', { class: 'cell-path', 'data-label': gettext('File path'), text: entry.path }),
       h('td', { class: 'cell-user', 'data-label': gettext('User') }, entry.username ? h('span', { text: entry.username }) : dash()),
-      h('td', { 'data-label': 'IP' }, entry.ip ? h('code', { class: 'ip', text: entry.ip }) : dash()),
+      h('td', { 'data-label': 'IP' }, entry.ip ? h('span', { class: 'ip-line' }, h('code', { class: 'ip', text: entry.ip }),
+        entry.ip_location ? h('span', { class: 'ip-place', text: entry.ip_location }) : null) : dash()),
       h('td', { class: 'cell-ua', 'data-label': gettext('Browser and referer') },
         h('span', { class: 'ellipsis', 'data-tooltip': entry.user_agent || null, text: entry.user_agent ? interpolate(gettext('UA: %(user_agent)s'), { user_agent: entry.user_agent }, true) : gettext('UA: —') }),
         h('span', { class: 'ellipsis', 'data-tooltip': entry.referer || null, text: entry.referer ? interpolate(gettext('Referer: %(referer)s'), { referer: entry.referer }, true) : gettext('Referer: —') })),
@@ -222,4 +223,6 @@
   document.addEventListener('manage:show', (e) => {
     if (e.detail === 'download-logs' && !loaded) load();
   });
+  // IP 归属地 was turned on or off, or locations filled in (ipgeo/js/manage_ip_geo.js): loaded again when next shown.
+  document.addEventListener('hfile:ip-locations', () => { loaded = false; });
 })();

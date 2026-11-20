@@ -57,7 +57,7 @@ HFile is built with Django:
   - shares can have a password and an expiry date, and what a share shows follows the permissions of the person who shared it.
 - **Permissions**: each user has their own root folder and 15 permissions on each storage source. There are also filter rules (hidden, inaccessible, not downloadable), folder passwords and folder readme documents.
 - **Accounts and security**: image CAPTCHA, two-factor authentication (TOTP) for superusers, a secret login entrance, single sign-on (GitHub, Gitee, GitLab, OpenID Connect), login logs, IP and user-agent blocklists.
-- **Operations**: setup wizard, database backup and restore commands, scheduled cleanup, a diagnostics page; tokens and signatures in the access log are masked automatically.
+- **Operations**: setup wizard, database backup and restore commands, scheduled cleanup, a diagnostics page; tokens and signatures in the access log are masked automatically; IP location: the IPs of the user list, the login log and the download log show their country or region, and for many the province and city, looked up on the server in MaxMind's GeoLite2-City database.
 
 Every feature is described in detail in [features](features.md) (Chinese).
 
@@ -229,7 +229,7 @@ If there is none, it creates one.
 | `[server]` | `host`, `port` (default 8080), `threads`, `proxies` (how many reverse proxies are in front), `log_requests` |
 | `[database]` | `engine`: `"sqlite"` uses `file`; `"mysql"` uses `host`, `port`, `name`, `user`, `password`, and `tls`, `ca` for encrypted connections |
 | `[site]` | `secret_key`, `allowed_hosts`, `url` (the site's public address), `admin_path` (the Django admin's address), `debug` |
-| `[paths]` | `uploads` (files the site saves itself, such as its logo and icon), `backups` (database backups) |
+| `[paths]` | `uploads` (files the site saves itself, such as its logo and icon), `backups` (database backups), `geoip` (the IP location database) |
 | `[upgrade]` | `auto` (upgrade the database automatically at startup) |
 
 The site's own settings, such as its name, logo, previews, direct links, security settings and blocklists, are changed on the admin page and stored in the database. `config.toml` contains the database password and the secret key: don't send it to anyone or put it in a code repository. See [configuration](configuration.md) (Chinese).
@@ -294,6 +294,7 @@ hfile/
 │   ├── crosscheck/        cross-app tests of the access rules
 │   ├── files/             file browsing, file operations, signed downloads at /pd/
 │   ├── installer/         setup wizard; the serve command (waitress)
+│   ├── ipgeo/             IP location
 │   ├── links/             direct links, short links, download logs
 │   ├── office/            OnlyOffice
 │   ├── preview/           previews of each kind of file
@@ -350,7 +351,7 @@ The token is printed in the program's output, and also saved in `install-token.t
 
 **How do I make a complete backup?**
 
-`hfile backup` backs up only the database. Also copy the uploads folder (`[paths] uploads`) and `config.toml`: the secrets stored encrypted in the backup can only be read with the same `secret_key`.
+`hfile backup` backs up only the database. Also copy the uploads folder (`[paths] uploads`) and `config.toml`: the secrets stored encrypted in the backup can only be read with the same `secret_key`. The IP location database (`[paths] geoip`) needn't be backed up: download it again on the admin page.
 
 ## License
 
@@ -362,4 +363,5 @@ The bundled hls.js, pdf.js (Apache-2.0) and highlight.js (BSD-3-Clause) keep the
 
 - [Django](https://www.djangoproject.com/), [Django REST Framework](https://www.django-rest-framework.org/), [waitress](https://github.com/Pylons/waitress), [WhiteNoise](https://github.com/evansd/whitenoise), [httpx](https://www.python-httpx.org/), [paramiko](https://www.paramiko.org/), [PyInstaller](https://pyinstaller.org/) and other open-source projects.
 - [hls.js](https://github.com/video-dev/hls.js), [pdf.js](https://github.com/mozilla/pdf.js), [highlight.js](https://github.com/highlightjs/highlight.js).
+- The IP location data: MaxMind's GeoLite2-City (This product includes GeoLite Data created by MaxMind, available from [https://www.maxmind.com](https://www.maxmind.com)), downloaded from [ip.adysec.com](https://ip.adysec.com/) of [adysec/IP_database](https://github.com/adysec/IP_database), read with MaxMind's [maxminddb](https://github.com/maxmind/MaxMind-DB-Reader-python).
 - [Material Design 3](https://m3.material.io/).

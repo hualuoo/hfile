@@ -9,7 +9,7 @@
 | `[server]` | `host` 监听的 IP（默认 `0.0.0.0`，所有 IPv4 地址；`::` 是所有 IPv6 地址）、`port` 端口（默认 8080）、`threads` 同时处理几个请求（默认 8；经过本站的下载用自己的线程，不算在里面）、`proxies` 前面有几层反向代理（默认 0）、`log_requests` 每个请求打印一行访问记录（默认开） |
 | `[database]` | `engine` 数据库的类型：`"sqlite"`（默认）用 `file` 数据库文件（默认 `hfile.sqlite3`）；`"mysql"` 用 `host`、`port`、`name`、`user`、`password`，`tls` 连接要不要加密、校验证书（默认 `"preferred"`），`ca` 校验证书用的 CA 证书文件 |
 | `[site]` | `secret_key` 密钥、`allowed_hosts` 网站的域名或 IP、`url` 网站对外的地址、`admin_path` 后台的地址、`debug` 调试模式 |
-| `[paths]` | `uploads` 网站保存的上传文件（默认 `media/`，和网址 `/media/` 一致）、`backups` 数据库备份（默认 `backups/`）。相对路径从 `config.toml` 所在的文件夹算起，路径里可以有空格 |
+| `[paths]` | `uploads` 网站保存的上传文件（默认 `media/`，和网址 `/media/` 一致）、`backups` 数据库备份（默认 `backups/`）、`geoip` 管理页「IP 归属地」下载的数据库（默认 `geoip/`）。相对路径从 `config.toml` 所在的文件夹算起，路径里可以有空格 |
 | `[upgrade]` | `auto` 启动时自动升级（不写时：单文件程序开，从源码运行关，见[「升级」](upgrade.md)） |
 
 每一项设置在代码里只定义一次：`config/configfile.py` 的 `OPTIONS` 表，一行写着节、名字、默认值、检查规则和新文件里它上面的说明。说明写的是英文原文（中文在 `config/locale/zh_Hans/`），写文件时才翻译：命令行新建的按系统的语言（`LANG=en_US.UTF-8` 这样的是英文，见[「开发：翻译」](development.md#翻译)），安装向导写的按页面的语言。新文件和 `config.example.toml`（中文）都由这张表生成（有测试保证 `config.example.toml` 和它一样），检查文件、写文件也都照它。

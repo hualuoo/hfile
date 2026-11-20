@@ -68,7 +68,8 @@
       h('td', { 'data-label': gettext('Result') },
         h('span', { class: `badge ${ok ? 'badge-ok' : 'badge-error'}`, text: entry.result_label }),
         ok ? null : h('span', { class: 'muted small login-reason', text: entry.reason_label })),
-      h('td', { 'data-label': 'IP' }, entry.ip ? h('code', { class: 'ip', text: entry.ip }) : h('span', { class: 'muted', text: '—' })),
+      h('td', { 'data-label': 'IP' }, entry.ip ? h('span', { class: 'ip-line' }, h('code', { class: 'ip', text: entry.ip }),
+        entry.ip_location ? h('span', { class: 'ip-place', text: entry.ip_location }) : null) : h('span', { class: 'muted', text: '—' })),
       h('td', { class: 'cell-ua', 'data-label': gettext('Browser') },
         entry.user_agent ? h('span', { class: 'ua', 'data-tooltip': entry.user_agent, text: entry.user_agent }) : h('span', { class: 'muted', text: '—' })));
   }
@@ -205,4 +206,6 @@
   document.addEventListener('manage:show', (e) => {
     if (e.detail === 'login-log' && !loaded) load();
   });
+  // IP 归属地 was turned on or off, or locations filled in (ipgeo/js/manage_ip_geo.js): loaded again when next shown.
+  document.addEventListener('hfile:ip-locations', () => { loaded = false; });
 })();

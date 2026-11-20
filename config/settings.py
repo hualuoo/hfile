@@ -65,6 +65,7 @@ HFILE_APPS = [
     "apps.accounts",
     "apps.captchas",
     "apps.files",
+    "apps.ipgeo",
     "apps.links",
     "apps.office",
     "apps.preview",
@@ -282,6 +283,9 @@ REST_FRAMEWORK = {
 _auto_upgrade = CONFIG["upgrade"]["auto"]
 AUTO_UPGRADE = (FROZEN if _auto_upgrade is None else _auto_upgrade) and not SETUP_MODE
 BACKUP_DIR = configfile.folder(CONFIG_FILE, CONFIG["paths"]["backups"])
+
+# IP 归属地 (ipgeo app): the database downloaded on /manage/#ip-geo is kept here ([paths] geoip).
+GEOIP_DIR = configfile.folder(CONFIG_FILE, CONFIG["paths"]["geoip"])
 
 # `manage.py test` (apps/core/testing.py): every test starts with an empty cache (the rate limits).
 TEST_RUNNER = "apps.core.testing.TestRunner"

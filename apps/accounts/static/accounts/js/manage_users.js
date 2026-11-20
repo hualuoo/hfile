@@ -77,7 +77,13 @@
     if (!user.last_login) return h('td', { 'data-label': gettext('Last login') }, h('span', { class: 'muted', text: gettext('Never') }));
     return h('td', { 'data-label': gettext('Last login') },
       h('span', { class: 'nowrap', text: fmtDateTime(user.last_login) }),
-      user.last_login_ip ? h('div', {}, h('code', { class: 'ip', text: user.last_login_ip })) : null);
+      user.last_login_ip ? h('div', {}, ipLine(user)) : null);
+  }
+
+  // The IP of the last login, with its location while IP 归属地 is on (/manage/#ip-geo).
+  function ipLine(user) {
+    return h('span', { class: 'ip-line' }, h('code', { class: 'ip', text: user.last_login_ip }),
+      user.last_login_location ? h('span', { class: 'ip-place', text: user.last_login_location }) : null);
   }
 
   function row(user) {
@@ -340,7 +346,7 @@
       fact(gettext('Created at'), fmtDateTime(user.date_joined)),
       ...(user.kind === 'normal' ? [
         fact(gettext('Last login'), user.last_login ? fmtDateTime(user.last_login) : gettext('Never')),
-        fact(gettext('Last login IP'), user.last_login_ip || '—'),
+        fact(gettext('Last login IP'), user.last_login_ip ? ipLine(user) : '—'),
         fact(gettext('Password'), user.has_password ? gettext('Set') : gettext('None')),
       ] : []),
     ] : []));
@@ -504,4 +510,7 @@
   document.addEventListener('manage:show', (e) => {
     if (e.detail === 'users' && !loaded) load();
   });
+  // IP 归属地 was turned on or off, or locations filled in (ipgeo/js/manage_ip_geo.js): the list loads again
+  // when it is next shown.
+  document.addEventListener('hfile:ip-locations', () => { loaded = false; });
 })();

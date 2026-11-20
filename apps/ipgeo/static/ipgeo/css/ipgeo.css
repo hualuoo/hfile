@@ -1,0 +1,15 @@
+/* /manage/#ip-geo (apps/ipgeo/templates/ipgeo/manage/ip_geo.html). */
+.ip-geo > .switch-line { margin-bottom: 8px; }
+.ip-geo-part { padding-top: 8px; border-top: 1px solid var(--md-sys-color-outline-variant); margin-top: 16px; }
+.ip-geo-part > h3 { margin-top: 16px; }
+.ip-geo-part > .muted { margin: 0 0 16px; }
+.ip-geo-part > .muted a { color: inherit; text-decoration: underline; }
+.facts.ip-geo-facts { margin: 0 0 20px; }
+.job-progress { margin: 8px 0 16px; }
+.job-progress .hint { margin-top: 8px; }
+.ip-geo-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px; }
+.ip-geo-credit { margin-top: 16px; }
+.ip-geo-credit a { color: inherit; text-decoration: underline; }
+.ip-geo-check-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin: 0 0 16px; }
+.ip-geo-check-row input { flex: 1 1 240px; min-width: 0; max-width: 360px; }
+.ip-geo-unfilled { margin: 0 0 8px; }

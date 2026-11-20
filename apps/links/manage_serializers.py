@@ -10,6 +10,7 @@ from apps.accounts.validators import USERNAME_MAX
 from apps.core import origin
 from apps.core.fields import BoundedListField, StringField
 from apps.core.query import ChoiceParam, DateParam, IdParam, TextParam
+from apps.ipgeo.lookup import shown
 
 from . import service
 from .models import KEY_MAX, TEXT_MAX, DownloadLog, ShortLink
@@ -58,12 +59,17 @@ class DownloadLogSerializer(serializers.ModelSerializer):
     kind_label = StringField(source="get_kind_display", read_only=True)
     storage = serializers.SerializerMethodField()
     url = serializers.SerializerMethodField()
+    ip_location = serializers.SerializerMethodField()
 
     class Meta:
         model = DownloadLog
-        fields = ["id", "kind", "kind_label", "storage", "path", "short_key", "url", "ip", "username", "user_agent",
-                  "referer", "created_at"]
+        fields = ["id", "kind", "kind_label", "storage", "path", "short_key", "url", "ip", "ip_location", "username",
+                  "user_agent", "referer", "created_at"]
         read_only_fields = fields
+
+    def get_ip_location(self, obj):
+        """The IP's location in the page's language, "" while IP 归属地 is off (apps/ipgeo/lookup.py)."""
+        return shown(obj.ip_location)
 
     def get_storage(self, obj):
         return storage_data(obj.storage)

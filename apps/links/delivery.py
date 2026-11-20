@@ -43,6 +43,7 @@ from apps.accounts.validators import USERNAME_MAX
 from apps.core import net, reserved
 from apps.core.text import from_header
 from apps.files import download, signing, transfer
+from apps.ipgeo.lookup import locate
 from apps.siteconf.models import DEFAULT_DIRECT_LINK_PREFIX, SiteSettings
 from apps.storages import access as policy
 from apps.storages import instances
@@ -262,13 +263,14 @@ def _first_opening(request, storage, storage_path: str, *, kind: str, short_key:
 
 
 def record(request, site, storage, storage_path: str, *, kind: str, short_key: str = "") -> None:
-    """A row of the download log, while 记录下载日志 is on, with who was logged in. A failure to write it
-    doesn't stop the download."""
+    """A row of the download log, while 记录下载日志 is on, with who was logged in and the IP's location while IP
+    归属地 is on (ipgeo app). A failure to write it doesn't stop the download."""
     if not site.record_download_log:
         return
+    ip = net.client_ip(request)
     try:
         DownloadLog.objects.create(
-            kind=kind, storage=storage, path=storage_path, short_key=short_key, ip=net.client_ip(request),
+            kind=kind, storage=storage, path=storage_path, short_key=short_key, ip=ip, ip_location=locate(ip),
             username=_username(request), user_agent=_header(request, "HTTP_USER_AGENT"),
             referer=_header(request, "HTTP_REFERER"),
         )

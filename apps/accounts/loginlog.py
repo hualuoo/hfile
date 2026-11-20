@@ -21,6 +21,7 @@ from django.utils.translation import gettext_lazy
 
 from apps.core.net import client_ip
 from apps.core.throttles import UNKNOWN, address_key
+from apps.ipgeo.lookup import locate
 from apps.siteconf.models import SiteSettings
 
 from .models import LoginLog, User
@@ -68,17 +69,21 @@ def _text(value, limit):
 
 
 def record(request, *, success, username="", user=None, reason=""):
-    """Writes a row, unless login_log is off. A failure to write it doesn't stop the login."""
+    """Writes a row, unless login_log is off, with the IP's location while IP 归属地 is on (ipgeo app). A
+    failure to write it doesn't stop the login."""
     if request is None:
         return
     try:
         if not SiteSettings.load().login_log:
             return
+        ip = client_ip(request)
+        location = locate(ip)
         with transaction.atomic():
             LoginLog.objects.create(
                 username=_text(username or (user.get_username() if user else ""), USERNAME_MAX),
                 user=user if user is not None and user.pk else None,
-                ip=client_ip(request),
+                ip=ip,
+                ip_location=location,
                 user_agent=_text(request.META.get("HTTP_USER_AGENT"), USER_AGENT_MAX),
                 result=LoginLog.Result.SUCCESS if success else LoginLog.Result.FAILURE,
                 reason="" if success else reason,

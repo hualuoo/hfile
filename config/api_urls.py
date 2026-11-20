@@ -37,6 +37,9 @@
     GET    manage/login-logs/        staff: the login log (?username= &ip= &result= &since= &until=); DELETE
                                      with the same filters deletes what they find
     POST   manage/login-logs/delete/ staff: {"ids": [...]} deletes those entries
+    GET    manage/ip-geo/            staff: IP 归属地: on or off, the database in use, the last job, how many stored
+                                     IPs have no location yet; PATCH {"enabled"}; POST download/, fill/; GET job/,
+                                     check/ (apps/ipgeo/views.py)
 
     GET    sso/providers/            anybody: the login buttons of single sign-on [{"code", "name", "icon"}]
     GET    sso/links/                the user's providers and bound accounts (账号绑定): {"has_password", "providers"}
@@ -119,6 +122,7 @@ urlpatterns = [
     path("", include("apps.storages.api_urls")),
     path("", include("apps.files.api_urls")),
     path("", include("apps.uploads.api_urls")),
+    path("", include("apps.ipgeo.api_urls")),
     path("", include("apps.links.api_urls")),
     path("", include("apps.preview.api_urls")),
     path("", include("apps.shares.api_urls")),

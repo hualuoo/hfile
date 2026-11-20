@@ -36,6 +36,9 @@
     "\"%(where)s\" already exists. Overwriting a file needs the \"Delete\" permission, so it can only be skipped.": "\u300c%(where)s\u300d\u5df2\u7ecf\u5b58\u5728\u4e86\u3002\u8986\u76d6\u539f\u6765\u7684\u6587\u4ef6\u8981\u6709\u300c\u5220\u9664\u300d\u7684\u6743\u9650\uff0c\u53ea\u80fd\u8df3\u8fc7\u3002",
     "\"%(where)s\" already exists. Overwriting replaces the file that is there.": "\u300c%(where)s\u300d\u5df2\u7ecf\u5b58\u5728\u4e86\u3002\u8986\u76d6\u4f1a\u628a\u539f\u6765\u7684\u6587\u4ef6\u6362\u6389\u3002",
     "\"%(where)s\" already exists. You don't have the \"Delete\" permission, so you can't overwrite it; please upload it with another name.": "\u300c%(where)s\u300d\u5df2\u7ecf\u5b58\u5728\u4e86\u3002\u4f60\u6ca1\u6709\u300c\u5220\u9664\u300d\u6743\u9650\uff0c\u4e0d\u80fd\u8986\u76d6\u5b83\uff0c\u8bf7\u6362\u4e2a\u540d\u5b57\u518d\u4e0a\u4f20\u3002",
+    "%(count)s download log entry": [
+      "%(count)s \u6761\u4e0b\u8f7d\u65e5\u5fd7"
+    ],
     "%(count)s entry": [
       "\u5171 %(count)s \u6761"
     ],
@@ -60,11 +63,17 @@
     "%(count)s item needs changing; see what's marked in red.": [
       "\u6709 %(count)s \u9879\u8981\u6539\u4e00\u4e0b\uff0c\u89c1\u6807\u7ea2\u7684\u5730\u65b9\u3002"
     ],
+    "%(count)s login log entry": [
+      "%(count)s \u6761\u767b\u5f55\u65e5\u5fd7"
+    ],
     "%(count)s migration applied": [
       "\u6267\u884c\u4e86 %(count)s \u4e2a\u8fc1\u79fb"
     ],
     "%(count)s migration pending": [
       "\u8fd8\u5dee %(count)s \u4e2a\u8fc1\u79fb"
+    ],
+    "%(count)s record has no location yet: %(parts)s.": [
+      "\u8fd8\u6709 %(count)s \u6761\u8bb0\u5f55\u6ca1\u6709\u5f52\u5c5e\u5730\uff1a%(parts)s\u3002"
     ],
     "%(count)s selected": [
       "\u5df2\u9009 %(count)s \u9879"
@@ -100,6 +109,8 @@
     "%(identities)s user": [
       "%(identities)s \u4e2a"
     ],
+    "%(ip)s: %(location)s": "%(ip)s\uff1a%(location)s",
+    "%(job)s failed (%(time)s): ": "%(job)s\u5931\u8d25\uff08%(time)s\uff09\uff1a",
     "%(kinds)s can only be created by superusers: it can read and write any folder the program can reach on the server.": "%(kinds)s\u53ea\u6709\u8d85\u7ea7\u7ba1\u7406\u5458\u53ef\u4ee5\u65b0\u5efa\uff1a\u5b83\u80fd\u8bfb\u5199\u670d\u52a1\u5668\u4e0a\u7a0b\u5e8f\u80fd\u8bbf\u95ee\u7684\u4efb\u4f55\u6587\u4ef6\u5939\u3002",
     "%(label)s settings": "%(label)s\u7684\u8bbe\u7f6e",
     "%(label)s:": "%(label)s\uff1a",
@@ -329,6 +340,7 @@
     "Columns": "\u56fe\u7247\u5217\u6570",
     "Confirm": "\u786e\u8ba4",
     "Connected.": "\u8fde\u63a5\u6210\u529f\u3002",
+    "Connecting to the download address\u2026": "\u6b63\u5728\u8fde\u63a5\u4e0b\u8f7d\u5730\u5740\u2026",
     "Connecting\u2026": "\u6b63\u5728\u8fde\u63a5\u2026",
     "Connection failed: %(message)s": "\u8fde\u63a5\u5931\u8d25\uff1a%(message)s",
     "Connection failed: %(message)s (%(at)s)": "\u8fde\u63a5\u5931\u8d25\uff1a%(message)s\uff08%(at)s\uff09",
@@ -400,7 +412,9 @@
     "Current password": "\u539f\u5bc6\u7801",
     "Cursor %(line)s:%(column)s": "\u5149\u6807 %(line)s:%(column)s",
     "Custom": "\u81ea\u5b9a\u4e49",
+    "Data date": "\u6570\u636e\u65e5\u671f",
     "Database": "\u6570\u636e\u5e93",
+    "Database in use": "\u5f53\u524d\u6570\u636e\u5e93",
     "Decides the password": "\u51b3\u5b9a\u5bc6\u7801",
     "Default permissions": "\u9ed8\u8ba4\u6743\u9650",
     "Delete": "\u5220\u9664",
@@ -494,9 +508,12 @@
     "Download link lifetime": "\u4e0b\u8f7d\u94fe\u63a5\u6709\u6548\u671f",
     "Download link lifetime (seconds)": "\u4e0b\u8f7d\u94fe\u63a5\u6709\u6548\u671f\uff08\u79d2\uff09",
     "Download links force downloading": "\u4e0b\u8f7d\u94fe\u63a5\u5f3a\u5236\u4e0b\u8f7d",
+    "Download the database": "\u4e0b\u8f7d\u6570\u636e\u5e93",
     "Download the file %(name)s?": "\u662f\u5426\u786e\u8ba4\u4e0b\u8f7d\u6587\u4ef6 %(name)s\uff1f",
     "Download through the site": "\u4ee3\u7406\u4e0b\u8f7d",
     "Downloaded at": "\u4e0b\u8f7d\u65f6\u95f4",
+    "Downloading: %(done)s": "\u6b63\u5728\u4e0b\u8f7d\uff1a%(done)s",
+    "Downloading: %(done)s of %(total)s": "\u6b63\u5728\u4e0b\u8f7d\uff1a%(done)s / %(total)s",
     "Downloads": "\u6b21\u6570",
     "Downloads and uploads": "\u4e0b\u8f7d\u548c\u4e0a\u4f20",
     "Downloads aren't rate-limited now (the seconds or the count in \"Direct and short links\" is 0).": "\u73b0\u5728\u6ca1\u6709\u9650\u5236\u4e0b\u8f7d\u9891\u7387\uff08\u300c\u76f4\u94fe\u548c\u77ed\u94fe\u300d\u91cc\u79d2\u6570\u6216\u6b21\u6570\u662f 0\uff09\u3002",
@@ -533,6 +550,7 @@
     "Enter your username.": "\u8981\u586b\u7528\u6237\u540d\u3002",
     "Environment": "\u8fd0\u884c\u73af\u5883",
     "Error": "\u51fa\u9519",
+    "Every IP recorded has a location.": "\u8bb0\u4e0b\u7684 IP \u90fd\u6709\u5f52\u5c5e\u5730\u4e86\u3002",
     "Every expired short link is deleted, along with its download log entries. This can't be undone.": "\u4f1a\u5220\u9664\u6240\u6709\u5df2\u7ecf\u8fc7\u671f\u7684\u77ed\u94fe\uff0c\u8fde\u540c\u5b83\u4eec\u7684\u4e0b\u8f7d\u65e5\u5fd7\u3002\u5220\u9664\u4ee5\u540e\u4e0d\u80fd\u6062\u590d\u3002",
     "Every user's expired shares are deleted. This can't be undone.": "\u6240\u6709\u7528\u6237\u5df2\u7ecf\u8fc7\u671f\u7684\u5206\u4eab\u90fd\u4f1a\u5220\u9664\uff0c\u4e0d\u80fd\u6062\u590d\u3002",
     "Everything the current filters find is deleted, not only this page; entries logged after the list loaded are kept. This can't be undone.": "\u4f1a\u5220\u9664\u5217\u8868\u73b0\u5728\u663e\u793a\u7684\u8fd9\u4e9b\u6761\u4ef6\u627e\u5230\u7684\u6240\u6709\u8bb0\u5f55\uff0c\u4e0d\u53ea\u662f\u8fd9\u4e00\u9875\uff1b\u5728\u90a3\u4e4b\u540e\u624d\u8bb0\u4e0b\u7684\u4e0d\u4f1a\u5220\u9664\u3002\u5220\u9664\u4ee5\u540e\u4e0d\u80fd\u6062\u590d\u3002",
@@ -553,6 +571,7 @@
     "File name": "\u6587\u4ef6\u540d",
     "File path": "\u6587\u4ef6\u8def\u5f84",
     "File share": "\u6587\u4ef6\u5206\u4eab",
+    "File size": "\u6587\u4ef6\u5927\u5c0f",
     "Files and folders in it": "\u5305\u542b\u7684\u6587\u4ef6 / \u6587\u4ef6\u5939",
     "Files are listed here once the administrator has added a storage source.": "\u7ba1\u7406\u5458\u52a0\u597d\u5b58\u50a8\u6e90\u4ee5\u540e\uff0c\u6587\u4ef6\u5c31\u5217\u5728\u8fd9\u91cc\u3002",
     "Files over %(limit)s can only be viewed": "\u8d85\u8fc7 %(limit)s \u7684\u6587\u4ef6\u53ea\u80fd\u67e5\u770b",
@@ -563,7 +582,9 @@
     "Fill in where this storage is. After saving, the next step tests the connection.": "\u586b\u4e0a\u8fd9\u4e2a\u5b58\u50a8\u7684\u4f4d\u7f6e\u3002\u4fdd\u5b58\u4ee5\u540e\uff0c\u4e0b\u4e00\u6b65\u6d4b\u8bd5\u8fde\u63a5\u3002",
     "Filled in (applies once saved)": "\u5df2\u7ecf\u586b\u597d\u4e86\uff08\u4fdd\u5b58\u540e\u751f\u6548\uff09",
     "Filled into the form; click \"Save\" to apply it.": "\u5df2\u7ecf\u586b\u8fdb\u8868\u5355\uff0c\u70b9\u300c\u4fdd\u5b58\u300d\u751f\u6548\u3002",
+    "Filling in: %(done)s of %(total)s IPs looked up": "\u6b63\u5728\u8865\u5168\uff1a\u67e5\u4e86 %(done)s / %(total)s \u4e2a IP",
     "Filter rules": "\u8fc7\u6ee4\u89c4\u5219",
+    "Finding the records without a location\u2026": "\u6b63\u5728\u627e\u6ca1\u6709\u5f52\u5c5e\u5730\u7684\u8bb0\u5f55\u2026",
     "Finished at": "\u5b8c\u6210\u65f6\u95f4",
     "First give it a name and choose the storage type. The settings for connecting come next and the rest at the end; all can be changed later.": "\u5148\u8d77\u4e2a\u540d\u5b57\u3001\u9009\u597d\u5b58\u50a8\u7684\u7c7b\u578b\u3002\u8fde\u63a5\u8981\u7528\u7684\u8bbe\u7f6e\u5728\u4e0b\u4e00\u6b65\u586b\uff0c\u5176\u4ed6\u8bbe\u7f6e\u653e\u5728\u6700\u540e\uff0c\u4ee5\u540e\u90fd\u53ef\u4ee5\u518d\u6539\u3002",
     "Fit width": "\u9002\u5408\u5bbd\u5ea6",
@@ -592,6 +613,9 @@
     "How long download links signed by this site and the storage's own signed links last: 1800 seconds (half an hour) by default, 7 days at most.": "\u672c\u7ad9\u7b7e\u540d\u7684\u4e0b\u8f7d\u94fe\u63a5\u548c\u5b58\u50a8\u81ea\u5df1\u7684\u7b7e\u540d\u94fe\u63a5\u591a\u4e45\u4ee5\u540e\u5931\u6548\uff0c\u9ed8\u8ba4 1800 \u79d2\uff08\u534a\u5c0f\u65f6\uff09\uff0c\u6700\u957f 7 \u5929\u3002",
     "How many downloads through this site the storage source sends at once. Every connection counts: each of the connections a download tool opens, and each picture a gallery page loads.": "\u8fd9\u4e2a\u5b58\u50a8\u6e90\u7ecf\u8fc7\u672c\u7ad9\u540c\u65f6\u53d1\u9001\u51e0\u4e2a\u4e0b\u8f7d\u3002\u6bcf\u4e2a\u8fde\u63a5\u90fd\u7b97\u4e00\u4e2a\uff1a\u4e0b\u8f7d\u5de5\u5177\u5f00\u7684\u6bcf\u4e2a\u8fde\u63a5\uff0c\u753b\u5eca\u52a0\u8f7d\u7684\u6bcf\u5f20\u56fe\u7247\u3002",
     "How the Client Secret is sent": "Client Secret \u7684\u53d1\u9001\u65b9\u5f0f",
+    "IP location is off": "\u5df2\u505c\u7528 IP \u5f52\u5c5e\u5730",
+    "IP location is on": "\u5df2\u542f\u7528 IP \u5f52\u5c5e\u5730",
+    "IP location is on; now download a database": "\u5df2\u542f\u7528 IP \u5f52\u5c5e\u5730\uff0c\u63a5\u4e0b\u6765\u4e0b\u8f7d\u4e00\u4e2a\u6570\u636e\u5e93",
     "Icon view": "\u56fe\u6807\u6a21\u5f0f",
     "Image": "\u56fe\u7247",
     "Image preview: %(name)s": "\u56fe\u7247\u9884\u89c8\uff1a%(name)s",
@@ -741,6 +765,7 @@
     "No users match.": "\u6ca1\u6709\u7b26\u5408\u6761\u4ef6\u7684\u7528\u6237\u3002",
     "No users yet.": "\u8fd8\u6ca1\u6709\u7528\u6237\u3002",
     "None": "\u6ca1\u6709",
+    "None downloaded yet": "\u8fd8\u6ca1\u6709\u4e0b\u8f7d",
     "None of the items could be copied. View the details?": "\u5168\u90e8\u590d\u5236\u5931\u8d25\uff0c\u662f\u5426\u67e5\u770b\u8be6\u60c5\uff1f",
     "None of the items could be deleted. View the details?": "\u5168\u90e8\u5220\u9664\u5931\u8d25\uff0c\u662f\u5426\u67e5\u770b\u8be6\u60c5\uff1f",
     "None of the items could be moved. View the details?": "\u5168\u90e8\u79fb\u52a8\u5931\u8d25\uff0c\u662f\u5426\u67e5\u770b\u8be6\u60c5\uff1f",
@@ -1020,6 +1045,7 @@
     "The connection is checked first; if it fails, the storage source isn't enabled.": "\u542f\u7528\u4e4b\u524d\u4f1a\u5148\u68c0\u67e5\u4e00\u6b21\u8fde\u63a5\uff0c\u8fde\u4e0d\u4e0a\u5c31\u4e0d\u542f\u7528\u3002",
     "The connection works.": "\u8fde\u63a5\u6b63\u5e38\u3002",
     "The counters are kept in the memory of this site's process and start from zero when the site restarts.": "\u8ba1\u6570\u5728\u7f51\u7ad9\u8fd9\u4e2a\u8fdb\u7a0b\u7684\u5185\u5b58\u91cc\uff0c\u7f51\u7ad9\u91cd\u65b0\u542f\u52a8\u540e\u4ece\u96f6\u5f00\u59cb\u3002",
+    "The database file is gone (it should be in %(folder)s). Download it again.": "\u6570\u636e\u5e93\u6587\u4ef6\u4e0d\u89c1\u4e86\uff08\u5e94\u8be5\u5728 %(folder)s \u91cc\uff09\u3002\u91cd\u65b0\u4e0b\u8f7d\u4e00\u6b21\u5c31\u597d\u3002",
     "The database has migrations this program doesn't have: %(list)s. A newer version upgraded it, and this version may fail on it; please go back to the newer program.": "\u6570\u636e\u5e93\u91cc\u6709\u8fd9\u4e2a\u7a0b\u5e8f\u6ca1\u6709\u7684\u8fc1\u79fb\uff1a%(list)s\u3002\u5b83\u88ab\u66f4\u65b0\u7684\u7248\u672c\u5347\u7ea7\u8fc7\uff0c\u8fd9\u4e2a\u7248\u672c\u53ef\u80fd\u51fa\u9519\uff0c\u8bf7\u6362\u56de\u65b0\u7248\u7a0b\u5e8f\u3002",
     "The database still needs these migrations: %(list)s. ": "\u6570\u636e\u5e93\u8fd8\u5dee\u8fd9\u4e9b\u8fc1\u79fb\uff1a%(list)s\u3002",
     "The default is restored.": "\u5df2\u7ecf\u6062\u590d\u9ed8\u8ba4\u3002",
@@ -1143,6 +1169,7 @@
     "Unreadable characters": "\u6709\u8bfb\u4e0d\u51fa\u7684\u5b57\u7b26",
     "Unsaved changes": "\u6709\u6539\u52a8\uff0c\u8fd8\u6ca1\u4fdd\u5b58",
     "Up one level": "\u8fd4\u56de\u4e0a\u4e00\u7ea7",
+    "Update the database": "\u66f4\u65b0\u6570\u636e\u5e93",
     "Upgrade at startup": "\u542f\u52a8\u65f6\u81ea\u52a8\u5347\u7ea7",
     "Upload": "\u4e0a\u4f20",
     "Upload \"%(original)s\" with a new name; the file already there stays as it is.": "\u7528\u65b0\u7684\u540d\u5b57\u4e0a\u4f20\u300c%(original)s\u300d\uff0c\u539f\u6765\u7684\u6587\u4ef6\u4e0d\u52a8\u3002",
@@ -1220,6 +1247,7 @@
     "With the storage's own link, the download comes straight from the storage: it only works if people can reach the storage, and this site's limits per IP don't apply to it. With 429, they're told to try again in a moment.": "\u8f6c\u5230\u5b58\u50a8\u6e90\u81ea\u5df1\u7684\u94fe\u63a5\u65f6\uff0c\u6587\u4ef6\u76f4\u63a5\u4ece\u5b58\u50a8\u6e90\u4e0b\u8f7d\uff1a\u8bbf\u95ee\u8005\u8981\u80fd\u8fde\u4e0a\u5b58\u50a8\u6e90\uff0c\u672c\u7ad9\u5bf9\u5355\u4e2a IP \u7684\u9650\u5236\u4e5f\u7ba1\u4e0d\u5230\u5b83\u3002\u8fd4\u56de 429 \u65f6\uff0c\u5bf9\u65b9\u4f1a\u88ab\u544a\u77e5\u7a0d\u540e\u518d\u8bd5\u3002",
     "Without the password this PDF can't be opened.": "\u6ca1\u6709\u8f93\u5165\u5bc6\u7801\uff0c\u6253\u4e0d\u5f00\u8fd9\u4e2a PDF\u3002",
     "Wrap lines": "\u81ea\u52a8\u6362\u884c",
+    "Write an IP address first.": "\u5148\u586b\u4e00\u4e2a IP \u5730\u5740\u3002",
     "Writing to the storage failed.": "\u5199\u5165\u5b58\u50a8\u5931\u8d25\u4e86\u3002",
     "Written in Markdown, with some simple HTML if you like (links, pictures, tables, details blocks). It's shown as untrusted content: scripts, styles, forms and event attributes are removed. Remember to click \"Save\" on the page afterwards.": "\u7528 Markdown \u5199\uff0c\u4e5f\u53ef\u4ee5\u5939\u4e00\u4e9b\u7b80\u5355\u7684 HTML\uff08\u94fe\u63a5\u3001\u56fe\u7247\u3001\u8868\u683c\u3001\u6298\u53e0\u5757\uff09\u3002\u663e\u793a\u65f6\u6309\u4e0d\u4fe1\u4efb\u7684\u5185\u5bb9\u5904\u7406\uff1a\u811a\u672c\u3001\u6837\u5f0f\u3001\u8868\u5355\u548c\u4e8b\u4ef6\u5c5e\u6027\u4f1a\u88ab\u53bb\u6389\u3002\u6539\u5b8c\u8bb0\u5f97\u70b9\u9875\u9762\u4e0a\u7684\u300c\u4fdd\u5b58\u300d\u3002",
     "Wrong password. Please try again": "\u5bc6\u7801\u9519\u8bef\uff0c\u8bf7\u91cd\u65b0\u8f93\u5165",
@@ -1258,6 +1286,7 @@
     ],
     "below the list": "\u5217\u8868\u4e0b\u9762",
     "between clauses\u0004, ": "\uff0c",
+    "date\u0004unknown": "\u672a\u77e5",
     "days": "\u5929",
     "download log\u0004No filters are set: every entry in the list is deleted (except those logged after it loaded). This can't be undone.": "\u6ca1\u6709\u8bbe\u6761\u4ef6\uff1a\u5217\u8868\u91cc\u7684\u4e0b\u8f7d\u65e5\u5fd7\u90fd\u4f1a\u5220\u9664\uff08\u5728\u90a3\u4e4b\u540e\u624d\u8bb0\u4e0b\u7684\u9664\u5916\uff09\u3002\u5220\u9664\u4ee5\u540e\u4e0d\u80fd\u6062\u590d\u3002",
     "hours": "\u5c0f\u65f6",
@@ -1286,6 +1315,10 @@
     "setting\u0004On": "\u5f00",
     "share\u0004Open": "\u8bbf\u95ee",
     "share badge\u0004Password": "\u9700\u5bc6\u7801",
+    "size\u0004unknown": "\u672a\u77e5",
+    "the last login IP of %(count)s user": [
+      "%(count)s \u4e2a\u7528\u6237\u7684\u6700\u8fd1\u767b\u5f55 IP"
+    ],
     "the storage service refused the upload": "\u5b58\u50a8\u670d\u52a1\u62d2\u7edd\u4e86\u4e0a\u4f20",
     "the whole list\u0004Delete all": "\u6e05\u7a7a",
     "took %(seconds)s s": "\u7528\u65f6 %(seconds)s \u79d2",

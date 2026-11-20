@@ -994,6 +994,9 @@ a.list-item:hover { text-decoration: none; }
 .reason-wrap > :disabled { pointer-events: none; }
 .data-table td.row-actions { width: 1%; padding-top: 4px; padding-bottom: 4px; text-align: right; white-space: nowrap; vertical-align: middle; }
 code.ip { font-size: 12px; }
+/* an IP with its location (apps/ipgeo), in the user list, the login log and the download log */
+.ip-line { display: inline-flex; flex-wrap: wrap; align-items: baseline; gap: 0 6px; max-width: 100%; }
+.ip-place { color: var(--md-sys-color-on-surface-variant); font: var(--md-sys-typescale-body-small); }
 
 .list-actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 4px 12px; margin: 0 0 4px; }
 .list-actions .list-summary { margin: 0; }

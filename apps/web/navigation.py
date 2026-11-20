@@ -77,5 +77,7 @@ SECTIONS = [
     Section("shares", gettext_lazy("Shares"), "share", "shares/manage/shares.html", "shares/js/share_list.js", gettext_lazy("Links")),
     Section("diagnostics", gettext_lazy("Diagnostics"), "troubleshoot", "siteconf/manage/diagnostics.html",
             "siteconf/js/manage_diagnostics.js", pgettext_lazy("manage menu", "System")),
+    Section("ip-geo", gettext_lazy("IP location"), "location_on", "ipgeo/manage/ip_geo.html", "ipgeo/js/manage_ip_geo.js",
+            pgettext_lazy("manage menu", "System")),
     Section("version", gettext_lazy("Version and upgrades"), "upgrade", "web/manage/version.html", "web/js/manage_version.js", pgettext_lazy("manage menu", "System")),
 ]

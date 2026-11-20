@@ -112,7 +112,7 @@ class TableTests(SimpleTestCase):
                 "server": ["host", "port", "threads", "proxies", "log_requests"],
                 "database": ["engine", "file", "host", "port", "name", "user", "password", "tls", "ca"],
                 "site": ["secret_key", "allowed_hosts", "url", "admin_path", "debug"],
-                "paths": ["uploads", "backups"],
+                "paths": ["uploads", "backups", "geoip"],
                 "upgrade": ["auto"],
             },
         )

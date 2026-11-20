@@ -8,6 +8,8 @@ from django.utils import timezone
 from django.utils.crypto import salted_hmac
 from django.utils.translation import gettext_lazy, gettext_noop
 
+from apps.ipgeo.sources import LOCATION_MAX
+
 from .permissions import ADMIN_DEFAULTS, validate_permissions
 from .validators import NICKNAME_MAX, USERNAME_MAX, validate_nickname
 
@@ -86,6 +88,8 @@ class User(AbstractUser):
         help_text=gettext_lazy("Only for display, and others may have the same one; logging in uses the username."),
     )
     last_login_ip = models.GenericIPAddressField(gettext_lazy("Last login IP"), null=True, blank=True, unpack_ipv4=True)
+    # Its IP 归属地 (apps/ipgeo/places.py): looked up at login while that is turned on; "" otherwise.
+    last_login_location = models.CharField(gettext_lazy("Last login IP location"), max_length=LOCATION_MAX, blank=True)
     kind = models.CharField(
         gettext_lazy("Type"), max_length=16, choices=Kind.choices, default=Kind.NORMAL, editable=False, db_index=True,
         help_text=gettext_lazy("The anonymous user's permissions are what people who aren't logged "
@@ -177,7 +181,8 @@ class LoginLog(models.Model):
 
     Written while SiteSettings.login_log is on (apps/accounts/loginlog.py). `username` is what was typed
     (cut to its length); `user` the account it matched, a link that goes when the account is deleted.
-    `reason` and `source` are codes of loginlog.REASONS and loginlog.SOURCES.
+    `reason` and `source` are codes of loginlog.REASONS and loginlog.SOURCES, `ip_location` one of the ipgeo
+    app's (apps/ipgeo/places.py).
     """
 
     class Result(models.TextChoices):
@@ -188,6 +193,9 @@ class LoginLog(models.Model):
     username = models.CharField(gettext_lazy("Username entered"), max_length=USERNAME_MAX, blank=True)
     user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, related_name="+", verbose_name=gettext_lazy("User"))
     ip = models.GenericIPAddressField("IP", null=True, blank=True, unpack_ipv4=True)
+    # Its IP 归属地 (ipgeo app): looked up when the entry is written while that is turned on, or filled in
+    # later (补全 on /manage/#ip-geo).
+    ip_location = models.CharField(gettext_lazy("IP location"), max_length=LOCATION_MAX, blank=True)
     user_agent = models.CharField(gettext_lazy("Browser"), max_length=500, blank=True)
     result = models.CharField(gettext_lazy("Result"), max_length=10, choices=Result.choices)
     reason = models.CharField(gettext_lazy("Reason"), max_length=32, blank=True)

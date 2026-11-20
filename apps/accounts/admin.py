@@ -13,6 +13,7 @@ from apps.captchas import service as captchas
 from apps.captchas.models import Scene
 from apps.captchas.serializers import ANSWER_INPUT_MAX
 from apps.core.throttles import login_allowed
+from apps.ipgeo.lookup import shown
 
 from . import entry as login_entry
 from . import login as steps
@@ -145,16 +146,16 @@ def admin_change_problem(actor, target, values):
 class UserAdmin(DjangoUserAdmin):
     form = HFileUserChangeForm
     add_form = HFileUserCreationForm
-    list_display = ["username", "nickname", "kind", "is_staff", "is_active", "last_login", "last_login_ip", "date_joined"]
+    list_display = ["username", "nickname", "kind", "is_staff", "is_active", "last_login", "last_login_address", "date_joined"]
     list_filter = ["kind", "is_staff", "is_superuser", "is_active"]
     search_fields = ["username", "nickname", "email"]
     ordering = ["id"]
-    readonly_fields = ["kind", "last_login", "last_login_ip", "date_joined"]
+    readonly_fields = ["kind", "last_login", "last_login_address", "date_joined"]
     fieldsets = (
         (None, {"fields": ("username", "password")}),
         (gettext_lazy("Profile"), {"fields": ("nickname", "email")}),
         (gettext_lazy("Permissions"), {"fields": ("is_active", "is_staff", "is_superuser", "groups", "user_permissions")}),
-        (gettext_lazy("Log in"), {"fields": ("kind", "last_login", "last_login_ip", "date_joined")}),
+        (gettext_lazy("Log in"), {"fields": ("kind", "last_login", "last_login_address", "date_joined")}),
     )
     add_fieldsets = (
         (None, {"classes": ("wide",), "fields": ("username", "usable_password", "password1", "password2")}),
@@ -164,6 +165,12 @@ class UserAdmin(DjangoUserAdmin):
         form = super().get_form(request, obj, **kwargs)
         form.current_user = request.user  # a class made for this request (modelform_factory)
         return form
+
+    @admin.display(description=gettext_lazy("Last login IP"), ordering="last_login_ip")
+    def last_login_address(self, obj):
+        """「203.0.113.7（美国）」 while IP 归属地 is on and the location is known (ipgeo app)."""
+        location = shown(obj.last_login_location) if obj.last_login_ip else ""
+        return _("%(ip)s (%(location)s)") % {"ip": obj.last_login_ip, "location": location} if location else obj.last_login_ip
 
     def get_readonly_fields(self, request, obj=None):
         fields = list(super().get_readonly_fields(request, obj))

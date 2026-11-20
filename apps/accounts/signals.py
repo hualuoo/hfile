@@ -10,6 +10,7 @@ from django.conf import settings
 from django.dispatch import Signal
 
 from apps.core.net import client_ip
+from apps.ipgeo.lookup import locate
 
 logger = logging.getLogger(__name__)
 
@@ -49,15 +50,16 @@ def clear_expired_sessions():
 
 
 def on_login(sender, request, user, **kwargs):
-    """Stores the address the login came from (Django's own receiver stores the time, last_login),
-    and writes the login log."""
+    """Stores the address the login came from, and its location while IP 归属地 is on (Django's own
+    receiver stores the time, last_login), and writes the login log."""
     if request is None:
         return
     from . import loginlog
 
     ip = client_ip(request)
     user.last_login_ip = ip
-    type(user).objects.filter(pk=user.pk).update(last_login_ip=ip)
+    user.last_login_location = locate(ip)
+    type(user).objects.filter(pk=user.pk).update(last_login_ip=ip, last_login_location=user.last_login_location)
     loginlog.record(request, success=True, user=user)
     clear_expired_sessions()
 

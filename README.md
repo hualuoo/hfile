@@ -55,7 +55,7 @@ HFile 用 Django 写成：
   - 分享可以设访问密码和有效期，能看到什么跟着分享者的权限走。
 - **权限**：每个用户在每个存储源上有自己的根目录和 15 种权限。另有过滤规则（隐藏、不可访问、不可下载）、目录密码和目录文档。
 - **账号和安全**：图片验证码、超级管理员的两步验证（TOTP）、登录安全入口、单点登录（GitHub、Gitee、GitLab、OpenID Connect）、登录日志、IP 和 UA 黑名单。
-- **运维**：安装向导、数据库备份和恢复命令、定时清理、诊断信息页；访问记录里的口令和签名自动打码。
+- **运维**：安装向导、数据库备份和恢复命令、定时清理、诊断信息页；访问记录里的口令和签名自动打码；IP 归属地：用户、登录日志和下载日志里的 IP 显示国家或地区，很多还有省和城市，数据库是 MaxMind 的 GeoLite2-City，在本机查询。
 
 每个功能的详细说明见[功能说明](docs/features.md)。
 
@@ -227,7 +227,7 @@ HSTS、`/tmp` 要注意的地方、退出码这些，见[运行](docs/deploy.md)
 | `[server]` | `host`、`port`（默认 8080）、`threads`、`proxies`（前面有几层反向代理）、`log_requests` |
 | `[database]` | `engine`：`"sqlite"` 用 `file`；`"mysql"` 用 `host`、`port`、`name`、`user`、`password`，加密连接用 `tls`、`ca` |
 | `[site]` | `secret_key`、`allowed_hosts`、`url`（网站对外的地址）、`admin_path`（后台的地址）、`debug` |
-| `[paths]` | `uploads`（网站保存的上传文件）、`backups`（数据库备份） |
+| `[paths]` | `uploads`（网站保存的上传文件）、`backups`（数据库备份）、`geoip`（IP 归属地数据库） |
 | `[upgrade]` | `auto`（启动时自动升级数据库） |
 
 网站自己的设置在管理页里改，存在数据库里，比如名称、Logo、预览、直链、安全设置、黑名单。`config.toml` 里有数据库密码和密钥，不要发给别人，也不要放进代码仓库。详见[设置文件](docs/configuration.md)。
@@ -290,6 +290,7 @@ hfile/
 │   ├── crosscheck/        访问规则的跨应用测试
 │   ├── files/             文件浏览、文件操作、签名下载 /pd/
 │   ├── installer/         安装向导；serve 命令（waitress）
+│   ├── ipgeo/             IP 归属地
 │   ├── links/             直链、短链、下载日志
 │   ├── office/            OnlyOffice
 │   ├── preview/           各种文件的预览
@@ -346,7 +347,7 @@ proxy_set_header X-Forwarded-Proto $scheme;
 
 **怎样完整备份？**
 
-`hfile backup` 只备份数据库。另外还要复制上传文件夹（`[paths] uploads`）和 `config.toml`，因为备份里加密保存的密钥，要用同一个 `secret_key` 才读得出来。
+`hfile backup` 只备份数据库。另外还要复制上传文件夹（`[paths] uploads`）和 `config.toml`，因为备份里加密保存的密钥，要用同一个 `secret_key` 才读得出来。IP 归属地的数据库（`[paths] geoip`）不用备份，在管理页重新下载就行。
 
 ## 许可证
 
@@ -358,4 +359,5 @@ HFile 以 [Apache License 2.0](LICENSE) 发布。
 
 - [Django](https://www.djangoproject.com/)、[Django REST Framework](https://www.django-rest-framework.org/)、[waitress](https://github.com/Pylons/waitress)、[WhiteNoise](https://github.com/evansd/whitenoise)、[httpx](https://www.python-httpx.org/)、[paramiko](https://www.paramiko.org/)、[PyInstaller](https://pyinstaller.org/) 等开源项目。
 - [hls.js](https://github.com/video-dev/hls.js)、[pdf.js](https://github.com/mozilla/pdf.js)、[highlight.js](https://github.com/highlightjs/highlight.js)。
+- IP 归属地的数据：MaxMind 的 GeoLite2-City（This product includes GeoLite Data created by MaxMind, available from [https://www.maxmind.com](https://www.maxmind.com)），从 [adysec/IP_database](https://github.com/adysec/IP_database) 的 [ip.adysec.com](https://ip.adysec.com/) 下载，用 MaxMind 的 [maxminddb](https://github.com/maxmind/MaxMind-DB-Reader-python) 读。
 - [Material Design 3](https://m3.material.io/)。

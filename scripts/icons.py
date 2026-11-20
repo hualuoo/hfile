@@ -41,7 +41,7 @@ ICONS = """
     docs terminal menu_book view_in_ar photo_library cloud_upload file_copy vertical_align_top folder_off
     add_link dataset_linked
     rotate_left fit_width play_circle subtitles shuffle repeat repeat_one queue_music preview
-    delete_sweep casino
+    delete_sweep casino location_on
 """.split()
 # Names the site uses for a symbol that Material Symbols calls otherwise (Material Icons' old names).
 ALIASES = {"restore": "settings_backup_restore"}
@@ -50,7 +50,7 @@ FILLED = """
     home folder settings admin_panel_settings storage group person upgrade palette share link receipt_long
     shield cloud key lock history dns policy badge language backup info description
     tune block troubleshoot
-    add_link download
+    add_link download location_on
 """.split()
 
 _PATH_DATA = re.compile(r"[0-9MmLlHhVvCcSsQqTtAaZz .,\-eE]+")
