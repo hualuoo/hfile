@@ -18,6 +18,7 @@ default). runserver and the tests have no pool: /pd/ is answered where every req
 from __future__ import annotations
 
 import threading
+import time
 
 from django.db import connections
 from django.db.models import Sum
@@ -25,6 +26,7 @@ from django.db.models import Sum
 PREFIX = "/pd/"
 SPARE = 8
 MOST = 1000
+IDLE_CHECK = 0.05  # seconds between two looks at whether a dispatcher has answered all it has (stop_when_done())
 
 _lock = threading.Lock()
 _dispatcher = None  # waitress's ThreadedTaskDispatcher, once install() has run
@@ -103,10 +105,23 @@ def resize() -> None:
             pool.set_thread_count(count)
 
 
+def stop_when_done(dispatcher, deadline: float) -> None:
+    """Stops waitress's `dispatcher` (the pool's, or waitress's own for the other requests) once it has answered
+    the requests it has, those still waiting for a thread too, or at `deadline` (time.monotonic()) without the
+    rest. Its shutdown() alone lets each thread finish the request it is on and drops the waiting ones."""
+    while time.monotonic() < deadline:
+        with dispatcher.lock:
+            if not dispatcher.queue and not dispatcher.active_count:  # none waiting, every thread idle
+                break
+        time.sleep(IDLE_CHECK)
+    dispatcher.shutdown(timeout=max(0.0, deadline - time.monotonic()))
+
+
 def shutdown(timeout: float) -> None:
-    """Stops the pool: its downloads may go on for `timeout` seconds, then the program ends without them."""
+    """Stops the pool (stop_when_done()): its downloads, and those waiting for a thread, may go on for `timeout`
+    seconds, then the program ends without them."""
     global _dispatcher
     with _lock:
         pool, _dispatcher = _dispatcher, None
     if pool is not None:
-        pool.shutdown(timeout=timeout)
+        stop_when_done(pool, time.monotonic() + timeout)

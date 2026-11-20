@@ -2,12 +2,15 @@
 (apps/files/pool.py)."""
 
 import os
+import threading
+import time
 import types
 from unittest import mock
 
 from django.core.signals import request_finished
 from django.db import close_old_connections
 from django.test import RequestFactory, SimpleTestCase, TestCase
+from waitress.task import ThreadedTaskDispatcher
 
 from apps.files import download, limits, pool, signing, transfer
 from apps.siteconf.models import SiteSettings
@@ -279,3 +282,49 @@ class PoolTests(TestCase):
             pool._Task(channel).service()
         channel.service.assert_called_once_with()
         close_all.assert_called_once_with()
+
+
+class StopWhenDoneTests(SimpleTestCase):
+    """pool.stop_when_done(), what `hfile serve` does to its threads when it stops: waitress's own dispatcher,
+    with one thread."""
+
+    def setUp(self):
+        self.dispatcher = ThreadedTaskDispatcher()
+        self.dispatcher.logger = self.dispatcher.queue_logger = mock.Mock()  # its warnings
+        self.dispatcher.set_thread_count(1)
+        self.answered, self.dropped = [], []
+
+    def task(self, n, service=None):
+        def answer():
+            time.sleep(0.05)
+            self.answered.append(n)
+
+        return types.SimpleNamespace(service=service or answer, cancel=lambda: self.dropped.append(n))
+
+    def test_the_requests_waiting_for_a_thread_are_answered_too(self):
+        for n in range(3):
+            self.dispatcher.add_task(self.task(n))
+        pool.stop_when_done(self.dispatcher, time.monotonic() + 30)
+        self.assertEqual((self.answered, self.dropped, self.dispatcher.threads), ([0, 1, 2], [], set()))
+
+    def test_not_past_the_deadline(self):
+        began, release = threading.Event(), threading.Event()
+        self.addCleanup(release.set)
+
+        def long():
+            began.set()
+            release.wait(10)
+            self.answered.append(0)
+
+        self.dispatcher.add_task(self.task(0, long))
+        self.dispatcher.add_task(self.task(1))
+        self.assertTrue(began.wait(10))
+        started = time.monotonic()
+        pool.stop_when_done(self.dispatcher, started + 0.3)
+        self.assertLess(time.monotonic() - started, 2)
+        self.assertEqual((self.answered, self.dropped), ([], [1]))  # the program ends without them
+        release.set()
+        deadline = time.monotonic() + 10
+        while self.dispatcher.threads and time.monotonic() < deadline:
+            time.sleep(0.01)
+        self.assertEqual((self.answered, self.dispatcher.threads), ([0], set()))

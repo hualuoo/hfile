@@ -163,8 +163,9 @@ class Command(BaseCommand):
 
     @staticmethod
     def run(server):
-        """waitress's server.run(), waiting longer for the requests in hand when it stops: their
-        threads write their answers themselves (waitress sends what it can from the thread)."""
+        """waitress's server.run(), waiting longer for the requests in hand when it stops, and for those still
+        waiting for a thread too (pool.stop_when_done(); waitress drops them): their threads write their answers
+        themselves (waitress sends what it can from the thread)."""
         from waitress.server import MultiSocketServer  # a host name with several addresses
 
         from apps.files import pool
@@ -177,7 +178,7 @@ class Command(BaseCommand):
             # which reached this process too (OPS-01). A second Ctrl+C still does, for whoever wants that.
             signal.signal(signal.SIGTERM, signal.SIG_IGN)
             deadline = time.monotonic() + STOP_WAIT
-            server.task_dispatcher.shutdown(timeout=STOP_WAIT)
+            pool.stop_when_done(server.task_dispatcher, deadline)
             pool.shutdown(timeout=max(0.0, deadline - time.monotonic()))  # the downloads go on meanwhile too
 
     def started(self, host, port):

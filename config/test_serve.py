@@ -362,12 +362,13 @@ class SignalTests(ServerMixin, SimpleTestCase):
         db.close()
 
     def test_sigterm_lets_the_requests_in_hand_finish(self):
-        """Logins with a wrong password take a while (the password hash, about 2 seconds here): SIGTERM comes
-        once the server has them all, while they are being handled, and each still gets its whole answer
-        before the server stops. Not at a fixed moment after they were started: on GitHub's busy Windows
-        runner the server hadn't read two of the six yet 0.15 s later, and a request that comes after SIGTERM
-        gets no answer, as it should."""
-        self.start(self.installed(), wait_path="/api/v1/site/")
+        """Logins with a wrong password take a while (the password hash, about 2 seconds here), and with
+        [server] threads = 2 two of the four wait for a thread: SIGTERM comes once the server has them all,
+        and each still gets its whole answer before the server stops, the waiting ones too (waitress's own
+        shutdown drops them). Not at a fixed moment after they were started: on GitHub's busy Windows
+        runner the server once hadn't read two of six logins 0.15 s after they were started, and a request
+        that comes after SIGTERM gets no answer, as it should."""
+        self.start("threads = 2\n" + self.installed(), wait_path="/api/v1/site/")
         self.slow_logins(2)
         _, headers, body = fetch(f"{self.origin}/api/v1/session/")
         cookie = "; ".join(f"{k}={m.value}" for h in headers.get_all("Set-Cookie") for k, m in SimpleCookie(h).items())
@@ -387,17 +388,17 @@ class SignalTests(ServerMixin, SimpleTestCase):
             finally:
                 connection.close()
 
-        threads = [threading.Thread(target=login, args=(n,)) for n in range(6)]
+        threads = [threading.Thread(target=login, args=(n,)) for n in range(4)]
         for thread in threads:
             thread.start()
         for _ in threads:
             self.assertTrue(sent.acquire(timeout=60), "a login wasn't sent")
-        time.sleep(1)  # read by the server, and being handled
+        time.sleep(1)  # read by the server: two being handled, two waiting for a thread
         output = self.stop_with(STOP)
         for thread in threads:
             thread.join()
         self.assertEqual(self.process.returncode, 0, output)
-        self.assertEqual([status for status, _, _ in answers], [400] * 6, output)
+        self.assertEqual([status for status, _, _ in answers], [400] * 4, output)
         self.assertTrue(all(json.loads(body)["non_field_errors"] == ["用户名或密码不对。"] for _, _, body in answers))
         self.assertIn("HFile 已经停止。", output)
 
