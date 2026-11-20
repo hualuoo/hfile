@@ -1094,10 +1094,22 @@ code.ip { font-size: 12px; }
 .announcement .markdown-body :is(a, code) { color: inherit; }
 .announcement .markdown-body a { text-decoration: underline; }
 
-/* the footer of public pages: 备案号, Powered by HFile */
+/* the footer of public pages: 备案号, Powered by HFile. Always at the bottom of the window, also while the page
+   scrolls: their <main> is a column, the footer its last item, sticky at the bottom with the page's background
+   over what scrolls under it. Under it only the navigation bar (phones) and the audio player's bar (preview
+   app): --below-footer. Before it a spacer (main's ::after; the footer is ordered after it) takes the room
+   left, at least 40px. <main> ends with the footer, so at the end of the page it is where it was: it never moves. */
+.main.with-footer {
+  --below-footer: calc(var(--navbar-height) + var(--audio-bar-height, 0px));
+  display: flex; flex-direction: column; padding-bottom: var(--below-footer);
+}
+.main.with-footer::after { content: ""; flex: 1 0 40px; }
 .site-footer {
-  display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 8px; margin: 40px 0 0;
-  color: var(--md-sys-color-on-surface-variant); font: var(--md-sys-typescale-body-small);
+  position: sticky; bottom: var(--below-footer); z-index: 8; order: 1; /* under the files' sticky head and its menus (9) */
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 8px;
+  /* clear a phone's home indicator, unless a bar under the footer does it already */
+  padding: 12px 0 max(12px, calc(env(safe-area-inset-bottom) + 12px - var(--below-footer)));
+  background: var(--md-sys-color-surface); color: var(--md-sys-color-on-surface-variant); font: var(--md-sys-typescale-body-small);
 }
 .site-footer a { color: inherit; }
 .site-footer a:hover { color: var(--md-sys-color-primary); }

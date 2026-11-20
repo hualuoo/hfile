@@ -1,5 +1,6 @@
-{# The footer of public pages (base.html): 站点设置 → 备案号, and where the site comes from. #}
+{# The footer of public pages (base.html): 站点设置 → 备案号, and where the site comes from (HFile's project page). #}
+{# Always at the bottom of the window, also while the page scrolls (app.css .main.with-footer, .site-footer). #}
 <footer class="site-footer">
   {% if site_settings.icp %}<a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">{{ site_settings.icp }}</a><span class="site-footer-dot" aria-hidden="true">·</span>{% endif %}
-  <span>Powered by HFile</span>
+  <span>Powered by <a href="https://github.com/hualuoo/hfile" target="_blank" rel="noopener noreferrer">HFile</a></span>
 </footer>

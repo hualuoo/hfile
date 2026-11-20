@@ -51,7 +51,7 @@ class SharePageTests(SharesTestCase):
         self.assertIn('id="share-password-form"', page)
         self.assertIn("此分享受密码保护，请输入访问密码", page)
         self.assertNotIn("files/js/files.js", page)  # no browser yet
-        self.assertIn("Powered by HFile", page)  # a public page: the footer
+        self.assertIn('<footer class="site-footer">', page)  # a public page: the footer
         data = page_config(response)
         self.assertEqual((data["storage"], data["path"], data["info"]["verified"]), (None, "/", False))
         for secret in ("docs", "top.txt", '"disk"', "abcd"):

@@ -76,7 +76,7 @@
   <a class="nav-link" href="{{ entry.href }}"{% if entry.current %} aria-current="page"{% endif %}><span class="nav-indicator">{% icon entry.item.icon "off" %}{% with filled=entry.item.icon|add:"-fill" %}{% icon filled "on" %}{% endwith %}</span><span class="nav-label">{{ entry.item.label }}</span></a>
   {% endfor %}
 </nav>
-<main class="main" id="main" tabindex="-1">
+<main class="main{% if public_page %} with-footer{% endif %}" id="main" tabindex="-1">
   {% block header %}<div class="page-head"><h1>{% block heading %}{% endblock %}</h1><div class="page-actions">{% block page_actions %}{% endblock %}</div></div>{% endblock %}
   {% if public_page %}{% include "siteconf/_announcement.html" %}{% endif %}
   {% block content %}{% endblock %}

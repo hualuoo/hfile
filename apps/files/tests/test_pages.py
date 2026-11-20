@@ -57,7 +57,7 @@ class PageTests(FilesTestCase):
         self.assertIn("uploads/css/uploads.css", page)
         self.assertNotRegex(page, r"<script(?![^>]*\bsrc=)[^>]*>")  # no inline scripts
         self.assertNotRegex(page, r"\sstyle=")
-        self.assertIn("Powered by HFile", page)  # a public page: the footer
+        self.assertIn('<footer class="site-footer">', page)  # a public page: the footer
 
     def test_without_the_storage_list_the_first_storage(self):
         self.change(root_show_storage=False)

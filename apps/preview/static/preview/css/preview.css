@@ -112,6 +112,8 @@
   border-top: 1px solid var(--md-sys-color-outline-variant); box-shadow: var(--md-sys-elevation-level2);
 }
 body.has-audio-bar .main { padding-bottom: 120px; }
+/* public pages: their footer (web/css/app.css .site-footer) sits right on the bar, and the page ends with it */
+body.has-audio-bar .main.with-footer { padding-bottom: var(--below-footer); }
 /* snackbars above the bar, not over its buttons (--audio-bar-height from audio.js) */
 body.has-audio-bar .snackbar { bottom: calc(var(--navbar-height) + var(--audio-bar-height, 0px) + 16px); }
 .ab-row { display: flex; align-items: center; gap: 12px; max-width: 1440px; margin: 0 auto; }

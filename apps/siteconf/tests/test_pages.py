@@ -79,13 +79,16 @@ class ShellTests(TempMediaMixin, TestBase):
 
     def test_the_footer_with_the_icp_number(self):
         page = self.client.get("/").content.decode()
-        self.assertIn("Powered by HFile", page)
+        self.assertIn('Powered by <a href="https://github.com/hualuoo/hfile" target="_blank" rel="noopener noreferrer">HFile</a>', page)
+        self.assertIn('<main class="main with-footer" id="main"', page)  # at the bottom of the page
         self.assertNotIn("beian.miit.gov.cn", page)
         self.change(icp="京ICP备12345678号")
         page = self.client.get("/").content.decode()
         self.assertIn('<a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">京ICP备12345678号</a>', page)
         self.client.force_login(self.boss)
-        self.assertNotIn("Powered by HFile", self.client.get("/manage/").content.decode())
+        page = self.client.get("/manage/").content.decode()
+        self.assertNotIn('class="site-footer"', page)
+        self.assertIn('<main class="main" id="main"', page)
 
 
 class AnnouncementTests(TestBase):
