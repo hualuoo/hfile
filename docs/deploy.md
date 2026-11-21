@@ -71,11 +71,7 @@
 - `proxies` 不是 0 而 `host` 是 `0.0.0.0`（所有地址）时，启动时会提醒：绕过代理直接访问端口的人可以伪造 `X-Forwarded-For`。代理在同一台机器上就把 `host` 改成 `127.0.0.1`，不然用防火墙只让代理连这个端口。
 - 调试模式保持关闭（默认就是关的）。
 - 被「访问控制」的名单挡在网站外面时（比如自己的 IP 变了、落进了名单里的 IP 段），在服务器上运行 `hfile unblock`（从源码是 `python -B manage.py unblock`）清空 IP 和 UA 黑名单，正在运行的网站最多 30 秒后生效。
-- 定时清理：`hfile cleanup` 删除过期的东西（现在是过期的会话（登录状态，没登录的人上传、输目录密码用的），24 小时没有动静的上传会话和它们暂存的文件，过期的短链和它们的下载日志，过期的分享，过期的 OnlyOffice 编辑会话，备份被打断时留下的、一天没动过的 `.part` 文件），每一项打印一行删了几个。`--dry-run` 只数不删，`--list` 列出清理项，`--only 名字` 只运行一项；有一项出错时别的照样运行，退出码是 1。没设定时任务时，网站也会在有人上传时顺便清理过期的上传（每个进程最多 10 分钟一次），但还是建议放进 cron，比如每小时一次：
-  ```cron
-  17 * * * *  /srv/hfile/hfile cleanup --config /srv/hfile/config.toml
-  ```
-  网站用哪个账号启动，这个定时任务就放进哪个账号的 crontab，命令也用这个账号运行（下面 systemd 的例子里是 `hfile`）：程序建的设置文件和 SQLite 数据库只有这个账号能读写，别的账号运行会出错；root 读得了，但它新建的文件和文件夹网站用不了。
+- 自动清理：网站自己删除过期的东西：过期的会话（登录状态，没登录的人上传、输目录密码用的），24 小时没有动静的上传会话和它们暂存的文件，过期的 OnlyOffice 编辑会话，备份被打断时留下的、一天没动过的 `.part` 文件。提供网页的每个进程启动 5 到 10 分钟后清理一次，以后每小时一次；删了东西或者出错时在输出里写一行。过期的分享和短链不会自动删除，显示为已过期，由分享者或管理员删除。
 - 上传：没传完的文件块暂存在 `config.toml` 旁边的 `upload-spool/` 里（权限 700，网站不提供它），磁盘要放得下正在上传的文件，再留 64 MB。Nginx 的 `proxy_read_timeout`（默认 60 秒）不用为上传改：大文件最后一块的回答要等网站写进远程存储，被代理切断时面板会查进度，一直等到写完。
 
 用 systemd 运行：网站的进程意外结束时（比如内存不够被系统结束），外面的进程也跟着退出，网站就停了，要由 systemd 重新启动它：
@@ -104,7 +100,7 @@ WantedBy=multi-user.target
 
 `systemctl daemon-reload`、`systemctl enable --now hfile` 以后，`journalctl -u hfile` 看输出（访问记录也在里面）。`hfile`（serve）的退出码：0 正常停下（Ctrl+C、SIGTERM）；1 没能启动（端口被占用、设置文件或数据库有问题，原因打印在前面）；2 命令行写错了（比如 `--config` 后面没写路径）；128 加信号的编号：网站的进程被这个信号结束了（137 是 SIGKILL，比如内存不够）。3 只在两个进程之间用（重新读设置），不会传出来。
 
-命令（`upgrade`、`backup`、`restore`、`resetadmin` 这些）也用运行网站的账号 hfile 运行，`upgrade` 和 `restore` 要先 `systemctl stop hfile`；定时清理也放进这个账号的 crontab（`crontab -u hfile -e`）：
+命令（`upgrade`、`backup`、`restore`、`resetadmin` 这些）也用运行网站的账号 hfile 运行，`upgrade` 和 `restore` 要先 `systemctl stop hfile`：
 
 ```bash
 sudo -u hfile /srv/hfile/hfile --config /srv/hfile/config.toml backup

@@ -1,9 +1,6 @@
-"""On every login (the API, the Django admin): the IP it came from, an entry in the activity log, and now and
-then a clean-up of the sessions that have ended. On every failed password login: an entry in the activity log."""
+"""On every login (the API, the Django admin): the IP it came from and an entry in the activity log. On every
+failed password login: an entry in the activity log. And the cleanup job of the sessions that have ended."""
 
-import logging
-import threading
-import time
 from importlib import import_module
 
 from django.conf import settings
@@ -12,41 +9,29 @@ from django.dispatch import Signal
 from apps.core.net import client_ip
 from apps.ipgeo.lookup import locate
 
-logger = logging.getLogger(__name__)
-
 # Sent by the user management after it made a copy of an account, with source= and target= (User
 # instances), inside the same transaction. The copy may do on each storage source what the source
 # may: the storages app connects to it and copies the grants.
 user_copied = Signal()
 
-# Ended sessions stay in the database until something deletes them (Django leaves that to the
-# `clearsessions` command, which nothing runs here): logging in does it, once an hour at most.
-CLEAR_SESSIONS_EVERY = 3600  # seconds; the first time an hour after the program started
-_sessions_cleared = time.monotonic()
-_clearing = threading.Lock()
+# Ended sessions stay in the database until something deletes them (Django leaves that to its
+# `clearsessions` command): the cleanup (apps.core.cleanup) does, this many at most per run, the rest the
+# next time, so that its transaction is short.
+SESSIONS_PER_RUN = 20000
+SESSIONS_BATCH = 500  # per query
 
 
 def remove_expired_sessions(now):
-    """`hfile cleanup`'s job: the sessions that have ended at `now`, also those of visitors who never
-    log in (a guest's uploads, unlocked folders, a single sign-on start), which a login never clears."""
+    """The cleanup job (apps.core.cleanup): the sessions that have ended at `now`, also those of visitors who
+    never log in (a guest's uploads, unlocked folders, a single sign-on start)."""
     store = import_module(settings.SESSION_ENGINE).SessionStore
     if not hasattr(store, "get_model_class"):  # signed cookies (setup mode): nothing is stored
         return 0
-    deleted, _ = store.get_model_class().objects.filter(expire_date__lt=now).delete()
-    return deleted
-
-
-def clear_expired_sessions():
-    global _sessions_cleared
-    if time.monotonic() - _sessions_cleared < CLEAR_SESSIONS_EVERY or not _clearing.acquire(blocking=False):
-        return
-    try:
-        _sessions_cleared = time.monotonic()
-        import_module(settings.SESSION_ENGINE).SessionStore.clear_expired()
-    except Exception:  # not worth a failed login
-        logger.warning("Could not delete the expired sessions", exc_info=True)
-    finally:
-        _clearing.release()
+    expired = store.get_model_class().objects.filter(expire_date__lt=now)
+    keys = list(expired.values_list("pk", flat=True)[:SESSIONS_PER_RUN])
+    # The same condition again: a session saved since it was listed has a later expiry, and stays.
+    return sum(expired.filter(pk__in=keys[start:start + SESSIONS_BATCH]).delete()[0]
+               for start in range(0, len(keys), SESSIONS_BATCH))
 
 
 def on_login(sender, request, user, **kwargs):
@@ -61,7 +46,6 @@ def on_login(sender, request, user, **kwargs):
     user.last_login_location = locate(ip)
     type(user).objects.filter(pk=user.pk).update(last_login_ip=ip, last_login_location=user.last_login_location)
     loginlog.record(request, success=True, user=user)
-    clear_expired_sessions()
 
 
 def on_login_failed(sender, credentials, request=None, **kwargs):

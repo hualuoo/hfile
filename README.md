@@ -56,7 +56,7 @@ HFile 用 Django 写成：
   - 分享可以设访问密码和有效期，能看到什么跟着分享者的权限走。
 - **权限**：每个用户在每个存储源上有自己的根目录和 15 种权限。另有过滤规则（隐藏、不可访问、不可下载）、目录密码和目录文档。
 - **账号和安全**：图片验证码、超级管理员的两步验证（TOTP）、登录安全入口、单点登录（GitHub、Gitee、GitLab、OpenID Connect）、IP 和 UA 黑名单。
-- **运维**：安装向导、数据库备份和恢复命令、定时清理、诊断信息页；访问记录里的口令和签名自动打码；操作日志：登录、文件的改动、短链和分享、管理员的每次修改，只增不改；IP 归属地：用户、操作日志和下载日志里的 IP 显示国家或地区，用城市数据库时很多还有省和城市，数据库是 MaxMind 的 GeoLite2-City 或 GeoLite2-Country（二选一），在本机查询。
+- **运维**：安装向导、数据库备份和恢复命令、自动清理过期的会话和上传、诊断信息页；访问记录里的口令和签名自动打码；操作日志：登录、文件的改动、短链和分享、管理员的每次修改，只增不改；IP 归属地：用户、操作日志和下载日志里的 IP 显示国家或地区，用城市数据库时很多还有省和城市，数据库是 MaxMind 的 GeoLite2-City 或 GeoLite2-Country（二选一），在本机查询。
 
 每个功能的详细说明见[功能说明](docs/features.md)。
 
@@ -203,13 +203,9 @@ TimeoutStopSec=120
 WantedBy=multi-user.target
 ```
 
-再加一个定时任务，清理过期的会话、上传、短链和分享：
+过期的会话、上传这些，网站自己每小时清理一次。
 
-```cron
-17 * * * *  /srv/hfile/hfile cleanup --config /srv/hfile/config.toml
-```
-
-网站用哪个账号启动，这个定时任务和 `backup`、`upgrade` 这些命令就用哪个账号运行，这里是 `www`（`crontab -u www -e`，`sudo -u www /srv/hfile/hfile --config /srv/hfile/config.toml backup`）：用 root 运行时，它们新建的文件和文件夹归 root，网站用不了。
+网站用哪个账号启动，`backup`、`upgrade` 这些命令就用哪个账号运行，这里是 `www`（`sudo -u www /srv/hfile/hfile --config /srv/hfile/config.toml backup`）：用 root 运行时，它们新建的文件和文件夹归 root，网站用不了。
 
 HSTS、`/tmp` 要注意的地方、退出码这些，见[运行](docs/deploy.md)。
 
@@ -246,7 +242,6 @@ HSTS、`/tmp` 要注意的地方、退出码这些，见[运行](docs/deploy.md)
 | `hfile upgrade [--check]` | 升级数据库；加 `--check` 只检查，不改 |
 | `hfile backup [-o 文件.sql.gz]` | 备份整个数据库 |
 | `hfile restore 文件.sql.gz` | 用备份替换整个数据库（要先停掉网站） |
-| `hfile cleanup [--dry-run]` | 删除过期的会话、上传、短链、分享和 OnlyOffice 编辑会话，以及被打断的备份留下的文件 |
 | `hfile resetadmin` | 管理员登录不了时重设密码 |
 | `hfile unblock` | 自己被访问控制挡住时，清空 IP 和 UA 黑名单 |
 | `hfile createsuperuser` | 新建超级管理员 |
@@ -269,7 +264,7 @@ HSTS、`/tmp` 要注意的地方、退出码这些，见[运行](docs/deploy.md)
 | [功能说明](docs/features.md) | 每个功能的详细说明 |
 | [安装](docs/install.md) | 安装向导的每一步 |
 | [设置文件](docs/configuration.md) | `config.toml` 的每一项 |
-| [运行](docs/deploy.md) | 命令、上线、反向代理、systemd、定时清理 |
+| [运行](docs/deploy.md) | 命令、上线、反向代理、systemd、自动清理 |
 | [升级](docs/upgrade.md) | 升级数据库、备份和恢复 |
 | [打包](docs/build.md) | 用 PyInstaller 打包单文件程序 |
 | [开发](docs/development.md) | 开发环境、本地 MySQL 容器、测试 |

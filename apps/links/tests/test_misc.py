@@ -1,12 +1,12 @@
 """What the links app adds elsewhere: the policy's link rules (apps.storages.access), the access log's mask for
-/s/<key>, the cleanup job, the browser's catch-all route and its scripts."""
+/s/<key>, the browser's catch-all route and its scripts."""
 
 from __future__ import annotations
 
 from django.test import SimpleTestCase
 
 from apps.accounts.permissions import Permission
-from apps.core import cleanup, masking
+from apps.core import masking
 from apps.files import pages
 from apps.storages import access as policy
 from apps.storages.access import AccessDenied
@@ -69,7 +69,6 @@ class MaskingTests(SimpleTestCase):
 
 class RegistrationTests(SimpleTestCase):
     def test_registered(self):
-        self.assertIn("short_links", [job.name for job in cleanup.jobs()])
         self.assertIn(delivery.route, pages._routes)
         self.assertIn("links/js/links.js", pages.assets()["scripts"])
         self.assertIn("links/css/links.css", pages.assets()["styles"])

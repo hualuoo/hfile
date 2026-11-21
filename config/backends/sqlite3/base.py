@@ -3,7 +3,7 @@
 The file holds password hashes, session keys and the storages' keys. Django's driver would make it
 with the umask's mode, usually readable by every user of the machine. settings.DATABASES names
 this backend (config/database.py), so whichever command connects first (check, migrate,
-createsuperuser, backup, cleanup, serve, the installer) makes it the same way.
+createsuperuser, backup, serve, the installer) makes it the same way.
 """
 
 import os

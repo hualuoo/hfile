@@ -147,8 +147,8 @@ class SqliteFileModes(TempDirMixin, SimpleTestCase):
 
     def test_any_command_makes_it_owner_only(self):
         # `hfile check` to try a config.toml written by hand (README 安装: "也可以不用网页安装"), Django's
-        # habitual `migrate`, a cron job's `cleanup` or `backup` before the first start...
-        for command in (["check"], ["migrate", "--noinput"], ["backup"], ["cleanup"]):
+        # habitual `migrate`, a `backup` before the first start...
+        for command in (["check"], ["migrate", "--noinput"], ["backup"]):
             with self.subTest(command=command[0]):
                 for leftover in self.dir.glob("hfile.sqlite3*"):
                     leftover.unlink()

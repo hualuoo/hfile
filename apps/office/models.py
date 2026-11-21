@@ -10,7 +10,7 @@ file found changed outside the site (its size or time) gets a new one when it is
 The row says who saves when the Document Server calls back (apps/office/callback.py): the last authorised
 editor that opened it (`user`, `can_edit`), with the folder passwords that user had unlocked for the
 file (`keys`, as a short link keeps them). Sessions live in the database, so open editors survive a
-restart of the site; `hfile cleanup` removes expired ones.
+restart of the site; the cleanup (apps.core.cleanup) removes expired ones.
 """
 
 from __future__ import annotations

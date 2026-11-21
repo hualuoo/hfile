@@ -1,12 +1,10 @@
 """我的分享 and 分享列表: the lists and their filters, passwords for the owner and admins only, deleting,
-clearing the expired ones, hfile cleanup and the cascades (inventory 10.7, 10.8; D6, D29)."""
+clearing the expired ones (and nothing else does), and the cascades (inventory 10.7, 10.8; D6, D29)."""
 
 from __future__ import annotations
 
 import datetime
-import io
 
-from django.core.management import call_command
 from django.utils import timezone
 from rest_framework.test import APIClient
 
@@ -128,13 +126,10 @@ class ListTests(SharesTestCase):
         self.assertEqual(client.post(f"{MANAGE}clear-expired/").json(), {"deleted": 1})  # everybody's
         self.assertEqual(sorted(Share.objects.values_list("key", flat=True)), ["Mine0001", "Mine0003"])
 
-    def test_hfile_cleanup(self):
-        self.assertIn("shares", [job.name for job in cleanup.jobs()])
-        out = io.StringIO()
-        call_command("cleanup", "--only", "shares", "--dry-run", stdout=out)
-        self.assertEqual(Share.objects.count(), 4)
-        call_command("cleanup", "--only", "shares", stdout=io.StringIO())
-        self.assertEqual(sorted(Share.objects.values_list("key", flat=True)), ["Mine0001", "Mine0003"])
+    def test_the_cleanup_leaves_them(self):
+        """The cleanup (apps.core.cleanup) has no job for shares: expired ones stay, shown as expired, until their
+        owner or an admin deletes them."""
+        self.assertNotIn("shares", [job.name for job in cleanup.jobs()])
 
     def test_cascades(self):
         self.bob.delete()

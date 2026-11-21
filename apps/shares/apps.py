@@ -10,12 +10,9 @@ class SharesConfig(AppConfig):
     verbose_name = gettext_lazy("Share")
 
     def ready(self):
-        from apps.core import cleanup, masking, reserved
+        from apps.core import masking, reserved
         from apps.files import pages
 
-        from .service import remove_expired
-
-        cleanup.register("shares", gettext_lazy("Expired shares"), remove_expired)
         # A share's key is what lets anybody in when it has no password: the access log shows <key>.
         masking.register_path(r"/share/(?P<secret>[A-Za-z0-9_-]+)", "key")
         masking.register_path(r"/api/v1/(?:manage/)?shares/(?!clear-expired/)(?P<secret>[A-Za-z0-9_-]+)/", "key")

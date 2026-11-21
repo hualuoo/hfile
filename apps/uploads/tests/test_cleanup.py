@@ -1,16 +1,13 @@
-"""Expired upload sessions and their spool files go with `hfile cleanup` (uploads' job in apps.core.cleanup);
-the spool is never served."""
+"""Expired upload sessions and their spool files go with the cleanup (uploads' job in apps.core.cleanup); the
+spool is never served."""
 
-import io
 import os
 import time
 from datetime import timedelta
 from pathlib import Path
-from unittest import mock
 
 from django.conf import settings
 from django.core.checks import run_checks
-from django.core.management import call_command
 from django.test import override_settings
 from django.utils import timezone
 
@@ -20,7 +17,6 @@ from apps.storages import config as storage_config
 from apps.storages.drivers.local import LocalDriver
 from apps.uploads import service, spool
 from apps.uploads.models import State, UploadSession
-from apps.uploads.service import _light_cleanup as real_light_cleanup  # before the base test case replaces it
 
 from .base import UploadTestCase
 
@@ -64,37 +60,8 @@ class CleanupTests(UploadTestCase):
         self.assertTrue(spool.path_of(recent).exists())  # perhaps a session being made right now
         self.assertTrue((self.spool / "notes.txt").exists())
 
-    def test_the_command(self):
-        past = timezone.now() - timedelta(seconds=1)
-        old = self.session("old.txt", expires_at=past)
-        out, err = io.StringIO(), io.StringIO()
-        with self.captureOnCommitCallbacks(execute=True):
-            call_command("cleanup", "--dry-run", stdout=out, stderr=err)
-        self.assertIn("过期的上传会话：可以删除 1 个", out.getvalue())
-        self.assertIn("试运行", out.getvalue())
-        self.assertTrue(UploadSession.objects.filter(pk=old.id).exists())
-        self.assertTrue(spool.path_of(old.id).exists())
-        out = io.StringIO()
-        with self.captureOnCommitCallbacks(execute=True):
-            call_command("cleanup", "--only", "uploads", stdout=out, stderr=err)
-        self.assertIn("过期的上传会话：删除了 1 个", out.getvalue())
-        self.assertFalse(UploadSession.objects.filter(pk=old.id).exists())
-        self.assertFalse(spool.path_of(old.id).exists())
-        self.assertEqual(err.getvalue(), "")
-
     def test_the_job_is_registered(self):
-        self.assertIn(("uploads", "过期的上传会话"), [(job.name, job.label) for job in cleanup.jobs()])
-
-    def test_the_light_cleanup_while_sessions_are_made(self):
-        """The base test case turns it off; the real one runs once per CLEANUP_EVERY seconds per process."""
-        past = timezone.now() - timedelta(seconds=1)
-        old = self.session("old.txt", expires_at=past)
-        with mock.patch.object(service, "_cleaned_at", None):
-            real_light_cleanup()
-            self.assertFalse(UploadSession.objects.filter(pk=old.id).exists())
-            again = self.session("again.txt", expires_at=past)
-            real_light_cleanup()
-            self.assertTrue(UploadSession.objects.filter(pk=again.id).exists())  # not again so soon
+        self.assertIn(("uploads", service.remove_expired), [(job.name, job.func) for job in cleanup.jobs()])
 
 
 class SpoolTests(UploadTestCase):

@@ -209,8 +209,8 @@ class EnglishTests(TestCase):
 
         out = StringIO()
         with translation.override("en"):
-            call_command("cleanup", "--dry-run", stdout=out)
-        self.assertIn("This was a dry run: nothing was deleted.", out.getvalue())
+            call_command("unblock", stdout=out)
+        self.assertIn("The IP and UA blocklists were already empty; nothing was changed.", out.getvalue())
 
     def test_the_installer(self):
         import tempfile

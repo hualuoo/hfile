@@ -8,7 +8,7 @@
   and for each download from the 下载 button of the site's pages that goes through the site (页面下载:
   /pd/ links, apps.files.download.download_clicked; D54). `username` is who was logged in, "" for a
   visitor (and for the rows older than migration links.0002). The short link is a plain key (D40):
-  deleting one link keeps its log, cleaning up expired links removes theirs (apps.links.service.remove_expired).
+  deleting one link keeps its log, 删除过期短链 removes theirs (apps.links.service.delete_expired).
 
 Keys are compared exactly, on every database: MySQL's collation ignores case (and accents), so the key
 columns use a binary collation there (KeyField). "aB3x9Z" and "Ab3X9z" are two links, also for the

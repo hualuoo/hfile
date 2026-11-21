@@ -109,9 +109,9 @@ PART_AGE = 24 * 3600  # seconds a backup's .part file has been untouched when it
 
 
 def remove_parts(now):
-    """`hfile cleanup` (apps.core.cleanup): the .part files in BACKUP_DIR of backups cut short (kill -9, a power
+    """The cleanup job (apps.core.cleanup): the .part files in BACKUP_DIR of backups cut short (kill -9, a power
     cut), with password hashes in them (OPS-06). A backup being written touches its file all the time, so only
-    those untouched for PART_AGE. Removed once the transaction commits: not with --dry-run."""
+    those untouched for PART_AGE. Removed once the transaction commits."""
     cutoff = now.timestamp() - PART_AGE
     try:
         with os.scandir(settings.BACKUP_DIR) as entries:

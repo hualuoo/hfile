@@ -1,5 +1,4 @@
 from django.apps import AppConfig
-from django.utils.translation import gettext_lazy
 
 # What the file browser's pages (the browse pages and the share pages) load of this app.
 SCRIPTS = ("office/js/office.js",)
@@ -23,7 +22,7 @@ class OfficeConfig(AppConfig):
 
         from . import sessions
 
-        cleanup.register("office", gettext_lazy("Expired OnlyOffice editing sessions"), sessions.remove_expired)
+        cleanup.register("office", sessions.remove_expired)
         # Renamed, moved, deleted or replaced files: their document keys go (the next open gets a new one).
         file_signals.changed.connect(sessions.forget_changed, dispatch_uid="office.forget_changed")
         # New params for a storage (another root, bucket or base path), or the storage saved disabled: its keys go.

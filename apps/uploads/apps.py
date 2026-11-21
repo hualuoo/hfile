@@ -15,4 +15,4 @@ class UploadsConfig(AppConfig):
         from . import checks  # noqa: F401 - registers the system check
         from .service import remove_expired
 
-        cleanup.register("uploads", gettext_lazy("Expired upload sessions"), remove_expired)
+        cleanup.register("uploads", remove_expired)

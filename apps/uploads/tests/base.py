@@ -55,7 +55,6 @@ class UploadTestCase(TestCase):
         settings_patch.enable()
         self.addCleanup(settings_patch.disable)
         for patcher in (mock.patch.object(service, "CHUNK_SIZE", self.chunk),
-                        mock.patch.object(service, "_light_cleanup", lambda: None),
                         mock.patch.object(instances, "GRACE", 0)):
             patcher.start()
             self.addCleanup(patcher.stop)

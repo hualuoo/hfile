@@ -340,5 +340,4 @@ GROUPS = [
     pgettext_lazy("command group", "siteconf"),
     pgettext_lazy("command group", "staticfiles"),
     pgettext_lazy("command group", "upgrades"),
-    pgettext_lazy("command group", "web"),
 ]

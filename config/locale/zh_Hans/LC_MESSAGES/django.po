@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HFile\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-21 04:24+0800\n"
+"POT-Creation-Date: 2026-11-21 15:55+0800\n"
 "Language: zh_Hans\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -95,10 +95,6 @@ msgstr "内置用户没有密码，也不能登录。"
 #: apps/accounts/apps.py
 msgid "Accounts"
 msgstr "账号"
-
-#: apps/accounts/apps.py
-msgid "Expired sessions"
-msgstr "过期的会话"
 
 #: apps/accounts/login.py
 #, python-format
@@ -373,12 +369,12 @@ msgid "%(name)s: %(notes)s"
 msgstr "%(name)s：%(notes)s"
 
 #: apps/accounts/management/commands/resetadmin.py apps/accounts/permissions.py
-#: apps/activity/describe.py apps/core/cleanup.py apps/core/filters.py
-#: apps/core/images.py apps/core/parsers.py apps/core/query.py
-#: apps/installer/service.py apps/siteconf/serializers.py
-#: apps/siteconf/views.py apps/storages/drivers/s3.py
-#: apps/storages/instances.py apps/upgrades/management/commands/restore.py
-#: apps/upgrades/service.py apps/upgrades/startup.py config/configfile.py
+#: apps/activity/describe.py apps/core/filters.py apps/core/images.py
+#: apps/core/parsers.py apps/core/query.py apps/installer/service.py
+#: apps/siteconf/serializers.py apps/siteconf/views.py
+#: apps/storages/drivers/s3.py apps/storages/instances.py
+#: apps/upgrades/management/commands/restore.py apps/upgrades/service.py
+#: apps/upgrades/startup.py config/configfile.py
 msgid ", "
 msgstr "、"
 
@@ -2042,10 +2038,6 @@ msgstr ""
 #: apps/copytasks/templates/copytasks/manage/copy_tasks.html
 msgid "Copy task pages"
 msgstr "复制任务翻页"
-
-#: apps/core/cleanup.py
-msgid "No such cleanup job: "
-msgstr "没有这个清理项："
 
 #: apps/core/exceptions.py
 msgid "The resource's current state doesn't allow this."
@@ -4116,10 +4108,6 @@ msgstr "补全归属地"
 msgid "Direct and short links"
 msgstr "直链和短链"
 
-#: apps/links/apps.py
-msgid "Expired short links (with their download log entries)"
-msgstr "过期的短链（连同它们的下载日志）"
-
 #: apps/links/delivery.py
 msgid ""
 "This short link no longer works: the user who created it can no longer "
@@ -4470,10 +4458,6 @@ msgstr "请选择短链有效期。"
 msgid "The short link lifetime should be a number of seconds."
 msgstr "短链有效期应该是秒数。"
 
-#: apps/office/apps.py
-msgid "Expired OnlyOffice editing sessions"
-msgstr "过期的 OnlyOffice 编辑会话"
-
 #: apps/office/callback.py
 msgid "The file is no longer within what this user can access."
 msgstr "文件已经不在这个用户能访问的范围里了。"
@@ -4645,10 +4629,6 @@ msgstr "暂不支持下载文件夹。"
 #: apps/shares/templates/shares/share.html
 msgid "Share"
 msgstr "分享"
-
-#: apps/shares/apps.py
-msgid "Expired shares"
-msgstr "过期的分享"
 
 #: apps/shares/models.py apps/storages/drivers/local.py
 msgid "Folder"
@@ -15511,10 +15491,6 @@ msgstr "迁移数"
 msgid "Upgrades"
 msgstr "版本升级"
 
-#: apps/upgrades/apps.py
-msgid ".part files left by interrupted backups"
-msgstr "备份被打断时留下的 .part 文件"
-
 #: apps/upgrades/backup.py
 #, python-format
 msgid ""
@@ -16191,10 +16167,6 @@ msgstr "注意：%(message)s"
 msgid "HFile %(version)s didn't start. %(message)s"
 msgstr "HFile %(version)s 没有启动。%(message)s"
 
-#: apps/uploads/apps.py
-msgid "Expired upload sessions"
-msgstr "过期的上传会话"
-
 #: apps/uploads/checks.py
 #, python-format
 msgid ""
@@ -16576,64 +16548,6 @@ msgstr "网站去问别的服务器时，那边出错了，请稍后再试。"
 msgid "Too many requests. Please try again in %(n)s second."
 msgid_plural "Too many requests. Please try again in %(n)s seconds."
 msgstr[0] "太频繁了，请 %(n)s 秒后再试。"
-
-#: apps/web/management/commands/cleanup.py
-msgid ""
-"Deletes what has expired (unfinished upload sessions and their temporary "
-"files, and more); meant to run from cron. One line per job; the exit code is "
-"1 when a job fails."
-msgstr ""
-"删除过期的内容（上传到一半的会话和它们的临时文件等），给 cron 定时运行。每一"
-"项一行，有一项出错时退出码是 1。"
-
-#: apps/web/management/commands/cleanup.py
-msgid "only count what could be deleted; delete nothing"
-msgstr "只数出有多少可以删除，什么都不删"
-
-#: apps/web/management/commands/cleanup.py
-msgid "NAME"
-msgstr "名字"
-
-#: apps/web/management/commands/cleanup.py
-msgid ""
-"run only this job (can be given several times); see --list for the names"
-msgstr "只运行这一项（可以写几次）；名字见 --list"
-
-#: apps/web/management/commands/cleanup.py
-msgid "list all cleanup jobs"
-msgstr "列出所有清理项"
-
-#: apps/web/management/commands/cleanup.py
-msgid "No cleanup jobs."
-msgstr "没有清理项。"
-
-#: apps/web/management/commands/cleanup.py
-#, python-format
-msgid "%(label)s: failed: %(reason)s"
-msgstr "%(label)s：出错了：%(reason)s"
-
-#: apps/web/management/commands/cleanup.py
-#, python-format
-msgid "%(label)s: %(count)s can be deleted"
-msgid_plural "%(label)s: %(count)s can be deleted"
-msgstr[0] "%(label)s：可以删除 %(count)s 个"
-
-#: apps/web/management/commands/cleanup.py
-#, python-format
-msgid "%(label)s: deleted %(count)s"
-msgid_plural "%(label)s: deleted %(count)s"
-msgstr[0] "%(label)s：删除了 %(count)s 个"
-
-#: apps/web/management/commands/cleanup.py
-msgid "This was a dry run: nothing was deleted."
-msgstr "这是试运行：什么都没有删除。"
-
-#: apps/web/management/commands/cleanup.py
-#, python-format
-msgid "%(count)s cleanup job failed; see above (the details are in the log)."
-msgid_plural ""
-"%(count)s cleanup jobs failed; see above (the details are in the log)."
-msgstr[0] "有 %(count)s 项清理出错了，见上面的说明（详细情况在日志里）。"
 
 #: apps/web/navigation.py
 msgid "Components"
@@ -18327,11 +18241,6 @@ msgstr "静态文件"
 msgctxt "command group"
 msgid "upgrades"
 msgstr "版本升级"
-
-#: config/cli_texts.py
-msgctxt "command group"
-msgid "web"
-msgstr "页面"
 
 #: config/configfile.py
 msgid ""

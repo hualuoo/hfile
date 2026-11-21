@@ -13,4 +13,4 @@ class UpgradesConfig(AppConfig):
 
         from .backup import remove_parts
 
-        cleanup.register("backup_parts", gettext_lazy(".part files left by interrupted backups"), remove_parts)
+        cleanup.register("backup_parts", remove_parts)

@@ -287,5 +287,5 @@ def storage_saved(sender, instance=None, created=False, **kwargs) -> None:
 
 
 def remove_expired(now: datetime) -> int:
-    """`hfile cleanup` (apps.core.cleanup): expired sessions, except one that is being saved."""
+    """The cleanup job (apps.core.cleanup): expired sessions, except one that is being saved."""
     return OfficeSession.objects.filter(_not_saving(now), expires_at__lt=now).delete()[0]

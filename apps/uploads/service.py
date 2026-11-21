@@ -41,7 +41,6 @@ import math
 import re
 import secrets
 import threading
-import time
 from collections.abc import Iterable
 from datetime import datetime, timedelta
 from typing import Any
@@ -273,11 +272,6 @@ def _log_upload(session: UploadSession) -> None:
 # --- the cleanup ---------------------------------------------------------------------------------------
 
 ORPHAN_AGE = 3600  # seconds: a spool file without a session (a crash between the two) goes after this
-CLEANUP_EVERY = 600  # seconds between the light cleanups done while sessions are made
-_cleanup_lock = threading.Lock()
-_cleaned_at: float | None = None
-
-
 CLEANUP_BATCH = 500  # sessions or spool files per query
 CLEANUP_MAX = 20000  # per run: the rest goes the next time
 
@@ -288,9 +282,9 @@ def _not_held(now: datetime) -> Q:
 
 
 def remove_expired(now: datetime) -> int:
-    """`hfile cleanup` (apps.core.cleanup): expired sessions and their spool files, and spool files left
+    """The cleanup job (apps.core.cleanup): expired sessions and their spool files, and spool files left
     without a session (older than ORPHAN_AGE). In batches, at most CLEANUP_MAX of each per run. Rows go
-    in the transaction, files once it commits (so not with --dry-run), and only for rows really gone."""
+    in the transaction, files once it commits, and only for rows really gone."""
     expired = Q(expires_at__lt=now) & _not_held(now)
     ids = list(UploadSession.objects.filter(expired).values_list("id", flat=True)[:CLEANUP_MAX])
     removed = 0
@@ -321,21 +315,6 @@ def remove_expired(now: datetime) -> int:
     if candidates:
         transaction.on_commit(remove_files)
     return removed + len(orphans)
-
-
-def _light_cleanup() -> None:
-    """Expired sessions also go while sessions are made, at most every CLEANUP_EVERY seconds per
-    process, so the spool doesn't fill up where nobody set up cron for `hfile cleanup`."""
-    global _cleaned_at
-    with _cleanup_lock:
-        if _cleaned_at is not None and time.monotonic() - _cleaned_at < CLEANUP_EVERY:
-            return
-        _cleaned_at = time.monotonic()
-    try:
-        with transaction.atomic():
-            remove_expired(_now())
-    except Exception:  # noqa: BLE001 - never in the way of an upload
-        logger.exception("The light cleanup of upload sessions failed")
 
 
 # --- creating a session --------------------------------------------------------------------------------
@@ -384,7 +363,6 @@ def create(request, *, storage: str, folder: str | None, name: str, size: int, r
            overwrite: bool = False, password: str | None = None) -> tuple[UploadSession, policy.Access]:
     """A new session (see the top). An empty file that goes through the site is written at once: the
     session comes back done."""
-    _light_cleanup()
     access = policy.open_storage(request, storage)
     try:
         target_folder = access.path(client_join(folder, relative))

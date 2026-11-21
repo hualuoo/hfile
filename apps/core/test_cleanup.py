@@ -1,23 +1,23 @@
-"""apps.core.cleanup, the jobs of `hfile cleanup`, and the command: order, --only, a failing job doesn't stop
-the others (and is rolled back), --dry-run rolls everything back and runs nothing on commit."""
+"""apps.core.cleanup: the jobs run in the order registered, each in a transaction of its own (a failing one is
+rolled back and logged, the others still run), and stop between jobs once the program exits; the thread that
+config/wsgi.py starts runs them a few minutes after the start and then every hour."""
 
-import io
+import threading
 from unittest import mock
 
-from django.core.management import CommandError, call_command
-from django.db import transaction
-from django.test import TestCase
+from django.db import DatabaseError, transaction
+from django.test import SimpleTestCase, TestCase, override_settings
 
 from apps.accounts.models import User
 from apps.core import cleanup
 
 
-class CleanupTests(TestCase):
+class RunTests(TestCase):
     def setUp(self):
         super().setUp()
-        patcher = mock.patch.dict(cleanup._jobs, clear=True)
-        patcher.start()
-        self.addCleanup(patcher.stop)
+        for patcher in (mock.patch.dict(cleanup._jobs, clear=True), mock.patch.object(cleanup, "_stop", threading.Event())):
+            patcher.start()
+            self.addCleanup(patcher.stop)
         self.ran = []
         self.committed = []
 
@@ -30,97 +30,102 @@ class CleanupTests(TestCase):
             if fail:
                 raise RuntimeError(f"{name} broke")
             return count
-        cleanup.register(name, f"{name} 的标签", run)
+        cleanup.register(name, run)
 
     def test_jobs_in_the_order_registered(self):
         self.job("b", 2)
-        self.job("a", 3)
-        with self.captureOnCommitCallbacks(execute=True):
+        self.job("a", 0)
+        with self.captureOnCommitCallbacks(execute=True), self.assertLogs("hfile.cleanup", "INFO") as logged:
             results = cleanup.run()
-        self.assertEqual(results, [("b", "b 的标签", 2), ("a", "a 的标签", 3)])
+        self.assertEqual(results, [("b", 2), ("a", 0)])
         self.assertEqual([name for name, _ in self.ran], ["b", "a"])
+        self.assertEqual(len({now for _, now in self.ran}), 1)  # the same moment for every job
         self.assertEqual(self.committed, ["b", "a"])
+        self.assertEqual(logged.output, ["INFO:hfile.cleanup:Removed what had expired: b 2"])
         # Registering a name again replaces the job, in its place.
-        cleanup.register("b", "新标签", lambda now: 7)
-        self.assertEqual(cleanup.run()[0], ("b", "新标签", 7))
+        cleanup.register("b", lambda now: 7)
+        with self.assertLogs("hfile.cleanup", "INFO"):
+            self.assertEqual(cleanup.run()[0], ("b", 7))
 
-    def test_only(self):
-        self.job("a", 1)
-        self.job("b", 2)
-        self.assertEqual(cleanup.run(only=["b"]), [("b", "b 的标签", 2)])
-        with self.assertRaises(ValueError) as caught:
-            cleanup.run(only=["b", "nope"])
-        self.assertIn("nope", str(caught.exception))
+    def test_nothing_removed_says_nothing(self):
+        self.job("a", 0)
+        with self.assertNoLogs("hfile.cleanup"):
+            self.assertEqual(cleanup.run(), [("a", 0)])
 
     def test_a_failing_job(self):
         self.job("first", 1, rows=1)
         self.job("broken", fail=True, rows=2)
         self.job("last", 3)
-        errors = []
-        with self.captureOnCommitCallbacks(execute=True), self.assertLogs("hfile.cleanup", "ERROR"):
-            results = cleanup.run(errors=errors)
-        self.assertEqual(results, [("first", "first 的标签", 1), ("broken", "broken 的标签", None), ("last", "last 的标签", 3)])
-        self.assertEqual([(name, str(error)) for name, _label, error in errors], [("broken", "broken broke")])
+        with self.captureOnCommitCallbacks(execute=True), self.assertLogs("hfile.cleanup", "INFO") as logged:
+            results = cleanup.run()
+        self.assertEqual(results, [("first", 1), ("broken", None), ("last", 3)])
+        self.assertTrue(logged.output[0].startswith("ERROR:hfile.cleanup:The cleanup job broken failed\n"))
+        self.assertIn("RuntimeError: broken broke", logged.output[0])
+        self.assertEqual(logged.output[1], "INFO:hfile.cleanup:Removed what had expired: first 1, last 3")
         # Its own transaction was rolled back, the others' weren't.
         self.assertTrue(User.objects.filter(username="first-0").exists())
         self.assertFalse(User.objects.filter(username__startswith="broken-").exists())
         self.assertEqual(self.committed, ["first", "last"])
 
-    def test_dry_run(self):
-        self.job("a", 4, rows=2)
-        with self.captureOnCommitCallbacks(execute=True):
-            self.assertEqual(cleanup.run(dry_run=True), [("a", "a 的标签", 4)])
-        self.assertFalse(User.objects.filter(username__startswith="a-").exists())
-        self.assertEqual(self.committed, [])
+    def test_stops_between_jobs_when_the_program_exits(self):
+        self.job("first", 1)
+        cleanup.register("exit", lambda now: cleanup._stop.set() or 0)
+        self.job("last", 1)
+        with self.assertLogs("hfile.cleanup", "INFO"):
+            self.assertEqual(cleanup.run(), [("first", 1), ("exit", 0)])
+        self.assertEqual([name for name, _ in self.ran], ["first"])
 
     def test_a_job_needs_a_name(self):
         with self.assertRaises(ValueError):
-            cleanup.register("", "x", lambda now: 0)
+            cleanup.register("", lambda now: 0)
 
 
-class CommandTests(TestCase):
+class ThreadTests(SimpleTestCase):
     def setUp(self):
         super().setUp()
-        patcher = mock.patch.dict(cleanup._jobs, clear=True)
-        patcher.start()
-        self.addCleanup(patcher.stop)
+        for patcher in (mock.patch.object(cleanup, "_thread", None), mock.patch.object(cleanup, "_stop", threading.Event())):
+            patcher.start()
+            self.addCleanup(patcher.stop)
 
-    def call(self, *args):
-        out, err = io.StringIO(), io.StringIO()
-        call_command("cleanup", *args, stdout=out, stderr=err)
-        return out.getvalue(), err.getvalue()
+    def test_started_once_per_process(self):
+        looped = threading.Event()
+        with mock.patch.object(cleanup, "_loop", looped.set), mock.patch.object(cleanup.atexit, "register") as at_exit:
+            cleanup.start()
+            thread = cleanup._thread
+            thread.join(5)
+            cleanup.start()
+        self.assertTrue(looped.is_set())
+        self.assertEqual((thread.name, thread.daemon), ("hfile-cleanup", True))
+        self.assertIs(cleanup._thread, thread)
+        at_exit.assert_called_once_with(cleanup._stop_at_exit)
 
-    def test_one_line_per_job(self):
-        cleanup.register("links", "过期的短链", lambda now: 5)
-        cleanup.register("shares", "过期的分享", lambda now: 0)
-        out, err = self.call()
-        self.assertEqual(out.splitlines(), ["过期的短链：删除了 5 个", "过期的分享：删除了 0 个"])
-        self.assertEqual(err, "")
-        out, _ = self.call("--dry-run")
-        self.assertEqual(out.splitlines(), ["过期的短链：可以删除 5 个", "过期的分享：可以删除 0 个", "这是试运行：什么都没有删除。"])
-        out, _ = self.call("--list")
-        self.assertEqual(out.splitlines(), ["links\t过期的短链", "shares\t过期的分享"])
-        out, _ = self.call("--only", "shares")
-        self.assertEqual(out.splitlines(), ["过期的分享：删除了 0 个"])
+    @override_settings(SETUP_MODE=True)
+    def test_not_before_the_site_is_installed(self):
+        with mock.patch.object(cleanup, "_loop", lambda: None), mock.patch.object(cleanup.atexit, "register") as at_exit:
+            cleanup.start()
+        self.assertIsNone(cleanup._thread)
+        at_exit.assert_not_called()
 
-    def test_an_error_gives_a_non_zero_exit(self):
-        def broken(now):
-            raise RuntimeError("数据库连不上")
+    def test_the_loop(self):
+        """A few minutes after the start, then every hour; the thread's database connections are closed after each
+        run, and one that can't be closed doesn't stop it."""
+        waits = []
+        stop = mock.Mock(spec=threading.Event)
+        stop.wait.side_effect = lambda seconds: waits.append(seconds) or len(waits) > 3
+        with (mock.patch.object(cleanup, "_stop", stop), mock.patch.object(cleanup, "run") as run,
+              mock.patch.object(cleanup.random, "uniform", return_value=42.0) as uniform,
+              mock.patch.object(cleanup, "connections") as connections):
+            connections.close_all.side_effect = [None, DatabaseError("gone"), None]
+            cleanup._loop()
+        uniform.assert_called_once_with(0, cleanup.SPREAD)
+        self.assertEqual(waits, [cleanup.FIRST_AFTER + 42.0, cleanup.EVERY, cleanup.EVERY, cleanup.EVERY])
+        self.assertEqual(run.call_count, 3)
+        self.assertEqual(connections.close_all.call_count, 3)
 
-        cleanup.register("broken", "坏掉的一项", broken)
-        cleanup.register("fine", "好的一项", lambda now: 1)
-        out, err = io.StringIO(), io.StringIO()
-        with self.assertRaises(CommandError) as caught, self.assertLogs("hfile.cleanup", "ERROR"):
-            call_command("cleanup", stdout=out, stderr=err)
-        self.assertIn("有 1 项清理出错了", str(caught.exception))
-        self.assertIn("坏掉的一项：出错了：数据库连不上", err.getvalue())
-        self.assertIn("好的一项：删除了 1 个", out.getvalue())
-
-    def test_an_unknown_job(self):
-        with self.assertRaises(CommandError) as caught:
-            self.call("--only", "nope")
-        self.assertIn("没有这个清理项：nope", str(caught.exception))
-
-    def test_nothing_registered(self):
-        out, _ = self.call()
-        self.assertEqual(out.strip(), "没有清理项。")
+    def test_stopping_at_exit(self):
+        thread = threading.Thread(target=cleanup._stop.wait, daemon=True)  # a thread waiting for its next run
+        thread.start()
+        with mock.patch.object(cleanup, "_thread", thread):
+            cleanup._stop_at_exit()
+        self.assertTrue(cleanup._stop.is_set())
+        self.assertFalse(thread.is_alive())

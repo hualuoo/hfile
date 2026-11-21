@@ -825,10 +825,11 @@ class CleanupTests(_Opened):
         OfficeSession.objects.update(expires_at=now - timedelta(seconds=1), saving_until=now + timedelta(minutes=1))
         self.assertEqual(sessions.remove_expired(now), 0)
 
-    def test_through_the_command(self):
+    def test_through_the_cleanup(self):
         from apps.core import cleanup
 
         OfficeSession.objects.update(expires_at=timezone.now() - timedelta(seconds=1))
-        results = cleanup.run(only=["office"])
-        self.assertEqual(results, [("office", "过期的 OnlyOffice 编辑会话", 1)])
+        office = {job.name: job for job in cleanup.jobs()}["office"]
+        with mock.patch.dict(cleanup._jobs, {"office": office}, clear=True), self.assertLogs("hfile.cleanup", "INFO"):
+            self.assertEqual(cleanup.run(), [("office", 1)])
         self.assertFalse(OfficeSession.objects.exists())

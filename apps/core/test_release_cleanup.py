@@ -1,25 +1,26 @@
-"""Release check: `hfile cleanup` with every registered job at once, on a database with live and
-expired things of every kind and of two users. Each job removes only what has expired (and isn't in use),
-a dry run removes nothing, a second run nothing more.
+"""Release check: the cleanup (apps.core.cleanup) with every registered job at once, on a database with live
+and expired things of every kind and of two users. Each job removes only what has expired (and isn't in use), a
+second run nothing more; expired shares and short links stay, with their download logs, for people to delete.
 
-The release check found that `hfile cleanup` kept expired Django sessions; the sessions job fixes it.
+The release check found that the cleanup kept expired Django sessions; the sessions job fixes it.
 """
 
 import hashlib
-import io
 import os
 import shutil
 import time
 import uuid
 from datetime import timedelta
+from unittest import mock
 
 from django.contrib.sessions.backends.db import SessionStore
 from django.contrib.sessions.models import Session
-from django.core.management import call_command
 from django.test import TestCase, override_settings
 from django.utils import timezone
 
+from apps.accounts import signals
 from apps.accounts.models import User
+from apps.core import cleanup
 from apps.links.models import DownloadLog, ShortLink
 from apps.office.models import OfficeSession
 from apps.shares.models import Share
@@ -73,11 +74,12 @@ class EveryJobTests(TestCase):
                                             file=hashlib.sha256(path.encode()).hexdigest(), user=user, expires_at=expires,
                                             saving_until=self.future if saving else None)
 
-    def cleanup(self, *args):
-        out = io.StringIO()
-        with self.captureOnCommitCallbacks(execute=True):
-            call_command("cleanup", *args, stdout=out, stderr=io.StringIO())
-        return out.getvalue()
+    def cleanup(self):
+        with self.captureOnCommitCallbacks(execute=True), mock.patch.object(cleanup.logger, "info"):
+            return dict(cleanup.run())
+
+    def test_the_jobs(self):
+        self.assertEqual(sorted(job.name for job in cleanup.jobs()), ["backup_parts", "office", "sessions", "uploads"])
 
     def test_each_job_removes_only_what_expired(self):
         uploads_gone = [self.upload(self.alice, expires=self.past), self.upload(self.bob, expires=self.past),
@@ -85,10 +87,10 @@ class EveryJobTests(TestCase):
                         self.upload(self.alice, expires=self.past, state=State.DONE)]
         uploads_kept = [self.upload(self.alice, expires=self.future), self.upload(self.bob, expires=self.future),
                         self.upload(self.bob, expires=self.past, held=True)]  # a request is writing it right now
-        shares_gone = [self.share(self.alice, self.past), self.share(self.bob, self.now)]
-        shares_kept = [self.share(self.alice, self.future), self.share(self.bob, None)]
-        links_gone = [self.short_link(self.alice, self.past)]
-        links_kept = [self.short_link(self.bob, self.future), self.short_link(self.alice, None)]
+        shares = [self.share(self.alice, self.past), self.share(self.bob, self.now), self.share(self.alice, self.future),
+                  self.share(self.bob, None)]
+        links = [self.short_link(self.alice, self.past), self.short_link(self.bob, self.future),
+                 self.short_link(self.alice, None)]
         DownloadLog.objects.create(kind=DownloadLog.Kind.PATH, storage=self.storage, path="/a.txt")  # a path link's
         office_gone = [self.office(self.alice, self.past)]
         office_kept = [self.office(self.bob, self.future), self.office(self.alice, self.past, saving=True)]
@@ -99,40 +101,41 @@ class EveryJobTests(TestCase):
         two_days_ago = time.time() - 2 * 24 * 3600
         os.utime(part_gone, (two_days_ago, two_days_ago))  # a backup cut short; the other is being written
 
-        dry = self.cleanup("--dry-run")
-        self.assertIn("过期的上传会话：可以删除 3 个", dry)
-        self.assertEqual(UploadSession.objects.count(), 6)
-        self.assertEqual(sum(spool.path_of(s.id).exists() for s in [*uploads_gone, *uploads_kept]), 6)
-
         first = self.cleanup()
-        for line in ("过期的上传会话：删除了 3 个", "过期的分享：删除了 2 个", "过期的短链（连同它们的下载日志）：删除了 1 个",
-                     "过期的 OnlyOffice 编辑会话：删除了 1 个", "备份被打断时留下的 .part 文件：删除了 1 个"):
-            self.assertIn(line, first)
+        self.assertEqual(first, {"sessions": 0, "uploads": 3, "office": 1, "backup_parts": 1})
         self.assertEqual(set(UploadSession.objects.values_list("id", flat=True)), {s.id for s in uploads_kept})
         self.assertFalse(any(spool.path_of(s.id).exists() for s in uploads_gone))
         self.assertTrue(all(spool.path_of(s.id).exists() for s in uploads_kept))
-        self.assertEqual(set(Share.objects.values_list("id", flat=True)), {s.id for s in shares_kept})
-        self.assertEqual(set(ShortLink.objects.values_list("id", flat=True)), {s.id for s in links_kept})
-        self.assertEqual(sorted(DownloadLog.objects.values_list("short_key", flat=True)),
-                         sorted(["", *(link.key for link in links_kept)]))
         self.assertEqual(set(OfficeSession.objects.values_list("id", flat=True)), {s.id for s in office_kept})
-        self.assertFalse(any(UploadSession.objects.filter(pk=s.pk).exists() for s in uploads_gone))
         self.assertFalse(any(OfficeSession.objects.filter(pk=s.pk).exists() for s in office_gone))
-        self.assertFalse(any(Share.objects.filter(pk=s.pk).exists() for s in shares_gone))
-        self.assertFalse(any(ShortLink.objects.filter(pk=s.pk).exists() for s in links_gone))
         self.assertEqual((part_gone.exists(), part_kept.exists()), (False, True))
+        # Expired shares and short links stay, shown as expired, and so do the short links' download logs: only
+        # their owners and the admins delete them.
+        self.assertEqual(set(Share.objects.values_list("id", flat=True)), {s.id for s in shares})
+        self.assertEqual(set(ShortLink.objects.values_list("id", flat=True)), {s.id for s in links})
+        self.assertEqual(sorted(DownloadLog.objects.values_list("short_key", flat=True)),
+                         sorted(["", *(link.key for link in links)]))
 
         second = self.cleanup()
-        self.assertEqual(second.count("删除了 0 个"), 6, second)  # with the sessions
+        self.assertEqual(second, {"sessions": 0, "uploads": 0, "office": 0, "backup_parts": 0})
 
-    # Django keeps ended sessions in django_session until something deletes them. Only a login does
-    # (apps/accounts/signals.py clear_expired_sessions, at most once an hour); `hfile cleanup` has no job for
-    # them, so a site used without logging in (guest uploads, folder passwords, single sign-on starts all
-    # make sessions) keeps every one of them.
+    # Django keeps ended sessions in django_session until something deletes them: the sessions job does, also
+    # those of visitors who never log in (guest uploads, folder passwords, single sign-on starts all make sessions).
     def test_expired_django_sessions(self):
         store = SessionStore()
         store["hfile.uploads.owner"] = "x"
         store.create()
         Session.objects.filter(session_key=store.session_key).update(expire_date=self.past)
-        self.cleanup()
-        self.assertFalse(Session.objects.filter(session_key=store.session_key).exists())
+        live = SessionStore()
+        live["hfile.uploads.owner"] = "y"
+        live.create()
+        self.assertEqual(self.cleanup()["sessions"], 1)
+        self.assertEqual(list(Session.objects.values_list("session_key", flat=True)), [live.session_key])
+
+    def test_a_great_many_sessions(self):
+        """At most SESSIONS_PER_RUN in a run, the rest the next time: on SQLite its transaction holds the write lock."""
+        Session.objects.bulk_create(Session(session_key=f"{n:040d}", session_data="", expire_date=self.past) for n in range(7))
+        with mock.patch.object(signals, "SESSIONS_PER_RUN", 5), mock.patch.object(signals, "SESSIONS_BATCH", 2):
+            self.assertEqual(self.cleanup()["sessions"], 5)
+            self.assertEqual(self.cleanup()["sessions"], 2)
+        self.assertFalse(Session.objects.exists())

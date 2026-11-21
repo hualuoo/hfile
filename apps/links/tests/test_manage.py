@@ -1,4 +1,4 @@
-"""The admin APIs of 短链管理 and 下载日志 (inventory 9.9-9.11, D40), and `hfile cleanup`."""
+"""The admin APIs of 短链管理 and 下载日志 (inventory 9.9-9.11, D40), and expired short links staying."""
 
 from __future__ import annotations
 
@@ -6,10 +6,10 @@ import csv
 import datetime
 import io
 
-from django.core.management import call_command
 from django.utils import timezone
 
 from apps.accounts.models import User
+from apps.core import cleanup
 from apps.core.testing import mysql_only
 
 from .. import ratelimit
@@ -268,19 +268,8 @@ class DownloadLogAdminTests(ManageTestCase):
                          ["Ab3X9z"])
 
 
-class CleanupTests(ManageTestCase):
-    def test_the_job(self):
-        expired = self.short_link_of(self.alice, key="Old001", expires_at=days_ago(1))
-        live = self.short_link_of(self.alice, key="New001", expires_at=days_ago(-1))
-        self.short_link_of(self.alice, key="Ever01")
-        self.log("short", short_key=expired.key)
-        self.log("short", short_key=live.key)
-        out = io.StringIO()
-        call_command("cleanup", "--only", "short_links", "--dry-run", stdout=out)
-        self.assertIn("过期的短链（连同它们的下载日志）：可以删除 1 个", out.getvalue())
-        self.assertEqual(ShortLink.objects.count(), 3)
-        out = io.StringIO()
-        call_command("cleanup", "--only", "short_links", stdout=out)
-        self.assertIn("删除了 1 个", out.getvalue())
-        self.assertEqual(set(ShortLink.objects.values_list("key", flat=True)), {"New001", "Ever01"})
-        self.assertEqual(list(DownloadLog.objects.values_list("short_key", flat=True)), ["New001"])
+class ExpiredTests(ManageTestCase):
+    def test_they_stay(self):
+        """The cleanup (apps.core.cleanup) has no job for short links: an expired one stays, shown as expired, with
+        its download log, until an admin deletes it."""
+        self.assertNotIn("short_links", [job.name for job in cleanup.jobs()])

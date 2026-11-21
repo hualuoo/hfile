@@ -11,10 +11,10 @@ class LinksConfig(AppConfig):
     verbose_name = gettext_lazy("Direct and short links")
 
     def ready(self):
-        from apps.core import cleanup, masking
+        from apps.core import masking
         from apps.files import download, pages
 
-        from . import delivery, service
+        from . import delivery
 
         # A short link's key is a bearer token: the access log shows /s/<key>. At the start of an address, after
         # = (?next=/s/…), a space or a quote, and in a full URL; not "/s/" deeper in a path (a folder named s).
@@ -25,4 +25,3 @@ class LinksConfig(AppConfig):
         pages.add_assets(scripts=["links/js/links.js"], styles=["links/css/links.css"])
         # The 下载 button's downloads through /pd/ go into the download log too (页面下载).
         download.download_clicked.connect(delivery.page_download, dispatch_uid="links.page_download")
-        cleanup.register("short_links", gettext_lazy("Expired short links (with their download log entries)"), service.remove_expired)

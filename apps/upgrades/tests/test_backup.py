@@ -171,8 +171,8 @@ class BackupTests(UpgradeTestBase):
 
     def test_what_a_backup_cut_short_left_is_cleaned_up(self):
         # OPS-06: a backup cut short (kill -9, a power cut) left its .part file behind, password hashes in it,
-        # and nothing removed it. `hfile cleanup` removes one untouched for a day: a backup being written
-        # touches its file all the time.
+        # and nothing removed it. The cleanup (apps.core.cleanup) removes one untouched for a day: a backup being
+        # written touches its file all the time.
         left = self.dir / "hfile-20261101-020000.sql.gz.part"
         writing = self.dir / "hfile-20261113-020000.sql.gz.part"
         whole = self.dir / "hfile-20261101-010000.sql.gz"
@@ -182,13 +182,13 @@ class BackupTests(UpgradeTestBase):
         two_days_ago = time.time() - 2 * 24 * 3600
         for path in (left, whole, other):
             os.utime(path, (two_days_ago, two_days_ago))
-        label = "备份被打断时留下的 .part 文件"
-        self.assertEqual(cleanup.run(only=["backup_parts"], dry_run=True), [("backup_parts", label, 1)])
-        self.assertTrue(left.exists())  # counted, not removed
-        self.assertEqual(cleanup.run(only=["backup_parts"]), [("backup_parts", label, 1)])
-        self.assertEqual(self.files(), sorted(path.name for path in (writing, whole, other)))
-        with override_settings(BACKUP_DIR=self.dir / "none yet"):
-            self.assertEqual(cleanup.run(only=["backup_parts"]), [("backup_parts", label, 0)])
+        job = {job.name: job for job in cleanup.jobs()}["backup_parts"]
+        with mock.patch.dict(cleanup._jobs, {"backup_parts": job}, clear=True):
+            with self.assertLogs("hfile.cleanup", "INFO"):
+                self.assertEqual(cleanup.run(), [("backup_parts", 1)])
+            self.assertEqual(self.files(), sorted(path.name for path in (writing, whole, other)))
+            with override_settings(BACKUP_DIR=self.dir / "none yet"):
+                self.assertEqual(cleanup.run(), [("backup_parts", 0)])
 
     def test_two_backups_never_share_a_file(self):
         path = backup.new_path()

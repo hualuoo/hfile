@@ -19,7 +19,7 @@ class AccountsConfig(AppConfig):
         user_logged_in.connect(on_login, dispatch_uid="accounts.on_login")
         user_login_failed.connect(on_login_failed, dispatch_uid="accounts.on_login_failed")
         login_steps.register()
-        cleanup.register("sessions", gettext_lazy("Expired sessions"), remove_expired_sessions)
+        cleanup.register("sessions", remove_expired_sessions)
         # The secure login entry is a secret in its address (apps/accounts/entry.py): logs write /login/<entry>/.
         # Where /login/ starts an address (also in ?next=), or after a site's address; not /sso/x/login/….
         masking.register_path(r"(?:^|(?<=[\s=\"'(]))/login/(?P<secret>[^/?&#\s\"']+)", "entry")

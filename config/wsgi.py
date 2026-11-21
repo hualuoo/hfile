@@ -22,3 +22,8 @@ upgrade_on_start()
 from apps.siteconf.checks import stop_on_conflict  # noqa: E402
 
 stop_on_conflict()
+
+# And from then on, a thread removes what has expired, every hour (apps/core/cleanup.py).
+from apps.core import cleanup  # noqa: E402
+
+cleanup.start()

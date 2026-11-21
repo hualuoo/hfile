@@ -58,7 +58,7 @@ HFile is built with Django:
   - shares can have a password and an expiry date, and what a share shows follows the permissions of the person who shared it.
 - **Permissions**: each user has their own root folder and 15 permissions on each storage source. There are also filter rules (hidden, inaccessible, not downloadable), folder passwords and folder readme documents.
 - **Accounts and security**: image CAPTCHA, two-factor authentication (TOTP) for superusers, a secret login entrance, single sign-on (GitHub, Gitee, GitLab, OpenID Connect), IP and user-agent blocklists.
-- **Operations**: setup wizard, database backup and restore commands, scheduled cleanup, a diagnostics page; tokens and signatures in the access log are masked automatically; an activity log of logins, changes to files, short links and shares, and every change admins make, which nothing can edit or delete; IP location: the IPs of the user list, the activity log and the download log show their country or region, and with the city database for many the province and city too, looked up on the server in MaxMind's GeoLite2-City or GeoLite2-Country database (the admin chooses).
+- **Operations**: setup wizard, database backup and restore commands, automatic cleanup of expired sessions and uploads, a diagnostics page; tokens and signatures in the access log are masked automatically; an activity log of logins, changes to files, short links and shares, and every change admins make, which nothing can edit or delete; IP location: the IPs of the user list, the activity log and the download log show their country or region, and with the city database for many the province and city too, looked up on the server in MaxMind's GeoLite2-City or GeoLite2-Country database (the admin chooses).
 
 Every feature is described in detail in [features](features.md) (Chinese).
 
@@ -205,13 +205,9 @@ TimeoutStopSec=120
 WantedBy=multi-user.target
 ```
 
-Then add a cron job that cleans up expired sessions, uploads, short links and shares:
+The site cleans up expired sessions, uploads and the like by itself every hour.
 
-```cron
-17 * * * *  /srv/hfile/hfile cleanup --config /srv/hfile/config.toml
-```
-
-Run this cron job and commands such as `backup` and `upgrade` as the account that starts the site, here `www` (`crontab -u www -e`, `sudo -u www /srv/hfile/hfile --config /srv/hfile/config.toml backup`): files and folders they create when run as root belong to root, and the site can't use them.
+Run commands such as `backup` and `upgrade` as the account that starts the site, here `www` (`sudo -u www /srv/hfile/hfile --config /srv/hfile/config.toml backup`): files and folders they create when run as root belong to root, and the site can't use them.
 
 HSTS, what to watch out for with `/tmp`, exit codes and more are covered in [running](deploy.md) (Chinese).
 
@@ -248,7 +244,6 @@ The commands speak the system's language: English when the first of `LANGUAGE`, 
 | `hfile upgrade [--check]` | Upgrades the database; with `--check`, only checks and changes nothing |
 | `hfile backup [-o file.sql.gz]` | Backs up the whole database |
 | `hfile restore file.sql.gz` | Replaces the whole database with a backup (stop the site first) |
-| `hfile cleanup [--dry-run]` | Deletes expired sessions, uploads, short links, shares and OnlyOffice editing sessions, and files left by interrupted backups |
 | `hfile resetadmin` | Resets the password when the administrator can't log in |
 | `hfile unblock` | Clears the IP and user-agent blocklists when access control has locked you out |
 | `hfile createsuperuser` | Creates a superuser |
@@ -273,7 +268,7 @@ The documentation is in Chinese.
 | [Features](features.md) | Every feature in detail |
 | [Installation](install.md) | Each step of the setup wizard |
 | [Configuration](configuration.md) | Every setting in `config.toml` |
-| [Running](deploy.md) | Commands, going live, reverse proxies, systemd, scheduled cleanup |
+| [Running](deploy.md) | Commands, going live, reverse proxies, systemd, automatic cleanup |
 | [Upgrading](upgrade.md) | Database upgrades, backup and restore |
 | [Building](build.md) | Building the single-file program with PyInstaller |
 | [Development](development.md) | Development environment, the local MySQL container, tests |

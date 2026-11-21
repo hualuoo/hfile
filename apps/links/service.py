@@ -290,14 +290,10 @@ def check_creator(link: ShortLink) -> None:
 
 def delete_expired(now: datetime.datetime) -> tuple[int, int]:
     """Deletes the short links expired at `now` and the download logs of exactly those keys, in one
-    transaction (删除过期短链, and `hfile cleanup`, D29): (links, log entries) deleted."""
+    transaction (删除过期短链, D29): (links, log entries) deleted. The site never deletes expired links by
+    itself: one stays, shown as expired, until an admin deletes it (or its user or storage source goes)."""
     with transaction.atomic():
         expired = ShortLink.objects.filter(expires_at__isnull=False, expires_at__lte=now)
         logs, _ = DownloadLog.objects.filter(kind=DownloadLog.Kind.SHORT, short_key__in=expired.values("key")).delete()
         links, _ = expired.delete()
     return links, logs
-
-
-def remove_expired(now: datetime.datetime) -> int:
-    """The job of `hfile cleanup` (apps.core.cleanup): delete_expired(), the number of links."""
-    return delete_expired(now)[0]

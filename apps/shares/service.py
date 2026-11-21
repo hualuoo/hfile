@@ -1,5 +1,6 @@
 """Shares: creating them, what a visitor gets (the listing, one item, the URL of a download or a
-preview), the owners' and admins' lists, deleting, and the cleanup job (inventory 10.2-10.8).
+preview), the owners' and admins' lists and deleting (inventory 10.2-10.8). The site never deletes expired
+shares by itself: they stay, shown as expired, until their owner or an admin deletes them.
 
 Every visitor request goes through apps/shares/access.py first (the share, the visit, the owner re-checked,
 the path within the entries); here the storage is asked and the answers are shaped as files' (the share
@@ -396,10 +397,3 @@ def clear_expired(*, owner=None, now=None) -> int:
         expired = expired.filter(owner=owner)
     deleted, _ = expired.delete()
     return deleted
-
-
-def remove_expired(now) -> int:
-    """hfile cleanup (D29): every share expired at `now`."""
-    return clear_expired(now=now)
-
-
