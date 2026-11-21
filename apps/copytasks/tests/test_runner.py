@@ -28,6 +28,10 @@ from . import drivers as test_drivers
 Status = CopyTask.Status
 
 
+def sha256(data: bytes) -> str:
+    return hashlib.sha256(data).hexdigest()
+
+
 def options(**changes):
     data = {"source_path": "/", "target_path": "/", "threads": 2, "speed_limit": 0, "same_file": "skip",
             "same_name": "overwrite", "retries": 2}
@@ -81,9 +85,11 @@ class CopyTestCase(TestCase):
 
     @staticmethod
     def tree(root):
-        """{relative path: bytes, or None for a folder}."""
+        """{relative path, with / on Windows too: the file's SHA-256, or None for a folder}. Not the bytes: when two
+        such dicts differ, unittest's message is a difflib diff of them, which with c.bin's 76800 bytes in them takes
+        hours on Python 3.12."""
         root = Path(root)
-        return {("/" + str(path.relative_to(root))): (None if path.is_dir() else path.read_bytes())
+        return {("/" + path.relative_to(root).as_posix()): (None if path.is_dir() else sha256(path.read_bytes()))
                 for path in sorted(root.rglob("*")) if not path.name.startswith(".")}
 
     def copy(self, **changes) -> CopyTask:
@@ -116,8 +122,9 @@ class CopyingTests(CopyTestCase):
     def test_into_a_folder_that_isnt_there_yet(self):
         task = self.copy(source_path="/docs", target_path="/backup/2026")
         self.assertEqual(task.status, Status.DONE, task.message)
-        self.assertEqual(self.tree(self.dst), {"/backup": None, "/backup/2026": None, "/backup/2026/b.txt": b"bravo!",
-                                               "/backup/2026/deep": None, "/backup/2026/deep/c.bin": bytes(range(256)) * 300})
+        self.assertEqual(self.tree(self.dst), {"/backup": None, "/backup/2026": None,
+                                               "/backup/2026/b.txt": sha256(b"bravo!"), "/backup/2026/deep": None,
+                                               "/backup/2026/deep/c.bin": sha256(bytes(range(256)) * 300)})
 
     def test_within_one_storage(self):
         task = self.copy(target=self.source.pk, source_path="/docs/deep", target_path="/copy")
@@ -149,7 +156,7 @@ class CopyingTests(CopyTestCase):
         data = bytes(range(256)) * 300
         self.assertIn(hashlib.md5(data).hexdigest(), test_drivers.HashFirstDriver.digests)
         stored = self.tree(Path(config.decode(drivers.driver_class("test-copy-hashfirst"), target.config)[0]["root"]))
-        self.assertEqual(stored["/deep/c.bin"], data)
+        self.assertEqual(stored["/deep/c.bin"], sha256(data))
         self.assertEqual(task.transferred, 2 * (6 + len(data)))  # each file read twice
 
     def test_a_source_that_cant_start_halfway(self):
@@ -253,7 +260,23 @@ class CopyingTests(CopyTestCase):
         message = "它和上面的一个文件夹里的文件和文件夹完全一样，多半是指回上层的链接，里面的东西没有复制。"
         self.assertEqual(self.failures(task), [("/again", message), ("/deep/up", message)])
         self.assertEqual(task.message, "2 个文件夹没能复制，里面的东西也都没有复制。")
-        self.assertEqual(self.tree(self.dst), {"/b.txt": b"bravo!", "/deep": None, "/deep/c.bin": bytes(range(256)) * 300})
+        self.assertEqual(self.tree(self.dst), {"/b.txt": sha256(b"bravo!"), "/deep": None,
+                                               "/deep/c.bin": sha256(bytes(range(256)) * 300)})
+
+    def test_a_link_back_up_listed_as_ntfs_does(self):
+        """NTFS lists a folder with an older time until it has been listed itself: docs listed before deep was,
+        docs/deep/up (docs again) after. docs is listed again then, and lists as docs/deep/up does."""
+        os.symlink("..", self.src / "docs" / "deep" / "up")
+        os.symlink(".", self.src / "docs" / "again")
+        source = self.storage("stale", "test-copy-stale", self.src)
+        task = self.copy(source=source.pk, source_path="/docs")
+        message = "它和上面的一个文件夹里的文件和文件夹完全一样，多半是指回上层的链接，里面的东西没有复制。"
+        self.assertEqual(self.failures(task), [("/again", message), ("/deep/up", message)])
+        # docs again after docs/deep/up; on Windows after docs/again too: the driver's realpath() opens deep, so NTFS
+        # brings deep's time in docs up to date before that
+        self.assertEqual(test_drivers.StaleTimesDriver.lists[-2:], ["/docs/deep/up", "/docs"])
+        self.assertEqual(self.tree(self.dst), {"/b.txt": sha256(b"bravo!"), "/deep": None,
+                                               "/deep/c.bin": sha256(bytes(range(256)) * 300)})
 
     def test_listings_are_tried_again(self):
         source = self.storage("flakylist", "test-copy-flakylist", self.src)

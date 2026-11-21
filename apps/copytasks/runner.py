@@ -9,7 +9,7 @@ A run has threads of its own, and only the first of them touches the task's row:
   there already (the same name and size: same_file; the same name only: same_name). So the copying starts at once,
   and the totals grow until the listing is done (`scanning`). A folder whose listing is the same as one of the
   folders above it isn't gone into: a link back up (the local storage follows links inside its folder) would make
-  copies of copies, of two such links without end;
+  copies of copies, of two such links without end (on NTFS a folder above may need listing again: _listed_above());
 - `threads` workers copy the files of the queue, each a file at a time: the source's stream goes straight into the
   target's write() (SourceReader), nothing is kept on the server's disk. A file that fails is tried again `retries`
   times, waiting 1, 2, 4… seconds (at most BACKOFF_MAX) in between; an error that won't go away (a name the target
@@ -120,6 +120,14 @@ def _listing(entries) -> bytes:
     digest = hashlib.sha256()
     for entry in sorted(entries, key=lambda entry: (entry.name, entry.is_dir)):
         digest.update(repr((entry.name, entry.is_dir, entry.size, entry.modified)).encode("utf-8", "surrogatepass"))
+    return digest.digest()
+
+
+def _names(entries) -> bytes:
+    """Only the names and kinds of a folder's listing (Run._listed_above())."""
+    digest = hashlib.sha256()
+    for entry in sorted(entries, key=lambda entry: (entry.name, entry.is_dir)):
+        digest.update(repr((entry.name, entry.is_dir)).encode("utf-8", "surrogatepass"))
     return digest.digest()
 
 
@@ -308,12 +316,12 @@ class Run:
                     return
                 self._failed(path, None, _("Couldn't list the folder: %(error)s") % {"error": error.message}, 1, is_dir=True)
                 continue
-            listing = _listing(entries)
-            if listing in above:
+            listing, names = _listing(entries), _names(entries)
+            if self._listed_above(source, listing, names, above):
                 self._failed(path, None, _("It has the same files and folders as a folder above it, so it is most likely "
                                            "a link back up; what is in it wasn't copied."), 0, is_dir=True)
                 continue
-            above = (*above, listing)
+            above = (*above, (folder, names, listing))
             there = self._target_folder(target, into, exists, path)
             if there is None:
                 continue
@@ -335,6 +343,22 @@ class Run:
                                  % {"depth": MAX_DEPTH}, 0, is_dir=True)
                 else:
                     stack.append((item.path, paths.join(into, item.name), other is not None, depth + 1, above))
+
+    def _listed_above(self, source, listing: bytes, names: bytes, above) -> bool:
+        """Whether a folder above lists as this one does. One with the same names and kinds that listed otherwise is
+        listed again first: NTFS lists a folder with the time its parent's index has for it, brought up to date only
+        once the folder is next closed, so the folder above may have listed the times its folders had before the walk
+        went into them."""
+        for folder, their_names, theirs in above:
+            if their_names == names and (theirs == listing or self._listed_again(source, folder) == listing):
+                return True
+        return False
+
+    def _listed_again(self, source, folder: str) -> bytes | None:
+        try:
+            return _listing(self._again(source.list, folder))
+        except DriverError:
+            return None  # taken for another folder; an account that stopped working shows at the next listing
 
     def _target_root(self, target) -> bool | None:
         """Whether the target folder is there already; None when it can't be used (the run fails)."""

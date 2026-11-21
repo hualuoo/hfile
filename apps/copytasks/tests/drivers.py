@@ -1,11 +1,14 @@
 """Local-storage variants for the copy task tests, registered as types of their own (TYPES): a target that hashes a
 file before storing it (as Baidu Netdisk, 115 and 123 do), a source that can't start halfway, a source that fails a
-few times, targets that refuse, a source that doesn't know sizes, and a source that waits for the test."""
+few times, a source that lists folders' times as NTFS does, targets that refuse, a source that doesn't know sizes, and
+a source that waits for the test."""
 
 from __future__ import annotations
 
 import hashlib
+import os
 import threading
+from datetime import timedelta
 
 from apps.storages.drivers.base import AuthError, BackendError, ReadStream
 from apps.storages.drivers.local import LocalDriver
@@ -80,6 +83,28 @@ class FlakyListDriver(LocalDriver):
         if tried <= FlakyListDriver.failures:
             raise BackendError("列表超时了")
         return super().list(path)
+
+
+class StaleTimesDriver(LocalDriver):
+    """A source that lists folders as NTFS does: a folder shows in its parent's listing with an older time (the one
+    before something changed in it) until it has been listed itself. Through a link it is the same folder."""
+
+    type = "test-copy-stale"
+    label = "测试（像 NTFS 那样列出旧的时间）"
+    listed: set[str] = set()
+    lists: list[str] = []
+
+    def _real(self, path):
+        return os.path.realpath(os.path.join(self._root, *[part for part in path.split("/") if part]))
+
+    def list(self, path):
+        import dataclasses
+
+        StaleTimesDriver.lists.append(path)
+        StaleTimesDriver.listed.add(self._real(path))
+        return [dataclasses.replace(entry, modified=entry.modified - timedelta(seconds=1))
+                if entry.is_dir and self._real(entry.path) not in StaleTimesDriver.listed else entry
+                for entry in super().list(path)]
 
 
 class BrokenStreamDriver(LocalDriver):
@@ -171,6 +196,7 @@ TYPES = {
     "test-copy-norange": "apps.copytasks.tests.drivers:NoRangeDriver",
     "test-copy-flaky": "apps.copytasks.tests.drivers:FlakyDriver",
     "test-copy-flakylist": "apps.copytasks.tests.drivers:FlakyListDriver",
+    "test-copy-stale": "apps.copytasks.tests.drivers:StaleTimesDriver",
     "test-copy-broken": "apps.copytasks.tests.drivers:BrokenStreamDriver",
     "test-copy-expired": "apps.copytasks.tests.drivers:ExpiredDriver",
     "test-copy-strict": "apps.copytasks.tests.drivers:StrictNamesDriver",
@@ -187,6 +213,8 @@ def reset():
     FlakyDriver.failures = 2
     FlakyListDriver.tries = {}
     FlakyListDriver.failures = 1
+    StaleTimesDriver.listed = set()
+    StaleTimesDriver.lists = []
     ExpiredDriver.writes = 0
     WaitingDriver.paths = set()
     WaitingDriver.reached = threading.Event()
