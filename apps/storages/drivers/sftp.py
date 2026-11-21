@@ -480,6 +480,7 @@ class SFTPDriver(StorageDriver):
             check=self._alive,
             busy=gettext("All connections to the SFTP server are in use (downloads hold theirs "
                          'until done). Please try again later, or raise "Max connections".'))
+        self.max_transfers = self._pool.size
 
     def close(self) -> None:
         self._pool.close()

@@ -14,10 +14,10 @@
     login_failed: 'badge-error', delete: 'badge-error', delete_share: 'badge-error', clear_shares: 'badge-error',
     delete_user: 'badge-error', delete_storage: 'badge-error', disable_storage: 'badge-error', delete_provider: 'badge-error',
     delete_short_links: 'badge-error', delete_download_logs: 'badge-error', totp_off: 'badge-warning', unlink_sso: 'badge-warning',
-    unlink_identity: 'badge-warning', rotate_link_secret: 'badge-warning', reset_admin: 'badge-warning',
+    unlink_identity: 'badge-warning', rotate_link_secret: 'badge-warning', reset_admin: 'badge-warning', stop_copy_task: 'badge-warning',
     upload: 'badge-ok', mkdir: 'badge-ok', create_share: 'badge-ok', short_link: 'badge-ok', create_user: 'badge-ok',
     copy_user: 'badge-ok', create_storage: 'badge-ok', copy_storage: 'badge-ok', enable_storage: 'badge-ok',
-    create_provider: 'badge-ok', sso_register: 'badge-ok', totp_on: 'badge-ok', install: 'badge-ok',
+    create_provider: 'badge-ok', sso_register: 'badge-ok', totp_on: 'badge-ok', install: 'badge-ok', create_copy_task: 'badge-ok',
   };
   const ADMIN = new Set(['users', 'storages', 'site']); // the categories of admins' changes: blue unless above
   const rows = document.getElementById('activity-rows');

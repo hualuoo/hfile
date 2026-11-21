@@ -1,0 +1,13 @@
+{% load static ui %}{# /manage/#copy-tasks (apps/web/navigation.py SECTIONS), run by copytasks/js/manage_copy_tasks.js through /api/v1/manage/copy-tasks/. #}
+<link rel="stylesheet" href="{% static 'copytasks/css/copytasks.css' %}">
+<div class="section-title-row copy-title-row">
+  <h2>{% translate "Copy tasks" %}</h2>
+  <div class="btn-row">
+    <button type="button" class="btn btn-small" id="copy-refresh">{% icon "refresh" %}{% translate "Refresh" %}</button>
+    <button type="button" class="btn btn-filled" id="copy-new">{% icon "add" %}{% translate "New copy task" %}</button>
+  </div>
+</div>
+<p class="muted">{% blocktranslate %}Copies what is in a folder of one storage source, files and folders, into a folder of another one (or into another folder of the same one). The server does it, reading from the source and writing into the target at the same time: the files don't go through your computer, nor onto the server's disk. A task goes on in the background when this page is closed. Stopping one keeps what it copied; a task that failed or was stopped can be resumed, and then skips the files that are in the target with the same name and size. Users' permissions, filter rules and folder passwords don't apply to copy tasks.{% endblocktranslate %}</p>
+<p class="muted small list-summary" id="copy-summary" role="status"></p>
+<div class="copy-tasks" id="copy-tasks"></div>
+<nav class="pager" id="copy-pager" aria-label="{% translate 'Copy task pages' %}" hidden></nav>

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HFile\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-21 01:53+0800\n"
+"POT-Creation-Date: 2026-11-21 04:24+0800\n"
 "Language: zh_Hans\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -714,7 +714,7 @@ msgstr "密码不对。"
 #: apps/accounts/templates/accounts/_login_fields.html
 #: apps/accounts/templates/accounts/manage/users.html
 #: apps/accounts/validators.py apps/activity/describe.py
-#: apps/activity/models.py apps/installer/forms.py
+#: apps/activity/models.py apps/copytasks/models.py apps/installer/forms.py
 #: apps/storages/drivers/autoindex.py apps/storages/drivers/emby.py
 #: apps/storages/drivers/ftp.py apps/storages/drivers/kodbox.py
 #: apps/storages/drivers/openlist.py apps/storages/drivers/seafile.py
@@ -818,7 +818,7 @@ msgstr ""
 msgid "Search username, nickname or ID"
 msgstr "搜索用户名、昵称或 ID"
 
-#: apps/accounts/templates/accounts/manage/users.html
+#: apps/accounts/templates/accounts/manage/users.html apps/copytasks/models.py
 #: apps/shares/templates/shares/_list.html
 msgid "Status"
 msgstr "状态"
@@ -865,7 +865,7 @@ msgstr "启用"
 msgid "Last login"
 msgstr "最近登录"
 
-#: apps/accounts/templates/accounts/manage/users.html
+#: apps/accounts/templates/accounts/manage/users.html apps/copytasks/models.py
 #: apps/links/manage_views.py apps/links/models.py
 #: apps/links/templates/links/manage/short_links.html apps/office/models.py
 #: apps/shares/models.py apps/shares/templates/shares/_list.html
@@ -1231,6 +1231,52 @@ msgid_plural "%(count)s records filled in"
 msgstr[0] "补全了 %(count)s 条记录"
 
 #: apps/activity/describe.py
+#, python-format
+msgid "Task #%(id)s"
+msgstr "任务 #%(id)s"
+
+#: apps/activity/describe.py
+#, python-format
+msgid "→ %(storage)s: %(path)s"
+msgstr "→ %(storage)s：%(path)s"
+
+#: apps/activity/describe.py
+#, python-format
+msgid "%(count)s thread"
+msgid_plural "%(count)s threads"
+msgstr[0] "%(count)s 个线程"
+
+#: apps/activity/describe.py
+#, python-format
+msgid "speed limit %(speed)s/s"
+msgstr "限速 %(speed)s/秒"
+
+#: apps/activity/describe.py
+msgid "no speed limit"
+msgstr "不限速"
+
+#: apps/activity/describe.py
+#, python-format
+msgid "same file: %(policy)s"
+msgstr "相同文件：%(policy)s"
+
+#: apps/activity/describe.py
+#, python-format
+msgid "same name: %(policy)s"
+msgstr "同名文件：%(policy)s"
+
+#: apps/activity/describe.py
+#, python-format
+msgid "%(count)s retry"
+msgid_plural "%(count)s retries"
+msgstr[0] "重试 %(count)s 次"
+
+#: apps/activity/describe.py
+#, python-format
+msgid "run %(run)s"
+msgstr "第 %(run)s 次运行"
+
+#: apps/activity/describe.py
 msgid "two-step verification turned off"
 msgstr "关掉了两步验证"
 
@@ -1417,6 +1463,18 @@ msgid "Folder readmes changed"
 msgstr "修改目录文档"
 
 #: apps/activity/models.py
+msgid "Copy task created"
+msgstr "新建复制任务"
+
+#: apps/activity/models.py
+msgid "Copy task stopped"
+msgstr "停止复制任务"
+
+#: apps/activity/models.py
+msgid "Copy task resumed"
+msgstr "继续复制任务"
+
+#: apps/activity/models.py
 msgid "Settings changed"
 msgstr "修改设置"
 
@@ -1496,7 +1554,7 @@ msgstr "存储源"
 msgid "Storage source name"
 msgstr "存储源名称"
 
-#: apps/activity/models.py apps/office/models.py
+#: apps/activity/models.py apps/copytasks/models.py apps/office/models.py
 msgid "Path"
 msgstr "路径"
 
@@ -1524,7 +1582,7 @@ msgstr "浏览器"
 msgid "There is no such action."
 msgstr "没有这种操作。"
 
-#: apps/activity/serializers.py
+#: apps/activity/serializers.py apps/copytasks/serializers.py
 msgid "storage source"
 msgstr "存储源"
 
@@ -1541,6 +1599,7 @@ msgid "The end date can't be before the start date."
 msgstr "结束日期不能早于开始日期。"
 
 #: apps/activity/templates/activity/manage/activity_log.html
+#: apps/copytasks/templates/copytasks/manage/copy_tasks.html
 #: apps/links/templates/links/manage/download_logs.html
 #: apps/links/templates/links/manage/short_links.html
 #: apps/shares/templates/shares/_list.html
@@ -1635,6 +1694,354 @@ msgstr "验证码过期了，请输入新的验证码。"
 #: apps/captchas/service.py
 msgid "The captcha is wrong. Please try again."
 msgstr "验证码不对，请重新输入。"
+
+#: apps/copytasks/apps.py apps/copytasks/models.py
+#: apps/copytasks/templates/copytasks/manage/copy_tasks.html
+#: apps/web/navigation.py
+msgid "Copy tasks"
+msgstr "复制任务"
+
+#: apps/copytasks/models.py
+msgid "Copying"
+msgstr "复制中"
+
+#: apps/copytasks/models.py
+msgid "Stopping"
+msgstr "正在停止"
+
+#: apps/copytasks/models.py
+msgctxt "copy task"
+msgid "Done"
+msgstr "完成"
+
+#: apps/copytasks/models.py
+msgctxt "copy task"
+msgid "Failed"
+msgstr "失败"
+
+#: apps/copytasks/models.py
+msgctxt "copy task"
+msgid "Stopped"
+msgstr "已停止"
+
+#: apps/copytasks/models.py
+msgid "Skip"
+msgstr "跳过"
+
+#: apps/copytasks/models.py
+msgid "Overwrite"
+msgstr "覆盖"
+
+#: apps/copytasks/models.py apps/links/manage_views.py apps/links/models.py
+#: apps/links/templates/links/manage/short_links.html
+msgid "Created by"
+msgstr "生成者"
+
+#: apps/copytasks/models.py
+msgid "Source storage source"
+msgstr "源存储源"
+
+#: apps/copytasks/models.py
+msgid "Source storage source name"
+msgstr "源存储源名称"
+
+#: apps/copytasks/models.py
+msgid "Source folder"
+msgstr "源文件夹"
+
+#: apps/copytasks/models.py
+msgid "Target storage source"
+msgstr "目标存储源"
+
+#: apps/copytasks/models.py
+msgid "Target storage source name"
+msgstr "目标存储源名称"
+
+#: apps/copytasks/models.py
+msgid "Target folder"
+msgstr "目标文件夹"
+
+#: apps/copytasks/models.py
+msgid "Threads"
+msgstr "线程数"
+
+#: apps/copytasks/models.py
+msgid "Speed limit"
+msgstr "限速"
+
+#: apps/copytasks/models.py
+msgid "Same file"
+msgstr "相同文件"
+
+#: apps/copytasks/models.py
+msgid "Same name"
+msgstr "同名文件"
+
+#: apps/copytasks/models.py
+msgid "Retries"
+msgstr "重试次数"
+
+#: apps/copytasks/models.py
+msgid "Result"
+msgstr "结果"
+
+#: apps/copytasks/models.py apps/upgrades/models.py
+msgid "Started at"
+msgstr "开始时间"
+
+#: apps/copytasks/models.py apps/upgrades/models.py
+#: apps/web/templates/web/manage/version.html
+msgid "Finished at"
+msgstr "完成时间"
+
+#: apps/copytasks/models.py
+msgid "Error"
+msgstr "错误"
+
+#: apps/copytasks/models.py
+msgid "Copy failures"
+msgstr "复制失败的文件"
+
+#: apps/copytasks/reader.py
+msgid ""
+"The source sent less than the file's size: the file may have changed while "
+"it was being copied."
+msgstr "源文件读到的比文件的大小少：文件可能在复制时改了。"
+
+#: apps/copytasks/runner.py
+msgid "Interrupted: the site stopped while copying. It can be resumed."
+msgstr "复制到一半网站停止了，任务中断。可以继续复制。"
+
+#: apps/copytasks/runner.py
+#, python-format
+msgid "%(storage)s: %(error)s"
+msgstr "%(storage)s：%(error)s"
+
+#: apps/copytasks/runner.py
+#, python-format
+msgid "Listing the files failed: %(error)s"
+msgstr "列出文件时出错：%(error)s"
+
+#: apps/copytasks/runner.py
+msgid "The source folder doesn't exist."
+msgstr "源文件夹不存在。"
+
+#: apps/copytasks/runner.py
+msgid "The source is a file, not a folder."
+msgstr "源路径是一个文件，不是文件夹。"
+
+#: apps/copytasks/runner.py
+#, python-format
+msgid "Couldn't list the folder: %(error)s"
+msgstr "没能列出这个文件夹：%(error)s"
+
+#: apps/copytasks/runner.py
+msgid ""
+"It has the same files and folders as a folder above it, so it is most likely "
+"a link back up; what is in it wasn't copied."
+msgstr ""
+"它和上面的一个文件夹里的文件和文件夹完全一样，多半是指回上层的链接，里面的东"
+"西没有复制。"
+
+#: apps/copytasks/runner.py
+msgid "The target folder has a file of this name."
+msgstr "目标文件夹里有同名的文件。"
+
+#: apps/copytasks/runner.py
+#, python-format
+msgid "Too many folders inside folders here (at most %(depth)s)."
+msgstr "这里的文件夹套得太深（最多 %(depth)s 层）。"
+
+#: apps/copytasks/runner.py
+msgid "The target is a file, not a folder."
+msgstr "目标路径是一个文件，不是文件夹。"
+
+#: apps/copytasks/runner.py
+#, python-format
+msgid "Couldn't make the folder in the target: %(error)s"
+msgstr "没能在目标里建这个文件夹：%(error)s"
+
+#: apps/copytasks/runner.py
+#, python-format
+msgid "Couldn't list the folder in the target: %(error)s"
+msgstr "没能列出目标里的这个文件夹：%(error)s"
+
+#: apps/copytasks/runner.py
+msgid "The target folder has a folder of this name."
+msgstr "目标文件夹里有同名的文件夹。"
+
+#: apps/copytasks/runner.py
+msgid ""
+"Something went wrong while copying; the details are in the program's log."
+msgstr "复制时程序出错了，详细情况在程序的日志里。"
+
+#: apps/copytasks/runner.py apps/files/service.py
+#: apps/storages/drivers/bunny.py
+msgid "This file's size is unknown, so it can't be copied."
+msgstr "这个文件的大小不知道，不能复制。"
+
+#: apps/copytasks/runner.py apps/ipgeo/jobs.py
+#, python-format
+msgid "Something went wrong: %(error)s"
+msgstr "出错了：%(error)s"
+
+#: apps/copytasks/runner.py
+msgid "The file isn't in the source any more."
+msgstr "源存储源里已经没有这个文件了。"
+
+#: apps/copytasks/runner.py
+#, python-format
+msgid "Couldn't read it from the source: %(error)s"
+msgstr "读取源文件失败：%(error)s"
+
+#: apps/copytasks/runner.py
+#, python-format
+msgid "Couldn't write it into the target: %(error)s"
+msgstr "写入目标失败：%(error)s"
+
+#: apps/copytasks/runner.py apps/copytasks/service.py
+#, python-format
+msgid "The storage source %(name)s was deleted."
+msgstr "存储源 %(name)s 已经删除了。"
+
+#: apps/copytasks/runner.py
+#, python-format
+msgid "The storage source %(name)s was disabled."
+msgstr "存储源 %(name)s 停用了。"
+
+#: apps/copytasks/runner.py
+#, python-format
+msgid ""
+"The settings of the storage source %(name)s were changed, so the copying "
+"stopped. It can be resumed."
+msgstr "存储源 %(name)s 的设置改了，复制停了下来。可以继续复制。"
+
+#: apps/copytasks/runner.py
+#, python-format
+msgid "%(count)s file couldn't be copied."
+msgid_plural "%(count)s files couldn't be copied."
+msgstr[0] "%(count)s 个文件没有复制成功。"
+
+#: apps/copytasks/runner.py
+#, python-format
+msgid "%(count)s folder couldn't be copied, nor anything in it."
+msgid_plural "%(count)s folders couldn't be copied, nor anything in them."
+msgstr[0] "%(count)s 个文件夹没能复制，里面的东西也都没有复制。"
+
+#: apps/copytasks/runner.py
+msgid ""
+"It stopped before it was done; the program may have been restarted. It can "
+"be resumed."
+msgstr "没有做完就停了，可能是中途重启了程序。可以继续复制。"
+
+#: apps/copytasks/serializers.py
+#, python-format
+msgid "The path has too many levels (at most %(depth)s)."
+msgstr "路径的层数太多（最多 %(depth)s 层）。"
+
+#: apps/copytasks/serializers.py
+msgid "Choose the storage source to copy from."
+msgstr "请选择从哪个存储源复制。"
+
+#: apps/copytasks/serializers.py
+msgid "Choose the storage source to copy into."
+msgstr "请选择复制到哪个存储源。"
+
+#: apps/copytasks/serializers.py
+#, python-format
+msgid "Threads: a whole number from 1 to %(max)s."
+msgstr "线程数：1 到 %(max)s 的整数。"
+
+#: apps/copytasks/serializers.py
+#, python-format
+msgid ""
+"The speed limit is in bytes a second: a whole number from 0 (no limit) to "
+"%(max)s."
+msgstr "限速的单位是字节每秒：0（不限）到 %(max)s 的整数。"
+
+#: apps/copytasks/serializers.py
+#, python-format
+msgid "Retries: a whole number from 0 to %(max)s."
+msgstr "重试次数：0 到 %(max)s 的整数。"
+
+#: apps/copytasks/serializers.py
+msgid "Can only be skip or overwrite."
+msgstr "只能是 skip（跳过）或 overwrite（覆盖）。"
+
+#: apps/copytasks/serializers.py
+msgid "Choose a storage source."
+msgstr "请选择一个存储源。"
+
+#: apps/copytasks/service.py
+msgid "This storage source is disabled; enable it first."
+msgstr "这个存储源已停用，请先启用它。"
+
+#: apps/copytasks/service.py
+msgid ""
+"Files can't be copied into this storage source: it is read-only, or can't "
+"take uploads."
+msgstr "不能复制到这个存储源：它是只读的，或者不能上传文件。"
+
+#: apps/copytasks/service.py
+msgid "There is no such storage source."
+msgstr "没有这个存储源。"
+
+#: apps/copytasks/service.py
+msgid "This folder doesn't exist."
+msgstr "这个文件夹不存在。"
+
+#: apps/copytasks/service.py
+msgid "This is a file, not a folder."
+msgstr "这是一个文件，不是文件夹。"
+
+#: apps/copytasks/service.py
+msgid ""
+"In the same storage source, neither folder can be the other one or inside it."
+msgstr "在同一个存储源里，两个文件夹不能是同一个，也不能一个在另一个里面。"
+
+#: apps/copytasks/service.py apps/copytasks/views.py
+msgid "There is no such copy task."
+msgstr "没有这个复制任务。"
+
+#: apps/copytasks/service.py
+msgid "This task isn't running."
+msgstr "这个任务没有在运行。"
+
+#: apps/copytasks/service.py
+msgid "Only a task that failed or was stopped can be resumed."
+msgstr "只有失败或停止的任务才能继续。"
+
+#: apps/copytasks/service.py
+#, python-format
+msgid "The storage source %(name)s is disabled; enable it first."
+msgstr "存储源 %(name)s 已停用，请先启用它。"
+
+#: apps/copytasks/templates/copytasks/manage/copy_tasks.html
+msgid "New copy task"
+msgstr "新建复制任务"
+
+#: apps/copytasks/templates/copytasks/manage/copy_tasks.html
+msgid ""
+"Copies what is in a folder of one storage source, files and folders, into a "
+"folder of another one (or into another folder of the same one). The server "
+"does it, reading from the source and writing into the target at the same "
+"time: the files don't go through your computer, nor onto the server's disk. "
+"A task goes on in the background when this page is closed. Stopping one "
+"keeps what it copied; a task that failed or was stopped can be resumed, and "
+"then skips the files that are in the target with the same name and size. "
+"Users' permissions, filter rules and folder passwords don't apply to copy "
+"tasks."
+msgstr ""
+"把一个存储源的文件夹里的文件和文件夹复制到另一个存储源的文件夹里（也可以是同"
+"一个存储源的另一个文件夹）。复制由服务器来做，一边从源存储源读、一边写进目"
+"标：文件不经过你的电脑，也不存到服务器的硬盘上。关掉这个页面，任务照样在后台"
+"进行。停止任务时已经复制好的文件留着；失败或停止的任务可以继续复制，这时目标"
+"里文件名和大小都相同的文件会跳过。复制任务不受用户的权限、过滤规则和目录密码"
+"限制。"
+
+#: apps/copytasks/templates/copytasks/manage/copy_tasks.html
+msgid "Copy task pages"
+msgstr "复制任务翻页"
 
 #: apps/core/cleanup.py
 msgid "No such cleanup job: "
@@ -2242,10 +2649,6 @@ msgstr "请选择要操作的文件或文件夹。"
 msgid "At most %(limit)s item at a time."
 msgid_plural "At most %(limit)s items at a time."
 msgstr[0] "一次最多操作 %(limit)s 项。"
-
-#: apps/files/service.py apps/storages/drivers/bunny.py
-msgid "This file's size is unknown, so it can't be copied."
-msgstr "这个文件的大小不知道，不能复制。"
 
 #: apps/files/service.py
 msgid "This kind of storage doesn't support moving."
@@ -3296,11 +3699,6 @@ msgid ""
 "be started again."
 msgstr "没有做完就停了，可能是中途重启了程序。可以重新开始。"
 
-#: apps/ipgeo/jobs.py
-#, python-format
-msgid "Something went wrong: %(error)s"
-msgstr "出错了：%(error)s"
-
 #: apps/ipgeo/jobs.py apps/ipgeo/views.py
 msgid "Turn IP location on first."
 msgstr "先启用 IP 归属地。"
@@ -3815,11 +4213,6 @@ msgstr "短链地址"
 #: apps/links/templates/links/manage/short_links.html
 msgid "File path"
 msgstr "文件路径"
-
-#: apps/links/manage_views.py apps/links/models.py
-#: apps/links/templates/links/manage/short_links.html
-msgid "Created by"
-msgstr "生成者"
 
 #: apps/links/manage_views.py apps/links/models.py
 #: apps/links/templates/links/manage/short_links.html apps/office/models.py
@@ -15468,14 +15861,6 @@ msgstr "执行的迁移"
 #: apps/upgrades/models.py apps/web/templates/web/manage/version.html
 msgid "Backup before upgrade"
 msgstr "升级前的备份"
-
-#: apps/upgrades/models.py
-msgid "Started at"
-msgstr "开始时间"
-
-#: apps/upgrades/models.py apps/web/templates/web/manage/version.html
-msgid "Finished at"
-msgstr "完成时间"
 
 #: apps/upgrades/models.py apps/web/templates/web/manage/version.html
 msgid "Upgrade history"

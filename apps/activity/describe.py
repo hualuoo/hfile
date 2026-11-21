@@ -350,6 +350,28 @@ def _ip_geo_fill(entry, detail):
     return ngettext("%(count)s record filled in", "%(count)s records filled in", changed) % {"count": changed}
 
 
+def _copy_task(entry, detail):
+    """Which task, and where it copies to; how it copies, for a new one; which run, for a resumed one."""
+    from apps.copytasks.models import CopyTask
+
+    parts = [_("Task #%(id)s") % {"id": detail["task"]} if detail.get("task") else ""]
+    if entry.to_path:
+        parts.append(_("→ %(storage)s: %(path)s") % {"storage": detail.get("to_storage") or "?", "path": entry.to_path})
+    if entry.kind == Kind.CREATE_COPY_TASK and isinstance(detail.get("threads"), int):
+        policies = dict(CopyTask.Policy.choices)
+        speed = detail.get("speed_limit")
+        parts.append(_parts([
+            ngettext("%(count)s thread", "%(count)s threads", detail["threads"]) % {"count": detail["threads"]},
+            _("speed limit %(speed)s/s") % {"speed": _size(speed)} if isinstance(speed, int) and speed > 0 else _("no speed limit"),
+            _("same file: %(policy)s") % {"policy": policies.get(detail.get("same_file"), "?")},
+            _("same name: %(policy)s") % {"policy": policies.get(detail.get("same_name"), "?")},
+            ngettext("%(count)s retry", "%(count)s retries", detail.get("retries") or 0) % {"count": detail.get("retries") or 0},
+        ]))
+    if entry.kind == Kind.RESUME_COPY_TASK and isinstance(detail.get("run"), int):
+        parts.append(_("run %(run)s") % {"run": detail["run"]})
+    return _sentences(parts)
+
+
 def _reset_admin(entry, detail):
     return _parts([_("New password"), _("two-step verification turned off") if detail.get("totp") else "",
                    _("enabled again") if detail.get("enabled") else "",
@@ -368,6 +390,7 @@ DESCRIBE = {
     Kind.CREATE_STORAGE: _create_storage, Kind.UPDATE_STORAGE: _update_storage, Kind.DELETE_STORAGE: _create_storage,
     Kind.COPY_STORAGE: _copy_storage, Kind.ROTATE_LINK_SECRET: _rotate,
     Kind.UPDATE_FILTERS: _rules, Kind.UPDATE_PASSWORDS: _rules, Kind.UPDATE_READMES: _rules,
+    Kind.CREATE_COPY_TASK: _copy_task, Kind.STOP_COPY_TASK: _copy_task, Kind.RESUME_COPY_TASK: _copy_task,
     Kind.UPDATE_SETTINGS: _settings, Kind.CREATE_PROVIDER: _provider, Kind.UPDATE_PROVIDER: _update_provider,
     Kind.DELETE_PROVIDER: _provider, Kind.DELETE_SHORT_LINKS: _delete_short_links,
     Kind.DELETE_DOWNLOAD_LOGS: _delete_download_logs, Kind.UPDATE_IP_GEO: _ip_geo,

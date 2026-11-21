@@ -61,6 +61,8 @@ _USERS = pgettext_lazy("manage menu", "Users")
 SECTIONS = [
     Section("storages", pgettext_lazy("manage menu", "Storage sources"), "storage", "storages/manage/storages.html",
             "storages/js/manage_storages.js", gettext_lazy("Storage")),
+    Section("copy-tasks", gettext_lazy("Copy tasks"), "file_copy", "copytasks/manage/copy_tasks.html",
+            "copytasks/js/manage_copy_tasks.js", gettext_lazy("Storage")),
     Section("users", _USERS, "group", "accounts/manage/users.html", "accounts/js/manage_users.js", _USERS),
     Section("activity", gettext_lazy("Activity log"), "history", "activity/manage/activity_log.html",
             "activity/js/manage_activity_log.js", _USERS),

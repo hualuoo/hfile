@@ -61,7 +61,8 @@ CATEGORIES = (
     Category("storages", gettext_lazy("Storage source management"), gettext_lazy("All storage source management"), (
         Kind.CREATE_STORAGE, Kind.UPDATE_STORAGE, Kind.DELETE_STORAGE, Kind.ENABLE_STORAGE, Kind.DISABLE_STORAGE,
         Kind.COPY_STORAGE, Kind.SORT_STORAGES, Kind.ROTATE_LINK_SECRET, Kind.UPDATE_FILTERS,
-        Kind.UPDATE_PASSWORDS, Kind.UPDATE_READMES)),
+        Kind.UPDATE_PASSWORDS, Kind.UPDATE_READMES, Kind.CREATE_COPY_TASK, Kind.STOP_COPY_TASK,
+        Kind.RESUME_COPY_TASK)),
     Category("site", gettext_lazy("Site management"), gettext_lazy("All site management"), (
         Kind.UPDATE_SETTINGS, Kind.CREATE_PROVIDER, Kind.UPDATE_PROVIDER, Kind.DELETE_PROVIDER,
         Kind.SORT_PROVIDERS, Kind.DELETE_SHORT_LINKS, Kind.DELETE_DOWNLOAD_LOGS, Kind.UPDATE_IP_GEO,

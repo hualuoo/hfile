@@ -70,6 +70,16 @@
 | GET、PUT | `users/<id>/grants/` | 一个用户在每个存储源上的权限，每个存储源一行：`[{"storage": {"id", "key", "name", "type", "enabled"}, "granted", "enabled", "root_path", "permissions"}]`；PUT 同样的列表，替换这个用户的权限（列表里没有的存储源不变，`granted: false` 删掉这一条；缺前置的权限回答 400）；改别的管理员或超级管理员的，要是超级管理员，不然 403；一次最多 10000 个存储源；请求体要是 JSON 列表 |
 | GET | `grant-options/?user=` | 15 种权限：`code`、名字 `label`、说明 `help`、前置 `requires`（要先有其中一个，空列表是没有前置），以及这个用户的默认权限 |
 
+复制任务（管理员；都在 `/api/v1/manage/` 下，`apps/copytasks/views.py` 开头有完整列表）：
+
+| 方法 | 路径 | 说明 |
+|---|---|---|
+| GET、POST | `copy-tasks/` | 任务列表，新的在前，每页 20 个；新建：`{"source", "source_path", "target", "target_path", "threads", "speed_limit", "same_file", "same_name", "retries"}`，回答 201，任务马上在后台开始。`source`、`target` 是存储源 ID（都要启用着，`target` 还要能上传文件）；路径默认 `/`，源文件夹要在，目标文件夹不在会新建，同一个存储源的两个文件夹不能一个在另一个里面；`threads` 1 到 16（默认 4）；`speed_limit` 是所有线程加起来的字节每秒，0（默认）不限；`same_file` 是目标里有文件名和大小都相同的文件时 `skip`（默认）还是 `overwrite`，`same_name` 是文件名相同、大小不同时（默认 `overwrite`）；`retries` 0 到 10（默认 3）。每个任务有 `id`、`created_at`、`created_by`（`{"id", "username"}`）、`source` 和 `target`（`{"id", "name", "key"}`，存储源删了以后 `id` 是 `null`）、`source_path`、`target_path`、上面的设置、`status`（`running`、`stopping`、`done`、`failed`、`stopped`；运行的进程 60 秒没写进度时算 `failed`）和 `status_label`、`message`（失败或中断的原因）、`run`（第几次运行）、`started_at`、`finished_at`、`seconds`（用时）、`scanning`（还在列出文件，总数还会变）、`files`（`total`、`copied`、`skipped`、`failed`）、`folders_failed`、`bytes`（`total`、`copied`、`skipped`，以及进度 `done`）、`transferred`（从源读了多少字节，读两遍的文件算两遍）、`speed`（最近几秒每秒多少字节）、`average_speed`、`can_stop`、`can_resume` |
+| GET | `copy-tasks/<id>/` | 一个任务，比列表多 `current`（正在复制的文件 `[{"path", "size", "done", "speed", "attempt", "error"}]`，`error` 是重试前那一次的错误）和 `failures_count` |
+| GET | `copy-tasks/<id>/failures/` | 没复制成功的文件和文件夹，每页 50 个：`{"id", "path"（在源文件夹里的路径）, "is_dir", "size", "message", "attempts"}` |
+| POST | `copy-tasks/<id>/stop/`、`copy-tasks/<id>/resume/` | 停止：已经复制的文件留着，正在运行时才行，否则 409；继续：失败或停止的任务再运行一次，目标里文件名和大小都相同的文件跳过，回答 202；别的状态 409，存储源删了或停用了也是 409 |
+| GET | `copy-tasks/storages/`、`copy-tasks/folders/?storage=&path=` | 能选的存储源（启用着的）`[{"id", "name", "key", "type_label", "writable"}]`，`writable` 为 false 的不能当目标；一个文件夹里的文件夹 `{"storage", "path", "folders": [名字]}`，选文件夹用，文件夹不存在时 404 |
+
 不用登录（没登录时按匿名用户算）：
 
 | 方法 | 路径 | 说明 |

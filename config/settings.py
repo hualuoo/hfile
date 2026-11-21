@@ -65,6 +65,7 @@ HFILE_APPS = [
     "apps.accounts",
     "apps.activity",
     "apps.captchas",
+    "apps.copytasks",
     "apps.files",
     "apps.ipgeo",
     "apps.links",

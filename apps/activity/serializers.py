@@ -22,6 +22,7 @@ PAGES = {
     Kind.DELETE_SHORT_LINKS: "short-links", Kind.DELETE_DOWNLOAD_LOGS: "download-logs",
     Kind.UPDATE_IP_GEO: "ip-geo", Kind.DOWNLOAD_IP_GEO: "ip-geo", Kind.FILL_IP_GEO: "ip-geo",
     Kind.SORT_STORAGES: "storages",
+    Kind.CREATE_COPY_TASK: "copy-tasks", Kind.STOP_COPY_TASK: "copy-tasks", Kind.RESUME_COPY_TASK: "copy-tasks",
 }
 SETTINGS_PAGES = {"site": "site", "view": "view", "link": "links", "proxy": "proxy", "security": "security",
                   "access": "access"}

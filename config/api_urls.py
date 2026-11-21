@@ -39,6 +39,9 @@
     GET    manage/ip-geo/            staff: IP 归属地: on or off, the database in use, the last job, how many stored
                                      IPs have no location yet; PATCH {"enabled"}; POST download/, fill/; GET job/,
                                      check/ (apps/ipgeo/views.py)
+    GET    manage/copy-tasks/        staff: 复制任务, copying a folder of one storage source into another one in the
+                                     background; POST makes one; GET {id}/, {id}/failures/; POST {id}/stop/,
+                                     {id}/resume/; GET storages/, folders/ (apps/copytasks/views.py)
 
     GET    sso/providers/            anybody: the login buttons of single sign-on [{"code", "name", "icon"}]
     GET    sso/links/                the user's providers and bound accounts (账号绑定): {"has_password", "providers"}
@@ -121,6 +124,7 @@ urlpatterns = [
     path("", include("apps.files.api_urls")),
     path("", include("apps.uploads.api_urls")),
     path("", include("apps.ipgeo.api_urls")),
+    path("", include("apps.copytasks.api_urls")),
     path("", include("apps.links.api_urls")),
     path("", include("apps.preview.api_urls")),
     path("", include("apps.shares.api_urls")),

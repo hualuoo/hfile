@@ -587,6 +587,7 @@ class FTPDriver(StorageDriver):
         self._pool: Pool[ftplib.FTP] = Pool(
             self._connect, lambda ftp: ftp.close(), size=int(c.get("max_connections") or 8),
             check=self._alive, busy=gettext('All connections to the FTP server are in use (downloads hold theirs until done). Please try again later, or raise "Max connections".'))
+        self.max_transfers = self._pool.size
 
     def close(self) -> None:
         self._pool.close()

@@ -1,0 +1,49 @@
+/* /manage/#copy-tasks: the copy tasks (apps/copytasks/templates/copytasks/manage/copy_tasks.html, copytasks/js/manage_copy_tasks.js). */
+.copy-title-row { flex-wrap: wrap; }
+.copy-title-row > h2 { flex: none; }
+.copy-tasks { display: flex; flex-direction: column; gap: 12px; margin-top: 8px; }
+.copy-task { padding: 16px; }
+.copy-task-head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+.copy-task-route { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; flex: 1 1 320px; min-width: 0; }
+.copy-place { display: inline-flex; flex-wrap: wrap; align-items: baseline; gap: 2px 6px; min-width: 0; }
+.copy-storage { font-weight: 500; }
+.copy-storage.gone { color: var(--md-sys-color-on-surface-variant); text-decoration: line-through; }
+.copy-path, .copy-file code, .copy-failure code { font-size: 13px; overflow-wrap: anywhere; }
+.copy-arrow { flex: none; width: 18px; height: 18px; color: var(--md-sys-color-on-surface-variant); }
+.copy-task-when { white-space: nowrap; }
+.copy-task-actions { display: flex; align-items: center; gap: 4px; margin-left: auto; }
+.copy-task > .linear-progress { width: 100%; margin: 12px 0 6px; }
+.copy-task-line { margin: 0; color: var(--md-sys-color-on-surface-variant); font: var(--md-sys-typescale-body-medium); overflow-wrap: anywhere; }
+.copy-task-message { margin: 6px 0 0; font: var(--md-sys-typescale-body-medium); overflow-wrap: anywhere; }
+.copy-task-message.copy-task-error, .copy-error { color: var(--md-sys-color-error); }
+.copy-error { margin-top: 2px; font: var(--md-sys-typescale-body-small); line-height: 1.5; overflow-wrap: anywhere; }
+.copy-task-details { margin-top: 12px; border-top: 1px solid var(--md-sys-color-outline-variant); }
+.copy-task-details h3 { margin: 20px 0 4px; font: var(--md-sys-typescale-title-small); }
+.copy-files, .copy-failures { margin: 0; padding: 0; list-style: none; }
+.copy-file, .copy-failure { padding: 8px 0; border-bottom: 1px solid var(--md-sys-color-outline-variant); }
+.copy-file:last-child, .copy-failure:last-child { border-bottom: 0; }
+.copy-file > code { margin-right: 8px; }
+.copy-file .linear-progress { width: 100%; margin: 6px 0 4px; }
+.copy-failure { display: flex; align-items: flex-start; gap: 12px; }
+.copy-failure > .icon { flex: none; width: 20px; height: 20px; margin-top: 1px; color: var(--md-sys-color-on-surface-variant); }
+.copy-failure-text { min-width: 0; }
+.copy-none { padding: 8px 0; }
+.copy-more { margin-top: 4px; }
+.copy-empty { margin: 32px 0; text-align: center; }
+
+/* the new task */
+.copy-form .form-grid { margin-top: 16px; }
+.copy-policy { margin: 0 0 12px; padding: 0; border: 0; min-width: 0; }
+.copy-policy > legend { margin-bottom: 2px; padding: 0; font: var(--md-sys-typescale-title-small); }
+.copy-policy > .hint { margin: 0; }
+.copy-policy-options { display: flex; flex-wrap: wrap; gap: 0 24px; }
+.copy-policy.invalid > legend { color: var(--md-sys-color-error); }
+
+/* picking a folder */
+.copy-picker-storage { margin: 0 0 4px; }
+.copy-picker-list { max-height: min(360px, 50vh); overflow: auto; }
+.copy-picker-status { margin: 8px 0 0; }
+
+@media (max-width: 600px) {
+  .copy-task-actions { margin-left: 0; }
+}

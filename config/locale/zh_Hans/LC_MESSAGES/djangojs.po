@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HFile\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-21 00:38+0800\n"
+"POT-Creation-Date: 2026-11-21 03:41+0800\n"
 "Language: zh_Hans\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -147,6 +147,7 @@ msgid "Never"
 msgstr "从未登录"
 
 #: apps/accounts/static/accounts/js/manage_users.js
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
 #: apps/links/static/links/js/manage_short_links.js
 #: apps/shares/static/shares/js/share_list.js
 msgid "Created at"
@@ -183,6 +184,7 @@ msgstr "删除"
 
 #: apps/accounts/static/accounts/js/manage_users.js
 #: apps/activity/static/activity/js/manage_activity_log.js
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
 #: apps/links/static/links/js/manage_download_logs.js
 #: apps/links/static/links/js/manage_short_links.js
 #: apps/shares/static/shares/js/share_list.js
@@ -191,6 +193,7 @@ msgstr "上一页"
 
 #: apps/accounts/static/accounts/js/manage_users.js
 #: apps/activity/static/activity/js/manage_activity_log.js
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
 #: apps/links/static/links/js/manage_download_logs.js
 #: apps/links/static/links/js/manage_short_links.js
 #: apps/shares/static/shares/js/share_list.js
@@ -200,6 +203,7 @@ msgstr[0] "第 %(page)s / %(pages)s 页"
 
 #: apps/accounts/static/accounts/js/manage_users.js
 #: apps/activity/static/activity/js/manage_activity_log.js
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
 #: apps/links/static/links/js/manage_download_logs.js
 #: apps/links/static/links/js/manage_short_links.js
 #: apps/shares/static/shares/js/share_list.js
@@ -209,6 +213,7 @@ msgstr "下一页"
 #: apps/accounts/static/accounts/js/manage_users.js
 #: apps/accounts/static/accounts/js/totp.js
 #: apps/activity/static/activity/js/manage_activity_log.js
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
 #: apps/files/static/files/js/files.js
 #: apps/links/static/links/js/manage_download_logs.js
 #: apps/links/static/links/js/manage_short_links.js
@@ -239,6 +244,7 @@ msgstr "还没有用户。"
 #: apps/accounts/static/accounts/js/manage_users.js
 #: apps/accounts/static/accounts/js/totp.js
 #: apps/activity/static/activity/js/manage_activity_log.js
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
 #: apps/ipgeo/static/ipgeo/js/manage_ip_geo.js
 #: apps/links/static/links/js/manage_download_logs.js
 #: apps/links/static/links/js/manage_short_links.js
@@ -478,8 +484,9 @@ msgstr ""
 "也登录不了。可以用 Google 身份验证器、Microsoft Authenticator 等支持 TOTP 的 "
 "App。"
 
-#: apps/accounts/static/accounts/js/totp.js apps/files/static/files/js/files.js
-#: apps/links/static/links/js/links.js
+#: apps/accounts/static/accounts/js/totp.js
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+#: apps/files/static/files/js/files.js apps/links/static/links/js/links.js
 #: apps/links/static/links/js/manage_short_links.js
 #: apps/preview/static/preview/js/image.js
 #: apps/preview/static/preview/js/preview.js
@@ -495,8 +502,10 @@ msgstr "关闭"
 msgid "Your login password"
 msgstr "你的登录密码"
 
-#: apps/accounts/static/accounts/js/totp.js apps/files/static/files/js/files.js
-#: apps/links/static/links/js/links.js apps/shares/static/shares/js/create.js
+#: apps/accounts/static/accounts/js/totp.js
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+#: apps/files/static/files/js/files.js apps/links/static/links/js/links.js
+#: apps/shares/static/shares/js/create.js
 #: apps/storages/static/storages/js/manage_storages.js
 #: apps/web/static/web/js/common.js
 msgid "Cancel"
@@ -623,10 +632,12 @@ msgid "No account has this name now"
 msgstr "现在没有这个名字的账号"
 
 #: apps/activity/static/activity/js/manage_activity_log.js
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
 msgid "Open the storage source"
 msgstr "打开这个存储源的设置"
 
 #: apps/activity/static/activity/js/manage_activity_log.js
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
 msgid "This storage source has been deleted"
 msgstr "这个存储源已经删除了"
 
@@ -652,6 +663,7 @@ msgid "About"
 msgstr "对象"
 
 #: apps/activity/static/activity/js/manage_activity_log.js
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
 msgid "Details"
 msgstr "详情"
 
@@ -735,6 +747,372 @@ msgstr "请输入验证码。"
 #: apps/captchas/static/captchas/js/captcha.js
 msgid "The previous captcha has been used. Please enter this new one."
 msgstr "刚才的验证码已经用掉了，请输入这张新的。"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+#: apps/uploads/static/uploads/js/uploads.js
+msgid "Skip"
+msgstr "跳过"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+#: apps/preview/static/preview/js/text.js
+#: apps/uploads/static/uploads/js/uploads.js
+msgid "Overwrite"
+msgstr "覆盖"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+#: apps/links/static/links/js/links.js
+msgid "%(n)s second"
+msgid_plural "%(n)s seconds"
+msgstr[0] "%(n)s 秒"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "%(m)s min %(s)s s"
+msgstr "%(m)s 分 %(s)s 秒"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "%(h)s h %(m)s min"
+msgstr "%(h)s 小时 %(m)s 分"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+#: apps/links/static/links/js/links.js
+msgid "%(n)s day"
+msgid_plural "%(n)s days"
+msgstr[0] "%(n)s 天"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+#: apps/uploads/static/uploads/js/uploads.js
+msgid "%(speed)s/s"
+msgstr "%(speed)s/秒"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "%(done)s of %(total)s"
+msgstr "%(done)s / %(total)s"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "Stop"
+msgstr "停止"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "Resume"
+msgstr "继续复制"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "Copy progress"
+msgstr "复制进度"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "Being copied"
+msgstr "正在复制"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "Couldn't be copied"
+msgstr "没有复制成功的"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+#: apps/files/static/files/js/files.js
+msgid "Load more"
+msgstr "加载更多"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "%(done)s of %(total)s file"
+msgid_plural "%(done)s of %(total)s files"
+msgstr[0] "%(done)s / %(total)s 个文件"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "%(count)s failed"
+msgid_plural "%(count)s failed"
+msgstr[0] "%(count)s 个失败"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "still listing the files"
+msgstr "还在列出文件"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "about %(time)s left"
+msgstr "大约还要 %(time)s"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "took %(time)s"
+msgstr "用时 %(time)s"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "%(speed)s on average"
+msgstr "平均 %(speed)s"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "%(count)s file, %(size)s"
+msgid_plural "%(count)s files, %(size)s"
+msgstr[0] "%(count)s 个文件，%(size)s"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgctxt "copy task"
+msgid "%(count)s file"
+msgid_plural "%(count)s files"
+msgstr[0] "%(count)s 个文件"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "%(count)s folder"
+msgid_plural "%(count)s folders"
+msgstr[0] "%(count)s 个文件夹"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "Started at"
+msgstr "开始时间"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "run %(run)s"
+msgstr "第 %(run)s 次运行"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "Ended at"
+msgstr "结束时间"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "Threads"
+msgstr "线程数"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "Speed limit"
+msgstr "限速"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "No limit"
+msgstr "不限"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "Same name and size"
+msgstr "文件名和大小都相同"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "Same name, other size"
+msgstr "文件名相同、大小不同"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "Retries"
+msgstr "重试次数"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgctxt "copy task"
+msgid "Copied"
+msgstr "已复制"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+#: apps/uploads/static/uploads/js/uploads.js
+msgid "Skipped"
+msgstr "已跳过"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgctxt "copy task"
+msgid "Failed"
+msgstr "失败"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "Read from the source"
+msgstr "从源存储源读取"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "Listing the files…"
+msgstr "正在列出文件……"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "No file at the moment."
+msgstr "现在没有正在复制的文件。"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "Progress of %(name)s"
+msgstr "%(name)s 的进度"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "try %(n)s"
+msgstr "第 %(n)s 次尝试"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "The try before failed: %(error)s"
+msgstr "上一次失败了：%(error)s"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "%(shown)s of %(count)s shown"
+msgstr "显示了 %(shown)s / %(count)s 个"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "tried %(n)s time"
+msgid_plural "tried %(n)s times"
+msgstr[0] "试了 %(n)s 次"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "%(count)s task"
+msgid_plural "%(count)s tasks"
+msgstr[0] "共 %(count)s 个任务"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "No copy tasks yet. \"New copy task\" makes one."
+msgstr "还没有复制任务。点「新建复制任务」新建一个。"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "Stop this copy task?"
+msgstr "停止这个复制任务？"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid ""
+"The files copied so far stay in the target; those being copied now stop "
+"halfway. It can be resumed later."
+msgstr "已经复制好的文件留在目标里，正在复制的文件中途停下。以后可以继续复制。"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "Stopping…"
+msgstr "正在停止……"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "Resume this copy task?"
+msgstr "继续这个复制任务？"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid ""
+"The source folder is listed again. The files that are in the target with the "
+"same name and size are skipped; the others are copied as the task says."
+msgstr ""
+"会重新列出源文件夹：目标里文件名和大小都相同的文件跳过，其余的照任务的设置复"
+"制。"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "Copying again."
+msgstr "已经继续复制。"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+#: apps/files/static/files/js/files.js
+msgctxt "list of them"
+msgid "Folders"
+msgstr "文件夹"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "Choose this folder"
+msgstr "选择这个文件夹"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+#: apps/ipgeo/static/ipgeo/js/manage_ip_geo.js
+#: apps/shares/static/shares/js/create.js
+msgid "Folder"
+msgstr "文件夹"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+#: apps/files/static/files/js/files.js
+#: apps/storages/static/storages/js/grants.js
+#: apps/storages/static/storages/js/manage_storages.js
+msgid "Root folder"
+msgstr "根目录"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+#: apps/files/static/files/js/files.js
+msgid "No folders"
+msgstr "无文件夹"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "%(name)s (%(type)s)"
+msgstr "%(name)s（%(type)s）"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "Choose a folder"
+msgstr "选择文件夹"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "No enabled storage source can take files to copy into."
+msgstr "没有能复制进去的存储源：启用着的存储源都是只读的，或者不能上传文件。"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "There is no enabled storage source."
+msgstr "没有启用着的存储源。"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "Copy from which folder"
+msgstr "从哪个文件夹复制"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "Copy into which folder"
+msgstr "复制到哪个文件夹"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid ""
+"What is in the source folder, files and folders, is copied into the target "
+"folder; a target folder that isn't there yet is made."
+msgstr ""
+"源文件夹里的文件和文件夹会复制到目标文件夹里；目标文件夹不存在时会新建。"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "Copy from"
+msgstr "源存储源"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "Source folder"
+msgstr "源文件夹"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "Copy into"
+msgstr "目标存储源"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+#: apps/files/static/files/js/files.js
+msgid "Target folder"
+msgstr "目标文件夹"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "Made when it isn't there"
+msgstr "不存在时会新建"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "Files copied at the same time"
+msgstr "同时复制几个文件"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "Speed limit (MB/s)"
+msgstr "总限速（MB/秒）"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "All threads together; 0: no limit"
+msgstr "所有线程加起来；0 为不限速"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "For a file that failed"
+msgstr "文件失败后再试几次"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "A file of the same name and size in the target"
+msgstr "目标里有文件名和大小都相同的文件时"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "Taken for the same file."
+msgstr "当作同一个文件。"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "A file of the same name and another size in the target"
+msgstr "目标里有文件名相同、大小不同的文件时"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "An older or other version of it."
+msgstr "多半是它的旧版本或别的版本。"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "New copy task"
+msgstr "新建复制任务"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "Start copying"
+msgstr "开始复制"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "A whole number from 1 to %(max)s."
+msgstr "1 到 %(max)s 的整数。"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "A whole number from 0 to %(max)s."
+msgstr "0 到 %(max)s 的整数。"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "A number from 0 (no limit) to %(max)s."
+msgstr "0（不限）到 %(max)s 的数。"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "The copy task has started."
+msgstr "复制任务已经开始。"
 
 #: apps/files/static/files/js/browse.js
 msgid "There are no storage sources yet. You can add one on the Manage page."
@@ -1051,10 +1429,6 @@ msgid_plural ""
 msgstr[0] "共 %(total)s 个文件，已加载 %(count)s 个，点击再加载 %(next)s 个"
 
 #: apps/files/static/files/js/files.js
-msgid "Load more"
-msgstr "加载更多"
-
-#: apps/files/static/files/js/files.js
 msgid "More locations"
 msgstr "更多位置"
 
@@ -1225,31 +1599,12 @@ msgid "View details"
 msgstr "查看详情"
 
 #: apps/files/static/files/js/files.js
-msgctxt "list of them"
-msgid "Folders"
-msgstr "文件夹"
-
-#: apps/files/static/files/js/files.js
 msgid "Confirm"
 msgstr "确认"
 
 #: apps/files/static/files/js/files.js
-msgid "Target folder"
-msgstr "目标文件夹"
-
-#: apps/files/static/files/js/files.js
 msgid "This folder needs a password to open."
 msgstr "需要密码才能打开这个文件夹。"
-
-#: apps/files/static/files/js/files.js
-#: apps/storages/static/storages/js/grants.js
-#: apps/storages/static/storages/js/manage_storages.js
-msgid "Root folder"
-msgstr "根目录"
-
-#: apps/files/static/files/js/files.js
-msgid "No folders"
-msgstr "无文件夹"
 
 #: apps/files/static/files/js/files.js
 msgid "There is no download link to copy."
@@ -1610,11 +1965,6 @@ msgid "Downloaded at"
 msgstr "下载时间"
 
 #: apps/ipgeo/static/ipgeo/js/manage_ip_geo.js
-#: apps/shares/static/shares/js/create.js
-msgid "Folder"
-msgstr "文件夹"
-
-#: apps/ipgeo/static/ipgeo/js/manage_ip_geo.js
 msgid ""
 "The database file is gone (it should be in %(folder)s). Download it again."
 msgstr "数据库文件不见了（应该在 %(folder)s 里）。重新下载一次就好。"
@@ -1700,11 +2050,6 @@ msgid "Short link lifetime"
 msgstr "短链有效期"
 
 #: apps/links/static/links/js/links.js
-msgid "%(n)s second"
-msgid_plural "%(n)s seconds"
-msgstr[0] "%(n)s 秒"
-
-#: apps/links/static/links/js/links.js
 msgid "%(n)s minute"
 msgid_plural "%(n)s minutes"
 msgstr[0] "%(n)s 分钟"
@@ -1713,11 +2058,6 @@ msgstr[0] "%(n)s 分钟"
 msgid "%(n)s hour"
 msgid_plural "%(n)s hours"
 msgstr[0] "%(n)s 小时"
-
-#: apps/links/static/links/js/links.js
-msgid "%(n)s day"
-msgid_plural "%(n)s days"
-msgstr[0] "%(n)s 天"
 
 #: apps/links/static/links/js/links.js
 msgid "%(n)s week"
@@ -2552,11 +2892,6 @@ msgstr "只读状态下不允许保存文件"
 #: apps/preview/static/preview/js/text.js
 msgid "The file has changed"
 msgstr "文件已经被改过了"
-
-#: apps/preview/static/preview/js/text.js
-#: apps/uploads/static/uploads/js/uploads.js
-msgid "Overwrite"
-msgstr "覆盖"
 
 #: apps/preview/static/preview/js/text.js
 msgid ""
@@ -4883,10 +5218,6 @@ msgid "Upload failed"
 msgstr "上传失败"
 
 #: apps/uploads/static/uploads/js/uploads.js
-msgid "Skipped"
-msgstr "已跳过"
-
-#: apps/uploads/static/uploads/js/uploads.js
 msgid "The new name can't be used; waiting for another…"
 msgstr "新名字不能用，等待输入..."
 
@@ -4906,10 +5237,6 @@ msgstr "已存在，等待选择..."
 #: apps/uploads/static/uploads/js/uploads.js
 msgid "Skip all"
 msgstr "全部跳过"
-
-#: apps/uploads/static/uploads/js/uploads.js
-msgid "Skip"
-msgstr "跳过"
 
 #: apps/uploads/static/uploads/js/uploads.js
 msgid "Overwrite all"
@@ -5046,10 +5373,6 @@ msgstr "展开"
 #: apps/uploads/static/uploads/js/uploads.js
 msgid "%(label)s: %(name)s"
 msgstr "%(label)s：%(name)s"
-
-#: apps/uploads/static/uploads/js/uploads.js
-msgid "%(speed)s/s"
-msgstr "%(speed)s/秒"
 
 #: apps/uploads/static/uploads/js/uploads.js
 msgid "Cancel upload"

@@ -277,6 +277,10 @@ class StorageDriver:
     forbidden_chars: ClassVar[str] = ""
     # Longest name in UTF-8 bytes.
     max_name_bytes: ClassVar[int] = 255
+    # How many transfers (an open() stream being read, a write()) the instance can have going at once, when it has a
+    # limit of its own: FTP's and SFTP's pools of connections (max_connections), where a download holds its connection
+    # until its stream is closed. None: no limit. Copy tasks copy at most that many files at once (apps/copytasks).
+    max_transfers: int | None = None
 
     # OAuth drivers (OneDrive, SharePoint, Google Drive): the admin fills in the app's id and
     # secret and presses the button; the browser goes to authorize_url(), the provider sends it

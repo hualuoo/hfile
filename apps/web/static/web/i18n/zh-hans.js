@@ -45,8 +45,14 @@
     "%(count)s entry": [
       "\u5171 %(count)s \u6761"
     ],
+    "%(count)s failed": [
+      "%(count)s \u4e2a\u5931\u8d25"
+    ],
     "%(count)s file": [
       "%(count)s \u4e2a"
+    ],
+    "%(count)s file, %(size)s": [
+      "%(count)s \u4e2a\u6587\u4ef6\uff0c%(size)s"
     ],
     "%(count)s file.": [
       "%(count)s \u4e2a\u6587\u4ef6\u3002"
@@ -56,6 +62,9 @@
     ],
     "%(count)s file; the short link never expires.": [
       "%(count)s \u4e2a\u6587\u4ef6\uff0c\u77ed\u94fe\u6c38\u4e45\u6709\u6548\u3002"
+    ],
+    "%(count)s folder": [
+      "%(count)s \u4e2a\u6587\u4ef6\u5939"
     ],
     "%(count)s found": [
       "\u627e\u5230 %(count)s \u6761"
@@ -84,6 +93,9 @@
     "%(count)s share found": [
       "\u627e\u5230 %(count)s \u4e2a\u5206\u4eab"
     ],
+    "%(count)s task": [
+      "\u5171 %(count)s \u4e2a\u4efb\u52a1"
+    ],
     "%(count)s user": [
       "\u5171 %(count)s \u4e2a\u7528\u6237"
     ],
@@ -93,6 +105,10 @@
     "%(detail)s This page can't do that step yet (%(name)s).": "%(detail)s\u8fd9\u4e2a\u9875\u9762\u8fd8\u4e0d\u4f1a\u8fd9\u4e00\u6b65\uff08%(name)s\uff09\u3002",
     "%(done)s done": [
       "%(done)s \u4e2a\u5b8c\u6210"
+    ],
+    "%(done)s of %(total)s": "%(done)s / %(total)s",
+    "%(done)s of %(total)s file": [
+      "%(done)s / %(total)s \u4e2a\u6587\u4ef6"
     ],
     "%(failed)s failed": [
       "%(failed)s \u4e2a\u5931\u8d25"
@@ -106,6 +122,7 @@
     "%(folders)s folder": [
       "%(folders)s \u4e2a\u6587\u4ef6\u5939"
     ],
+    "%(h)s h %(m)s min": "%(h)s \u5c0f\u65f6 %(m)s \u5206",
     "%(identities)s user": [
       "%(identities)s \u4e2a"
     ],
@@ -118,6 +135,7 @@
     "%(label)s: %(msg)s": "%(label)s\uff1a%(msg)s",
     "%(label)s: %(name)s": "%(label)s\uff1a%(name)s",
     "%(labels)s and others (%(count)s in all)": "%(labels)s \u7b49\u00a0%(count)s\u00a0\u9879",
+    "%(m)s min %(s)s s": "%(m)s \u5206 %(s)s \u79d2",
     "%(message)s: filled into the form; click \"Save\" to apply it.": "%(message)s\uff1a\u5df2\u7ecf\u586b\u8fdb\u8868\u5355\uff0c\u70b9\u300c\u4fdd\u5b58\u300d\u751f\u6548\u3002",
     "%(n)s day": [
       "%(n)s \u5929"
@@ -149,6 +167,7 @@
     "%(n)s year": [
       "%(n)s \u5e74"
     ],
+    "%(name)s (%(type)s)": "%(name)s\uff08%(type)s\uff09",
     "%(name)s (no permission to play)": "%(name)s\uff08\u6ca1\u6709\u64ad\u653e\u7684\u6743\u9650\uff09",
     "%(name)s (not enabled)": "%(name)s\uff08\u6ca1\u6709\u542f\u7528\uff09",
     "%(name)s added. Don't forget to register the callback URL with the provider.": "\u5df2\u65b0\u589e %(name)s\u3002\u522b\u5fd8\u4e86\u628a\u56de\u8c03\u5730\u5740\u767b\u8bb0\u5230\u670d\u52a1\u5546\u90a3\u91cc\u3002",
@@ -168,10 +187,12 @@
     ],
     "%(reason)s Only superusers can see and change their single sign-on links too.": "%(reason)s\u4ed6\u7684\u5355\u70b9\u767b\u5f55\u7ed1\u5b9a\u4e5f\u53ea\u6709\u8d85\u7ea7\u7ba1\u7406\u5458\u80fd\u770b\u548c\u6539\u3002",
     "%(section)s \u00b7 Manage": "%(section)s \u00b7 \u7ba1\u7406",
+    "%(shown)s of %(count)s shown": "\u663e\u793a\u4e86 %(shown)s / %(count)s \u4e2a",
     "%(site)s direct links %(stamp)s.csv": "%(site)s \u76f4\u94fe\u5bfc\u51fa %(stamp)s.csv",
     "%(skipped)s skipped": [
       "%(skipped)s \u4e2a\u8df3\u8fc7"
     ],
+    "%(speed)s on average": "\u5e73\u5747 %(speed)s",
     "%(speed)s/s": "%(speed)s/\u79d2",
     "%(title)s \u00b7 %(name)s \u00b7 Manage": "%(title)s \u00b7 %(name)s \u00b7 \u7ba1\u7406",
     "%(title)s \u00b7 File share": "%(title)s \u00b7 \u6587\u4ef6\u5206\u4eab",
@@ -206,12 +227,17 @@
     "A command on the server, or OnlyOffice saving": "\u670d\u52a1\u5668\u4e0a\u7684\u547d\u4ee4\uff0c\u6216\u8005 OnlyOffice \u4fdd\u5b58",
     "A file name can't be only dots and spaces.": "\u6587\u4ef6\u540d\u4e0d\u80fd\u53ea\u6709\u70b9\u548c\u7a7a\u683c\u3002",
     "A file name can't contain / or \\.": "\u6587\u4ef6\u540d\u91cc\u4e0d\u80fd\u6709 / \u6216 \\\u3002",
+    "A file of the same name and another size in the target": "\u76ee\u6807\u91cc\u6709\u6587\u4ef6\u540d\u76f8\u540c\u3001\u5927\u5c0f\u4e0d\u540c\u7684\u6587\u4ef6\u65f6",
+    "A file of the same name and size in the target": "\u76ee\u6807\u91cc\u6709\u6587\u4ef6\u540d\u548c\u5927\u5c0f\u90fd\u76f8\u540c\u7684\u6587\u4ef6\u65f6",
     "A folder name can't contain / (nested folders can't be created at once)": "\u6587\u4ef6\u5939\u540d\u79f0\u4e0d\u80fd\u5305\u542b / (\u4e0d\u652f\u6301\u591a\u7ea7\u521b\u5efa)",
     "A new storage source, not set up for this user yet": "\u65b0\u589e\u7684\u5b58\u50a8\u6e90\uff0c\u8fd8\u6ca1\u7ed9\u8fd9\u4e2a\u7528\u6237\u8bbe\u7f6e\u8fc7",
     "A new username is required.": "\u8981\u586b\u65b0\u7528\u6237\u540d\u3002",
+    "A number from 0 (no limit) to %(max)s.": "0\uff08\u4e0d\u9650\uff09\u5230 %(max)s \u7684\u6570\u3002",
     "A path in the storage source, like /music/rock/a.mp3.": "\u5b58\u50a8\u6e90\u91cc\u7684\u8def\u5f84\uff0c\u4f8b\u5982 /music/rock/a.mp3\u3002",
     "A script didn't load. Please reload the page and try again.": "\u811a\u672c\u52a0\u8f7d\u5931\u8d25\uff0c\u8bf7\u5237\u65b0\u9875\u9762\u518d\u8bd5\u3002",
     "A shorter link, easy to copy and pass on.": "\u7f29\u77ed\u7248\u76f4\u94fe\u5730\u5740\uff0c\u4fbf\u4e8e\u590d\u5236\u5206\u53d1.",
+    "A whole number from 0 to %(max)s.": "0 \u5230 %(max)s \u7684\u6574\u6570\u3002",
+    "A whole number from 1 to %(max)s.": "1 \u5230 %(max)s \u7684\u6574\u6570\u3002",
     "About": "\u5bf9\u8c61",
     "Absolute path": "\u7edd\u5bf9\u8def\u5f84",
     "Access password": "\u8bbf\u95ee\u5bc6\u7801",
@@ -242,6 +268,7 @@
     "Alias of the new storage source": "\u65b0\u5b58\u50a8\u6e90\u7684\u522b\u540d",
     "All files": "\u5168\u90e8\u6587\u4ef6",
     "All permanent download links this storage source gave before stop working, and time-limited links stop before they expire.": "\u8fd9\u4e2a\u5b58\u50a8\u6e90\u4ee5\u524d\u7ed9\u51fa\u7684\u6c38\u4e45\u4e0b\u8f7d\u94fe\u63a5\u4f1a\u5168\u90e8\u5931\u6548\uff0c\u6709\u65f6\u6548\u7684\u94fe\u63a5\u5230\u671f\u524d\u4e5f\u5931\u6548\u3002",
+    "All threads together; 0: no limit": "\u6240\u6709\u7ebf\u7a0b\u52a0\u8d77\u6765\uff1b0 \u4e3a\u4e0d\u9650\u901f",
     "Allow \"%(name)s\"": "\u5141\u8bb8\u4f7f\u7528\u300c%(name)s\u300d",
     "Allow access without logging in": "\u5141\u8bb8\u6ca1\u767b\u5f55\u7684\u4eba\u8bbf\u95ee",
     "Allowed": "\u5141\u8bb8\u4f7f\u7528",
@@ -250,6 +277,7 @@
     "Already exists; waiting for a choice\u2026": "\u5df2\u5b58\u5728\uff0c\u7b49\u5f85\u9009\u62e9...",
     "Already logged in. To use another account, scan again.": "\u5df2\u7ecf\u767b\u5f55\u4e86\u3002\u8981\u6362\u4e00\u4e2a\u5e10\u6237\uff0c\u53ef\u4ee5\u91cd\u65b0\u626b\u7801\u3002",
     "Already set; leave empty to keep it": "\u5df2\u7ecf\u8bbe\u7f6e\u4e86\uff0c\u4e0d\u6539\u5c31\u7559\u7a7a",
+    "An older or other version of it.": "\u591a\u534a\u662f\u5b83\u7684\u65e7\u7248\u672c\u6216\u522b\u7684\u7248\u672c\u3002",
     "Anonymous access is off: nothing can be seen without logging in.": "\u5df2\u5173\u95ed\u533f\u540d\u8bbf\u95ee\uff1a\u6ca1\u767b\u5f55\u5c31\u4ec0\u4e48\u90fd\u770b\u4e0d\u4e86\u3002",
     "Another one": "\u6362\u4e00\u5f20",
     "Another request keeps holding this upload. Please try again later.": "\u8fd9\u4e2a\u4e0a\u4f20\u4e00\u76f4\u88ab\u522b\u7684\u8bf7\u6c42\u5360\u7740\uff0c\u8bf7\u7a0d\u540e\u91cd\u8bd5\u3002",
@@ -279,6 +307,7 @@
     "Backup folder": "\u5907\u4efd\u6587\u4ef6\u5939",
     "Basic info": "\u57fa\u672c\u4fe1\u606f",
     "Batch (bat)": "\u6279\u5904\u7406\uff08bat\uff09",
+    "Being copied": "\u6b63\u5728\u590d\u5236",
     "Below": "\u5e95\u90e8\u663e\u793a",
     "Blocked: matches \"%(rule)s\".": "\u4f1a\u88ab\u6321\u4f4f\uff1a\u5339\u914d\u4e86\u300c%(rule)s\u300d\u3002",
     "Blocklist": "\u9ed1\u540d\u5355",
@@ -322,10 +351,12 @@
     "Checking the connection\u2026": "\u6b63\u5728\u68c0\u67e5\u8fde\u63a5\u2026",
     "Checking\u2026": "\u6b63\u5728\u68c0\u67e5\u2026\u2026",
     "Choose %(label)s from a list": "\u4ece\u5217\u8868\u91cc\u9009\u62e9%(label)s",
+    "Choose a folder": "\u9009\u62e9\u6587\u4ef6\u5939",
     "Choose a storage source": "\u8bf7\u9009\u62e9\u5b58\u50a8\u6e90",
     "Choose from the list (%(count)s)\u2026": [
       "\u4ece\u5217\u8868\u91cc\u9009\u4e00\u4e2a\uff08%(count)s \u4e2a\uff09\u2026"
     ],
+    "Choose this folder": "\u9009\u62e9\u8fd9\u4e2a\u6587\u4ef6\u5939",
     "Choose when it expires": "\u9009\u62e9\u8fc7\u671f\u65f6\u95f4",
     "Clean up": "\u6e05\u7406",
     "Clear": "\u6e05\u9664",
@@ -385,17 +416,24 @@
     "Copy download link": "\u590d\u5236\u4e0b\u8f7d\u94fe\u63a5",
     "Copy failed": "\u590d\u5236\u5931\u8d25",
     "Copy failed: %(error)s": "\u590d\u5236\u5931\u8d25\uff1a%(error)s",
+    "Copy from": "\u6e90\u5b58\u50a8\u6e90",
+    "Copy from which folder": "\u4ece\u54ea\u4e2a\u6587\u4ef6\u5939\u590d\u5236",
+    "Copy into": "\u76ee\u6807\u5b58\u50a8\u6e90",
+    "Copy into which folder": "\u590d\u5236\u5230\u54ea\u4e2a\u6587\u4ef6\u5939",
     "Copy key": "\u590d\u5236\u5bc6\u94a5",
     "Copy link with password": "\u590d\u5236\u5e26\u5bc6\u7801\u94fe\u63a5",
+    "Copy progress": "\u590d\u5236\u8fdb\u5ea6",
     "Copy results": "\u590d\u5236\u7ed3\u679c",
     "Copy share key": "\u590d\u5236 Share Key",
     "Copy share link": "\u590d\u5236\u5206\u4eab\u94fe\u63a5",
     "Copy short link": "\u590d\u5236\u77ed\u94fe",
     "Copy to": "\u590d\u5236\u5230",
     "Copy user \"%(username)s\"": "\u590d\u5236\u7528\u6237\u300c%(username)s\u300d",
+    "Copying again.": "\u5df2\u7ecf\u7ee7\u7eed\u590d\u5236\u3002",
     "Copying failed. Please copy it by hand.": "\u590d\u5236\u5931\u8d25\uff0c\u8bf7\u624b\u52a8\u590d\u5236\u3002",
     "Copying failed. Please select and copy it by hand": "\u590d\u5236\u5931\u8d25\uff0c\u8bf7\u624b\u52a8\u9009\u4e2d\u590d\u5236",
     "Copying failed. Please type it in.": "\u590d\u5236\u5931\u8d25\uff0c\u8bf7\u624b\u52a8\u8f93\u5165\u3002",
+    "Couldn't be copied": "\u6ca1\u6709\u590d\u5236\u6210\u529f\u7684",
     "Couldn't get a download address.": "\u62ff\u4e0d\u5230\u4e0b\u8f7d\u5730\u5740\u3002",
     "Couldn't get the share's password": "\u672a\u83b7\u53d6\u5230\u5206\u4eab\u5bc6\u7801",
     "Couldn't reach the online document server. Please check that it is working.": "\u8c03\u7528\u5728\u7ebf\u6587\u6863\u670d\u52a1\u5931\u8d25\uff0c\u8bf7\u68c0\u67e5\u5728\u7ebf\u6587\u6863\u670d\u52a1\u662f\u5426\u6b63\u5e38",
@@ -537,6 +575,7 @@
     "Enabling": "\u6b63\u5728\u542f\u7528",
     "Encoding": "\u7f16\u7801",
     "Encoding %(name)s": "\u7f16\u7801 %(name)s",
+    "Ended at": "\u7ed3\u675f\u65f6\u95f4",
     "Enter a path in the storage source to see which rules cover it.": "\u8f93\u5165\u4e00\u4e2a\u5b58\u50a8\u6e90\u91cc\u7684\u8def\u5f84\uff0c\u770b\u770b\u54ea\u4e9b\u89c4\u5219\u7ba1\u5230\u5b83\u3002",
     "Enter password": "\u8f93\u5165\u5bc6\u7801",
     "Enter the OpenID Connect service's configuration address, like https://gitlab.com/.well-known/openid-configuration. The server reads it and fills in the authorization, token and userinfo endpoints.": "\u586b OpenID Connect \u670d\u52a1\u7684\u914d\u7f6e\u5730\u5740\uff0c\u6bd4\u5982 https://gitlab.com/.well-known/openid-configuration\u3002\u670d\u52a1\u5668\u53bb\u8bfb\u5b83\uff0c\u586b\u4e0a\u6388\u6743\u3001Token \u548c\u7528\u6237\u4fe1\u606f\u4e09\u4e2a\u7aef\u70b9\u3002",
@@ -569,6 +608,7 @@
     "File size": "\u6587\u4ef6\u5927\u5c0f",
     "Files and folders in it": "\u5305\u542b\u7684\u6587\u4ef6 / \u6587\u4ef6\u5939",
     "Files are listed here once the administrator has added a storage source.": "\u7ba1\u7406\u5458\u52a0\u597d\u5b58\u50a8\u6e90\u4ee5\u540e\uff0c\u6587\u4ef6\u5c31\u5217\u5728\u8fd9\u91cc\u3002",
+    "Files copied at the same time": "\u540c\u65f6\u590d\u5236\u51e0\u4e2a\u6587\u4ef6",
     "Files over %(limit)s can only be viewed": "\u8d85\u8fc7 %(limit)s \u7684\u6587\u4ef6\u53ea\u80fd\u67e5\u770b",
     "Fill in %(fields)s first; everything else has defaults, and all can be changed later in the storage source's settings. Finishing checks the connection, then enables the storage source.": "\u5148\u586b\u597d%(fields)s\uff0c\u5176\u4ed6\u7684\u90fd\u6709\u9ed8\u8ba4\u503c\uff1b\u4ee5\u540e\u5728\u5b58\u50a8\u6e90\u7684\u8bbe\u7f6e\u91cc\u4e5f\u80fd\u6539\u3002\u5b8c\u6210\u65f6\u4f1a\u5148\u68c0\u67e5\u8fde\u63a5\uff0c\u518d\u542f\u7528\u8fd9\u4e2a\u5b58\u50a8\u6e90\u3002",
     "Fill in from a .well-known address": "\u901a\u8fc7 .well-known \u5730\u5740\u81ea\u52a8\u586b\u5199",
@@ -588,6 +628,7 @@
     "Folder passwords": "\u76ee\u5f55\u5bc6\u7801",
     "Folder readme": "\u76ee\u5f55\u6587\u6863",
     "Folders can't be downloaded yet": "\u6682\u4e0d\u652f\u6301\u4e0b\u8f7d\u6587\u4ef6\u5939",
+    "For a file that failed": "\u6587\u4ef6\u5931\u8d25\u540e\u518d\u8bd5\u51e0\u6b21",
     "Forever": "\u6c38\u4e45",
     "Forget unlocked folders": "\u6e05\u7406\u5bc6\u7801\u6587\u4ef6\u5939\u7f13\u5b58",
     "From %(started_at)s": "%(started_at)s \u8d77",
@@ -656,6 +697,7 @@
     "Linked, ID %(external_id)s": "\u5df2\u7ed1\u5b9a\uff0cID %(external_id)s",
     "Linked: this account can log in from now on.": "\u7ed1\u5b9a\u597d\u4e86\uff1a\u4ee5\u540e\u53ef\u4ee5\u7528\u8fd9\u4e2a\u8d26\u53f7\u767b\u5f55\u3002",
     "List view": "\u5217\u8868\u6a21\u5f0f",
+    "Listing the files\u2026": "\u6b63\u5728\u5217\u51fa\u6587\u4ef6\u2026\u2026",
     "Load more": "\u52a0\u8f7d\u66f4\u591a",
     "Loading": "\u52a0\u8f7d\u4e2d",
     "Loading %(percent)s%": "\u52a0\u8f7d %(percent)s%",
@@ -672,6 +714,7 @@
     "Logging in also asks for the digits in a phone authenticator app": "\u767b\u5f55\u65f6\u8fd8\u8981\u8f93\u5165\u624b\u673a\u9a8c\u8bc1\u5668 App \u4e0a\u7684\u6570\u5b57",
     "Login address: %(origin)s/login/%(entry)s/ (logging in only works here)": "\u767b\u5f55\u5730\u5740\uff1a%(origin)s/login/%(entry)s/\uff08\u53ea\u6709\u4ece\u8fd9\u91cc\u80fd\u767b\u5f55\uff09",
     "Login password": "\u767b\u5f55\u5bc6\u7801",
+    "Made when it isn't there": "\u4e0d\u5b58\u5728\u65f6\u4f1a\u65b0\u5efa",
     "Manage": "\u7ba1\u7406",
     "Matches": "\u5339\u914d",
     "Medium": "\u4e2d",
@@ -706,6 +749,7 @@
     "Never": "\u4ece\u672a\u767b\u5f55",
     "Never expires": "\u6c38\u4e45\u6709\u6548",
     "Never logged in with it": "\u8fd8\u6ca1\u7528\u5b83\u767b\u5f55\u8fc7",
+    "New copy task": "\u65b0\u5efa\u590d\u5236\u4efb\u52a1",
     "New file name": "\u65b0\u7684\u6587\u4ef6\u540d",
     "New folder": "\u65b0\u5efa\u6587\u4ef6\u5939",
     "New link key": "\u6362\u4e00\u4e2a\u94fe\u63a5\u5bc6\u94a5",
@@ -728,16 +772,20 @@
     "No access: it and what's below it can't be opened.": "\u4e0d\u80fd\u8bbf\u95ee\uff1a\u5b83\u548c\u5b83\u4e0b\u9762\u7684\u4e1c\u897f\u90fd\u6253\u4e0d\u5f00\u3002",
     "No account has this name now": "\u73b0\u5728\u6ca1\u6709\u8fd9\u4e2a\u540d\u5b57\u7684\u8d26\u53f7",
     "No content yet": "\u8fd8\u6ca1\u6709\u5185\u5bb9",
+    "No copy tasks yet. \"New copy task\" makes one.": "\u8fd8\u6ca1\u6709\u590d\u5236\u4efb\u52a1\u3002\u70b9\u300c\u65b0\u5efa\u590d\u5236\u4efb\u52a1\u300d\u65b0\u5efa\u4e00\u4e2a\u3002",
     "No downloads in the last %(seconds)s second.": [
       "%(seconds)s \u79d2\u5185\u6ca1\u6709\u4efb\u4f55\u4e0b\u8f7d\u8bb0\u5f55\u3002"
     ],
     "No downloads logged yet.": "\u8fd8\u6ca1\u6709\u4e0b\u8f7d\u8bb0\u5f55\u3002",
     "No downloads: downloads, previews, direct and short links don't work.": "\u4e0d\u80fd\u4e0b\u8f7d\uff1a\u4e0b\u8f7d\u3001\u9884\u89c8\u3001\u76f4\u94fe\u548c\u77ed\u94fe\u90fd\u4e0d\u884c\u3002",
+    "No enabled storage source can take files to copy into.": "\u6ca1\u6709\u80fd\u590d\u5236\u8fdb\u53bb\u7684\u5b58\u50a8\u6e90\uff1a\u542f\u7528\u7740\u7684\u5b58\u50a8\u6e90\u90fd\u662f\u53ea\u8bfb\u7684\uff0c\u6216\u8005\u4e0d\u80fd\u4e0a\u4f20\u6587\u4ef6\u3002",
+    "No file at the moment.": "\u73b0\u5728\u6ca1\u6709\u6b63\u5728\u590d\u5236\u7684\u6587\u4ef6\u3002",
     "No filter rules yet.": "\u8fd8\u6ca1\u6709\u8fc7\u6ee4\u89c4\u5219\u3002",
     "No folder passwords yet.": "\u8fd8\u6ca1\u6709\u76ee\u5f55\u5bc6\u7801\u3002",
     "No folder readmes yet.": "\u8fd8\u6ca1\u6709\u76ee\u5f55\u6587\u6863\u3002",
     "No folders": "\u65e0\u6587\u4ef6\u5939",
     "No images in this folder": "\u5f53\u524d\u6587\u4ef6\u5939\u65e0\u56fe\u7247",
+    "No limit": "\u4e0d\u9650",
     "No one has created a share yet.": "\u8fd8\u6ca1\u6709\u4eba\u521b\u5efa\u5206\u4eab\u3002",
     "No password": "\u6ca1\u6709\u5bc6\u7801",
     "No password needed.": "\u4e0d\u9700\u8981\u5bc6\u7801\u3002",
@@ -880,6 +928,7 @@
     "Previous video": "\u4e0a\u4e00\u4e2a\u89c6\u9891",
     "Program": "\u7a0b\u5e8f",
     "Program version": "\u7a0b\u5e8f\u7248\u672c",
+    "Progress of %(name)s": "%(name)s \u7684\u8fdb\u5ea6",
     "Provider": "\u670d\u52a1\u5546",
     "Put this address of the site in the app's redirect URI (callback URL):": "\u5728\u5e94\u7528\u7684\u91cd\u5b9a\u5411 URI\uff08\u56de\u8c03\u5730\u5740\uff09\u91cc\u586b\u672c\u7ad9\u7684\u8fd9\u4e2a\u5730\u5740\uff1a",
     "QR code for logging in": "\u767b\u5f55\u7528\u7684\u4e8c\u7ef4\u7801",
@@ -888,6 +937,7 @@
     "Random": "\u968f\u673a\u751f\u6210",
     "Read": "\u8bfb\u53d6",
     "Read README.md in folders": "\u8bfb\u53d6\u6587\u4ef6\u5939\u91cc\u7684 README.md",
+    "Read from the source": "\u4ece\u6e90\u5b58\u50a8\u6e90\u8bfb\u53d6",
     "Read it, but it has no %(fields)s; please fill them in by hand.": "\u8bfb\u5230\u4e86\uff0c\u4f46\u662f\u6ca1\u6709%(fields)s\uff0c\u8bf7\u624b\u52a8\u586b\u3002",
     "Read it: the three endpoints are filled in.": "\u8bfb\u5230\u4e86\uff1a\u4e09\u4e2a\u7aef\u70b9\u5df2\u7ecf\u586b\u597d\u3002",
     "Read-only": "\u53ea\u8bfb",
@@ -916,6 +966,9 @@
     "Restore the default": "\u6062\u590d\u9ed8\u8ba4",
     "Restore the default?": "\u6062\u590d\u9ed8\u8ba4\uff1f",
     "Results": "\u6279\u91cf\u64cd\u4f5c\u7ed3\u679c",
+    "Resume": "\u7ee7\u7eed\u590d\u5236",
+    "Resume this copy task?": "\u7ee7\u7eed\u8fd9\u4e2a\u590d\u5236\u4efb\u52a1\uff1f",
+    "Retries": "\u91cd\u8bd5\u6b21\u6570",
     "Retry": "\u91cd\u8bd5",
     "Role": "\u8eab\u4efd",
     "Root folder": "\u6839\u76ee\u5f55",
@@ -928,6 +981,8 @@
     "Rule type": "\u89c4\u5219\u7c7b\u578b",
     "Rules": "\u89c4\u5219",
     "Rules saved": "\u89c4\u5219\u5df2\u4fdd\u5b58",
+    "Same name and size": "\u6587\u4ef6\u540d\u548c\u5927\u5c0f\u90fd\u76f8\u540c",
+    "Same name, other size": "\u6587\u4ef6\u540d\u76f8\u540c\u3001\u5927\u5c0f\u4e0d\u540c",
     "Save": "\u4fdd\u5b58",
     "Save and continue": "\u4fdd\u5b58\u5e76\u7ee7\u7eed",
     "Save this user in \"Basic info\" first, then link their single sign-on accounts.": "\u5148\u5728\u300c\u57fa\u672c\u4fe1\u606f\u300d\u91cc\u4fdd\u5b58\u8fd9\u4e2a\u7528\u6237\uff0c\u518d\u7ed1\u5b9a\u4ed6\u7684\u5355\u70b9\u767b\u5f55\u8d26\u53f7\u3002",
@@ -1005,10 +1060,18 @@
     "Some settings are wrong; see the red text below": "\u6709\u7684\u8bbe\u7f6e\u4e0d\u5bf9\uff0c\u89c1\u4e0b\u9762\u7684\u7ea2\u5b57",
     "Sort": "\u6392\u5e8f",
     "Sort by %(label)s": "\u6309%(label)s\u6392\u5e8f",
+    "Source folder": "\u6e90\u6587\u4ef6\u5939",
+    "Speed limit": "\u9650\u901f",
+    "Speed limit (MB/s)": "\u603b\u9650\u901f\uff08MB/\u79d2\uff09",
+    "Start copying": "\u5f00\u59cb\u590d\u5236",
+    "Started at": "\u5f00\u59cb\u65f6\u95f4",
     "Statistics": "\u7edf\u8ba1\u4fe1\u606f",
     "Stats": "\u7edf\u8ba1",
     "Steps to add a storage source": "\u6dfb\u52a0\u5b58\u50a8\u6e90\u7684\u6b65\u9aa4",
     "Still to fill in: %(fields)s": "\u8fd8\u8981\u586b\uff1a%(fields)s",
+    "Stop": "\u505c\u6b62",
+    "Stop this copy task?": "\u505c\u6b62\u8fd9\u4e2a\u590d\u5236\u4efb\u52a1\uff1f",
+    "Stopping\u2026": "\u6b63\u5728\u505c\u6b62\u2026\u2026",
     "Storage source": "\u5b58\u50a8\u6e90",
     "Storage source management isn't ready yet.": "\u5b58\u50a8\u6e90\u7ba1\u7406\u8fd8\u6ca1\u6709\u88c5\u597d\u3002",
     "Storage source permissions saved": "\u5b58\u50a8\u6e90\u6743\u9650\u5df2\u4fdd\u5b58",
@@ -1018,6 +1081,7 @@
     "Storage type": "\u5b58\u50a8\u7c7b\u578b",
     "Subtitles": "\u5b57\u5e55",
     "Subtitles off": "\u5173\u95ed\u5b57\u5e55",
+    "Taken for the same file.": "\u5f53\u4f5c\u540c\u4e00\u4e2a\u6587\u4ef6\u3002",
     "Target folder": "\u76ee\u6807\u6587\u4ef6\u5939",
     "Test connection": "\u6d4b\u8bd5\u8fde\u63a5",
     "Testing": "\u6b63\u5728\u6d4b\u8bd5",
@@ -1044,6 +1108,7 @@
     "The changes aren't saved; leaving loses them.": "\u6539\u52a8\u8fd8\u6ca1\u6709\u4fdd\u5b58\uff0c\u79bb\u5f00\u5c31\u4e22\u6389\u4e86\u3002",
     "The connection is checked first; if it fails, the storage source isn't enabled.": "\u542f\u7528\u4e4b\u524d\u4f1a\u5148\u68c0\u67e5\u4e00\u6b21\u8fde\u63a5\uff0c\u8fde\u4e0d\u4e0a\u5c31\u4e0d\u542f\u7528\u3002",
     "The connection works.": "\u8fde\u63a5\u6b63\u5e38\u3002",
+    "The copy task has started.": "\u590d\u5236\u4efb\u52a1\u5df2\u7ecf\u5f00\u59cb\u3002",
     "The counters are kept in the memory of this site's process and start from zero when the site restarts.": "\u8ba1\u6570\u5728\u7f51\u7ad9\u8fd9\u4e2a\u8fdb\u7a0b\u7684\u5185\u5b58\u91cc\uff0c\u7f51\u7ad9\u91cd\u65b0\u542f\u52a8\u540e\u4ece\u96f6\u5f00\u59cb\u3002",
     "The database file is gone (it should be in %(folder)s). Download it again.": "\u6570\u636e\u5e93\u6587\u4ef6\u4e0d\u89c1\u4e86\uff08\u5e94\u8be5\u5728 %(folder)s \u91cc\uff09\u3002\u91cd\u65b0\u4e0b\u8f7d\u4e00\u6b21\u5c31\u597d\u3002",
     "The database has migrations this program doesn't have: %(list)s. A newer version upgraded it, and this version may fail on it; please go back to the newer program.": "\u6570\u636e\u5e93\u91cc\u6709\u8fd9\u4e2a\u7a0b\u5e8f\u6ca1\u6709\u7684\u8fc1\u79fb\uff1a%(list)s\u3002\u5b83\u88ab\u66f4\u65b0\u7684\u7248\u672c\u5347\u7ea7\u8fc7\uff0c\u8fd9\u4e2a\u7248\u672c\u53ef\u80fd\u51fa\u9519\uff0c\u8bf7\u6362\u56de\u65b0\u7248\u7a0b\u5e8f\u3002",
@@ -1054,6 +1119,7 @@
     "The file already exists": "\u6587\u4ef6\u5df2\u5b58\u5728",
     "The file has changed": "\u6587\u4ef6\u5df2\u7ecf\u88ab\u6539\u8fc7\u4e86",
     "The file is too large (%(size)s); the page previews at most %(limit)s.": "\u6587\u4ef6\u592a\u5927\u4e86\uff08%(size)s\uff09\uff0c\u7f51\u9875\u4e0a\u6700\u591a\u9884\u89c8 %(limit)s\u3002",
+    "The files copied so far stay in the target; those being copied now stop halfway. It can be resumed later.": "\u5df2\u7ecf\u590d\u5236\u597d\u7684\u6587\u4ef6\u7559\u5728\u76ee\u6807\u91cc\uff0c\u6b63\u5728\u590d\u5236\u7684\u6587\u4ef6\u4e2d\u9014\u505c\u4e0b\u3002\u4ee5\u540e\u53ef\u4ee5\u7ee7\u7eed\u590d\u5236\u3002",
     "The folder \"%(path)s\" wasn't created: %(detail)s": "\u6587\u4ef6\u5939\u300c%(path)s\u300d\u6ca1\u6709\u5efa\u6210\uff1a%(detail)s",
     "The folder doesn't exist": "\u6587\u4ef6\u5939\u4e0d\u5b58\u5728",
     "The folder has been created.": "\u6587\u4ef6\u5939\u5df2\u7ecf\u5efa\u597d\u3002",
@@ -1095,10 +1161,12 @@
     "The share key can only have letters, digits, underscores and hyphens, 3 to 8 characters": "\u5206\u4eab Key \u53ea\u80fd\u5305\u542b\u5b57\u6bcd\u3001\u6570\u5b57\u3001\u4e0b\u5212\u7ebf\u548c\u77ed\u6a2a\u7ebf\uff0c\u957f\u5ea6\u4e3a 3-8 \u4f4d",
     "The site has no short link lifetimes set. Please contact the administrator.": "\u7f51\u7ad9\u6ca1\u6709\u8bbe\u7f6e\u77ed\u94fe\u6709\u6548\u671f\uff0c\u8bf7\u8054\u7cfb\u7ba1\u7406\u5458\u3002",
     "The site sees your IP as %(ip)s; don't put it in the IP blocklist (saving checks this too). If it isn't your IP, see \"Diagnostics\": most likely [server] proxies in the settings file is wrong.": "\u7f51\u7ad9\u770b\u5230\u7684\u4f60\u7684 IP \u662f %(ip)s\uff0c\u522b\u628a\u5b83\u5199\u8fdb IP \u9ed1\u540d\u5355\uff08\u4fdd\u5b58\u65f6\u4e5f\u4f1a\u68c0\u67e5\uff09\u3002\u4e0d\u662f\u4f60\u7684 IP \u7684\u8bdd\uff0c\u770b\u300c\u8bca\u65ad\u4fe1\u606f\u300d\uff1a\u591a\u534a\u662f\u8bbe\u7f6e\u6587\u4ef6\u7684 [server] proxies \u4e0d\u5bf9\u3002",
+    "The source folder is listed again. The files that are in the target with the same name and size are skipped; the others are copied as the task says.": "\u4f1a\u91cd\u65b0\u5217\u51fa\u6e90\u6587\u4ef6\u5939\uff1a\u76ee\u6807\u91cc\u6587\u4ef6\u540d\u548c\u5927\u5c0f\u90fd\u76f8\u540c\u7684\u6587\u4ef6\u8df3\u8fc7\uff0c\u5176\u4f59\u7684\u7167\u4efb\u52a1\u7684\u8bbe\u7f6e\u590d\u5236\u3002",
     "The storage source permissions have unsaved changes.": "\u5b58\u50a8\u6e90\u6743\u9650\u6539\u4e86\u8fd8\u6ca1\u4fdd\u5b58\u3002",
     "The subtitles %(name)s didn't load: %(message)s": "\u5b57\u5e55 %(name)s \u52a0\u8f7d\u5931\u8d25\uff1a%(message)s",
     "The target folder you chose is the folder they are already in.": "\u4f60\u9009\u62e9\u7684\u76ee\u6807\u6587\u4ef6\u5939\u4e0e\u6e90\u6587\u4ef6\u5939\u76f8\u540c\uff01",
     "The text file didn't load.": "\u52a0\u8f7d\u6587\u672c\u6587\u4ef6\u5931\u8d25\u3002",
+    "The try before failed: %(error)s": "\u4e0a\u4e00\u6b21\u5931\u8d25\u4e86\uff1a%(error)s",
     "The two new passwords don't match.": "\u4e24\u6b21\u8f93\u5165\u7684\u65b0\u5bc6\u7801\u4e0d\u4e00\u6837\u3002",
     "The upload session is no longer valid. Please upload again.": "\u4e0a\u4f20\u4f1a\u8bdd\u5df2\u7ecf\u5931\u6548\u4e86\uff0c\u8bf7\u91cd\u65b0\u4e0a\u4f20\u3002",
     "The user ID at the provider is required.": "\u8981\u586b\u670d\u52a1\u5546\u90a3\u8fb9\u7684\u7528\u6237 ID\u3002",
@@ -1111,6 +1179,7 @@
     "There are no storage sources yet. You can add one on the Manage page.": "\u5f53\u524d\u65e0\u53ef\u7528\u5b58\u50a8\u6e90\uff0c\u53ef\u4ee5\u5230\u7ba1\u7406\u9875\u6dfb\u52a0\u5b58\u50a8\u6e90\u3002",
     "There are unsaved changes. Close without saving?": "\u6709\u6ca1\u4fdd\u5b58\u7684\u4fee\u6539\uff0c\u786e\u5b9a\u4e0d\u4fdd\u5b58\u5c31\u5173\u95ed\u5417\uff1f",
     "There is no download link to copy.": "\u6ca1\u6709\u53ef\u4ee5\u590d\u5236\u7684\u4e0b\u8f7d\u94fe\u63a5\u3002",
+    "There is no enabled storage source.": "\u6ca1\u6709\u542f\u7528\u7740\u7684\u5b58\u50a8\u6e90\u3002",
     "There is no single sign-on to link now.": "\u73b0\u5728\u6ca1\u6709\u53ef\u4ee5\u7ed1\u5b9a\u7684\u5355\u70b9\u767b\u5f55\u3002",
     "These all have defaults, so you can click \"Done\" right away; they can be changed later in the storage source's settings. Finishing checks the connection, then enables the storage source.": "\u8fd9\u4e9b\u90fd\u6709\u9ed8\u8ba4\u503c\uff0c\u53ef\u4ee5\u76f4\u63a5\u70b9\u300c\u5b8c\u6210\u300d\uff1b\u4ee5\u540e\u5728\u5b58\u50a8\u6e90\u7684\u8bbe\u7f6e\u91cc\u4e5f\u80fd\u6539\u3002\u5b8c\u6210\u65f6\u4f1a\u5148\u68c0\u67e5\u8fde\u63a5\uff0c\u518d\u542f\u7528\u8fd9\u4e2a\u5b58\u50a8\u6e90\u3002",
     "They have no password now and can't log in with one": "\u4ed6\u73b0\u5728\u6ca1\u6709\u5bc6\u7801\uff0c\u4e0d\u80fd\u7528\u5bc6\u7801\u767b\u5f55",
@@ -1145,6 +1214,7 @@
     "This storage source doesn't support renaming folders.": "\u5f53\u524d\u5b58\u50a8\u6e90\u4e0d\u652f\u6301\u91cd\u547d\u540d\u6587\u4ef6\u5939\uff01",
     "This storage source has been deleted": "\u8fd9\u4e2a\u5b58\u50a8\u6e90\u5df2\u7ecf\u5220\u9664\u4e86",
     "This video can't play in the browser (its format or codec isn't supported). You can download it, or open it in one of the external players below.": "\u8fd9\u4e2a\u89c6\u9891\u4e0d\u80fd\u5728\u6d4f\u89c8\u5668\u91cc\u64ad\u653e\uff08\u683c\u5f0f\u6216\u7f16\u7801\u4e0d\u652f\u6301\uff09\uff0c\u53ef\u4ee5\u4e0b\u8f7d\uff0c\u6216\u8005\u7528\u4e0b\u9762\u7684\u5916\u90e8\u64ad\u653e\u5668\u6253\u5f00\u3002",
+    "Threads": "\u7ebf\u7a0b\u6570",
     "Thunder": "\u8fc5\u96f7",
     "Time": "\u65f6\u95f4",
     "Tip: click an app above to play it in a local player, which decodes better.": "\u63d0\u793a\uff1a\u53ef\u4ee5\u70b9\u4e0a\u9762\u7684\u8f6f\u4ef6\u7528\u672c\u5730\u64ad\u653e\u5668\u64ad\u653e\uff0c\u89e3\u7801\u6548\u679c\u66f4\u597d\u3002",
@@ -1226,6 +1296,7 @@
     "Visitors who aren't logged in act as this user: its permissions are what visitors can do. Disable it and nothing can be seen without logging in.": "\u6ca1\u767b\u5f55\u7684\u8bbf\u5ba2\u7528\u8fd9\u4e2a\u8eab\u4efd\uff1a\u5b83\u7684\u6743\u9650\u5c31\u662f\u8bbf\u5ba2\u80fd\u505a\u7684\u4e8b\u3002\u505c\u7528\u5b83\uff0c\u6ca1\u767b\u5f55\u5c31\u4ec0\u4e48\u90fd\u770b\u4e0d\u4e86\u3002",
     "Visits %(access_count)s \u00b7 Downloads %(download_count)s": "\u8bbf\u95ee %(access_count)s \u00b7 \u4e0b\u8f7d %(download_count)s",
     "Waiting for another request to finish with this upload\u2026": "\u7b49\u522b\u7684\u8bf7\u6c42\u5904\u7406\u5b8c\u8fd9\u4e2a\u4e0a\u4f20...",
+    "What is in the source folder, files and folders, is copied into the target folder; a target folder that isn't there yet is made.": "\u6e90\u6587\u4ef6\u5939\u91cc\u7684\u6587\u4ef6\u548c\u6587\u4ef6\u5939\u4f1a\u590d\u5236\u5230\u76ee\u6807\u6587\u4ef6\u5939\u91cc\uff1b\u76ee\u6807\u6587\u4ef6\u5939\u4e0d\u5b58\u5728\u65f6\u4f1a\u65b0\u5efa\u3002",
     "What people can open through the share follows your permissions, and changes as soon as they change.": "\u5206\u4eab\u94fe\u63a5\u4e2d\u7684\u6587\u4ef6\u548c\u76ee\u5f55\u8bbf\u95ee\u8303\u56f4\u4f1a\u7ee7\u627f\u5f53\u524d\u7528\u6237\u7684\u6743\u9650\u8bbe\u7f6e\uff0c\u4e14\u4f1a\u968f\u6743\u9650\u8c03\u6574\u5373\u65f6\u751f\u6548\u3002",
     "What was sent is too large.": "\u63d0\u4ea4\u7684\u5185\u5bb9\u592a\u5927\u4e86\u3002",
     "When all are in use": "\u8fde\u63a5\u6570\u6ee1\u4e86\u65f6",
@@ -1283,6 +1354,7 @@
     "Zoom out (S)": "\u7f29\u5c0f\uff08S\uff09",
     "[server] proxies: %(proxies)s": "[server] proxies\uff1a%(proxies)s",
     "[site] url: %(url)s": "[site] url\uff1a%(url)s",
+    "about %(time)s left": "\u5927\u7ea6\u8fd8\u8981 %(time)s",
     "above the list": "\u5217\u8868\u4e0a\u9762",
     "activity log\u0004System": "\u7cfb\u7edf",
     "and others (%(entry_count)s item)": [
@@ -1290,6 +1362,11 @@
     ],
     "below the list": "\u5217\u8868\u4e0b\u9762",
     "between clauses\u0004, ": "\uff0c",
+    "copy task\u0004%(count)s file": [
+      "%(count)s \u4e2a\u6587\u4ef6"
+    ],
+    "copy task\u0004Copied": "\u5df2\u590d\u5236",
+    "copy task\u0004Failed": "\u5931\u8d25",
     "date\u0004unknown": "\u672a\u77e5",
     "days": "\u5929",
     "download log\u0004No filters are set: every entry in the list is deleted (except those logged after it loaded). This can't be undone.": "\u6ca1\u6709\u8bbe\u6761\u4ef6\uff1a\u5217\u8868\u91cc\u7684\u4e0b\u8f7d\u65e5\u5fd7\u90fd\u4f1a\u5220\u9664\uff08\u5728\u90a3\u4e4b\u540e\u624d\u8bb0\u4e0b\u7684\u9664\u5916\uff09\u3002\u5220\u9664\u4ee5\u540e\u4e0d\u80fd\u6062\u590d\u3002",
@@ -1314,21 +1391,28 @@
     "notice\u0004Done": "\u64cd\u4f5c\u6210\u529f",
     "notice\u0004Enabled": "\u5df2\u542f\u7528",
     "prefix": "\u524d\u7f00",
+    "run %(run)s": "\u7b2c %(run)s \u6b21\u8fd0\u884c",
     "seconds": "\u79d2",
     "secret_key in the settings file has changed; the Client Secret must be entered again": "\u8bbe\u7f6e\u6587\u4ef6\u91cc\u7684 secret_key \u6362\u8fc7\uff0c\u8981\u91cd\u65b0\u586b Client Secret",
     "setting\u0004On": "\u5f00",
     "share\u0004Open": "\u8bbf\u95ee",
     "share badge\u0004Password": "\u9700\u5bc6\u7801",
     "size\u0004unknown": "\u672a\u77e5",
+    "still listing the files": "\u8fd8\u5728\u5217\u51fa\u6587\u4ef6",
     "the last login IP of %(count)s user": [
       "%(count)s \u4e2a\u7528\u6237\u7684\u6700\u8fd1\u767b\u5f55 IP"
     ],
     "the storage service refused the upload": "\u5b58\u50a8\u670d\u52a1\u62d2\u7edd\u4e86\u4e0a\u4f20",
     "the whole list\u0004Delete all": "\u6e05\u7a7a",
     "took %(seconds)s s": "\u7528\u65f6 %(seconds)s \u79d2",
+    "took %(time)s": "\u7528\u65f6 %(time)s",
     "took under 0.1 s": "\u7528\u65f6\u4e0d\u5230 0.1 \u79d2",
     "track\u0004Next": "\u4e0b\u4e00\u9996",
     "track\u0004Previous": "\u4e0a\u4e00\u9996",
+    "tried %(n)s time": [
+      "\u8bd5\u4e86 %(n)s \u6b21"
+    ],
+    "try %(n)s": "\u7b2c %(n)s \u6b21\u5c1d\u8bd5",
     "unknown error": "\u672a\u77e5\u9519\u8bef",
     "unreadable": "\u8bfb\u4e0d\u51fa\u6765",
     "upload under another name\u0004Rename": "\u6362\u4e2a\u540d\u5b57",

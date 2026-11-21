@@ -71,6 +71,9 @@ class ActivityLog(models.Model):
         UPDATE_FILTERS = "update_filters", gettext_lazy("Filter rules changed")
         UPDATE_PASSWORDS = "update_passwords", gettext_lazy("Folder passwords changed")
         UPDATE_READMES = "update_readmes", gettext_lazy("Folder readmes changed")
+        CREATE_COPY_TASK = "create_copy_task", gettext_lazy("Copy task created")
+        STOP_COPY_TASK = "stop_copy_task", gettext_lazy("Copy task stopped")
+        RESUME_COPY_TASK = "resume_copy_task", gettext_lazy("Copy task resumed")
         # 网站管理
         UPDATE_SETTINGS = "update_settings", gettext_lazy("Settings changed")
         CREATE_PROVIDER = "create_provider", gettext_lazy("Single sign-on added")

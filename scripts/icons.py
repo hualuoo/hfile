@@ -50,7 +50,7 @@ FILLED = """
     home folder settings admin_panel_settings storage group person upgrade palette share link receipt_long
     shield cloud key lock history dns policy badge language backup info description
     tune block troubleshoot
-    add_link download location_on
+    add_link download location_on file_copy
 """.split()
 
 _PATH_DATA = re.compile(r"[0-9MmLlHhVvCcSsQqTtAaZz .,\-eE]+")
