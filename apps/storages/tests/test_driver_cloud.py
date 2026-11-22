@@ -160,13 +160,20 @@ class CacheAndLockTests(unittest.TestCase):
             thread.join()
         self.assertEqual(most[0], 1)
         self.assertEqual(locks._locks, {})  # nothing kept once nobody holds it
-        start = time.monotonic()
-        threads = [threading.Thread(target=work, args=(n,)) for n in range(5)]
+        # Different keys don't wait for each other: the five hold theirs at the same time. (Not timed: on a
+        # busy machine five threads sleeping 0.02 s at once can take longer than 0.1 s, as if one after another.)
+        together = threading.Barrier(5, timeout=10)
+
+        def meet(key):
+            with locks.hold(key):
+                together.wait()
+
+        threads = [threading.Thread(target=meet, args=(n,)) for n in range(5)]
         for thread in threads:
             thread.start()
         for thread in threads:
             thread.join()
-        self.assertLess(time.monotonic() - start, 0.09)  # different keys don't wait for each other
+        self.assertFalse(together.broken, "different keys waited for each other")
 
     def test_rate_limiter(self):
         limiter = _cloud.RateLimiter(20)

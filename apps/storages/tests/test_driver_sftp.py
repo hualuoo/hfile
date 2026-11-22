@@ -1,4 +1,5 @@
 import contextlib
+import errno
 import io
 import logging
 import os
@@ -549,7 +550,12 @@ class SFTPBehaviourTests(ServerMixin, unittest.TestCase):
     def test_names_that_are_not_utf8(self):
         self.d.mkdir("/d")
         folder = os.fsencode(self.on_server(self.d, "d"))
-        open(folder + b"/bad-\xff.txt", "wb").close()
+        try:
+            open(folder + b"/bad-\xff.txt", "wb").close()
+        except OSError as error:
+            if error.errno != errno.EILSEQ:
+                raise
+            self.skipTest("the file system takes only UTF-8 names (APFS on macOS)")
         self.put("/d/ok.txt", b"ok")
         self.assertEqual(self.names("/d"), ["ok.txt"])
         self.d.delete("/d")  # deletes what it can't show, too
