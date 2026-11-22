@@ -12,7 +12,7 @@ body:
     attributes:
       label: 版本 / Version
       description: "`hfile --version`，或者管理页「系统」下的「版本与升级」 / `hfile --version`, or 版本与升级 under 系统 on the admin page"
-      placeholder: "1.2.0"
+      placeholder: "1.2.1"
     validations:
       required: true
   - type: dropdown

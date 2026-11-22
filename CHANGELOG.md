@@ -4,6 +4,14 @@
 
 <!-- 每个版本一节，标题只写「## 版本号」：发布流程（.github/workflows/release.yml）照它取出这一节，作为 GitHub 上的发布说明。链接写完整的地址，发布说明里才点得开。 -->
 
+## 1.2.1
+
+复制任务把源文件夹本身复制过去，并且有了详细日志；新加了 Windows arm64 和 macOS（Apple 芯片、Intel）的单文件程序。数据库有变化：停掉旧的程序，换上新的文件，再启动，单文件程序会先把整个数据库备份到 `backups/`（文件名以 `-before-1.2.1.sql.gz` 结尾），再自动升级；从源码运行的，拉了新代码以后运行 `python -B manage.py upgrade`（依赖没有变化）。升级以后要退回 1.2.0，得用这份备份恢复数据库，只换回旧的程序它不会启动（见[升级](https://github.com/hualuoo/hfile/blob/v1.2.1/docs/upgrade.md)）。
+
+- **复制任务把源文件夹本身复制过去**，和文件列表里的「复制」一样：从 `/a` 复制到 `/b`，复制出来的是 `/b/a`，里面是 `/a` 里的文件和文件夹（1.2.0 把 `/a` 里的东西直接复制进 `/b`）。源文件夹是根目录时，里面的东西照旧直接复制进目标文件夹。`/b/a` 已经有了就复制进去，同名的文件照任务的设置跳过或覆盖；`/b/a` 是一个文件，或者目标存储源不能用这个名字时，任务建不了。同一个存储源里，源文件夹和复制出来的文件夹不能是同一个，也不能一个在另一个里面：从 `/a` 不能复制到 `/`，从 `/a/b` 复制到 `/` 可以。任务列表里显示的目标，和接口返回的任务的 `target_path`，是复制出来的这个文件夹（新建时传的 `target_path` 仍是选的目标文件夹）。1.2.0 建的任务继续复制时照旧，复制进原来选的文件夹。
+- 复制任务的详细日志（任务右边的「详细日志」）：按时间先后记下每次运行的开始和结束、每个文件复制成功（大小、用时、速度）、跳过、某一次尝试失败后等几秒再试、最后没复制成功（原因、试了几次），以及没能复制的文件夹；最新的在最上面，可以往前翻，任务运行时跟着更新。日志全部留着，继续复制时不清掉，也不会自动删除；每条大约 150 字节，文件很多或者继续了很多次的任务会让数据库变大（100 万个文件约 150 MB）。1.2.0 运行过的任务没有那时的日志，下一次运行起才有。接口是 `GET /api/v1/manage/copy-tasks/<id>/log/`。详见[功能说明](https://github.com/hualuoo/hfile/blob/v1.2.1/docs/features.md#存储源)和[接口](https://github.com/hualuoo/hfile/blob/v1.2.1/docs/api.md)。
+- 新的单文件程序：Windows arm64 的 `hfile-windows-arm64.exe`，macOS 的 `hfile-macos-arm64`（Apple 芯片）和 `hfile-macos-x86_64`（Intel），各带许可证文件，也列在 `SHA256SUMS` 里；下载的命令见 [README](https://github.com/hualuoo/hfile/blob/v1.2.1/README.md#下载程序)。它们每次发布前在 GitHub 的 Windows 11、macOS 15 上跑全部测试和打包检查，没有在真的电脑上试过。用浏览器下载的 macOS 程序要先去掉「从互联网下载」的标记才能运行：`xattr -d com.apple.quarantine hfile`；和 Linux 上的其他不同见[在 macOS 上运行](https://github.com/hualuoo/hfile/blob/v1.2.1/docs/deploy.md#在-macos-上运行)。从源码运行时，Intel 的 Mac 和 Windows arm64 上建环境有几步不一样，见[开发](https://github.com/hualuoo/hfile/blob/v1.2.1/docs/development.md#本地运行)。
+
 ## 1.2.0
 
 新加了存储源之间的复制任务；过期的东西由网站自己清理，不再要定时任务。数据库有变化：停掉旧的程序，换上新的文件，再启动，单文件程序会先把整个数据库备份到 `backups/`（文件名以 `-before-1.2.0.sql.gz` 结尾），再自动升级；从源码运行的，拉了新代码以后运行 `python -B manage.py upgrade`（依赖没有变化）。升级以后要退回 1.1.0，得用这份备份恢复数据库，只换回旧的程序它不会启动（见[升级](https://github.com/hualuoo/hfile/blob/v1.2.0/docs/upgrade.md)）。
