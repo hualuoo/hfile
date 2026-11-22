@@ -4,7 +4,7 @@
 
 # HFILE
 
-[![version](https://img.shields.io/badge/version-1.1.0-blue)](config/version.py)
+[![version](https://img.shields.io/badge/version-1.2.0-blue)](config/version.py)
 [![python](https://img.shields.io/badge/python-3.12-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![django](https://img.shields.io/badge/django-6.1-092E20?logo=django&logoColor=white)](https://www.djangoproject.com/)
 [![license](https://img.shields.io/badge/license-Apache--2.0-green)](LICENSE)
