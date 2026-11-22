@@ -1,0 +1,38 @@
+# Windows on Arm (tests.yml, release.yml), where the environment can't be made as elsewhere: conda-forge has no
+# Python 3.12 for it (its first there is 3.14), and python.org's last 3.12 for Windows is 3.12.10 (April 2025, with
+# OpenSSL 3.0; the later 3.12 releases are source only). So environment.yml's Python comes from python-build-standalone,
+# at the patch version conda-forge has elsewhere, the archive checked against its SHA-256; requirements.lock then
+# installs every package from PyPI, mysqlclient and Pillow too (requirements.txt says so). PyPI has no cryptography
+# for Windows on Arm (none since 46.0.4): pip compiles it, with the runner's Rust, against OpenSSL that vcpkg builds
+# as static libraries, as cryptography's own wheels have it.
+name: Python for Windows on Arm
+description: python-build-standalone's Python 3.12 on PATH, and OpenSSL for pip to compile cryptography against.
+runs:
+  using: composite
+  steps:
+    - name: Install python-build-standalone's Python
+      shell: pwsh
+      env:
+        RELEASE: "20261110"
+        VERSION: "3.12.16"
+        SHA256: c1b334c7b1db8f962b37a333d8362cab0ba7ebda1a7cce917fae56a1e0c8cbe7
+      run: |
+        $archive = "$env:RUNNER_TEMP\python.tar.gz"
+        $name = "cpython-$env:VERSION%2B$env:RELEASE-aarch64-pc-windows-msvc-install_only_stripped.tar.gz"
+        curl.exe -fsSL --retry 3 -o $archive "https://github.com/astral-sh/python-build-standalone/releases/download/$env:RELEASE/$name"
+        if ($LASTEXITCODE) { exit $LASTEXITCODE }
+        $hash = (Get-FileHash -Algorithm SHA256 $archive).Hash
+        if ($hash -ne $env:SHA256) {
+          Write-Output "::error::The archive's SHA-256 is $hash, not $env:SHA256."
+          exit 1
+        }
+        tar -xzf $archive -C $env:RUNNER_TEMP  # into python\
+        if ($LASTEXITCODE) { exit $LASTEXITCODE }
+        Add-Content $env:GITHUB_PATH "$env:RUNNER_TEMP\python", "$env:RUNNER_TEMP\python\Scripts"
+
+    - name: Build OpenSSL with vcpkg
+      shell: pwsh
+      run: |
+        & "$env:VCPKG_INSTALLATION_ROOT\vcpkg.exe" install openssl:arm64-windows-static-md
+        if ($LASTEXITCODE) { exit $LASTEXITCODE }
+        Add-Content $env:GITHUB_ENV "OPENSSL_DIR=$env:VCPKG_INSTALLATION_ROOT\installed\arm64-windows-static-md", "OPENSSL_STATIC=1"

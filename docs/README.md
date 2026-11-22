@@ -7,7 +7,7 @@
 | [功能说明](features.md) | 文件浏览、上传、预览、OnlyOffice、直链短链、分享、存储源、权限、账号、单点登录、网站管理：每个功能的详细说明 |
 | [安装](install.md) | 安装向导的每一步，不用网页安装的做法，后台地址 |
 | [设置文件](configuration.md) | `config.toml` 的每一节、用哪个文件、要注意的地方 |
-| [运行](deploy.md) | 命令、两个进程、Web 服务器的限制、访问记录、上线（反向代理、HSTS、systemd、自动清理）、在 Windows 上运行 |
+| [运行](deploy.md) | 命令、两个进程、Web 服务器的限制、访问记录、上线（反向代理、HSTS、systemd、自动清理）、在 Windows 和 macOS 上运行 |
 | [升级](upgrade.md) | 启动时的数据库检查和升级、命令、退回旧版本、备份和恢复、发布新版本 |
 | [打包](build.md) | 用 PyInstaller 打包单文件程序，打包时要注意的地方，打出的程序试过哪些系统 |
 | [开发](development.md) | 开发环境、本地 MySQL 容器、试安装向导、测试、添加存储源 |

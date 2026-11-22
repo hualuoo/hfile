@@ -11,9 +11,10 @@ Pillow (from conda, environment.yml), and what each of them requires, recursivel
 evaluated here. scripts/build.sh checks the commit's lock before it builds anything. To change a version:
 install it, run the tests on both databases, then write the lock again and commit it with the change.
 
-Linux and Windows each need a few packages of their own (Windows: pywin32 for docker, pefile and pywin32-ctypes
-for PyInstaller). Those have a marker in the lock, which pip follows (pefile==2024.8.26 ; sys_platform == "win32"):
-written by lock.py on the system that needs them, and kept as they are when it runs on the other.
+Linux, macOS and Windows each need a few packages of their own (Windows: pywin32 for docker, pefile and
+pywin32-ctypes for PyInstaller; macOS: macholib for PyInstaller). Those have a marker in the lock, which pip follows
+(pefile==2024.8.26 ; sys_platform == "win32"): written by lock.py on the system that needs them, and kept as they are
+when it runs on the others.
 """
 
 import importlib.metadata
@@ -34,9 +35,10 @@ HEADER = """\
 # The variables of the environment markers on each system the program is built for.
 SYSTEMS = {
     "linux": {"sys_platform": "linux", "platform_system": "Linux", "os_name": "posix"},
+    "darwin": {"sys_platform": "darwin", "platform_system": "Darwin", "os_name": "posix"},
     "win32": {"sys_platform": "win32", "platform_system": "Windows", "os_name": "nt"},
 }
-HERE = "win32" if sys.platform == "win32" else "linux"
+HERE = sys.platform if sys.platform in ("darwin", "win32") else "linux"
 
 
 def closure(folder, system=HERE):

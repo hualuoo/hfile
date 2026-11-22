@@ -59,7 +59,10 @@ def fetch(url, data=None, headers=None, method=None, timeout=30):
 
 
 def children(pid):
-    """The process ids `pid` started (Linux)."""
+    """The process ids `pid` started (Linux, macOS)."""
+    if not sys.platform.startswith("linux"):  # macOS has no /proc
+        found = subprocess.run(["pgrep", "-P", str(pid)], capture_output=True, text=True).stdout
+        return [int(child) for child in found.split()]
     try:
         return [int(child) for child in Path(f"/proc/{pid}/task/{pid}/children").read_text().split()]
     except FileNotFoundError:
@@ -79,6 +82,9 @@ def alive(pid):
         os.kill(pid, 0)
     except ProcessLookupError:
         return False
+    if not sys.platform.startswith("linux"):  # macOS
+        state = subprocess.run(["ps", "-o", "stat=", "-p", str(pid)], capture_output=True, text=True).stdout
+        return not state.strip().startswith("Z")
     stat_line = Path(f"/proc/{pid}/stat").read_text() if Path(f"/proc/{pid}/stat").exists() else ""
     return " Z " not in stat_line  # a zombie has finished
 
@@ -331,6 +337,8 @@ class SignalTests(ServerMixin, SimpleTestCase):
         self.assertIn("HFile 已经停止。", output)
         self.assertFalse(alive(child))
 
+    @unittest.skipUnless(os.name == "nt" or sys.platform.startswith("linux"),
+                         "only Linux (PR_SET_PDEATHSIG) and Windows (a job object) end the server with the outer process")
     def test_the_server_stops_when_the_outer_process_is_killed(self):
         self.start()
         if os.name == "nt":  # TerminateProcess: the job object (config/windows.py) ends the server too

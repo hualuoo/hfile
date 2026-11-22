@@ -6,7 +6,8 @@
 # Run it in a Python environment with requirements.txt, requirements-dev.txt (PyInstaller), mysqlclient
 # and Pillow, e.g. conda's `hfile`, at the versions of requirements.lock (it checks them first). The program is for the system it is built on: built on an older
 # Linux it also runs on newer ones, not the other way round (glibc), so build on the oldest Linux you
-# want to run it on. On Windows it runs in Git for Windows' bash. Temporary files go to $TMPDIR.
+# want to run it on. On Windows it runs in Git for Windows' bash, on macOS in its own bash 3.2. Temporary files go
+# to $TMPDIR.
 #
 # What goes in is the last commit (git archive HEAD), not the working tree: every file in an app's
 # folder goes in with its data files, so one left there (an .env, an editor's swap file, a key)
@@ -135,12 +136,16 @@ BIN="$WORK/dist/hfile$exe"
 
 # The program on its own, as on a server that has nothing of this machine's: the time zones only
 # from the tzdata inside it (PYTHONTZPATH names an empty folder), CA certificates from the system
-# or from the certifi inside it, and both database drivers. And its Python keeps no names of codecs
-# it doesn't know (config/codec_cache.py).
+# or from the certifi inside it, both database drivers, and cryptography working (pip compiles it where PyPI has
+# no wheel for the system: Intel Macs, Windows on Arm). And its Python keeps no names of codecs it doesn't know
+# (config/codec_cache.py).
 mkdir "$WORK/no-zoneinfo"
 PYTHONTZPATH="$WORK/no-zoneinfo" "$BIN" --config "$WORK/config.toml" shell -c "
 import os, ssl, sqlite3, zoneinfo, certifi, MySQLdb, maxminddb
+from cryptography.fernet import Fernet
 assert maxminddb.MODE_MEMORY
+key = Fernet(Fernet.generate_key())
+assert key.decrypt(key.encrypt(b'hfile')) == b'hfile'
 zoneinfo.ZoneInfo('Asia/Shanghai')
 assert os.path.isfile(certifi.where()), certifi.where()
 assert ssl.create_default_context().cert_store_stats()['x509_ca'], 'no CA certificates'
@@ -168,7 +173,7 @@ if [ -z "$expected" ] || [ "$found" != "$expected" ]; then
   diff <(echo "$expected") <(echo "$found") >&2 || true
   exit 1
 fi
-echo "迁移都在：$(echo "$found" | wc -l) 个。"
+echo "迁移都在：$(echo "$found" | wc -l | tr -d ' ') 个。"  # macOS's wc puts spaces in front
 
 # The program serving, as on a server (BUILD-03): installed with its own commands (docs/install.md), started,
 # and asked for what only a whole program answers: the home page and a style sheet it names, the site's

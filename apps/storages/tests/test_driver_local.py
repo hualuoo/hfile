@@ -4,6 +4,7 @@ import os
 import shutil
 import socket
 import stat
+import sys
 import tempfile
 import threading
 import time
@@ -345,7 +346,12 @@ class NameTests(LocalTestCase):
             os.close(os.open(self.real("bad-\udcff.txt"), os.O_CREAT | os.O_WRONLY))
             os.mkdir(self.real("bad-\udcfe-dir"))
         else:
-            fd = os.open(os.fsencode(self.root) + b"/bad-\xff.txt", os.O_CREAT | os.O_WRONLY)
+            try:
+                fd = os.open(os.fsencode(self.root) + b"/bad-\xff.txt", os.O_CREAT | os.O_WRONLY)
+            except OSError as error:
+                if error.errno != errno.EILSEQ:
+                    raise
+                self.skipTest("the file system takes only UTF-8 names (APFS on macOS)")
             os.close(fd)
             os.mkdir(os.fsencode(self.root) + b"/bad-\xfe-dir")
         self.assertEqual(self.names("/"), ["ok.txt"])
@@ -664,7 +670,8 @@ class RenameMoveTests(LocalTestCase):
         self.assertEqual(modes, {("private",): 0o700, ("private", "key.txt"): 0o600, ("run.sh",): 0o755,
                                  ("ro",): 0o555, ("ro", "r.txt"): 0o644})
 
-    @unittest.skipIf(os.name == "nt", "names that aren't UTF-8, FIFOs and Unix sockets: Linux's")
+    @unittest.skipUnless(sys.platform.startswith("linux"), "names that aren't UTF-8 (macOS's APFS refuses them), FIFOs "
+                                                           "and Unix sockets: Linux's")
     def test_move_across_file_systems_keeps_everything(self):
         self.put("/src/s/ok.txt", b"ok")
         folder = os.fsencode(self.real("src", "s"))
@@ -698,7 +705,7 @@ class RenameMoveTests(LocalTestCase):
         deep = "/" + "/".join(names)
         self.d.mkdir("/copy")
         soft, hard = resource.getrlimit(resource.RLIMIT_NOFILE)
-        in_use = len(os.listdir("/proc/self/fd"))
+        in_use = len(os.listdir("/dev/fd"))  # this process's open files: on Linux /proc/self/fd, on macOS its own
         resource.setrlimit(resource.RLIMIT_NOFILE, (in_use + 16, hard))
         try:
             self.assertEqual(self.names(deep), ["f.txt", "up"])
@@ -731,6 +738,8 @@ class RenameMoveTests(LocalTestCase):
     def test_parent_that_can_be_entered_but_not_read(self):
         if getattr(os, "geteuid", lambda: -1)() == 0:
             self.skipTest("root reads everything")
+        if os.name != "nt" and not hasattr(os, "O_PATH"):
+            self.skipTest("a folder that can't be read is entered with O_PATH, Linux's (_WALK): elsewhere it can't be")
         self.put("/p/child/x.txt", b"x")
         self.put("/p/other.txt", b"o")
         if os.name == "nt":

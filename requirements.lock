@@ -44,6 +44,7 @@ jsonschema==4.26.0
 jsonschema-path==0.5.0
 jsonschema-specifications==2025.9.1
 lazy-object-proxy==1.13.0
+macholib==1.16.4 ; sys_platform == "darwin"
 MarkupSafe==3.0.4
 maxminddb==3.3.0
 mistune==3.4.0

@@ -90,13 +90,13 @@ HFile 用 Django 写成：
 
 ### 环境要求
 
-- 系统：Linux 或 Windows。Linux 的单文件程序要 glibc 2.34 以上（Ubuntu 22.04、Debian 12、Rocky/RHEL 9 或更新）；Windows 的是 x86-64 的，只在 Windows Server 2025 上试过（见[「在 Windows 上运行」](docs/deploy.md#在-windows-上运行)）。
-- 从源码运行或打包：要有 conda（比如 Miniforge），用它建的环境是 Python 3.12。
+- 系统：Linux、Windows 或 macOS。Linux 的单文件程序要 glibc 2.34 以上（Ubuntu 22.04、Debian 12、Rocky/RHEL 9 或更新）；Windows 的 x86-64 版只在 Windows Server 2025 上试过，arm64 版和 macOS 的（Apple 芯片、Intel 各一个）每次发布前在 GitHub 的 Windows 11、macOS 15 上跑全部测试和打包检查，没有在真的电脑上试过（见[「在 Windows 上运行」](docs/deploy.md#在-windows-上运行)、[「在 macOS 上运行」](docs/deploy.md#在-macos-上运行)）。
+- 从源码运行或打包：要有 conda（比如 Miniforge），用它建的环境是 Python 3.12。Intel 的 Mac 和 Windows arm64 上有几步不一样，见[开发](docs/development.md#本地运行)。
 - 数据库：SQLite 不用另装；也可以用 MySQL 8.4 以上（不支持 MariaDB 和 PostgreSQL）。
 
 ### 下载程序
 
-[Releases](https://github.com/hualuoo/hfile/releases) 里有打包好的单文件程序，Linux 的 x86-64 和 arm64 各一个，还有 Windows 的 x86-64 的，不用装 Python；没有 macOS 的，在 macOS 上还没有打包试过。下面的命令按 `uname -m` 下载这台机器用的那个：
+[Releases](https://github.com/hualuoo/hfile/releases) 里有打包好的单文件程序，Linux、Windows、macOS 的 x86-64 和 arm64 各一个，不用装 Python。下面的命令按 `uname -m` 下载这台机器用的那个：
 
 ```bash
 mkdir -p ~/hfile && cd ~/hfile
@@ -108,14 +108,27 @@ chmod +x hfile
 ./hfile                                         # 设置文件、SQLite 数据库和上传的文件都放在程序旁边
 ```
 
-Windows 上在 PowerShell 里：
+macOS 上一样，下载的是 `hfile-macos-…`，用 `shasum` 核对（用浏览器下载的见[「在 macOS 上运行」](docs/deploy.md#在-macos-上运行)）：
+
+```bash
+mkdir -p ~/hfile && cd ~/hfile
+curl -fLO https://github.com/hualuoo/hfile/releases/latest/download/hfile-macos-$(uname -m)
+curl -fLO https://github.com/hualuoo/hfile/releases/latest/download/SHA256SUMS
+shasum -a 256 --check --ignore-missing SHA256SUMS   # 核对下载的程序
+mv hfile-macos-$(uname -m) hfile
+chmod +x hfile
+./hfile                                             # 和 Linux 上一样，文件都放在程序旁边
+```
+
+Windows 上在 PowerShell 里，按 `$env:PROCESSOR_ARCHITECTURE`（`AMD64` 或 `ARM64`）下载这台机器用的那个：
 
 ```powershell
 mkdir $HOME\hfile; cd $HOME\hfile
-curl.exe -fLO https://github.com/hualuoo/hfile/releases/latest/download/hfile-windows-x86_64.exe
+$name = if ($env:PROCESSOR_ARCHITECTURE -eq "ARM64") { "hfile-windows-arm64.exe" } else { "hfile-windows-x86_64.exe" }
+curl.exe -fLO https://github.com/hualuoo/hfile/releases/latest/download/$name
 curl.exe -fLO https://github.com/hualuoo/hfile/releases/latest/download/SHA256SUMS
-(Get-FileHash hfile-windows-x86_64.exe).Hash -eq (Select-String " hfile-windows-x86_64.exe$" SHA256SUMS).Line.Split(" ")[0]   # True：核对下载的程序
-Rename-Item hfile-windows-x86_64.exe hfile.exe
+(Get-FileHash $name).Hash -eq (Select-String " $name$" SHA256SUMS).Line.Split(" ")[0]   # True：核对下载的程序
+Rename-Item $name hfile.exe
 .\hfile.exe                                      # 和 Linux 上一样，文件都放在程序旁边
 ```
 
@@ -139,7 +152,7 @@ mkdir -p ~/hfile && cp dist/hfile ~/hfile/
 ~/hfile/hfile                        # 设置文件、SQLite 数据库和上传的文件都放在程序旁边
 ```
 
-打包还要有 binutils（PyInstaller 要用其中的 `objdump`；Debian、Ubuntu 上是 `sudo apt install binutils`）。Windows 上在 Git for Windows 的 bash 里运行 `scripts/build.sh`，生成 `dist/hfile.exe`，不用 binutils。`dist/hfile-licenses.txt` 是打进程序的第三方库的许可证，发布程序时和它一起发布。
+打包还要有 binutils（PyInstaller 要用其中的 `objdump`；Debian、Ubuntu 上是 `sudo apt install binutils`）。Windows 上在 Git for Windows 的 bash 里运行 `scripts/build.sh`，生成 `dist/hfile.exe`，不用 binutils；macOS 上也不用。`dist/hfile-licenses.txt` 是打进程序的第三方库的许可证，发布程序时和它一起发布。
 
 在哪个系统上打包，程序就在哪个系统上用。要支持更老的系统，就在想支持的最老的系统上打包，见[打包](docs/build.md)。
 

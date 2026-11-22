@@ -1,7 +1,8 @@
 # On a tag v<version>: the tag, config/version.py and CHANGELOG.md checked against each other; the tests
 # (tests.yml); the single executable built for x86-64 and for arm64, each on the oldest Linux it runs on
-# (glibc 2.34, docs/build.md), and for Windows on x86-64; then a draft GitHub release with the programs, their
-# licenses, the checksums and the version's part of CHANGELOG.md. The draft is published by hand once looked over.
+# (glibc 2.34, docs/build.md), and for Windows and for macOS on x86-64 and on arm64; then a draft GitHub release with
+# the programs, their licenses, the checksums and the version's part of CHANGELOG.md. The draft is published by hand
+# once looked over.
 name: Release
 
 on:
@@ -116,9 +117,16 @@ jobs:
           if-no-files-found: error
 
   build-windows:
-    name: Build (Windows x86_64)
+    name: Build (Windows ${{ matrix.arch }})
     needs: tests
-    runs-on: windows-2025
+    strategy:
+      matrix:
+        include:
+          - arch: x86_64
+            runner: windows-2025
+          - arch: arm64
+            runner: windows-11-arm
+    runs-on: ${{ matrix.runner }}
     timeout-minutes: 60
     defaults:
       run:
@@ -129,6 +137,7 @@ jobs:
           persist-credentials: false
 
       - name: Install Miniforge and create the environment
+        if: runner.arch == 'X64'
         shell: pwsh
         # As in tests.yml.
         run: |
@@ -142,8 +151,13 @@ jobs:
           $hfile = "$env:RUNNER_TEMP\miniforge3\envs\hfile"
           Add-Content $env:GITHUB_PATH $hfile, "$hfile\Scripts", "$hfile\Library\bin"
 
+      - name: Install Python and OpenSSL (arm64)
+        if: runner.arch == 'ARM64'
+        uses: ./.github/actions/windows-arm64-python
+
       - name: Install the locked versions
-        run: pip install -r requirements.lock
+        # python -m pip, as in tests.yml.
+        run: python -m pip install -r requirements.lock
 
       - name: Build
         run: scripts/build.sh
@@ -156,20 +170,84 @@ jobs:
           [ "$(echo "$said" | cut -d' ' -f2)" = "${GITHUB_REF_NAME#v}" ]
 
       - name: Name the files after the system
+        # hfile-windows-x86_64.exe, hfile-windows-arm64.exe: Windows calls the latter ARM64 (PROCESSOR_ARCHITECTURE).
         run: |
           mkdir release
-          mv dist/hfile.exe release/hfile-windows-x86_64.exe
-          mv dist/hfile-licenses.txt release/hfile-windows-x86_64-licenses.txt
+          mv dist/hfile.exe "release/hfile-windows-${{ matrix.arch }}.exe"
+          mv dist/hfile-licenses.txt "release/hfile-windows-${{ matrix.arch }}-licenses.txt"
 
       - uses: actions/upload-artifact@v7
         with:
-          name: hfile-windows-x86_64
+          name: hfile-windows-${{ matrix.arch }}
+          path: release/
+          if-no-files-found: error
+
+  build-macos:
+    name: Build (macOS ${{ matrix.arch }})
+    needs: tests
+    # Apple silicon and Intel, each on its own runner, as for Linux.
+    strategy:
+      matrix:
+        include:
+          - arch: arm64
+            runner: macos-15
+          - arch: x86_64
+            runner: macos-15-intel
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 60
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Install Miniforge
+        run: |
+          curl -fsSL --retry 3 -o "$RUNNER_TEMP/miniforge.sh" \
+            "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh"
+          bash "$RUNNER_TEMP/miniforge.sh" -b -p "$RUNNER_TEMP/miniforge3"
+
+      - name: Create the environment
+        # As in tests.yml: on Intel pip compiles cryptography, against the environment's OpenSSL.
+        run: |
+          env="$RUNNER_TEMP/miniforge3/envs/hfile"
+          if [ "$RUNNER_ARCH" = X64 ]; then
+            export OPENSSL_DIR="$env"
+          fi
+          "$RUNNER_TEMP/miniforge3/bin/conda" env create -f environment.yml
+          echo "$env/bin" >> "$GITHUB_PATH"
+
+      - name: Install the locked versions
+        run: pip install -r requirements.lock
+
+      - name: Build
+        run: scripts/build.sh
+
+      - name: Check the program's version
+        run: |
+          said=$(dist/hfile --version)
+          echo "$said"
+          [ "$(echo "$said" | cut -d' ' -f2)" = "${GITHUB_REF_NAME#v}" ]
+
+      - name: Name the files after the machine
+        # As `uname -m` says it (hfile-macos-arm64, hfile-macos-x86_64), as for Linux.
+        run: |
+          name="hfile-macos-$(uname -m)"
+          mkdir release
+          mv dist/hfile "release/$name"
+          mv dist/hfile-licenses.txt "release/$name-licenses.txt"
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: hfile-macos-${{ matrix.arch }}
           path: release/
           if-no-files-found: error
 
   release:
     name: Draft the release
-    needs: [build, build-windows]
+    needs: [build, build-windows, build-macos]
     runs-on: ubuntu-24.04
     permissions:
       contents: write

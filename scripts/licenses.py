@@ -63,10 +63,12 @@ def main(work, source, out):
         if dist is not None:
             dists.setdefault(dist.metadata["Name"].lower(), dist)
     # Python's library (lib/python3.12; Lib on Windows, with its extensions in DLLs), and its license there or,
-    # with conda-forge's Python on Windows, next to python.exe.
+    # on Windows, next to python.exe: LICENSE_PYTHON.txt with conda-forge's Python, LICENSE.txt with
+    # python-build-standalone's (Windows on Arm, .github/actions/windows-arm64-python).
     python = Path(sysconfig.get_paths()["stdlib"]).resolve()
     own = (python, Path(sys.base_prefix, "DLLs").resolve())
-    python_license = next(path for path in (python / "LICENSE.txt", Path(sys.base_prefix, "LICENSE_PYTHON.txt")) if path.is_file())
+    python_license = next(path for path in (python / "LICENSE.txt", Path(sys.base_prefix, "LICENSE_PYTHON.txt"),
+                                            Path(sys.base_prefix, "LICENSE.txt")) if path.is_file())
     parts = [
         "HFile 单文件程序里的软件和它们的许可证（scripts/build.sh 打包时生成，和程序放在一起发布）。\n\n",
         section("HFile", [(name, Path(source, name).read_text(encoding="utf-8")) for name in ("LICENSE", "NOTICE")]),

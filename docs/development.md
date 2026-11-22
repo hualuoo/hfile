@@ -13,6 +13,11 @@ pip install -r requirements.lock        # 间接依赖也换成测试过的版�
 python -B manage.py check               # 没有 config.toml 时新建一个（默认 SQLite）
 ```
 
+有两种机器不一样（PyPI 上锁定的 cryptography 50.0.2 没有给它们的 wheel，pip 要从源码编译，见[打包](build.md)）：
+
+- Intel 的 Mac：先装好 Rust（rustup）和 Xcode 的命令行工具，建环境时让 pip 用环境自己的 OpenSSL 编译：`OPENSSL_DIR="$(conda info --base)/envs/hfile" conda env create -f environment.yml`。
+- Windows arm64：conda-forge 那里没有 Python 3.12，用不了 conda。装一个 Python 3.12（CI 用 python-build-standalone 的，见 `.github/actions/windows-arm64-python`），在它的 venv 里 `python -m pip install -r requirements.lock`，mysqlclient 和 Pillow 也从 PyPI 装；编译 cryptography 要有 Rust、Visual Studio 的 C++ 工具和静态的 OpenSSL：`vcpkg install openssl:arm64-windows-static-md`，再把 `OPENSSL_DIR` 设成 vcpkg 的 `installed\arm64-windows-static-md`、`OPENSSL_STATIC` 设成 1。
+
 开发用的 `config.toml` 改两处：`[site]` 的 `secret_key`（至少 32 个字符，比如 `python -c "import secrets; print(secrets.token_urlsafe(50))"` 的输出）和 `debug = true`。然后：
 
 ```bash
@@ -92,11 +97,12 @@ HFILE_CONFIG=/tmp/hfile-test/config.toml python -B manage.py test
 
 SQLite 上可以加 `--parallel` 并行跑，快得多。要有 `requirements-dev.txt` 里的 tblib：没有它，一个测试失败就会让整次测试中断。失败的子测试由 worker 进程按名字交给主进程（`apps/core/testing.py` 的 `_SentSubTest`）：Django 本来把子测试连同它的测试一起 pickle 过去，测试留着 pickle 不了的东西（驱动和它的连接、测试里生成的类）时，报出来的是 PicklingError，看不到真正的失败。MySQL 上并行跑还要有 `mysqldump` 和 `mysql` 命令（Django 用它们复制测试库），没有时就串行跑。
 
-推到 main 和每个 Pull Request 都由 CI（`.github/workflows/tests.yml`）在 GitHub 的 Ubuntu 24.04 上跑一遍全部测试：SQLite 并行，MySQL 8.4 串行，用的是 `scripts/dev-db.sh up` 起的同一个容器，x86-64 和 arm64 的机器上各跑一遍（发布时两种都打包），Windows Server 2025 上用 SQLite 并行跑一遍；浏览器测试单独一路，只在 x86-64 上跑，用运行器自带的 Google Chrome，不许跳过，失败时把页面截图作为 artifact 上传。环境照上面的步骤从头建（`environment.yml`，再装 `requirements.lock`），和 `requirements.lock` 对不上就停下（`scripts/lock.py --check`）；还用 `makemigrations --check` 检查有没有漏写的迁移。
+推到 main 和每个 Pull Request 都由 CI（`.github/workflows/tests.yml`）在 GitHub 的 Ubuntu 24.04 上跑一遍全部测试：SQLite 并行，MySQL 8.4 串行，用的是 `scripts/dev-db.sh up` 起的同一个容器，x86-64 和 arm64 的机器上各跑一遍（发布时两种都打包），Windows（Windows Server 2025 的 x86-64、Windows 11 的 arm64）和 macOS 15（Apple 芯片、Intel）上用 SQLite 并行各跑一遍（这些运行器起不了 MySQL 的容器）；浏览器测试单独一路，只在 x86-64 上跑，用运行器自带的 Google Chrome，不许跳过，失败时把页面截图作为 artifact 上传。环境照上面的步骤从头建（`environment.yml`，再装 `requirements.lock`；Windows arm64 和 Intel 的 Mac 照上面说的），和 `requirements.lock` 对不上就停下（`scripts/lock.py --check`）；还用 `makemigrations --check` 检查有没有漏写的迁移。
 
 两种数据库上全部测试都通过。只有一种数据库才有的测试在另一种上跳过，比如只在 MySQL 上的命名锁、备份再恢复每种列类型、恢复的白名单、恢复到一半失败以后换回原样，和安装向导对 MySQL 服务器的检查；只在 SQLite 上的锁文件、备份再恢复和恢复的白名单。SQLite 上还跳过内存里的测试库做不到的几个。两种数据库上都跳过的，是只在 Windows 上跑的、驱动没有的能力（比如不能复制）对应的契约测试，和 moto 检查不了的。发布前做的检查也写成了测试：`*/test_release_*.py`、`*/tests/test_release_check.py`，以及 `apps/crosscheck/tests/`（访问规则的跨应用测试：对访客、普通用户、分享的访客和管理员，经过每个带存储源和路径的接口，试根目录、过滤规则、目录密码、签名链接、内联回答和符号链接）。其中三个标着 `expectedFailure`，是决定不改的限制（注释写着「Accepted known limit」和原因）；哪天它们通过了，测试会报「意外通过」而失败，那时去掉标记。`apps/storages/tests/` 里的驱动测试是普通的 unittest，不用测试数据库，也一起跑；它们的消息要按 Django 的设置翻译，所以单独跑也要用 `manage.py test`。
 
 - 在 Windows 上跑测试：环境照上面的步骤用 Miniforge 建；测试要建符号链接，所以要以管理员身份运行，或者打开 Windows 的开发者模式。Windows 上跳过的测试多一些：只有 Linux 才有的（权限位、命名管道、SIGKILL、`PR_SET_PDEATHSIG`、发布模式的检查），和用到 Windows 不允许的文件名的。浏览器测试在 Windows 上也能跑：没装 Chrome 时，`HFILE_TEST_CHROME` 指向系统自带的 Edge（`C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe`，也是 Chromium）；其中两个在 Windows 上跳过：名字里有 `\` 的，和 100 层文件夹、路径超过 260 个字符的。仓库的 `.gitattributes` 让 Windows 上检出的文件也用 LF 换行，和提交的一样。Windows 上 `--parallel` 的 worker 进程是新启动的（spawn），不像 Linux 上从主进程分出来（fork），所以没有测试运行器只在主进程里做的设置：这类设置（比如测试进程里的密码用 MD5）要在 `apps/core/testing.py` 的 `_set_up_worker` 里给 worker 再做一遍。测试打开的文件要关掉，改成只读的要改回来：Windows 删不掉开着的和只读的文件，`shutil.rmtree(..., ignore_errors=True)` 又不报错，测试的临时文件夹就留在了 %TEMP% 里。没关的 sqlite3 连接要等垃圾回收才关；测试客户端拿到的文件下载（`FileResponse`）要把正文读完才关。Windows 上 Python 3.12 的 `time.monotonic()` 是 `GetTickCount64()`，15.6 毫秒才走一格，挨着的两次常常一样：比较时间的断言要留出浮点误差。
+- 在 macOS 上跑测试：环境照上面的步骤建。跳过的测试比 Linux 上多几个：名字不是 UTF-8 的文件（APFS 不允许这样的名字）、进入一个不能读的文件夹（要 Linux 的 `O_PATH`）、外面的进程被强行结束时网站跟着停下（`PR_SET_PDEATHSIG`）。macOS 的文件系统默认不分大小写，和 Windows 一样；`--parallel` 的 worker 进程也和 Windows 上一样是新启动的（spawn）。
 - 测试之间不共用频率限制的计数：每个测试开始前清空缓存（`apps/core/testing.py`）。测试进程里的密码用 MD5 哈希（Django 默认的 PBKDF2 一个要 0.3 秒）；测试另外启动的程序照常用 PBKDF2。
 - 单点登录的测试（`apps/sso/tests/`）用 `apps/sso/tests/fake_idp.py`：在 127.0.0.1 的随机端口上起一个假的 OAuth 2 / OpenID Connect 服务商，它检查 PKCE、Client 的密钥（表单或 HTTP Basic，只许一种）和 redirect_uri，还能按测试的要求回答错误的状态码、太大的回答、跳转、压缩的或者不是 JSON 的回答、很慢的回答。手动试单点登录时可以单独运行它：`python -m apps.sso.tests.fake_idp --port 18351`（不依赖 Django），在管理页新增「通用 OpenID Connect」，.well-known 地址填 `http://127.0.0.1:18351/.well-known/openid-configuration`，Client ID 和 Secret 是 `hfile-client` 和 `hfile-secret`。
 - `config/test_serve.py` 真的启动 `hfile.py`：安装、重启、反向代理后面安装、端口被占用、SIGINT 只发给外层、`kill -9` 外层、SIGTERM 时手上的请求和还在排队等线程的请求照样回答，终端里按 Ctrl+C（整个进程组收到 SIGINT）时也一样。`apps/installer/test_connections.py` 在测试进程里起一个 waitress，把期限改成 1 秒，试发得太慢的请求头和内容、一个地址开太多连接；分块的请求体和 waitress 自己的 `ChunkedReceiver` 对照（固定的种子生成几千个对的和错的请求体，每个按各种方式切成几次读到，每次读完消耗的字节数、错误、内容和 trailer 都要和 waitress 一样；块大小行末尾带 LF 的例外，那些要和把 `match` 换成 `fullmatch` 的 waitress 逐次一样，以 waitress 自己的错误结束），三条上限各试刚好不超过和超过一点，还数每次读到的数据被拷贝和查找了多少字节（不计时间）；waitress 换了版本时有一个测试会失败，提醒重新对照。

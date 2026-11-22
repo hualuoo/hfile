@@ -8,7 +8,7 @@ folder. There every page with a time on it failed (ZoneInfoNotFoundError: 'No ti
 with key Asia/Shanghai'), and mail over SSL/TLS or STARTTLS couldn't check the mail server's
 certificate.
 
-So the program looks where Linux keeps them, like any other Python, and on a system that has
+So the program looks where Linux and macOS keep them, like any other Python, and on a system that has
 none (a minimal container image) it uses its own copies: the tzdata and certifi packages, built
 in (scripts/build.sh); the C library gets tzdata's through TZDIR. PYTHONTZPATH, TZDIR,
 SSL_CERT_FILE or SSL_CERT_DIR, when set, are used as they are.
@@ -26,7 +26,7 @@ CA_FILES = (
     "/etc/ssl/ca-bundle.pem",  # openSUSE
     "/etc/pki/tls/cacert.pem",  # OpenELEC
     "/etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem",  # RHEL 7 and later
-    "/etc/ssl/cert.pem",  # Alpine
+    "/etc/ssl/cert.pem",  # Alpine, macOS
 )
 # The SSL_CERT_FILE and TZDIR chosen here. The program that this one starts (serve's child,
 # config/cli.py) chooses for itself: certifi's and tzdata's files are in the folder each run of the

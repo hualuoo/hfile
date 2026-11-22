@@ -1,5 +1,7 @@
-# The whole test suite on SQLite and on MySQL 8.4, on x86-64 and on arm64, on SQLite on Windows too, and the tests
-# in a browser, in the environment the project pins: environment.yml, then requirements.lock (docs/development.md).
+# The whole test suite on SQLite and on MySQL 8.4, on x86-64 and on arm64, on SQLite on Windows and on macOS too (on
+# x86-64 and on arm64 each), and the tests in a browser, in the environment the project pins: environment.yml, then
+# requirements.lock (docs/development.md); on Windows on Arm, which conda-forge has no Python 3.12 for, the same
+# Python from python-build-standalone, then requirements.lock (.github/actions/windows-arm64-python).
 name: Tests
 
 on:
@@ -39,9 +41,19 @@ jobs:
             runner: ubuntu-24.04-arm
             args: --exclude-tag browser
           # Windows: on SQLite only, as the database works there as here, and the runner can't run the MySQL
-          # container.
+          # container. On x86-64 and on Arm, which release.yml builds the program for.
           - name: SQLite (Windows)
             runner: windows-2025
+            args: --parallel --exclude-tag browser
+          - name: SQLite (Windows arm64)
+            runner: windows-11-arm
+            args: --parallel --exclude-tag browser
+          # macOS likewise, on Apple silicon and on Intel: its runners can't run the container either.
+          - name: SQLite (macOS arm64)
+            runner: macos-15
+            args: --parallel --exclude-tag browser
+          - name: SQLite (macOS x86-64)
+            runner: macos-15-intel
             args: --parallel --exclude-tag browser
     defaults:
       run:
@@ -51,22 +63,29 @@ jobs:
         with:
           persist-credentials: false
 
+      # Linux and macOS: the installer for this system and machine (Miniforge3-Darwin-arm64.sh on Apple silicon).
       - name: Install Miniforge
-        if: runner.os == 'Linux'
+        if: runner.os != 'Windows'
         run: |
           curl -fsSL --retry 3 -o "$RUNNER_TEMP/miniforge.sh" \
             "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh"
           bash "$RUNNER_TEMP/miniforge.sh" -b -p "$RUNNER_TEMP/miniforge3"
 
       - name: Create the environment
-        if: runner.os == 'Linux'
+        if: runner.os != 'Windows'
         run: |
+          env="$RUNNER_TEMP/miniforge3/envs/hfile"
+          if [ "$RUNNER_OS-$RUNNER_ARCH" = macOS-X64 ]; then
+            # PyPI has no cryptography for Intel Macs (none since 49.0): pip compiles it, with the runner's Rust,
+            # against the environment's OpenSSL, which conda installs before pip runs.
+            export OPENSSL_DIR="$env"
+          fi
           "$RUNNER_TEMP/miniforge3/bin/conda" env create -f environment.yml
-          echo "$RUNNER_TEMP/miniforge3/envs/hfile/bin" >> "$GITHUB_PATH"
+          echo "$env/bin" >> "$GITHUB_PATH"
 
       # On Windows Miniforge's installer is a program, and an environment's programs are in three folders.
       - name: Install Miniforge and create the environment (Windows)
-        if: runner.os == 'Windows'
+        if: runner.os == 'Windows' && runner.arch == 'X64'
         shell: pwsh
         run: |
           curl.exe -fsSL --retry 3 -o "$env:RUNNER_TEMP\miniforge.exe" `
@@ -79,9 +98,15 @@ jobs:
           $hfile = "$env:RUNNER_TEMP\miniforge3\envs\hfile"
           Add-Content $env:GITHUB_PATH $hfile, "$hfile\Scripts", "$hfile\Library\bin"
 
+      - name: Install Python and OpenSSL (Windows arm64)
+        if: runner.os == 'Windows' && runner.arch == 'ARM64'
+        uses: ./.github/actions/windows-arm64-python
+
       - name: Install the locked versions
+        # python -m pip: python-build-standalone's Python has pip but no pip.exe, and `pip` would be that of the
+        # runner's own Python.
         run: |
-          pip install -r requirements.lock
+          python -m pip install -r requirements.lock
           python scripts/lock.py --check
 
       - name: Write a settings file
@@ -111,7 +136,12 @@ jobs:
         env:
           HFILE_BROWSER_TESTS: ${{ matrix.name == 'Browser' && 'required' || '' }}
           HFILE_BROWSER_ARTIFACTS: ${{ runner.temp }}/browser
-        run: python -B manage.py test ${{ matrix.args }}
+        # macOS lets a process open 256 files unless it asks for more (the Linux runners: 65536); 10240 is its OPEN_MAX.
+        run: |
+          if [ "$RUNNER_OS" = macOS ]; then
+            ulimit -n 10240
+          fi
+          python -B manage.py test ${{ matrix.args }}
 
       - name: Keep the screenshots of the failed browser tests
         if: failure() && matrix.name == 'Browser'

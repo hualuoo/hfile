@@ -110,7 +110,7 @@ sudo -u hfile /srv/hfile/hfile --config /srv/hfile/config.toml backup
 
 ## 在 Windows 上运行
 
-Windows 的单文件程序 `hfile-windows-x86_64.exe` 是 x86-64 的，只在 Windows Server 2025 上试过。改名成 `hfile.exe` 放进一个文件夹，在 PowerShell 或命令提示符里运行，命令和 Linux 上一样：
+Windows 的单文件程序有 x86-64 的 `hfile-windows-x86_64.exe` 和 arm64 的 `hfile-windows-arm64.exe`。x86-64 的只在 Windows Server 2025 上试过（下面说的都是在它上面试的）；arm64 的每次发布前在 GitHub 的 Windows 11 上跑全部测试和打包检查，没有在真的电脑上试过。改名成 `hfile.exe` 放进一个文件夹，在 PowerShell 或命令提示符里运行，命令和 Linux 上一样：
 
 ```powershell
 .\hfile.exe                                  # 用程序旁边的 config.toml
@@ -176,3 +176,13 @@ Windows 的单文件程序 `hfile-windows-x86_64.exe` 是 x86-64 的，只在 Wi
   已经在控制台里装好、再改成服务的，也在第 2 步的 `icacls` 之后运行一次这条（先停掉控制台里的程序）。
 - 换新版本：`Stop-Service HFile`，换掉 `hfile.exe`，再 `Start-Service HFile`，启动时先备份再升级数据库（见[「升级」](upgrade.md)）。
 - 试过的：服务启动、走完安装向导、服务自己重启读入新设置、`Stop-Service` 正常停下（退出码 0）、`Restart-Service`；网站的进程或启动的那个 `hfile.exe` 被强行结束时，服务 10 秒后自动重新启动。机器重启后自动启动（启动类型是「自动」）没有试过。
+
+## 在 macOS 上运行
+
+macOS 的单文件程序有 Apple 芯片的 `hfile-macos-arm64` 和 Intel 的 `hfile-macos-x86_64`（`uname -m` 显示的那种），每次发布前在 GitHub 的 macOS 15 上跑全部测试和打包检查，没有在真的 Mac 上试过。用法和 Linux 上一样：改名成 `hfile`、`chmod +x hfile`，在终端里运行，命令也一样。
+
+和 Linux 上不一样的地方：
+
+- 用浏览器下载的程序带着「从互联网下载」的标记，macOS 不让它运行（说无法验证它不含恶意软件）：程序只有打包时加的临时签名，没有经过 Apple 的公证。用 `curl` 下载的没有这个标记；有了的，去掉它再运行：`xattr -d com.apple.quarantine hfile`。
+- 停下：Ctrl+C、SIGTERM 和 Linux 上一样，把手上的请求做完再退出。程序被强行结束（`kill -9`）时，网站的进程不会跟着结束，还占着端口（Linux 上会跟着停下），要另外结束它。
+- 开机自动运行要用 launchd，没有试过。
