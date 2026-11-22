@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HFile\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-21 15:55+0800\n"
+"POT-Creation-Date: 2026-11-22 15:52+0800\n"
 "Language: zh_Hans\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1991,9 +1991,24 @@ msgid "This is a file, not a folder."
 msgstr "这是一个文件，不是文件夹。"
 
 #: apps/copytasks/service.py
+#, python-format
+msgid "The target storage source can't take this folder's name: %(error)s"
+msgstr "目标存储源不能用这个文件夹的名字：%(error)s"
+
+#: apps/copytasks/service.py
+#, python-format
 msgid ""
-"In the same storage source, neither folder can be the other one or inside it."
-msgstr "在同一个存储源里，两个文件夹不能是同一个，也不能一个在另一个里面。"
+"This folder has a file of the same name as the source folder (%(name)s)."
+msgstr "这个文件夹里有一个和源文件夹同名的文件（%(name)s）。"
+
+#: apps/copytasks/service.py
+#, python-format
+msgid ""
+"In the same storage source, neither the source folder nor its copy "
+"(%(path)s) can be the other one or inside it."
+msgstr ""
+"在同一个存储源里，源文件夹和复制出来的文件夹（%(path)s）不能是同一个，也不能"
+"一个在另一个里面。"
 
 #: apps/copytasks/service.py apps/copytasks/views.py
 msgid "There is no such copy task."
@@ -2018,7 +2033,7 @@ msgstr "新建复制任务"
 
 #: apps/copytasks/templates/copytasks/manage/copy_tasks.html
 msgid ""
-"Copies what is in a folder of one storage source, files and folders, into a "
+"Copies a folder of one storage source, with its files and folders, into a "
 "folder of another one (or into another folder of the same one). The server "
 "does it, reading from the source and writing into the target at the same "
 "time: the files don't go through your computer, nor onto the server's disk. "
@@ -2028,12 +2043,12 @@ msgid ""
 "Users' permissions, filter rules and folder passwords don't apply to copy "
 "tasks."
 msgstr ""
-"把一个存储源的文件夹里的文件和文件夹复制到另一个存储源的文件夹里（也可以是同"
-"一个存储源的另一个文件夹）。复制由服务器来做，一边从源存储源读、一边写进目"
-"标：文件不经过你的电脑，也不存到服务器的硬盘上。关掉这个页面，任务照样在后台"
-"进行。停止任务时已经复制好的文件留着；失败或停止的任务可以继续复制，这时目标"
-"里文件名和大小都相同的文件会跳过。复制任务不受用户的权限、过滤规则和目录密码"
-"限制。"
+"把一个存储源的文件夹连同里面的文件和文件夹复制到另一个存储源的文件夹里（也可"
+"以是同一个存储源的另一个文件夹）。复制由服务器来做，一边从源存储源读、一边写"
+"进目标：文件不经过你的电脑，也不存到服务器的硬盘上。关掉这个页面，任务照样在"
+"后台进行。停止任务时已经复制好的文件留着；失败或停止的任务可以继续复制，这时"
+"目标里文件名和大小都相同的文件会跳过。复制任务不受用户的权限、过滤规则和目录"
+"密码限制。"
 
 #: apps/copytasks/templates/copytasks/manage/copy_tasks.html
 msgid "Copy task pages"

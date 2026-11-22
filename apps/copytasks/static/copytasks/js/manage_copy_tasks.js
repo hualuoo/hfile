@@ -505,7 +505,7 @@
     const targetPath = folderInput('copy-target-path', 'target_path', (start) => pickFolder(byId(target.value), start, gettext('Copy into which folder')));
     const number = (id, name, attrs) => h('input', { id, name, type: 'number', inputmode: 'numeric', required: true, ...attrs });
     const body = h('div', { class: 'copy-form' },
-      h('p', { class: 'muted', text: gettext('What is in the source folder, files and folders, is copied into the target folder; a target folder that isn\'t there yet is made.') }),
+      h('p', { class: 'muted', text: gettext('The source folder is copied into the target folder with its files and folders: copying /a into /b makes /b/a. From the root folder, what is in it goes straight into the target folder. A target folder that isn\'t there yet is made.') }),
       h('div', { class: 'form-grid' },
         field('source', gettext('Copy from'), source),
         field('source_path', gettext('Source folder'), sourcePath.box, '', sourcePath.input.id),

@@ -131,6 +131,16 @@ def _names(entries) -> bytes:
     return digest.digest()
 
 
+def name_problem(target, name: str) -> str:
+    """Why the target can't have this name (the site's rules for new names and the storage's own), or ""."""
+    try:
+        paths.check_name(name, forbidden=str(getattr(target, "forbidden_chars", "")),
+                         max_bytes=int(getattr(target, "max_name_bytes", 255)))
+    except InvalidPath as error:
+        return str(error.message)
+    return ""
+
+
 @dataclass
 class Job:
     source: str  # the file's path in the source storage
@@ -332,7 +342,7 @@ class Run:
                 self._plan(target, item, into, path, there)
             for item in folders:  # the last first: the first comes off the stack first
                 inner = f"{path.rstrip('/')}/{item.name}"
-                problem = self._name_problem(target, item.name)
+                problem = name_problem(target, item.name)
                 other = there.get(item.name)
                 if problem:
                     self._failed(inner, None, problem, 0, is_dir=True)
@@ -405,21 +415,11 @@ class Run:
                              % {"error": error.message}, 1, is_dir=True)
         return None
 
-    @staticmethod
-    def _name_problem(target, name: str) -> str:
-        """Why the target can't have this name (the site's rules for new names and the storage's own), or ""."""
-        try:
-            paths.check_name(name, forbidden=str(getattr(target, "forbidden_chars", "")),
-                             max_bytes=int(getattr(target, "max_name_bytes", 255)))
-        except InvalidPath as error:
-            return str(error.message)
-        return ""
-
     def _plan(self, target, item, into: str, folder: str, there: dict) -> None:
         """A file of the source: to copy, skipped, or failed already."""
         self._found(item.size)
         path = f"{folder.rstrip('/')}/{item.name}"
-        problem = self._name_problem(target, item.name)
+        problem = name_problem(target, item.name)
         if problem:
             self._failed(path, item.size, problem, 0)
             return

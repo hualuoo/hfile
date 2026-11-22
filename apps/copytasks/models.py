@@ -47,7 +47,8 @@ class CopyTask(models.Model):
     target = models.ForeignKey("storages.StorageSource", null=True, blank=True, on_delete=models.SET_NULL,
                                related_name="+", verbose_name=gettext_lazy("Target storage source"))
     target_name = models.CharField(gettext_lazy("Target storage source name"), max_length=NAME_MAX)
-    target_path = models.TextField(gettext_lazy("Target folder"))
+    target_path = models.TextField(gettext_lazy("Target folder"))  # where what is in the source folder goes: the
+    # folder of its name in the one picked (service.destination())
 
     # How it copies.
     threads = models.PositiveSmallIntegerField(gettext_lazy("Threads"), default=4)  # files at once

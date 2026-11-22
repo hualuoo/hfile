@@ -121,16 +121,35 @@ class CopyingTests(CopyTestCase):
                          (self.admin, "admin", "存储 src", "存储 dst"))
 
     def test_into_a_folder_that_isnt_there_yet(self):
+        """The source folder itself is copied: into a folder of its name in the target folder, made with the folders
+        above it that aren't there yet."""
         task = self.copy(source_path="/docs", target_path="/backup/2026")
         self.assertEqual(task.status, Status.DONE, task.message)
-        self.assertEqual(self.tree(self.dst), {"/backup": None, "/backup/2026": None,
-                                               "/backup/2026/b.txt": sha256(b"bravo!"), "/backup/2026/deep": None,
-                                               "/backup/2026/deep/c.bin": sha256(bytes(range(256)) * 300)})
+        self.assertEqual(task.target_path, "/backup/2026/docs")
+        self.assertEqual(self.tree(self.dst), {"/backup": None, "/backup/2026": None, "/backup/2026/docs": None,
+                                               "/backup/2026/docs/b.txt": sha256(b"bravo!"), "/backup/2026/docs/deep": None,
+                                               "/backup/2026/docs/deep/c.bin": sha256(bytes(range(256)) * 300)})
+
+    def test_into_a_folder_of_its_name_already_there(self):
+        """What is in it stays; a file of the same name goes as same_file and same_name say (overwrite: another size)."""
+        self.files(self.dst, {"backup/docs/old.txt": b"old", "backup/docs/b.txt": b"BRAVO"})
+        task = self.copy(source_path="/docs", target_path="/backup")
+        self.assertEqual(task.status, Status.DONE, task.message)
+        self.assertEqual(self.tree(self.dst / "backup" / "docs"), {
+            "/b.txt": sha256(b"bravo!"), "/deep": None, "/deep/c.bin": sha256(bytes(range(256)) * 300),
+            "/old.txt": sha256(b"old")})
+
+    def test_from_the_root_folder(self):
+        """The root folder has no name: what is in it goes straight into the target folder."""
+        task = self.copy(target_path="/backup")
+        self.assertEqual(task.status, Status.DONE, task.message)
+        self.assertEqual(task.target_path, "/backup")
+        self.assertEqual(self.tree(self.dst / "backup"), self.tree(self.src))
 
     def test_within_one_storage(self):
         task = self.copy(target=self.source.pk, source_path="/docs/deep", target_path="/copy")
         self.assertEqual(task.status, Status.DONE, task.message)
-        self.assertEqual((self.src / "copy" / "c.bin").read_bytes(), bytes(range(256)) * 300)
+        self.assertEqual((self.src / "copy" / "deep" / "c.bin").read_bytes(), bytes(range(256)) * 300)
 
     def test_same_file_and_same_name(self):
         """A file there with the same name and size: same_file; with the same name only: same_name."""
@@ -157,7 +176,7 @@ class CopyingTests(CopyTestCase):
         data = bytes(range(256)) * 300
         self.assertIn(hashlib.md5(data).hexdigest(), test_drivers.HashFirstDriver.digests)
         stored = self.tree(Path(config.decode(drivers.driver_class("test-copy-hashfirst"), target.config)[0]["root"]))
-        self.assertEqual(stored["/deep/c.bin"], sha256(data))
+        self.assertEqual(stored["/docs/deep/c.bin"], sha256(data))
         self.assertEqual(task.transferred, 2 * (6 + len(data)))  # each file read twice
 
     def test_a_source_that_cant_start_halfway(self):
@@ -184,7 +203,7 @@ class CopyingTests(CopyTestCase):
                                                ("/deep/c.bin", "读取源文件失败：连接断了")])
         self.assertEqual(list(task.failures.values_list("attempts", flat=True)), [2, 2])
         self.assertEqual(test_drivers.FlakyDriver.tries, {"/docs/b.txt": 2, "/docs/deep/c.bin": 2})
-        self.assertEqual(self.tree(self.dst), {"/deep": None})
+        self.assertEqual(self.tree(self.dst), {"/docs": None, "/docs/deep": None})
 
     def test_a_stream_that_breaks(self):
         source = self.storage("broken", "test-copy-broken", self.src)
@@ -192,7 +211,7 @@ class CopyingTests(CopyTestCase):
         self.assertEqual(task.status, Status.FAILED)
         self.assertEqual(self.failures(task), [("/b.txt", "读取源文件失败：读到一半断开了"),
                                                ("/deep/c.bin", "读取源文件失败：读到一半断开了")])
-        self.assertEqual(self.tree(self.dst), {"/deep": None})  # no half files (local writes a temporary one)
+        self.assertEqual(self.tree(self.dst), {"/docs": None, "/docs/deep": None})  # no half files (local writes a temporary one)
 
     def test_an_account_that_stops_working_stops_the_run(self):
         target = self.storage("expired", "test-copy-expired", self.folder("expired"))
@@ -261,8 +280,8 @@ class CopyingTests(CopyTestCase):
         message = "它和上面的一个文件夹里的文件和文件夹完全一样，多半是指回上层的链接，里面的东西没有复制。"
         self.assertEqual(self.failures(task), [("/again", message), ("/deep/up", message)])
         self.assertEqual(task.message, "2 个文件夹没能复制，里面的东西也都没有复制。")
-        self.assertEqual(self.tree(self.dst), {"/b.txt": sha256(b"bravo!"), "/deep": None,
-                                               "/deep/c.bin": sha256(bytes(range(256)) * 300)})
+        self.assertEqual(self.tree(self.dst), {"/docs": None, "/docs/b.txt": sha256(b"bravo!"), "/docs/deep": None,
+                                               "/docs/deep/c.bin": sha256(bytes(range(256)) * 300)})
 
     def test_a_link_back_up_listed_as_ntfs_does(self):
         """NTFS lists a folder with an older time until it has been listed itself: docs listed before deep was,
@@ -276,8 +295,8 @@ class CopyingTests(CopyTestCase):
         # docs again after docs/deep/up; on Windows after docs/again too: the driver's realpath() opens deep, so NTFS
         # brings deep's time in docs up to date before that
         self.assertEqual(test_drivers.StaleTimesDriver.lists[-2:], ["/docs/deep/up", "/docs"])
-        self.assertEqual(self.tree(self.dst), {"/b.txt": sha256(b"bravo!"), "/deep": None,
-                                               "/deep/c.bin": sha256(bytes(range(256)) * 300)})
+        self.assertEqual(self.tree(self.dst), {"/docs": None, "/docs/b.txt": sha256(b"bravo!"), "/docs/deep": None,
+                                               "/docs/deep/c.bin": sha256(bytes(range(256)) * 300)})
 
     def test_listings_are_tried_again(self):
         source = self.storage("flakylist", "test-copy-flakylist", self.src)
@@ -493,6 +512,23 @@ class ResumingTests(CopyTestCase):
         entry = ActivityLog.objects.filter(kind=ActivityLog.Kind.RESUME_COPY_TASK).get()
         self.assertEqual(entry.detail, {"task": task.pk, "to_storage": "存储 dst", "to_storage_id": self.target.pk,
                                         "run": 2})
+
+    def test_goes_on_in_the_same_folder(self):
+        """继续 copies into the task's target_path as it is: the folder of the source folder's name made with the task, or
+        for a task made when what was in the source folder went straight into the folder picked (1.2.0), that one."""
+        with mock.patch.object(runner, "start_thread"):
+            task = self.copy(source_path="/docs", target_path="/backup")
+            older = self.copy(source_path="/docs", target_path="/older")
+        CopyTask.objects.filter(pk=older.pk).update(target_path="/older")
+        CopyTask.objects.filter(pk__in=[task.pk, older.pk]).update(status=Status.STOPPED)
+        for pk in (task.pk, older.pk):
+            service.resume(pk)
+            self.assertEqual(CopyTask.objects.get(pk=pk).status, Status.DONE)
+        data = sha256(bytes(range(256)) * 300)
+        self.assertEqual(self.tree(self.dst), {
+            "/backup": None, "/backup/docs": None, "/backup/docs/b.txt": sha256(b"bravo!"), "/backup/docs/deep": None,
+            "/backup/docs/deep/c.bin": data,
+            "/older": None, "/older/b.txt": sha256(b"bravo!"), "/older/deep": None, "/older/deep/c.bin": data})
 
     def test_needs_its_storages(self):
         with mock.patch.object(runner, "start_thread"):

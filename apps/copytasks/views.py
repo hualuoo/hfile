@@ -4,7 +4,9 @@
                                               and progress (service.summary)
     POST   manage/copy-tasks/                 {"source", "source_path", "target", "target_path", "threads",
                                               "speed_limit" (bytes a second, 0: none), "same_file", "same_name"
-                                              ("skip" or "overwrite"), "retries"}: a new task, started at once (201)
+                                              ("skip" or "overwrite"), "retries"}: a new task, started at once (201);
+                                              it copies the source folder into target_path as a folder of the same
+                                              name, the task's target_path (service.destination())
     GET    manage/copy-tasks/{id}/            one task, with the files being copied ("current") and how many failed
     GET    manage/copy-tasks/{id}/failures/   the files and folders it couldn't copy (pages of 50)
     POST   manage/copy-tasks/{id}/stop/       stop it; what it copied stays (409 when it isn't running)

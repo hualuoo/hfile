@@ -79,8 +79,28 @@ def folders(storage_id, path) -> dict:
     return {"storage": storage.pk, "path": path, "folders": names}
 
 
+def destination(source_path: str, target_path: str) -> str:
+    """Where a task copies what is in the source folder: the folder of its name in the target folder picked, so that
+    the source folder itself is copied (from the root, which has no name, straight into the folder picked). Worked out
+    when the task is made: it is the task's target_path, and a 继续 goes on in the same folder."""
+    if source_path == paths.ROOT:
+        return target_path
+    return paths.join(target_path, paths.name(source_path))
+
+
+def _entry(driver, path):
+    """What the target has at `path`, or None: nothing yet (the task makes it)."""
+    try:
+        return driver.stat(path)
+    except Missing:
+        return None
+    except DriverError as error:
+        raise ValidationError({"target_path": [error.message]}) from None
+
+
 def _check_folders(source, source_path, target, target_path) -> None:
-    """The source folder is a folder; the target folder is one, or isn't there yet (the task makes it)."""
+    """The source folder is a folder, of a name the target can have; the target folder is one, or isn't there yet
+    (the task makes it), and so is the folder of that name in it (destination())."""
     source_driver, target_driver = _driver(source, "source"), _driver(target, "target")
     try:
         entry = source_driver.stat(source_path)
@@ -90,16 +110,21 @@ def _check_folders(source, source_path, target, target_path) -> None:
         raise ValidationError({"source_path": [error.message]}) from None
     if not entry.is_dir:
         raise ValidationError({"source_path": [_("This is a file, not a folder.")]})
-    if target_path == paths.ROOT:
-        return
-    try:
-        entry = target_driver.stat(target_path)
-    except Missing:
-        return
-    except DriverError as error:
-        raise ValidationError({"target_path": [error.message]}) from None
-    if not entry.is_dir:
-        raise ValidationError({"target_path": [_("This is a file, not a folder.")]})
+    name = paths.name(source_path)  # "" for the root: what is in it goes straight into the target folder
+    problem = runner.name_problem(target_driver, name) if name else ""
+    if problem:
+        raise ValidationError({"source_path": [_("The target storage source can't take this folder's name: %(error)s")
+                                               % {"error": problem}]})
+    if target_path != paths.ROOT:
+        entry = _entry(target_driver, target_path)
+        if entry is None:
+            return  # the task makes it, and the folder in it
+        if not entry.is_dir:
+            raise ValidationError({"target_path": [_("This is a file, not a folder.")]})
+    entry = _entry(target_driver, destination(source_path, target_path)) if name else None
+    if entry is not None and not entry.is_dir:
+        raise ValidationError({"target_path": [_("This folder has a file of the same name as the source folder "
+                                                 "(%(name)s).") % {"name": name}]})
 
 
 def create(data, user) -> CopyTask:
@@ -110,16 +135,17 @@ def create(data, user) -> CopyTask:
     if not writable(target):
         raise ValidationError({"target": [NOT_WRITABLE]})
     source_path, target_path = data["source_path"], data["target_path"]
-    if source.pk == target.pk and (paths.is_inside(target_path, source_path) or paths.is_inside(source_path, target_path)):
-        raise ValidationError({"target_path": [_("In the same storage source, neither folder can be the other one or "
-                                                 "inside it.")]})
+    into = destination(source_path, target_path)
+    if source.pk == target.pk and (paths.is_inside(into, source_path) or paths.is_inside(source_path, into)):
+        raise ValidationError({"target_path": [_("In the same storage source, neither the source folder nor its copy "
+                                                 "(%(path)s) can be the other one or inside it.") % {"path": into}]})
     _check_folders(source, source_path, target, target_path)
     now = timezone.now()
     with transaction.atomic():
         task = CopyTask.objects.create(
             created_by=user, created_by_name=user.get_username(),
             source=source, source_name=source.name, source_path=source_path,
-            target=target, target_name=target.name, target_path=target_path,
+            target=target, target_name=target.name, target_path=into,
             threads=data["threads"], speed_limit=data["speed_limit"], same_file=data["same_file"],
             same_name=data["same_name"], retries=data["retries"],
             status=Status.RUNNING, run=1, run_id=runner.new_run_id(), started_at=now, updated_at=now,

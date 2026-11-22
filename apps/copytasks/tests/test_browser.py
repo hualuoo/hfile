@@ -60,13 +60,13 @@ class CopyTaskPageTests(BrowserTestCase):
         expect(card.locator(".badge")).to_have_text("完成")
         expect(card.locator(".copy-task-route")).to_contain_text("Src")
         expect(card.locator(".copy-task-route")).to_contain_text("/photos")
-        expect(card.locator(".copy-task-route")).to_contain_text("/backup")
+        expect(card.locator(".copy-task-route")).to_contain_text("/backup/photos")
         expect(card.locator(".copy-task-line")).to_contain_text("2 / 2 个文件")
         facts = card.locator(".copy-facts")  # opened by itself
         expect(facts).to_contain_text("线程数2")
         expect(facts).to_contain_text("已复制2 个文件，2.93 KB")
-        self.assertEqual((self.dst_root / "backup" / "2024" / "b.jpg").read_bytes(), b"b" * 2000)
-        self.assertEqual((self.dst_root / "backup" / "a.jpg").read_bytes(), b"a" * 1000)
+        self.assertEqual((self.dst_root / "backup" / "photos" / "2024" / "b.jpg").read_bytes(), b"b" * 2000)
+        self.assertEqual((self.dst_root / "backup" / "photos" / "a.jpg").read_bytes(), b"a" * 1000)
         self.assertEqual(CopyTask.objects.get().threads, 2)
         self.assertClean(page)
 

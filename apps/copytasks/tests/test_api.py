@@ -85,7 +85,9 @@ class CreateTests(ApiTestCase):
     def test_refused(self):
         disabled = self.storage("off", "local", self.folder("off"), enabled=False)
         readonly = self.storage("ro", "test-copy-readonly", self.folder("ro"))
-        self.files(self.src, {"file.txt": b"x"})
+        strict = self.storage("strict", "test-copy-strict", self.folder("strict"))
+        self.files(self.src, {"file.txt": b"x", "f#g/h.txt": b"h"})
+        self.files(self.dst, {"docs": b"a file"})
         cases = [
             ({"source": 999}, "source", "没有这个存储源。"),
             ({"source": "x"}, "source", "请选择从哪个存储源复制。"),
@@ -96,6 +98,10 @@ class CreateTests(ApiTestCase):
             ({"source_path": "/missing"}, "source_path", "这个文件夹不存在。"),
             ({"source_path": "/file.txt"}, "source_path", "这是一个文件，不是文件夹。"),
             ({"target_path": "/x/" * 300}, "target_path", "路径的层数太多（最多 256 层）。"),
+            ({"target_path": "/docs"}, "target_path", "这是一个文件，不是文件夹。"),
+            ({"source_path": "/docs"}, "target_path", "这个文件夹里有一个和源文件夹同名的文件（docs）。"),
+            ({"source_path": "/f#g", "target": strict.pk}, "source_path",
+             "目标存储源不能用这个文件夹的名字：这种存储的名字里不能有这些字符：#"),
             ({"threads": 0}, "threads", "线程数：1 到 16 的整数。"),
             ({"threads": 17}, "threads", "线程数：1 到 16 的整数。"),
             ({"threads": True}, "threads", "线程数：1 到 16 的整数。"),
@@ -112,13 +118,21 @@ class CreateTests(ApiTestCase):
         self.assertEqual(CopyTask.objects.count(), 0)
 
     def test_folders_of_one_storage_apart(self):
+        """In the same storage source, the source folder and its copy (the folder of its name in the target folder)."""
         same = {"target": self.source.pk}
-        for source_path, target_path in (("/docs", "/docs/deep/x"), ("/docs/deep", "/docs"), ("/", "/x"), ("/docs", "/docs")):
+        self.files(self.src, {"docs/docs/": None})
+        refused = [("/docs", "/docs/deep/x", "/docs/deep/x/docs"), ("/docs/deep", "/docs", "/docs/deep"), ("/", "/x", "/x"),
+                   ("/docs", "/docs", "/docs/docs"), ("/docs", "/", "/docs"), ("/docs/docs", "/", "/docs")]
+        for source_path, target_path, copy in refused:
             with self.subTest(source_path=source_path, target_path=target_path):
                 response = self.create(source_path=source_path, target_path=target_path, **same)
-                self.assertEqual(response.json(), {"target_path": ["在同一个存储源里，两个文件夹不能是同一个，也不能一个在另一个里面。"]})
+                self.assertEqual(response.json(), {"target_path": [
+                    f"在同一个存储源里，源文件夹和复制出来的文件夹（{copy}）不能是同一个，也不能一个在另一个里面。"]})
         with mock.patch.object(runner, "start_thread"):
-            self.assertEqual(self.create(source_path="/docs", target_path="/docs-copy", **same).status_code, 201)
+            for source_path, target_path, copy in (("/docs", "/docs-copy", "/docs-copy/docs"), ("/docs/deep", "/", "/deep")):
+                with self.subTest(source_path=source_path, target_path=target_path):
+                    response = self.create(source_path=source_path, target_path=target_path, **same)
+                    self.assertEqual((response.status_code, response.json()["target_path"]), (201, copy))
 
 
 class TaskTests(ApiTestCase):
