@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HFile\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-22 15:52+0800\n"
+"POT-Creation-Date: 2026-11-22 16:21+0800\n"
 "Language: zh_Hans\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1963,6 +1963,10 @@ msgstr "重试次数：0 到 %(max)s 的整数。"
 #: apps/copytasks/serializers.py
 msgid "Can only be skip or overwrite."
 msgstr "只能是 skip（跳过）或 overwrite（覆盖）。"
+
+#: apps/copytasks/serializers.py apps/links/manage_serializers.py
+msgid "record"
+msgstr "记录"
 
 #: apps/copytasks/serializers.py
 msgid "Choose a storage source."
@@ -4183,10 +4187,6 @@ msgstr "写 IP 地址的开头，比如 192.168. 或 2001:db8:。"
 msgctxt "inside a sentence"
 msgid "storage source"
 msgstr "存储源"
-
-#: apps/links/manage_serializers.py
-msgid "record"
-msgstr "记录"
 
 #: apps/links/manage_serializers.py
 msgid "Please select at least one entry."

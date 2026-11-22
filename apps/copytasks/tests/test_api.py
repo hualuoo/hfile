@@ -10,7 +10,7 @@ from apps.activity.describe import describe
 from apps.activity.models import ActivityLog
 
 from .. import runner
-from ..models import CopyFailure, CopyTask
+from ..models import CopyFailure, CopyLog, CopyTask
 from .test_runner import CopyTestCase, options
 
 API = "/api/v1/manage/copy-tasks/"
@@ -39,6 +39,7 @@ class PermissionTests(ApiTestCase):
         with mock.patch.object(runner, "start_thread"):
             task_id = self.create().json()["id"]
         paths = [("get", API), ("post", API), ("get", f"{API}{task_id}/"), ("get", f"{API}{task_id}/failures/"),
+                 ("get", f"{API}{task_id}/log/"),
                  ("post", f"{API}{task_id}/stop/"), ("post", f"{API}{task_id}/resume/"), ("get", f"{API}storages/"),
                  ("get", f"{API}folders/?storage={self.source.pk}")]
         member = User.objects.create_user("bob", password="pw-bob-2026")
@@ -202,3 +203,38 @@ class PickerTests(ApiTestCase):
         self.assertEqual(self.client.get(f"{API}folders/", {"storage": 999}).status_code, 404)
         response = self.client.get(f"{API}folders/")
         self.assertEqual((response.status_code, response.json()), (400, {"storage": ["请选择一个存储源。"]}))
+
+
+class LogTests(ApiTestCase):
+    def test_the_log(self):
+        task_id = self.create().json()["id"]
+        data = self.client.get(f"{API}{task_id}/log/").json()
+        lines = data["results"]
+        self.assertFalse(data["more"])
+        self.assertEqual([line["kind"] for line in lines], ["ended", "copied", "copied", "copied", "copied", "started"])
+        self.assertEqual([line["id"] for line in lines], sorted((line["id"] for line in lines), reverse=True))
+        self.assertEqual((lines[0]["status"], lines[0]["status_label"], lines[0]["run"]), ("done", "完成", 1))
+        self.assertEqual(sorted(line["path"] for line in lines[1:-1]), ["/a.txt", "/docs/b.txt", "/docs/deep/c.bin", "/zero.txt"])
+        self.assertEqual(set(lines[1]), {"id", "at", "run", "kind", "path", "is_dir", "size", "seconds", "attempts",
+                                         "status", "status_label", "message"})
+        self.assertEqual(self.client.get(f"{API}999/log/").status_code, 404)
+
+    def test_pages(self):
+        """Newest first, 100 at a time: ?before= goes back, ?after= follows; `more` says there are more of them there."""
+        with mock.patch.object(runner, "start_thread"):
+            task_id = self.create().json()["id"]  # one line: it began
+        CopyLog.objects.bulk_create([CopyLog(task_id=task_id, run=1, kind="copied", path=f"/f{n:03}") for n in range(250)])
+        get = lambda **query: self.client.get(f"{API}{task_id}/log/", query).json()  # noqa: E731
+        first = get()
+        self.assertEqual((first["results"][0]["path"], len(first["results"]), first["more"]), ("/f249", 100, True))
+        second = get(before=first["results"][-1]["id"])
+        self.assertEqual((second["results"][0]["path"], len(second["results"]), second["more"]), ("/f149", 100, True))
+        third = get(before=second["results"][-1]["id"])
+        self.assertEqual(([line["path"] for line in third["results"][-2:]], third["more"]), (["/f000", ""], False))
+        CopyLog.objects.create(task_id=task_id, run=1, kind="copied", path="/new")
+        newer = get(after=first["results"][0]["id"])
+        self.assertEqual(([line["path"] for line in newer["results"]], newer["more"]), (["/new"], False))
+        behind = get(after=second["results"][-1]["id"])  # 101 newer: the newest 100, and more between
+        self.assertEqual((behind["results"][0]["path"], len(behind["results"]), behind["more"]), ("/new", 100, True))
+        response = self.client.get(f"{API}{task_id}/log/", {"before": "x"})
+        self.assertEqual((response.status_code, response.json()), (400, {"before": ["应该是记录的 id（正整数）。"]}))

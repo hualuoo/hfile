@@ -71,6 +71,13 @@ class CreateSerializer(serializers.Serializer):
         return clean_path(value)
 
 
+class LogQuery(serializers.Serializer):
+    """GET manage/copy-tasks/{id}/log/: ?before= (the id of a line: the ones older than it) or ?after= (newer)."""
+
+    before = IdParam(gettext_lazy("record"))
+    after = IdParam(gettext_lazy("record"))
+
+
 class FoldersQuery(serializers.Serializer):
     """GET manage/copy-tasks/folders/?storage=&path=."""
 

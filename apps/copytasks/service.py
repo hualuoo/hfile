@@ -1,6 +1,6 @@
 """What /manage/#copy-tasks does (apps/copytasks/views.py): making a task, stopping one, resuming one, and the tasks
-as the page shows them. Admins only; a task reads and writes the storages through their drivers, as the admin
-pages do, so the users' permissions, filter rules and folder passwords don't apply to it.
+and their logs as the page shows them. Admins only; a task reads and writes the storages through their drivers, as
+the admin pages do, so the users' permissions, filter rules and folder passwords don't apply to it.
 """
 
 from django.db import transaction
@@ -18,9 +18,11 @@ from apps.storages.drivers.base import NotFound as Missing
 from apps.storages.models import StorageSource
 
 from . import runner
-from .models import CopyTask
+from .models import MESSAGE_MAX, CopyLog, CopyTask
 
 Status = CopyTask.Status
+Kind = CopyLog.Kind
+LOG_PAGE = 100  # log lines at a time
 
 NOT_ENABLED = gettext_lazy("This storage source is disabled; enable it first.")
 NOT_WRITABLE = gettext_lazy("Files can't be copied into this storage source: it is read-only, or can't take uploads.")
@@ -150,6 +152,7 @@ def create(data, user) -> CopyTask:
             same_name=data["same_name"], retries=data["retries"],
             status=Status.RUNNING, run=1, run_id=runner.new_run_id(), started_at=now, updated_at=now,
         )
+        CopyLog.objects.create(task=task, run=1, kind=Kind.STARTED, at=now)
         _log(activity.Kind.CREATE_COPY_TASK, task, {
             "threads": task.threads, "speed_limit": task.speed_limit, "same_file": task.same_file,
             "same_name": task.same_name, "retries": task.retries})
@@ -191,7 +194,7 @@ def resume(pk) -> CopyTask:
     now = timezone.now()
     with transaction.atomic():
         task = _locked(pk)
-        status, _message = runner.status_of(task, now)
+        status, message = runner.status_of(task, now)
         if status not in (Status.FAILED, Status.STOPPED):
             raise Conflict(_("Only a task that failed or was stopped can be resumed."))
         for storage, name in ((task.source, task.source_name), (task.target, task.target_name)):
@@ -201,6 +204,9 @@ def resume(pk) -> CopyTask:
                 raise Conflict(_("The storage source %(name)s is disabled; enable it first.") % {"name": storage.name})
         if not writable(task.target):
             raise Conflict(NOT_WRITABLE)
+        if runner.is_stale(task, now):  # its run died without writing how it ended: as of its last write
+            CopyLog.objects.create(task=task, run=task.run, kind=Kind.ENDED, at=task.updated_at, status=Status.FAILED,
+                                   message=str(message)[:MESSAGE_MAX])
         for field, value in RESET.items():
             setattr(task, field, value)
         task.status = Status.RUNNING
@@ -209,6 +215,7 @@ def resume(pk) -> CopyTask:
         task.started_at = task.updated_at = now
         task.save()
         task.failures.all().delete()
+        CopyLog.objects.create(task=task, run=task.run, kind=Kind.STARTED, at=now)
         _log(activity.Kind.RESUME_COPY_TASK, task, {"run": task.run})
     runner.start(task)
     return task
@@ -268,3 +275,24 @@ def detail(task: CopyTask, now) -> dict:
     data["current"] = task.current if live else []
     data["failures_count"] = task.failures.count()
     return data
+
+
+def log(task: CopyTask, *, before=None, after=None) -> dict:
+    """The task's log, newest first: the LOG_PAGE newest lines, or the newest of those older than the line `before`
+    (the page loads earlier ones) or newer than the line `after` (it follows a run). `more`: there are more lines than
+    these there (older ones; or newer than `after`, between it and these)."""
+    lines = CopyLog.objects.filter(task=task)
+    if before is not None:
+        lines = lines.filter(id__lt=before)
+    if after is not None:
+        lines = lines.filter(id__gt=after)
+    page = list(lines.order_by("-id")[:LOG_PAGE + 1])
+    return {"results": [_line(line) for line in page[:LOG_PAGE]], "more": len(page) > LOG_PAGE}
+
+
+def _line(line: CopyLog) -> dict:
+    return {
+        "id": line.id, "at": iso(line.at), "run": line.run, "kind": line.kind, "path": line.path, "is_dir": line.is_dir,
+        "size": line.size, "seconds": line.seconds, "attempts": line.attempts, "status": line.status,
+        "status_label": str(Status(line.status).label) if line.status else "", "message": line.message,
+    }

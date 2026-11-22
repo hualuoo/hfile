@@ -9,6 +9,8 @@
                                               name, the task's target_path (service.destination())
     GET    manage/copy-tasks/{id}/            one task, with the files being copied ("current") and how many failed
     GET    manage/copy-tasks/{id}/failures/   the files and folders it couldn't copy (pages of 50)
+    GET    manage/copy-tasks/{id}/log/        its detailed log, newest first, 100 lines at a time ("more": there are
+                                              more): ?before= the id of a line, for older ones; ?after=, for newer ones
     POST   manage/copy-tasks/{id}/stop/       stop it; what it copied stays (409 when it isn't running)
     POST   manage/copy-tasks/{id}/resume/     run it again when it failed or was stopped: the files in the target with
                                               the same name and size are skipped (409 otherwise)
@@ -29,7 +31,7 @@ from apps.core.permissions import IsAdmin
 
 from . import service
 from .models import CopyFailure, CopyTask
-from .serializers import CreateSerializer, FoldersQuery
+from .serializers import CreateSerializer, FoldersQuery, LogQuery
 
 
 class _FailurePages(StandardPagination):
@@ -80,6 +82,16 @@ class CopyTaskFailuresView(APIView):
             {"id": failure.id, "path": failure.path, "is_dir": failure.is_dir, "size": failure.size,
              "message": failure.message, "attempts": failure.attempts}
             for failure in page])
+
+
+class CopyTaskLogView(APIView):
+    permission_classes = [IsAdmin]
+
+    def get(self, request, pk):
+        task = _task(pk)
+        query = LogQuery(data=request.query_params)
+        query.is_valid(raise_exception=True)
+        return Response(service.log(task, before=query.validated_data["before"], after=query.validated_data["after"]))
 
 
 class CopyTaskStopView(APIView):

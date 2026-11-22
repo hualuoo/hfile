@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HFile\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-22 15:52+0800\n"
+"POT-Creation-Date: 2026-11-22 16:21+0800\n"
 "Language: zh_Hans\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -797,6 +797,10 @@ msgid "Resume"
 msgstr "继续复制"
 
 #: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "Detailed log"
+msgstr "详细日志"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
 msgid "Copy progress"
 msgstr "复制进度"
 
@@ -938,6 +942,60 @@ msgstr "显示了 %(shown)s / %(count)s 个"
 msgid "tried %(n)s time"
 msgid_plural "tried %(n)s times"
 msgstr[0] "试了 %(n)s 次"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "Began"
+msgstr "开始"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "Retrying"
+msgstr "重试"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "%(s)s s"
+msgstr "%(s)s 秒"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "Run %(run)s: resumed."
+msgstr "第 %(run)s 次运行：继续复制。"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "Run 1: the task was made."
+msgstr "第 1 次运行：新建任务。"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "Run %(run)s ended."
+msgstr "第 %(run)s 次运行结束。"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "on try %(n)s"
+msgstr "第 %(n)s 次尝试成功"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "the target has a file of the same name and size"
+msgstr "目标里有文件名和大小都相同的文件"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "the target has a file of the same name and another size, kept as it is"
+msgstr "目标里有文件名相同、大小不同的文件，按设置不覆盖"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "try %(n)s failed, the next in %(time)s"
+msgstr "第 %(n)s 次尝试失败，%(time)s后再试"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "Load earlier ones"
+msgstr "加载更早的"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid "Detailed log of task #%(id)s"
+msgstr "任务 #%(id)s 的详细日志"
+
+#: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
+msgid ""
+"No log: this task ran before the site kept detailed logs. Its next run will "
+"have one."
+msgstr "没有日志：这个任务是在网站记详细日志以前运行的，下一次运行起才有。"
 
 #: apps/copytasks/static/copytasks/js/manage_copy_tasks.js
 msgid "%(count)s task"

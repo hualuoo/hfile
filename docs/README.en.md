@@ -42,7 +42,7 @@ HFile is built with Django:
   - read-only share links and release pages: GitHub Releases, CNB Releases, web server directory listings, URL trees, 123 Cloud Drive direct links, OpenList shares, Lenovo NAS shares, OneDrive share links.
   - A four-step wizard adds new storage sources; cloud drives are authorized in the browser or by scanning a QR code.
 - **File management**: list, icon and gallery views; new folder, rename, move, copy, delete; context menu, multi-select and keyboard control.
-- **Copying between storage sources**: admins make copy tasks on the Manage page that copy a folder of one storage source into another one, streaming the files without storing them on the server's disk; with a number of threads, a total speed limit, skipping or overwriting files of the same name, and retries. Each file's progress and speed show; a task can be stopped at any time, and one that failed or was stopped can be resumed.
+- **Copying between storage sources**: admins make copy tasks on the Manage page that copy a folder of one storage source into another one, streaming the files without storing them on the server's disk; with a number of threads, a total speed limit, skipping or overwriting files of the same name, and retries. Each file's progress and speed show, and a detailed log records every file copied, skipped, retried or failed; a task can be stopped at any time, and one that failed or was stopped can be resumed.
 - **Uploads**:
   - drag in files or whole folders;
   - large files go up in chunks, and an upload cut off by the network resumes from the chunk where it stopped;

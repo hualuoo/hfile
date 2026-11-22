@@ -1,6 +1,8 @@
 /* /manage/#copy-tasks: 复制任务 (/api/v1/manage/copy-tasks/). The tasks, newest first, each a card with its state and
  * progress, and on a click its details: how it copies, the counts, the files being copied (each with its progress and
  * speed, and the error of the try before when it is being tried again) and the files and folders it couldn't copy.
+ * Its detailed log (a dialog) has what each run did, newest first: the files being copied, then each file copied,
+ * skipped, tried again or failed, and when the runs began and ended; it follows a run while it is open.
  * "New copy task" asks from which storage source's folder into which one's, and how: threads, speed limit, what to do
  * with the files already in the target, retries. While a task of the page runs, the list is asked again every POLL_MS
  * (not while this section or the browser tab is hidden). The copying is the server's: closing the page doesn't stop it. */
@@ -13,6 +15,7 @@
   const API = '/api/v1/manage/copy-tasks/';
   const POLL_MS = 1500;
   const PAGE_SIZE = 20;
+  const LOG_KEEP = 1000; // log lines on screen while following a run: the older ones are loaded again on request
   const MB = 1024 * 1024;
   const SPEED_MAX_MB = 10240; // the server's SPEED_LIMIT_MAX, 10 GB a second
   const THREADS_MAX = 16;
@@ -79,6 +82,10 @@
     card.when = h('span', { class: 'muted small copy-task-when' });
     card.stop = h('button', { type: 'button', class: 'btn btn-small', hidden: true, onclick: () => stopTask(card) }, icon('cancel'), gettext('Stop'));
     card.resume = h('button', { type: 'button', class: 'btn btn-small', hidden: true, onclick: () => resumeTask(card) }, icon('play_arrow'), gettext('Resume'));
+    card.log = h('button', {
+      type: 'button', class: 'icon-button', 'aria-label': gettext('Detailed log'), 'data-tooltip': gettext('Detailed log'),
+      onclick: () => openLog(card),
+    }, icon('receipt_long'));
     card.toggle = h('button', {
       type: 'button', class: 'icon-button', 'aria-expanded': 'false', 'aria-label': gettext('Details'), 'data-tooltip': gettext('Details'),
       onclick: () => setOpen(card, !card.open),
@@ -97,7 +104,7 @@
       card.facts, card.currentTitle, card.current, card.failuresTitle, card.failuresList, card.failuresStatus, card.more);
     card.el = h('article', { class: 'copy-task card card-outlined' },
       h('div', { class: 'copy-task-head' }, card.badge, card.route, card.when,
-        h('div', { class: 'copy-task-actions' }, card.stop, card.resume, card.toggle)),
+        h('div', { class: 'copy-task-actions' }, card.stop, card.resume, card.log, card.toggle)),
       card.bar, card.line, card.message, card.details);
     cards.set(id, card);
     return card;
@@ -249,6 +256,160 @@
       state.loading = false;
       if (card.failures === state) renderFailures(card);
     }
+  }
+
+  // ------------------------------------------------------------ the detailed log
+
+  const KINDS = {
+    started: [gettext('Began'), 'badge-info'],
+    copied: [pgettext('copy task', 'Copied'), 'badge-ok'],
+    skipped: [gettext('Skipped'), ''],
+    kept: [gettext('Skipped'), ''],
+    retry: [gettext('Retrying'), 'badge-warning'],
+    failed: [pgettext('copy task', 'Failed'), 'badge-error'],
+  };
+
+  // 0.4 s, 12.5 s, then as duration() says
+  const took = (seconds) => (seconds < 60 ? interpolate(gettext('%(s)s s'), { s: seconds.toFixed(1) }, true) : duration(seconds));
+
+  function logItem(line) {
+    let [label, badge] = KINDS[line.kind] || [line.kind, ''];
+    let what;
+    let error = '';
+    const facts = [];
+    if (line.kind === 'started') {
+      what = line.run > 1 ? interpolate(gettext('Run %(run)s: resumed.'), { run: line.run }, true) : gettext('Run 1: the task was made.');
+    } else if (line.kind === 'ended') {
+      [label, badge] = [line.status_label, BADGES[line.status] || ''];
+      what = interpolate(gettext('Run %(run)s ended.'), { run: line.run }, true);
+      if (line.status === 'failed') error = line.message;
+      else if (line.message) facts.push(line.message);
+    } else {
+      what = h('code', { text: line.is_dir ? `${line.path}/` : line.path });
+      if (line.size !== null) facts.push(fmtSize(line.size));
+      if (line.kind === 'copied') {
+        facts.push(interpolate(gettext('took %(time)s'), { time: took(line.seconds || 0) }, true));
+        if (line.seconds > 0 && line.size) facts.push(speed(line.size / line.seconds));
+        if (line.attempts > 1) facts.push(interpolate(gettext('on try %(n)s'), { n: line.attempts }, true));
+      } else if (line.kind === 'skipped') {
+        facts.push(gettext('the target has a file of the same name and size'));
+      } else if (line.kind === 'kept') {
+        facts.push(gettext('the target has a file of the same name and another size, kept as it is'));
+      } else if (line.kind === 'retry') {
+        facts.push(interpolate(gettext('try %(n)s failed, the next in %(time)s'), { n: line.attempts, time: duration(line.seconds || 0) }, true));
+        error = line.message;
+      } else if (line.kind === 'failed') {
+        if (line.attempts > 1) facts.push(interpolate(ngettext('tried %(n)s time', 'tried %(n)s times', line.attempts), { n: line.attempts }, true));
+        error = line.message;
+      }
+    }
+    return h('li', { class: 'copy-log-line', 'data-id': String(line.id) },
+      h('time', { class: 'copy-log-time', datetime: line.at, text: fmtDateTime(line.at, { seconds: true }) }),
+      h('span', { class: `badge ${badge}`.trim(), text: label }),
+      h('div', { class: 'copy-log-text' },
+        what, facts.length ? h('span', { class: 'muted small', text: ` ${facts.join(SEP)}` }) : null,
+        error ? h('div', { class: 'copy-error', text: error }) : null));
+  }
+
+  // The task's log in a dialog, newest first: the files being copied, then the lines. While its run goes on the
+  // dialog asks for the task (its files being copied) and the lines after the newest it has every POLL_MS; it shows the
+  // newest page again when more came than a page holds. "Load earlier ones" goes back a page at a time.
+  function openLog(card) {
+    const id = card.id;
+    const titleId = `copy-log-${id}-${Math.random().toString(36).slice(2)}`;
+    const badge = h('span', { class: 'badge' });
+    const route = h('div', { class: 'copy-task-route' });
+    const currentTitle = h('h3', { text: gettext('Being copied'), hidden: true });
+    const current = h('ul', { class: 'copy-files', hidden: true });
+    const list = h('ol', { class: 'copy-log', 'aria-label': gettext('Detailed log') });
+    const status = h('p', { class: 'muted small copy-log-status', role: 'status' });
+    const more = h('button', { type: 'button', class: 'btn btn-small btn-text copy-more', hidden: true, text: gettext('Load earlier ones') });
+    const dialog = h('dialog', { class: 'dialog dialog-wide copy-log-dialog', 'aria-labelledby': titleId },
+      h('div', { class: 'dialog-box' },
+        h('header', { class: 'dialog-head' }, h('h2', { id: titleId, text: interpolate(gettext('Detailed log of task #%(id)s'), { id }, true) }),
+          h('button', { type: 'button', class: 'icon-button', 'data-close': '', 'aria-label': gettext('Close'), 'data-tooltip': gettext('Close') }, icon('close'))),
+        h('div', { class: 'dialog-body' }, h('div', { class: 'copy-log-head' }, badge, route), currentTitle, current, list, status, more)));
+    let newest = 0; // the ids of the newest and the oldest line on screen
+    let oldest = 0;
+    let earlier = false; // earlier lines were asked for: they stay on screen
+    let following = live(card.task);
+    let timer = null;
+    let closed = false;
+
+    const showTask = (task) => {
+      badge.className = `badge ${BADGES[task.status] || ''}`.trim();
+      badge.textContent = task.status_label;
+      route.replaceChildren(place(task.source, task.source_path), icon('arrow_forward', 'copy-arrow'), place(task.target, task.target_path));
+      const files = (live(task) && task.current) || [];
+      currentTitle.hidden = current.hidden = !files.length;
+      current.replaceChildren(...files.map(currentItem));
+    };
+    const showStatus = () => {
+      status.textContent = list.children.length ? '' : gettext('No log: this task ran before the site kept detailed logs. Its next run will have one.');
+    };
+    const newestPage = (data) => {
+      list.replaceChildren(...data.results.map(logItem));
+      newest = data.results.length ? data.results[0].id : 0;
+      oldest = data.results.length ? data.results[data.results.length - 1].id : 0;
+      earlier = false;
+      more.hidden = !data.more;
+    };
+    // While following a run, the newest LOG_KEEP lines stay on screen.
+    const trim = () => {
+      if (earlier || list.children.length <= LOG_KEEP) return;
+      while (list.children.length > LOG_KEEP) list.lastElementChild.remove();
+      oldest = Number(list.lastElementChild.dataset.id);
+      more.hidden = false;
+    };
+
+    async function poll() {
+      timer = null;
+      try {
+        const task = await api('GET', `${API}${id}/`);
+        if (closed) return;
+        showTask(task);
+        following = live(task);
+        const data = await api('GET', `${API}${id}/log/${newest ? `?after=${newest}` : ''}`);
+        if (closed) return;
+        if (!newest || data.more) newestPage(data);
+        else if (data.results.length) {
+          list.prepend(...data.results.map(logItem));
+          newest = data.results[0].id;
+          trim();
+        }
+        showStatus();
+      } catch (err) {
+        if (closed) return;
+        status.textContent = interpolate(gettext('Failed to load: %(message)s'), { message: err.message }, true);
+      }
+      if (following && !closed) timer = setTimeout(poll, POLL_MS);
+    }
+
+    more.addEventListener('click', async () => {
+      more.disabled = true;
+      try {
+        const data = await api('GET', `${API}${id}/log/?before=${oldest}`);
+        if (closed) return;
+        list.append(...data.results.map(logItem));
+        if (data.results.length) oldest = data.results[data.results.length - 1].id;
+        earlier = true;
+        more.hidden = !data.more;
+        showStatus();
+      } catch (err) {
+        if (!closed) status.textContent = interpolate(gettext('Failed to load: %(message)s'), { message: err.message }, true);
+      } finally {
+        more.disabled = false;
+      }
+    });
+    dialog.addEventListener('close', () => {
+      closed = true;
+      clearTimeout(timer);
+      dialog.remove();
+    });
+    document.body.append(dialog);
+    showTask(card.task);
+    openDialog(dialog);
+    poll();
   }
 
   // ------------------------------------------------------------ the list

@@ -22,7 +22,7 @@ from apps.storages import config, drivers, instances
 from apps.storages.models import StorageSource
 
 from .. import runner, service
-from ..models import CopyFailure, CopyTask
+from ..models import CopyFailure, CopyLog, CopyTask
 from . import drivers as test_drivers
 
 Status = CopyTask.Status
@@ -540,3 +540,105 @@ class ResumingTests(CopyTestCase):
         self.source.delete()
         with self.assertRaisesMessage(Exception, "存储源 存储 src 已经删除了。"):
             service.resume(task.pk)
+
+
+class LogTests(CopyTestCase):
+    """The detailed log (CopyLog): a line for each file copied, skipped, tried again or failed, as it happens, between the
+    lines of its run's beginning and end; the lines of every run are kept."""
+
+    def lines(self, task, *fields):
+        """Oldest first: (kind, path, *fields)."""
+        return list(CopyLog.objects.filter(task=task).order_by("id").values_list("kind", "path", *fields))
+
+    def test_a_run(self):
+        task = self.copy()
+        lines = self.lines(task, "run", "size", "attempts", "status", "message")
+        self.assertEqual(lines[0], ("started", "", 1, None, 0, "", ""))
+        self.assertEqual(lines[-1], ("ended", "", 1, None, 0, "done", ""))
+        self.assertEqual(sorted(lines[1:-1]), [  # two threads: the files in either order
+            ("copied", "/a.txt", 1, 5, 1, "", ""), ("copied", "/docs/b.txt", 1, 6, 1, "", ""),
+            ("copied", "/docs/deep/c.bin", 1, 256 * 300, 1, "", ""), ("copied", "/zero.txt", 1, 0, 1, "", "")])
+        self.assertTrue(all(seconds >= 0 for seconds in CopyLog.objects.filter(kind="copied").values_list("seconds", flat=True)))
+        self.assertEqual(CopyLog.objects.filter(task=task).first().at, task.finished_at)  # the newest: the end
+
+    def test_skipped_and_kept(self):
+        """The same name and size: skipped (same_file); the same name and another size: kept as it is (same_name)."""
+        self.files(self.dst, {"a.txt": b"ALPHA", "docs/b.txt": b"bravo", "zero.txt": b""})
+        task = self.copy(same_name="skip")
+        self.assertEqual(sorted(self.lines(task, "size")[1:-1]), [
+            ("copied", "/docs/deep/c.bin", 256 * 300), ("kept", "/docs/b.txt", 6), ("skipped", "/a.txt", 5),
+            ("skipped", "/zero.txt", 0)])
+
+    def test_tries(self):
+        """Each try that failed before another, with its error; the try that copied it, or how many failed."""
+        source = self.storage("flaky", "test-copy-flaky", self.src)
+        task = self.copy(source=source.pk, source_path="/docs", retries=2)  # each file fails twice
+        lines = self.lines(task, "attempts", "seconds", "message")
+        error = "读取源文件失败：连接断了"
+        for path in ("/b.txt", "/deep/c.bin"):
+            self.assertEqual([line[2:] if line[0] == "retry" else line[:3] for line in lines if line[1] == path],
+                             [(1, 0, error), (2, 0, error), ("copied", path, 3)])  # BACKOFF_MAX is 0 here: no wait
+        test_drivers.reset()
+        test_drivers.FlakyDriver.failures = 5
+        task = self.copy(source=source.pk, source_path="/docs", target_path="/again", retries=1)
+        lines = self.lines(task, "attempts", "status", "message")
+        self.assertEqual(sorted(lines[1:-1]), [
+            ("failed", "/b.txt", 2, "", error), ("failed", "/deep/c.bin", 2, "", error),
+            ("retry", "/b.txt", 1, "", error), ("retry", "/deep/c.bin", 1, "", error)])
+        self.assertEqual(lines[-1], ("ended", "", 0, "failed", "2 个文件没有复制成功。"))
+
+    def test_folders_that_failed(self):
+        os.symlink("..", self.src / "docs" / "deep" / "up")
+        task = self.copy(source_path="/docs")
+        self.assertIn(("failed", "/deep/up", True), self.lines(task, "is_dir"))
+
+    def test_every_run(self):
+        """继续: the failures of the run before go, its lines stay; the new run's come after them."""
+        source = self.storage("flaky", "test-copy-flaky", self.src)
+        test_drivers.FlakyDriver.failures = 1
+        task = self.copy(source=source.pk, same_file="overwrite", retries=0)
+        service.resume(task.pk)
+        self.assertEqual([(kind, run) for kind, _path, run in self.lines(task, "run")], [
+            ("started", 1), *[("failed", 1)] * 4, ("ended", 1), ("started", 2), *[("copied", 2)] * 4, ("ended", 2)])
+        self.assertFalse(CopyFailure.objects.filter(task=task).exists())
+
+    def test_a_run_that_died(self):
+        """It wrote no end: 继续 writes one for it first, as of its last write."""
+        with mock.patch.object(runner, "start_thread"):
+            task = self.copy()
+        last = timezone.now() - runner.STALE - timedelta(seconds=1)
+        CopyTask.objects.filter(pk=task.pk).update(updated_at=last)
+        service.resume(task.pk)
+        lines = list(CopyLog.objects.filter(task=task).order_by("id"))
+        self.assertEqual([(line.kind, line.run) for line in lines[:3]], [("started", 1), ("ended", 1), ("started", 2)])
+        self.assertEqual((lines[1].status, lines[1].at), ("failed", last))
+        self.assertIn("可能是中途重启了程序", lines[1].message)
+        self.assertEqual((lines[-1].kind, lines[-1].status), ("ended", "done"))
+
+    def test_stopped(self):
+        with mock.patch.object(runner, "start_thread"):
+            task = self.copy()
+        run = runner.Run(task, "zh-hans")
+        run.halt(Status.STOPPED)
+        run.finish(timezone.now())
+        self.assertEqual(self.lines(task, "status")[-1], ("ended", "", "stopped"))
+
+    def test_the_scanner_waits_for_the_lines_to_be_written(self):
+        """More than LOG_BACKLOG lines not written yet (a 继续 skips many files at once): the scanner waits for the run's
+        thread to write them."""
+        self.files(self.dst, {"a.txt": b"alpha", "docs/b.txt": b"bravo!", "zero.txt": b""})
+        with mock.patch.object(runner, "LOG_BACKLOG", 1), mock.patch.object(runner, "TICK", 0.01):
+            task = self.copy()
+        self.assertEqual(task.status, Status.DONE, task.message)
+        self.assertEqual(sorted(kind for kind, _path in self.lines(task)[1:-1]), ["copied", "skipped", "skipped", "skipped"])
+
+    def test_lines_stay_when_a_write_fails(self):
+        with mock.patch.object(runner, "start_thread"):
+            task = self.copy()
+        run = runner.Run(task, "zh-hans")
+        run._skipped("/a.txt", 5, CopyLog.Kind.SKIPPED)
+        with mock.patch.object(CopyLog.objects, "bulk_create", side_effect=DatabaseError("gone")), \
+                self.assertRaises(DatabaseError):
+            run._write()
+        run._write()
+        self.assertEqual(self.lines(task), [("started", ""), ("skipped", "/a.txt")])

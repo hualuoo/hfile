@@ -15,7 +15,7 @@ from apps.storages.models import StorageSource
 from apps.web.test_browser import BrowserTestCase, expect
 
 from .. import runner, service
-from ..models import CopyFailure, CopyTask
+from ..models import CopyFailure, CopyLog, CopyTask
 from .test_runner import options
 
 
@@ -167,4 +167,56 @@ class CopyTaskPageTests(BrowserTestCase):
         card = page.locator(".copy-task")
         expect(card.locator(".badge")).to_have_text("Done")
         expect(card.locator(".copy-task-line")).to_contain_text("3 of 3 files")
+        self.assertClean(page)
+
+    def test_the_log(self):
+        """详细日志: the lines newest first, earlier ones page by page; a task that never ran with them has none."""
+        task = service.create({**options(), "source": self.source.pk, "target": self.target.pk}, self.admin)
+        page = self.page()
+        card = page.locator(".copy-task")
+        dialog = page.get_by_role("dialog", name=f"任务 #{task.pk} 的详细日志")
+        lines = dialog.locator(".copy-log-line")
+        card.get_by_role("button", name="详细日志").click()
+        expect(lines).to_have_count(5)
+        expect(lines.first).to_contain_text("完成")
+        expect(lines.first).to_contain_text("第 1 次运行结束。")
+        expect(lines.last).to_contain_text("第 1 次运行：新建任务。")
+        expect(lines.filter(has_text="/photos/2024/b.jpg")).to_contain_text("已复制")
+        expect(lines.filter(has_text="/photos/2024/b.jpg")).to_contain_text("1.95 KB")
+        expect(dialog.get_by_role("button", name="加载更早的")).to_be_hidden()
+        dialog.get_by_role("button", name="关闭").click()
+        expect(dialog).to_be_hidden()
+        CopyLog.objects.bulk_create([CopyLog(task=task, run=1, kind="skipped", path=f"/f{n:03}.txt", size=1) for n in range(120)])
+        card.get_by_role("button", name="详细日志").click()
+        expect(lines).to_have_count(100)
+        expect(lines.first).to_contain_text("目标里有文件名和大小都相同的文件")
+        dialog.get_by_role("button", name="加载更早的").click()
+        expect(lines).to_have_count(125)
+        expect(dialog.get_by_role("button", name="加载更早的")).to_be_hidden()
+        dialog.get_by_role("button", name="关闭").click()
+        CopyLog.objects.filter(task=task).delete()
+        card.get_by_role("button", name="详细日志").click()
+        expect(dialog.locator(".copy-log-status")).to_contain_text("没有日志")
+        self.assertClean(page)
+
+    def test_the_log_of_a_run_under_way(self):
+        """The files being copied on top; new lines come in while it is open."""
+        with mock.patch.object(runner, "start_thread"):
+            task = service.create({**options(), "source": self.source.pk, "target": self.target.pk}, self.admin)
+        CopyTask.objects.filter(pk=task.pk).update(updated_at=timezone.now() + timedelta(minutes=5), current=[
+            {"path": "/photos/2024/b.jpg", "size": 2000, "done": 500, "speed": 1024, "attempt": 1, "error": ""}])
+        CopyLog.objects.create(task=task, run=1, kind="copied", path="/notes.txt", size=1, seconds=0.5, attempts=1)
+        page = self.page()
+        page.locator(".copy-task").get_by_role("button", name="详细日志").click()
+        dialog = page.get_by_role("dialog", name=f"任务 #{task.pk} 的详细日志")
+        lines = dialog.locator(".copy-log-line")
+        expect(dialog.locator(".copy-file")).to_contain_text("/photos/2024/b.jpg")
+        expect(lines.first).to_contain_text("/notes.txt")
+        expect(lines.first).to_contain_text("用时 0.5 秒")
+        CopyLog.objects.create(task=task, run=1, kind="retry", path="/photos/a.jpg", size=1000, seconds=2, attempts=1,
+                               message="读取源文件失败：连接断了")
+        expect(lines.first).to_contain_text("/photos/a.jpg")
+        expect(lines.first).to_contain_text("第 1 次尝试失败，2 秒后再试")
+        expect(lines.first).to_contain_text("读取源文件失败：连接断了")
+        expect(lines).to_have_count(3)
         self.assertClean(page)

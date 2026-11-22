@@ -1,6 +1,6 @@
 """Copy tasks (/manage/#copy-tasks): an admin copies a folder of one storage source into a folder of another
 one, in the background. apps/copytasks/runner.py does the copying and writes its progress into the task's
-row; the files it couldn't copy are CopyFailure rows.
+row; the files it couldn't copy are CopyFailure rows, and what it did, file by file, CopyLog rows.
 
 A task keeps the names of its storage sources and of who made it, as the activity log does: it still reads
 right after they are deleted. A run is one go at the copying: the first when the task is made, another for
@@ -105,3 +105,35 @@ class CopyFailure(models.Model):
     class Meta:
         verbose_name = verbose_name_plural = gettext_lazy("Copy failures")
         ordering = ["id"]
+
+
+class CopyLog(models.Model):
+    """A line of a task's detailed log: a run began or ended; a file was copied or skipped, a try of it failed and it
+    is tried again, or it couldn't be copied; a folder couldn't be listed or made. The lines of every run are kept,
+    all of them, as long as the task is (no limit); the page shows the newest first. The page names the kinds."""
+
+    class Kind(models.TextChoices):
+        STARTED = "started"  # a run began: the task was made (run 1) or resumed
+        COPIED = "copied"
+        SKIPPED = "skipped"  # the target has a file of the same name and size (same_file)
+        KEPT = "kept"  # the target has a file of the same name and another size, left as it is (same_name)
+        RETRY = "retry"  # a try failed: it is tried again
+        FAILED = "failed"  # a file or a folder couldn't be copied (as its CopyFailure)
+        ENDED = "ended"  # a run ended: `status` says how
+
+    task = models.ForeignKey(CopyTask, on_delete=models.CASCADE, related_name="logs")
+    run = models.PositiveIntegerField()
+    at = models.DateTimeField(default=timezone.now)
+    kind = models.CharField(max_length=10, choices=Kind.choices)
+    path = models.TextField(blank=True)  # in the source folder, as CopyFailure's; "" for a run's lines
+    is_dir = models.BooleanField(default=False)
+    size = models.PositiveBigIntegerField(null=True, blank=True)
+    # copied: how long the try that copied it took; retry: the wait before the next try
+    seconds = models.FloatField(null=True, blank=True)
+    attempts = models.PositiveSmallIntegerField(default=0)  # copied: the try that did it; retry: the one that
+    # failed; failed: how many there were
+    status = models.CharField(max_length=10, blank=True)  # ended: how the run ended (CopyTask.Status)
+    message = models.CharField(max_length=MESSAGE_MAX, blank=True)  # retry, failed: why; ended: the run's message
+
+    class Meta:
+        ordering = ["-id"]

@@ -3,7 +3,8 @@
 A run has threads of its own, and only the first of them touches the task's row:
 
 - the run's thread (execute()) writes the progress into the task's row every TICK seconds, with the files that
-  failed (CopyFailure); it ends the run when everything is done or the run must stop, and writes how it ended;
+  failed (CopyFailure) and the lines of the detailed log noted since (CopyLog: each file copied, skipped, tried again
+  or failed, as it happens); it ends the run when everything is done or the run must stop, and writes how it ended;
 - the scanner walks the source folder, a folder at a time, depth first: it lists the folder, makes it in the target
   (or lists the one there) and puts the files to copy in a queue, deciding with the target's listing which ones are
   there already (the same name and size: same_file; the same name only: same_name). So the copying starts at once,
@@ -63,18 +64,22 @@ from apps.storages.drivers.base import (
 )
 from apps.storages.models import StorageSource
 
-from .models import MESSAGE_MAX, CopyFailure, CopyTask
+from .models import MESSAGE_MAX, CopyFailure, CopyLog, CopyTask
 from .reader import Meter, SourceReader, Stopped
 
 logger = logging.getLogger(__name__)
 
 Status = CopyTask.Status
 Policy = CopyTask.Policy
+Kind = CopyLog.Kind
 
 TICK = 1.0  # seconds between two writes of the progress
 STALE = timedelta(seconds=60)  # a run that hasn't written for this long has died
 SPEED_WINDOW = 5.0  # seconds the speeds are measured over
 QUEUE_MAX = 100_000  # files found and not copied yet; the scanner waits while there are more
+# Log lines noted and not written yet; the scanner waits while there are more (a 继续 skips many files at once), so a
+# tick writes at most about this many: SQLite has one writer, the site's requests wait for it meanwhile.
+LOG_BACKLOG = 20_000
 MAX_DEPTH = 256  # folders in folders, as the site's paths have at most (apps.storages.access)
 BACKOFF_MAX = 30  # seconds at most between two tries of a file
 STOP_GRACE = 120.0  # seconds a run that must stop waits for its threads to let go before it says it stopped
@@ -175,6 +180,7 @@ class Run:
     def __init__(self, task: CopyTask, language: str):
         self.task_id = task.pk
         self.run_id = task.run_id
+        self.number = task.run
         self.language = language
         self.storage_ids = {SOURCE: task.source_id, TARGET: task.target_id}
         self.names = {SOURCE: task.source_name, TARGET: task.target_name}
@@ -198,6 +204,7 @@ class Run:
         self._order = itertools.count()
         self._current: dict[int, _File] = {}
         self._failures: list[CopyFailure] = []
+        self._lines: list[tuple] = []  # (at, kind, path, fields) of the log, not written yet (_write())
         self._rate = _Rate()
         # The counts, under the lock.
         self.files_total = self.files_copied = self.files_skipped = self.files_failed = self.folders_failed = 0
@@ -243,18 +250,28 @@ class Run:
             self.files_total += 1
             self.bytes_total += size or 0
 
-    def _skipped(self, size: int | None) -> None:
+    def _note(self, kind: str, path: str = "", **fields) -> None:
+        """A line of the log, written with the next tick. Under the lock."""
+        self._lines.append((timezone.now(), kind, path, fields))
+
+    def _skipped(self, path: str, size: int | None, kind: str) -> None:
         with self.lock:
             self.files_skipped += 1
             self.bytes_skipped += size or 0
             self.bytes_finished += size or 0
+            self._note(kind, path, size=size)
 
-    def _copied(self, state: _File) -> None:
+    def _copied(self, state: _File, seconds: float) -> None:
         with self.lock:  # and no longer under way, at once: a tick in between would count it twice
             self.files_copied += 1
             self.bytes_copied += state.size or 0
             self.bytes_finished += state.size or 0
             self._current.pop(state.order, None)
+            self._note(Kind.COPIED, state.path, size=state.size, seconds=seconds, attempts=state.attempt)
+
+    def _retrying(self, state: _File, message: str, wait: float) -> None:
+        with self.lock:
+            self._note(Kind.RETRY, state.path, size=state.size, seconds=wait, attempts=state.attempt, message=_clip(message))
 
     def _failed(self, path: str, size: int | None, message: object, attempts: int, *, is_dir: bool = False,
                 state: _File | None = None) -> None:
@@ -267,6 +284,7 @@ class Run:
                 self.files_failed += 1
                 self.bytes_finished += size or 0
             self._failures.append(failure)
+            self._note(Kind.FAILED, path, is_dir=is_dir, size=size, attempts=attempts, message=failure.message)
             if state is not None:
                 self._current.pop(state.order, None)
 
@@ -417,6 +435,9 @@ class Run:
 
     def _plan(self, target, item, into: str, folder: str, there: dict) -> None:
         """A file of the source: to copy, skipped, or failed already."""
+        while len(self._lines) >= LOG_BACKLOG:  # read without the lock: a few more are all right
+            if self.stop.wait(0.1):
+                raise Stopped
         self._found(item.size)
         path = f"{folder.rstrip('/')}/{item.name}"
         problem = name_problem(target, item.name)
@@ -430,7 +451,7 @@ class Run:
                 return
             same = item.size is not None and other.size == item.size
             if (self.same_file if same else self.same_name) == Policy.SKIP:
-                self._skipped(item.size)
+                self._skipped(path, item.size, Kind.SKIPPED if same else Kind.KEPT)
                 return
         job = Job(item.path, paths.join(into, item.name), path, item.size)
         while True:
@@ -467,6 +488,7 @@ class Run:
         try:
             for attempt in itertools.count(1):
                 state.attempt = attempt
+                began = time.monotonic()
                 try:
                     self._transfer(source, target, job, state)
                 except _Failed as failed:
@@ -478,11 +500,13 @@ class Run:
                     if not again or attempt > self.retries:
                         self._failed(job.path, state.size, message, attempt, state=state)
                         return
+                    wait = min(BACKOFF_MAX, 2 ** (attempt - 1))
+                    self._retrying(state, message, wait)
                     state.error, state.done = str(message), 0
-                    if self.stop.wait(min(BACKOFF_MAX, 2 ** (attempt - 1))):
+                    if self.stop.wait(wait):
                         return
                     continue
-                self._copied(state)
+                self._copied(state, time.monotonic() - began)
                 return
         finally:
             with self.lock:
@@ -568,7 +592,7 @@ class Run:
             self._check_storages()
             if not CopyTask.objects.filter(pk=self.task_id, run_id=self.run_id).update(**self.progress(now)):
                 raise Superseded
-            self._write_failures()
+            self._write()
 
     def _check_storages(self) -> None:
         ids = self.storage_ids
@@ -585,16 +609,24 @@ class Run:
                 self.halt(Status.FAILED, _("The settings of the storage source %(name)s were changed, so the copying "
                                            "stopped. It can be resumed.") % {"name": name})
 
-    def _write_failures(self) -> None:
+    def _write(self, *last) -> None:
+        """The failures and the log's lines noted since the last write, and `last` (lines not noted: the run's end);
+        what was noted is put back for the next write when this one fails (its transaction is undone)."""
         with self.lock:
             failures, self._failures = self._failures, []
-        if failures:
-            try:
+            lines, self._lines = self._lines, []
+        try:
+            if failures:
                 CopyFailure.objects.bulk_create(failures)
-            except BaseException:
-                with self.lock:
-                    self._failures[:0] = failures
-                raise
+            rows = [CopyLog(task_id=self.task_id, run=self.number, at=at, kind=kind, path=path, **fields)
+                    for at, kind, path, fields in (*lines, *last)]
+            if rows:
+                CopyLog.objects.bulk_create(rows, batch_size=1000)
+        except BaseException:
+            with self.lock:
+                self._failures[:0] = failures
+                self._lines[:0] = lines
+            raise
 
     def progress(self, now, *, final: bool = False) -> dict:
         """The task's fields of the progress so far."""
@@ -651,7 +683,7 @@ class Run:
                 status=status, message=_clip(message), finished_at=now, **self.progress(now, final=True))
             if not updated:
                 raise Superseded
-            self._write_failures()
+            self._write((now, Kind.ENDED, "", {"status": status, "message": _clip(message)}))
 
 
 # ------------------------------------------------------------ running one

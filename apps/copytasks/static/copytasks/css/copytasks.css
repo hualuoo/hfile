@@ -31,6 +31,22 @@
 .copy-more { margin-top: 4px; }
 .copy-empty { margin: 32px 0; text-align: center; }
 
+/* the detailed log */
+.copy-log-head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+.copy-log-dialog h3 { margin: 16px 0 4px; font: var(--md-sys-typescale-title-small); }
+.copy-log { margin: 8px 0 0; padding: 0; list-style: none; }
+.copy-log-line {
+  display: grid; grid-template-columns: auto auto minmax(0, 1fr); align-items: baseline; gap: 4px 12px;
+  padding: 8px 0; border-bottom: 1px solid var(--md-sys-color-outline-variant);
+}
+.copy-log-line:last-child { border-bottom: 0; }
+.copy-log-line > .badge { justify-self: start; }
+.copy-log-time { color: var(--md-sys-color-on-surface-variant); font: var(--md-sys-typescale-body-small); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.copy-log-text { font: var(--md-sys-typescale-body-medium); overflow-wrap: anywhere; }
+.copy-log-text code { font-size: 13px; }
+.copy-log-status { margin: 8px 0 0; }
+.copy-log-status:empty { display: none; }
+
 /* the new task */
 .copy-form .form-grid { margin-top: 16px; }
 .copy-policy { margin: 0 0 12px; padding: 0; border: 0; min-width: 0; }
@@ -46,4 +62,6 @@
 
 @media (max-width: 600px) {
   .copy-task-actions { margin-left: 0; }
+  .copy-log-line { grid-template-columns: auto minmax(0, 1fr); }
+  .copy-log-text { grid-column: 1 / -1; }
 }
