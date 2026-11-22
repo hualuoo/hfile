@@ -101,7 +101,8 @@ class CopyTestCase(TestCase):
         return task
 
     def failures(self, task):
-        return list(CopyFailure.objects.filter(task=task).order_by("id").values_list("path", "message"))
+        """In path order: of two files copied at once (two threads), either may fail first."""
+        return sorted(CopyFailure.objects.filter(task=task).values_list("path", "message"))
 
 
 class CopyingTests(CopyTestCase):
@@ -207,7 +208,7 @@ class CopyingTests(CopyTestCase):
         task = self.copy(target=target.pk)
         self.assertEqual(task.status, Status.FAILED)
         message = "这种存储的名字里不能有这些字符：#"
-        self.assertEqual(self.failures(task), [("/x#y.txt", message), ("/f#g", message)])
+        self.assertEqual(self.failures(task), [("/f#g", message), ("/x#y.txt", message)])
         self.assertEqual((task.files_failed, task.folders_failed, task.files_copied), (1, 1, 4))
         self.assertIn("1 个文件没有复制成功。", task.message)
         self.assertIn("1 个文件夹没能复制，里面的东西也都没有复制。", task.message)
