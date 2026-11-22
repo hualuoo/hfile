@@ -55,7 +55,7 @@ HFILE_CONFIG=/path/to/config.toml python -B manage.py test --parallel
 - SQLite 上加 `--parallel` 并行跑，快得多。
 - 改了和数据库有关的代码，也要在 MySQL 8.4 上跑一遍：`scripts/dev-db.sh up` 起一个本地容器，`scripts/dev-db.sh use 设置文件 hfile_自己的名字` 让设置文件指向它。没有 `mysqldump` 和 `mysql` 命令时去掉 `--parallel`，串行跑。
 - 浏览器测试（带 `browser` 标签）要有 Google Chrome，没有时跳过：只跑它们用 `--tag browser`，不跑用 `--exclude-tag browser`。
-- 每个 Pull Request 都由 CI 在 SQLite 和 MySQL 8.4 上各跑一遍全部测试，浏览器测试另外跑一遍（见[开发](development.md#测试)）。
+- 每个 Pull Request 都由 CI 跑一遍全部测试：Linux、Windows 和 macOS 的 x86-64、arm64 机器上都用 SQLite 跑，Linux 上还用 MySQL 8.4 跑，浏览器测试另外跑一遍（见[开发](development.md#测试)）。
 
 ## 提交代码
 

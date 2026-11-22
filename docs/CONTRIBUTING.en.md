@@ -55,7 +55,7 @@ HFILE_CONFIG=/path/to/config.toml python -B manage.py test --parallel
 - On SQLite, `--parallel` makes the run much faster.
 - If you changed anything database-related, run the tests on MySQL 8.4 as well: `scripts/dev-db.sh up` starts a local container, and `scripts/dev-db.sh use <config file> hfile_<your name>` points the config file at it. Without the `mysqldump` and `mysql` commands, drop `--parallel` and run them serially.
 - The browser tests (tagged `browser`) need Google Chrome and are skipped without it: `--tag browser` runs only them, `--exclude-tag browser` leaves them out.
-- Every pull request is tested by CI on both SQLite and MySQL 8.4, and the browser tests run in a job of their own (see [Development](development.md#测试)).
+- Every pull request is tested by CI: on SQLite on Linux, Windows and macOS, each on x86-64 and on arm64, and on MySQL 8.4 on Linux; the browser tests run in a job of their own (see [Development](development.md#测试)).
 
 ## Submitting changes
 
