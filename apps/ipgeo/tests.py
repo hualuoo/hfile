@@ -92,7 +92,7 @@ class GeoTestMixin:
         lookup.forget_remembered()  # what another test's committed transaction saved isn't in this one's database
         self.addCleanup(lookup.forget_remembered)
 
-    def install(self, data=None, enabled=True):
+    def install(self, data=None, enabled=True, downloaded_at=None):
         data = sample_database() if data is None else data
         (self.folder / FILE_NAME).write_bytes(data)
         IpGeoSettings.objects.update_or_create(
@@ -102,7 +102,7 @@ class GeoTestMixin:
                 "file_name": FILE_NAME,
                 "sha256": hashlib.sha256(data).hexdigest(),
                 "size": len(data),
-                "downloaded_at": timezone.now(),
+                "downloaded_at": downloaded_at or timezone.now(),
             },
         )
 
@@ -346,7 +346,9 @@ class LocateTests(GeoTestMixin, TestCase):
             self.assertEqual(lookup.locate("8.8.8.8"), "")
             self.assertEqual(lookup.locate("8.8.8.8"), "")
         self.assertEqual(len(logs.records), 1)  # once per download, not once per lookup
-        self.install()  # downloaded again
+        # Downloaded again, the same file: only its time tells the downloads apart, so a second later (Windows'
+        # clock moves in steps of 15.6 ms, and this test can take less).
+        self.install(downloaded_at=timezone.now() + timedelta(seconds=1))
         self.assertEqual(lookup.locate("8.8.8.8"), "US")
 
     def test_a_new_download_is_read_again(self):
