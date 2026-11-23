@@ -16,6 +16,7 @@ from apps.core.query import ID_MAX
 from apps.core.text import multi_line, reject_invisible, single_line
 
 from . import config as storage_config
+from . import icons as storage_icons
 from .grants import clean_root
 from .models import (
     DESCRIPTION_MAX,
@@ -122,6 +123,9 @@ class StorageFieldsSerializer(serializers.Serializer):
     permanent_links = serializers.BooleanField(default=False)
     gallery_default = serializers.BooleanField(default=False)
     readme_from_file = serializers.BooleanField(default=False)
+    icon = serializers.ChoiceField(choices=list(storage_icons.ICONS), default=storage_icons.DEFAULT,
+                                   error_messages={"invalid_choice": gettext_lazy("Please choose one of the icons.")})
+    show_in_nav = serializers.BooleanField(default=False)
 
     def __init__(self, *args, storage: StorageSource | None = None, **kwargs):
         self.storage = storage

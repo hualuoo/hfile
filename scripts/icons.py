@@ -42,15 +42,21 @@ ICONS = """
     add_link dataset_linked
     rotate_left fit_width play_circle subtitles shuffle repeat repeat_one queue_music preview
     delete_sweep casino location_on
+    hard_drive database folder_shared archive photo_camera video_library library_music school work
+    sports_esports public star favorite bookmark rocket_launch pets apartment family_restroom
 """.split()
 # Names the site uses for a symbol that Material Symbols calls otherwise (Material Icons' old names).
 ALIASES = {"restore": "settings_backup_restore"}
 # The filled form too ("<name>-fill"): what the navigation and the /manage/ menu show for the current item.
+# The icons a storage source may have (apps/storages/icons.py) are all here: it can be in the navigation.
 FILLED = """
     home folder settings admin_panel_settings storage group person upgrade palette share link receipt_long
     shield cloud key lock history dns policy badge language backup info description
     tune block troubleshoot
     add_link download location_on file_copy
+    hard_drive database folder_shared archive photo_library photo_camera video_library movie library_music
+    menu_book school work code terminal science sports_esports public star favorite bookmark rocket_launch pets
+    apartment family_restroom
 """.split()
 
 _PATH_DATA = re.compile(r"[0-9MmLlHhVvCcSsQqTtAaZz .,\-eE]+")

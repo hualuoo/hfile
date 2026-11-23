@@ -10,6 +10,7 @@ from django.template import Context, Template, TemplateSyntaxError
 from django.test import SimpleTestCase, TestCase, override_settings
 
 from apps.core.testing import admin_url
+from apps.storages import icons as storage_icons
 
 from .navigation import NAV, SECTIONS
 
@@ -123,7 +124,7 @@ class FrameTests(TestCase):
         for part in ("btn-filled", "btn-tonal", 'class="btn"', "btn-text", "icon-button", "fab", "segmented", 'role="menu"',
                      'role="tablist"', "breadcrumbs", 'class="field', "<select", 'type="checkbox"', 'type="radio"', 'class="switch"',
                      "chip", "card", "list-item", "<dialog", "linear-progress", "data-demo-spinners", "badge", "data-tooltip",
-                     "notice", "data-table", "divider"):
+                     "notice", "data-table", "divider", "icon-picker"):
             self.assertIn(part, page)
         ids = re.findall(r'\sid="([^"]+)"', page)
         self.assertEqual(len(ids), len(set(ids)))  # the two halves don't share ids
@@ -203,6 +204,9 @@ class IconTests(SimpleTestCase):
         for item in [*NAV, *SECTIONS]:  # a destination shows its "-fill" form when it is the current one
             used.setdefault(item.icon, "web/navigation.py")
             used.setdefault(f"{item.icon}-fill", "web/navigation.py")
+        for name in storage_icons.ICONS:  # a storage's icon: in the navigation too, so with its "-fill" form
+            used.setdefault(name, "storages/icons.py")
+            used.setdefault(f"{name}-fill", "storages/icons.py")
         self.assertGreater(len(used), 40)
         self.assertEqual({name: where for name, where in used.items() if name not in ids}, {})
 

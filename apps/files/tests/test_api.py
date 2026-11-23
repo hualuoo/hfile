@@ -614,7 +614,7 @@ class ListingTests(FilesTestCase):
         self.assertTrue(a["url"].startswith("/pd/disk/docs/a.txt?e="))
         sub = next(i for i in answer["items"] if i["name"] == "sub")
         self.assertEqual((sub["type"], sub["kind"], sub["url"]), ("folder", None, None))
-        self.assertEqual(answer["storage"], {"key": "disk", "name": "存储 disk", "type": "local", "type_label": "本地存储"})
+        self.assertEqual(answer["storage"], {"key": "disk", "name": "存储 disk", "type": "local", "type_label": "本地存储", "icon": "storage"})
         self.assertEqual(answer["capabilities"]["copy_folders"], True)
         self.assertFalse(answer["gallery_default"])
 

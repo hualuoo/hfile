@@ -140,7 +140,7 @@
   }
   function itemIcon(item) {
     if (item.type === 'folder') return KIND_ICONS.folder;
-    if (item.type === 'storage') return KIND_ICONS.storage;
+    if (item.type === 'storage') return item.icon || KIND_ICONS.storage;  // the one the admin chose
     if (item.type === 'back') return KIND_ICONS.back;
     if (item.kind === 'office' && OFFICE_ICONS[extension(item.name)]) return OFFICE_ICONS[extension(item.name)];
     return KIND_ICONS[item.kind] || KIND_ICONS.other;

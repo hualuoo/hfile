@@ -41,6 +41,7 @@ from apps.core.times import iso
 from . import access as policy
 from . import config as storage_config
 from . import drafts, grants, instances, service
+from . import icons as storage_icons
 from .drivers import DRIVERS, GROUPS, group_of, paths
 from .drivers.base import DriverError, InvalidPath, NotFound
 from .models import FilterRule, FolderPassword, Grant, ReadmeRule, StorageSource
@@ -97,8 +98,8 @@ def storage_data(storage: StorageSource, *, detail: bool = False) -> dict:
     data = {
         "id": storage.pk, "key": storage.key, "name": storage.name, "type": storage.type,
         "type_label": storage.type_label, "enabled": storage.enabled, "position": storage.position,
-        "remark": storage.remark, "status": _status(storage),
-        "tokens_saved_at": iso(storage.tokens_saved_at),
+        "remark": storage.remark, "icon": storage.shown_icon, "show_in_nav": storage.show_in_nav,
+        "status": _status(storage), "tokens_saved_at": iso(storage.tokens_saved_at),
     }
     if detail:
         values, secrets_state = ({}, {})
@@ -142,7 +143,8 @@ class StorageTypesView(AdminView):
             except Exception:  # noqa: BLE001 - a driver whose library is missing: left out of the form
                 continue
         return Response({"types": types, "oauth_redirect_uri": service.callback_url(request),
-                         "superuser": bool(request.user.is_superuser)})
+                         "superuser": bool(request.user.is_superuser),
+                         "icons": [{"name": name, "label": str(label)} for name, label in storage_icons.ICONS.items()]})
 
 
 class StorageListView(AdminView):
@@ -539,7 +541,7 @@ class PublicStoragesView(APIView):
         for storage, grant in policy.visible_storages(actor):
             answer.append({
                 "key": storage.key, "name": storage.name, "type": storage.type, "type_label": storage.type_label,
-                "gallery_default": storage.gallery_default,
+                "icon": storage.shown_icon, "show_in_nav": storage.show_in_nav, "gallery_default": storage.gallery_default,
                 "capabilities": instances.capabilities(storage),
                 "permissions": usable(grant.permissions or []),
             })

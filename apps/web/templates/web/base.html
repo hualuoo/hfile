@@ -13,7 +13,8 @@
     login_dialog   the login dialog for visitors (the login page leaves it out: it has the form itself)
     login_button   the top app bar's 登录 button for visitors (the login page leaves it out too)
     scripts        the page's own <script>s, after common.js and shell.js
-  The destinations of the rail are apps/web/navigation.py NAV (context processor apps.web.context_processors.shell).
+  The destinations of the rail are apps/web/navigation.py NAV (context processor apps.web.context_processors.shell),
+  then the storages the admin put in it (StorageSource.show_in_nav), which phones leave out.
   Public pages (apps/siteconf/pages.py PublicPageMixin: the file browser, shares) set public_page: they show
   the announcement and the footer, and link the admin's custom CSS and JS unless custom_code is false.
   Where the custom JS is linked (custom_js_linked) there is no login or password dialog: 登录 goes to
@@ -73,8 +74,13 @@
 <nav class="nav" aria-label="{% translate 'Main navigation' %}">
   {% block fab %}{% endblock %}
   {% for entry in nav_items %}
-  <a class="nav-link" href="{{ entry.href }}"{% if entry.current %} aria-current="page"{% endif %}><span class="nav-indicator">{% icon entry.item.icon "off" %}{% with filled=entry.item.icon|add:"-fill" %}{% icon filled "on" %}{% endwith %}</span><span class="nav-label">{{ entry.item.label }}</span></a>
+  <a class="nav-link" href="{{ entry.href }}"{% if entry.current %} aria-current="page"{% elif entry.phone_current %} data-phone-current{% endif %}><span class="nav-indicator">{% icon entry.item.icon "off" %}{% with filled=entry.item.icon|add:"-fill" %}{% icon filled "on" %}{% endwith %}</span><span class="nav-label">{{ entry.item.label }}</span></a>
   {% endfor %}
+  {% if nav_storages %}<div class="nav-storages" role="group" aria-label="{% translate 'Storage sources' %}">
+  {% for entry in nav_storages %}
+  <a class="nav-link" href="{{ entry.href }}"{% if entry.current %} aria-current="page"{% endif %} data-tooltip="{{ entry.storage.name }}"><span class="nav-indicator">{% icon entry.icon "off" %}{% with filled=entry.icon|add:"-fill" %}{% icon filled "on" %}{% endwith %}</span><span class="nav-label">{{ entry.storage.name }}</span></a>
+  {% endfor %}
+  </div>{% endif %}
 </nav>
 <main class="main{% if public_page %} with-footer{% endif %}" id="main" tabindex="-1">
   {% block header %}<div class="page-head"><h1>{% block heading %}{% endblock %}</h1><div class="page-actions">{% block page_actions %}{% endblock %}</div></div>{% endblock %}

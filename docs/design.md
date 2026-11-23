@@ -58,9 +58,9 @@
 - **界面：Material Design 3**。不用组件库，样式写在两个文件里：
   - `apps/web/static/web/css/m3.css`：M3 的设计令牌（`--md-sys-color-*` 颜色、字号、圆角、阴影、动效、状态层的透明度）。颜色用 Google 的 material-color-utilities 0.4.0 从 #1E6FD9 生成（`scripts/m3_colors.mjs`），配方和 M3 的基准配色一样，写在文件开头；浅色、深色各一套，「成功」「提醒」两种自定义颜色按 Material Theme Builder 的做法生成。主要的文字和底色的对比度都在 4.5:1 以上。
   - 主题：默认跟系统（`prefers-color-scheme`）；菜单里选浅色或深色时写到 `<html data-theme>`，记在 `localStorage`（每次读写都包在 try/catch 里，私密窗口里读不了也照样能用）。`apps/web/static/web/js/theme.js` 放在 `<head>` 里、不延迟执行，深色的页面打开时不会先闪一下浅色。任何元素加上 `data-theme` 都会把里面换成那种主题（`/components/` 就是这样左右并排两种主题的）。
-  - `apps/web/static/web/css/app.css`：用令牌拼出组件：顶栏、导航栏（电脑上在左边，手机上在底部，手机上只有一项时不显示）、标签页、面包屑（文字按钮）、按钮（填充、色调、描边、文字、浮起）、图标按钮、悬浮按钮、菜单、分段按钮、描边输入框（名字嵌在框线上，用 CSS 的 `:has()`）、下拉框、复选框、单选框、开关、chips、卡片、列表、对话框（手机上可以全屏）、提示条、线形和圆形进度、徽章、文字提示、分隔线和管理列表的表格（手机上一行变成一块）。屏幕宽 360px 也能用。
+  - `apps/web/static/web/css/app.css`：用令牌拼出组件：顶栏、导航栏（电脑上在左边，管理员放进去的存储源排在固定的几项下面；手机上在底部，不带存储源，只有一项时不显示）、标签页、面包屑（文字按钮）、按钮（填充、色调、描边、文字、浮起）、图标按钮、悬浮按钮、菜单、分段按钮、图标选择（存储源的图标：画成图标按钮的单选框）、描边输入框（名字嵌在框线上，用 CSS 的 `:has()`）、下拉框、复选框、单选框、开关、chips、卡片、列表、对话框（手机上可以全屏）、提示条、线形和圆形进度、徽章、文字提示、分隔线和管理列表的表格（手机上一行变成一块）。屏幕宽 360px 也能用。
   - 状态层（悬停 8%、焦点和按下 10% 的同色遮罩）是 CSS 的 `::before`；按下时的波纹在 `common.js`，系统设了「减少动态效果」时没有波纹，动画时长也都是 0。键盘焦点是 M3 的 3px 焦点环；菜单能用方向键、Home、End、Esc 操作，对话框用浏览器原生的 `<dialog>`，关掉后焦点回到打开它的按钮。
-  - 图标是 Material Symbols Rounded（Apache 2.0），存成一个 SVG 文件 `apps/web/static/web/icons.svg`，浏览器缓存一次，每个页面都能用。`scripts/icons.py` 从 github.com/google/material-design-icons 下载列表里的图标生成它，只取每个图标的路径。`{% icon "名字" %}` 和 `App.icon('名字')` 生成同样的 `<svg><use href="/static/web/icons.svg?v=…#i-名字">`；导航栏选中的那一项用实心的 `-fill` 版本。测试会检查模板、脚本和两张登记表里用到的每个图标都在这个文件里。
+  - 图标是 Material Symbols Rounded（Apache 2.0），存成一个 SVG 文件 `apps/web/static/web/icons.svg`，浏览器缓存一次，每个页面都能用。`scripts/icons.py` 从 github.com/google/material-design-icons 下载列表里的图标生成它，只取每个图标的路径。`{% icon "名字" %}` 和 `App.icon('名字')` 生成同样的 `<svg><use href="/static/web/icons.svg?v=…#i-名字">`；导航栏选中的那一项用实心的 `-fill` 版本。测试会检查模板、脚本和两张登记表里用到的每个图标都在这个文件里，存储源能选的图标（`apps/storages/icons.py`）连同实心的也在。
   - 字体：拉丁字母和数字用 Roboto（M3 的字体，SIL OFL，`apps/web/static/web/fonts/`，只有 400、500、700 三个字重的拉丁子集）；中文用系统字体（苹方、微软雅黑、思源黑体）。正文的行高放宽到 1.6。
   - 严格的 CSP：没有内联脚本、没有 `style` 属性、没有 CDN；脚本要改样式只用 class 和 `element.style`。用户写的文字一律用 `textContent` 插入页面。
 - **网站的设置**（`apps/siteconf/`）：一行 `SiteSettings`，每个设置一个有类型的字段，按管理页分组；默认值就是新网站的值。别的应用只读，用 `SiteSettings.load()`：
@@ -192,7 +192,7 @@
   - 配置（`apps/office/editor.py`）用 Secret 签名（HS256，整个配置），浏览器改不了 key、文件的地址和权限；没有 Secret 时不能编辑。令牌带签发时间和 10 分钟的过期时间（和里面的下载地址一样长）：OnlyOffice 只在编辑器打开文档时查它，之后断线重连用的是 OnlyOffice 自己发给编辑器的会话令牌（默认 30 天），所以长时间编辑不受影响；过了 10 分钟，这份配置就不能再拿去打开文档了（收回了权限的人、分享删掉以后的访客也一样）。`document.url` 是 10 分钟的签名下载链接（`apps.files.signing`），它和 `callbackUrl` 都按 `[site] url` 拼成完整地址（没设时用这次请求的地址，见[「设置文件」](configuration.md)）。
 - **以后的功能怎么加**：
   - 新应用放在 `apps/` 下（`apps/<名字>/`，`AppConfig.name` 是 `apps.<名字>`，标签就是 `<名字>`），写进 `config/settings.py` 的 `HFILE_APPS`：迁移、模板、静态文件、测试就都找得到，单文件程序也会打包它，升级时它的表也算 HFile 的。它的接口加到 `config/api_urls.py`，页面加到 `apps/web/urls.py`（或者在 `config/urls.py` 里 include 自己的），新的第一段地址写进 `config/admin_path.py` 的 `TAKEN`。
-  - 导航栏的一项是 `apps/web/navigation.py` 里 `NAV` 的一行；管理页的一个分区是 `SECTIONS` 的一行，加上它的模板和脚本（脚本监听 `manage:show` 事件，第一次显示时才加载数据）。几个分区可以共用一个脚本，页面上只加载一次。
+  - 导航栏的一项是 `apps/web/navigation.py` 里 `NAV` 的一行，后面是管理员放进导航栏的存储源（`show_in_nav`，`apps/web/context_processors.py`：这个人能用的，在某个存储源里时它是选中的一项，「首页」就不是）；管理页的一个分区是 `SECTIONS` 的一行，加上它的模板和脚本（脚本监听 `manage:show` 事件，第一次显示时才加载数据）。几个分区可以共用一个脚本，页面上只加载一次。
   - `base.html` 的块：`title`、`page`（`<body data-page>`）、`head`、`topbar_actions`（顶栏的图标按钮）、`fab`、`header`（页头，里面是 `heading` 和 `page_actions`）、`content`、`dialogs`、`scripts`、`login_dialog`（访客的登录框）、`login_button`（顶栏的「登录」按钮；登录页去掉这两个）。
   - `common.js` 的 `App`（每个函数的说明在文件开头）：`App.api(方法, 地址, 内容)` 带 CSRF，接口给的完整网址（比如下一页的 `next`）只取它的路径，出错时抛出 `App.ApiError`，带着服务器的说明，没人接住的显示成提示条；`App.h` 拼页面（文字只当文字插入）；还有对话框（`openDialog`、`confirmDialog`、`editDialog`）、菜单、标签页、提示条、文件大小和时间的格式（`fmtSize`、`fmtDateTime` 等）、复制到剪贴板（`copyText`）。
   - `core`：客户端 IP、完整地址（`origin.py`）、网址秘密的登记、上传文件名的登记、地址的保留名、加密保存的密钥、Markdown 渲染、上传图片的检查、自动清理、先看个数的列表字段、分页、查询参数的校验、错误的说明、频率限制、清缓存的测试运行器。

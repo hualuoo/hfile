@@ -13,7 +13,7 @@
 {% endfor %}{% endblock %}
 {% block topbar_actions %}
 <div class="menu-wrap files-storage-wrap">
-  <button type="button" class="btn btn-text files-storage-button" id="files-storage-button" aria-haspopup="menu" aria-expanded="false" aria-controls="files-storage-menu" data-tooltip="{% translate 'Switch storage source' %}">{% icon "storage" %}<span class="files-storage-name">{% if storage %}{{ storage.name }}{% else %}{% translate "Choose a storage source" %}{% endif %}</span>{% icon "expand_more" %}</button>
+  <button type="button" class="btn btn-text files-storage-button" id="files-storage-button" aria-haspopup="menu" aria-expanded="false" aria-controls="files-storage-menu" data-tooltip="{% translate 'Switch storage source' %}">{% if storage %}{% icon storage.shown_icon %}{% else %}{% icon "storage" %}{% endif %}<span class="files-storage-name">{% if storage %}{{ storage.name }}{% else %}{% translate "Choose a storage source" %}{% endif %}</span>{% icon "expand_more" %}</button>
   <div class="menu" id="files-storage-menu" role="menu" aria-label="{% translate 'Storage source' %}" hidden></div>
 </div>
 <div class="menu-wrap files-upload-wrap" id="files-upload-wrap" hidden>

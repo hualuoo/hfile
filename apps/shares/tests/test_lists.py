@@ -43,7 +43,7 @@ class ListTests(SharesTestCase):
         self.assertEqual((row["password"], row["has_password"], row["label"], row["entry_count"]), ("abcd", True, "docs", 1))
         self.assertEqual(row["url"], "http://testserver/share/Mine0001")
         self.assertEqual(row["storage"], {"id": self.storage.pk, "key": "disk", "name": "存储 disk", "type": "local",
-                                          "type_label": row["storage"]["type_label"]})
+                                          "type_label": row["storage"]["type_label"], "icon": "storage"})
         self.assertTrue(row["can_delete"])
         self.assertNotIn("owner", row)
         self.assertEqual(next(r for r in response.json()["results"] if r["key"] == "Mine0002")["expired"], True)

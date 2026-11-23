@@ -88,7 +88,7 @@
       storageMenu.replaceChildren(...config.storages.map((s) => h('a', {
         class: 'menu-item', role: 'menuitemradio', href: `/${encodeURIComponent(s.key)}/`,
         'aria-checked': String(!!config.storage && config.storage.key === s.key),
-      }, icon('storage'), h('span', { text: s.name }))));
+      }, icon(s.icon || 'storage'), h('span', { text: s.name }))));
       if (!config.storages.length) storageMenu.append(h('p', { class: 'menu-label', text: gettext('No storage sources available') }));
       App.menu(storageButton);
     }

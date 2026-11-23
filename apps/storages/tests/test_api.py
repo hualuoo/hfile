@@ -13,9 +13,11 @@ from rest_framework.test import APIClient
 from apps.accounts.models import User
 from apps.accounts.permissions import ADMIN_DEFAULTS, ALL
 from apps.accounts.signals import user_copied
+from apps.activity.log import Kind
+from apps.activity.models import ActivityLog
 from apps.core import reserved
 from apps.core.testing import TO_THE_SECOND
-from apps.storages import access, config, instances
+from apps.storages import access, config, icons, instances
 from apps.storages.drivers import GROUPS
 from apps.storages.drivers.base import Param
 from apps.storages.models import FilterRule, FolderPassword, Grant, ReadmeRule, StorageSource
@@ -134,6 +136,47 @@ class TypesTests(ApiTestCase):
     def test_the_callback_comes_from_the_site_url(self):
         self.assertEqual(self.client.get(f"{API}manage/storage-types/").json()["oauth_redirect_uri"],
                          "https://files.example.com/storages/oauth/callback/")
+
+
+class IconAndSidebarTests(ApiTestCase):
+    """A storage's icon (apps/storages/icons.py) and whether it is in the navigation rail."""
+
+    def test_the_icons_to_choose_from(self):
+        offered = self.client.get(f"{API}manage/storage-types/").json()["icons"]
+        self.assertEqual([item["name"] for item in offered], list(icons.ICONS))
+        self.assertEqual(offered[:2], [{"name": "storage", "label": "存储"}, {"name": "cloud", "label": "云"}])
+
+    def test_by_default_the_icon_as_before_and_not_in_the_sidebar(self):
+        storage = self.create()
+        self.assertEqual((storage.icon, storage.show_in_nav), ("storage", False))
+        listed = self.client.get(f"{API}manage/storages/").json()[0]
+        self.assertEqual((listed["icon"], listed["show_in_nav"]), ("storage", False))
+
+    def test_set_changed_logged_and_copied(self):
+        storage = self.create(icon="photo_library", show_in_nav=True)
+        self.assertEqual((storage.icon, storage.show_in_nav), ("photo_library", True))
+        url = f"{API}manage/storages/{storage.pk}/"
+        data = self.client.patch(url, {"icon": "cloud", "show_in_nav": False}, format="json").json()
+        self.assertEqual((data["icon"], data["show_in_nav"]), ("cloud", False))
+        log = ActivityLog.objects.filter(kind=Kind.UPDATE_STORAGE).latest("id")
+        self.assertEqual(log.detail["fields"], ["icon", "show_in_nav"])
+        self.client.patch(url, {"show_in_nav": True}, format="json")
+        copy = self.client.post(f"{url}copy/", {"key": "copy-1", "name": "副本"}, format="json").json()
+        self.assertEqual((copy["icon"], copy["show_in_nav"]), ("cloud", True))
+
+    def test_only_an_offered_icon(self):
+        for wrong in ("rocket", "", 5, None, "STORAGE"):
+            with self.subTest(icon=wrong):
+                response = self.client.post(f"{API}manage/storages/", {"key": "docs", "name": "文件", "type": "fake", "config": fake_config(),
+                                                                      "icon": wrong}, format="json")
+                self.assertEqual(response.status_code, 400)
+                self.assertIn("icon", response.json())
+        self.assertFalse(StorageSource.objects.exists())
+
+    def test_a_name_no_longer_offered_shows_the_default(self):
+        storage = self.create()
+        StorageSource.objects.filter(pk=storage.pk).update(icon="gone")
+        self.assertEqual(self.client.get(f"{API}manage/storages/{storage.pk}/").json()["icon"], "storage")
 
 
 class CreateTests(ApiTestCase):
@@ -1107,7 +1150,9 @@ class PublicTests(ApiTestCase):
         self.assertEqual([item["key"] for item in data], ["docs"])
         self.assertEqual(data[0]["permissions"], ["download"])
         self.assertEqual(data[0]["capabilities"]["range"], True)
-        self.assertEqual(set(data[0]), {"key", "name", "type", "type_label", "gallery_default", "capabilities", "permissions"})
+        self.assertEqual(set(data[0]), {"key", "name", "type", "type_label", "icon", "show_in_nav", "gallery_default",
+                                        "capabilities", "permissions"})
+        self.assertEqual((data[0]["icon"], data[0]["show_in_nav"]), ("storage", False))
         admin_list = self.client.get(f"{API}storages/").json()
         self.assertEqual([item["key"] for item in admin_list], ["docs", "hidden"])  # the admin's own grants
         self.assertNotIn("config", str(admin_list))

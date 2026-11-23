@@ -228,7 +228,8 @@ def capabilities(access) -> dict[str, Any]:
 
 
 def storage_data(storage) -> dict:
-    return {"key": storage.key, "name": storage.name, "type": storage.type, "type_label": storage.type_label}
+    return {"key": storage.key, "name": storage.name, "type": storage.type, "type_label": storage.type_label,
+            "icon": storage.shown_icon}
 
 
 def listing(request, access, folder_path: str | None, *, sort: str | None = None, order: str | None = None,

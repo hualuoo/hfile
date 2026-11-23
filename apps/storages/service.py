@@ -189,7 +189,7 @@ def _fields(data: dict, storage: StorageSource | None) -> dict:
 
 SITE_FIELDS = ("key", "name", "enabled", "remark", "download_domain", "proxy_download", "proxy_connections",
                "proxy_when_full", "proxy_upload", "force_download", "link_lifetime", "permanent_links",
-               "gallery_default", "readme_from_file")
+               "gallery_default", "readme_from_file", "icon", "show_in_nav")
 
 
 def save(request, storage: StorageSource | None, data: dict) -> tuple[StorageSource, dict[str, Any]]:
@@ -418,7 +418,7 @@ def copy(storage: StorageSource, *, key: str, name: str) -> StorageSource:
             proxy_upload=source.proxy_upload, force_download=source.force_download,
             link_lifetime=source.link_lifetime, permanent_links=source.permanent_links,
             link_secret=new_link_secret(), gallery_default=source.gallery_default,
-            readme_from_file=source.readme_from_file,
+            readme_from_file=source.readme_from_file, icon=source.icon, show_in_nav=source.show_in_nav,
         )
         FilterRule.objects.bulk_create([
             FilterRule(storage=row, position=rule.position, expression=rule.expression,

@@ -10,6 +10,7 @@ from pathlib import Path
 
 from django.conf import settings
 from django.test import Client
+from django.urls import reverse
 
 from apps.files import transfer
 from apps.siteconf.models import SiteSettings
@@ -29,6 +30,70 @@ def page_config(response):
 
 def csp(response):
     return dict(part.split(" ", 1) for part in response["Content-Security-Policy"].split("; "))
+
+
+
+class SidebarTests(FilesTestCase):
+    """The storages the admin put in the navigation rail (show_in_nav), with their icons, on every page."""
+
+    def setUp(self):
+        super().setUp()
+        self.browser = Client()
+        self.photos = self.make_storage("photos", "local", self.root, icon="photo_library", show_in_nav=True)
+        self.grant(self.alice, EVERYTHING, storage=self.photos)
+
+    def rail(self, path):
+        response = self.browser.get(path)
+        self.assertEqual(response.status_code, 200)
+        page = response.content.decode()
+        part = page[page.index('<nav class="nav"'):]
+        nav = part[: part.index("</nav>")]
+        storages = nav[nav.index('<div class="nav-storages"'):] if "nav-storages" in nav else ""
+        return nav, storages
+
+    def test_the_ones_put_there_that_the_caller_may_use(self):
+        _nav, storages = self.rail("/")
+        self.assertEqual(storages, "")  # a visitor: the guest may use none
+        self.browser.force_login(self.alice)
+        for path in ("/", "/disk/", reverse("shares:my-shares")):
+            with self.subTest(path=path):
+                _nav, storages = self.rail(path)
+                self.assertEqual(re.findall(r'<a class="nav-link" href="([^"]+)"', storages), ["/photos/"])  # not disk
+                self.assertEqual(re.findall(r'nav-label">([^<]+)<', storages), ["存储 photos"])
+                self.assertIn('data-tooltip="存储 photos"', storages)
+                self.assertIn("#i-photo_library\"", storages)
+                self.assertIn("#i-photo_library-fill\"", storages)
+        StorageSource.objects.filter(pk=self.photos.pk).update(enabled=False)
+        self.assertEqual(self.rail("/")[1], "")
+        StorageSource.objects.filter(pk=self.photos.pk).update(enabled=True)
+        self.grant(self.alice, EVERYTHING, storage=self.photos, enabled=False)
+        self.assertEqual(self.rail("/")[1], "")
+        self.browser.logout()
+        self.grant(self.guest, ["download"], storage=self.photos)
+        self.assertIn('href="/photos/"', self.rail("/")[1])
+
+    def test_in_one_of_them_it_is_the_current_destination(self):
+        self.browser.force_login(self.alice)
+        nav, storages = self.rail("/photos/")
+        self.assertIn('href="/photos/" aria-current="page"', storages)
+        self.assertNotIn('href="/" aria-current', nav)  # not 首页 then
+        self.assertIn('href="/" data-phone-current>', nav)  # but on phones, without the storages: 首页
+        nav, storages = self.rail("/PHOTOS/")
+        self.assertIn('href="/photos/" aria-current="page"', storages)
+        nav, storages = self.rail("/disk/docs/")  # a storage not in the rail: 首页, as before
+        self.assertIn('href="/" aria-current="page"', nav)
+        self.assertNotIn("aria-current", storages)
+        self.assertNotIn("data-phone-current", nav)
+
+    def test_the_file_browser_shows_the_icon(self):
+        self.browser.force_login(self.alice)
+        response = self.browser.get("/photos/")
+        page = response.content.decode()
+        button = page[page.index('id="files-storage-button"'):]
+        self.assertIn("#i-photo_library\"", button[: button.index("</button>")])
+        self.assertEqual({item["key"]: item["icon"] for item in page_config(response)["storages"]},
+                         {"disk": "storage", "photos": "photo_library"})
+        self.assertEqual(page_config(response)["storage"]["icon"], "photo_library")
 
 
 class PageTests(FilesTestCase):

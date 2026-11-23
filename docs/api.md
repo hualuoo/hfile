@@ -57,8 +57,8 @@
 
 | 方法 | 路径 | 说明 |
 |---|---|---|
-| GET | `storage-types/` | 每种存储类型（按新建表单里的分组排好：`group`、`group_label`）和它们的参数（名字、说明、类型、必填、默认值、选项、是不是密钥、是不是「更多设置」）、辅助按钮，以及 OAuth 的回调地址 `oauth_redirect_uri`；添加向导用的 `setup`（第二步要填的参数）和 `auth`（第三步怎么授权：`oauth`、`qrcode` 或者空，以及授权填哪些参数）；`superuser` 说看的人是不是超级管理员，每种类型的 `superuser_only`、`superuser_params` 说哪些只有超级管理员能新建、能改（本地存储） |
-| GET、POST | `storages/` | 列表（按顺序，带最近一次检查连接的结果 `status`）；新建：`{"key", "name", "type", "enabled", "remark", "config": {参数}, "draft", …}`（下载和上传的选项也在里面，比如 `proxy_connections`：经过本站同时发送几个下载，1 到 1000，默认 16；`proxy_when_full`：满了以后 `link` 转到存储源自己的链接，或者 `refuse` 回答 429，没有自己链接的类型总是存成 `refuse`），先测试连接，连不上回答 400 `{"detail", "code": "check_failed"}`；带 `"setup": true`（添加向导的第二步）时先停用、不测试，后面几步才填的必填参数可以先空着；成功回答 201，`grants` 说有几个用户得到了权限。普通管理员新建本地存储源、改它的文件夹或打开指向外面的符号链接回答 403 `{"detail", "code": "superuser_required"}`（`test/` 也一样）。保存的存储源用不了时（它的类型已经没有了，或者从源码运行时缺驱动要用的库），改设置、启用、检查连接、测试连接、复制都回答 400 `{"detail", "code": "type_unavailable"}`，访客打开它是 403 `storage_disabled` |
+| GET | `storage-types/` | 每种存储类型（按新建表单里的分组排好：`group`、`group_label`）和它们的参数（名字、说明、类型、必填、默认值、选项、是不是密钥、是不是「更多设置」）、辅助按钮，以及 OAuth 的回调地址 `oauth_redirect_uri`、存储源能选的图标 `icons`（`[{"name", "label"}]`，`label` 按页面的语言）；添加向导用的 `setup`（第二步要填的参数）和 `auth`（第三步怎么授权：`oauth`、`qrcode` 或者空，以及授权填哪些参数）；`superuser` 说看的人是不是超级管理员，每种类型的 `superuser_only`、`superuser_params` 说哪些只有超级管理员能新建、能改（本地存储） |
+| GET、POST | `storages/` | 列表（按顺序，带最近一次检查连接的结果 `status`）；新建：`{"key", "name", "type", "enabled", "remark", "icon", "show_in_nav", "config": {参数}, "draft", …}`（`icon` 是 `storage-types/` 的 `icons` 里的一个名字，默认 `storage`，别的回答 400；`show_in_nav`：显示在左侧栏，默认 false；列表和详情里也有这两项，存着的图标已经不提供时显示 `storage`；下载和上传的选项也在里面，比如 `proxy_connections`：经过本站同时发送几个下载，1 到 1000，默认 16；`proxy_when_full`：满了以后 `link` 转到存储源自己的链接，或者 `refuse` 回答 429，没有自己链接的类型总是存成 `refuse`），先测试连接，连不上回答 400 `{"detail", "code": "check_failed"}`；带 `"setup": true`（添加向导的第二步）时先停用、不测试，后面几步才填的必填参数可以先空着；成功回答 201，`grants` 说有几个用户得到了权限。普通管理员新建本地存储源、改它的文件夹或打开指向外面的符号链接回答 403 `{"detail", "code": "superuser_required"}`（`test/` 也一样）。保存的存储源用不了时（它的类型已经没有了，或者从源码运行时缺驱动要用的库），改设置、启用、检查连接、测试连接、复制都回答 400 `{"detail", "code": "type_unavailable"}`，访客打开它是 403 `storage_disabled` |
 | GET、PATCH、DELETE | `storages/<id>/` | 详情（`config` 里没有密钥，`secrets` 说每个密钥是 `set`、`unset` 还是 `unreadable`）；修改（密钥留空不改，`clear_secrets` 列出要清除的，`type` 不能改；改了参数就先测试；还停用着的存储源也可以带 `setup`，向导接着做：后面几步的必填参数可以空着，保持停用）；删除（规则、权限，连同它的短链、下载日志、分享、上传会话和 OnlyOffice 编辑会话一起删） |
 | POST | `storages/<id>/enable/`、`disable/`、`check/`、`copy/`、`rotate-link-secret/`、`check-path/` | 启用（先测试）、停用、检查连接、复制 `{"key", "name"}`、换链接密钥、看一个文件夹在不在 `{"path"}` |
 | GET、PUT | `storages/<id>/filters/`、`passwords/`、`readmes/` | 一种规则的整张表，按顺序；PUT 整张表替换：带 `id` 的原地修改，没有的新建，表里没有的删除；每种最多 200 条；请求体要是 JSON 列表，表单或别的回答 400，什么也不删 |
@@ -85,7 +85,7 @@
 
 | 方法 | 路径 | 说明 |
 |---|---|---|
-| GET | `/api/v1/storages/` | 自己能用的存储源，按顺序：`key`、`name`、`type`、`type_label`、`gallery_default`、`capabilities`（能不能拖动进度、移动、复制、写入（`write`，只读的存储源是 false）……）、`permissions`；没有参数，也没有根目录 |
+| GET | `/api/v1/storages/` | 自己能用的存储源，按顺序：`key`、`name`、`type`、`type_label`、`icon`、`show_in_nav`（管理员有没有把它放进左侧栏）、`gallery_default`、`capabilities`（能不能拖动进度、移动、复制、写入（`write`，只读的存储源是 false）……）、`permissions`；没有参数，也没有根目录 |
 | POST | `/api/v1/storages/<别名>/unlock/` | 输入目录密码 `{"path"（或 "rule"）, "password", "remember"}`，成功回答 200；密码不对 403 `password_wrong`，太频繁 429 `password_throttled`；不可访问的文件夹（过滤规则）403 `inaccessible`，不试密码（有「忽略隐藏」的除外）；按 `rule` 解锁只认这个人够得着的规则，别的 404 `rule_not_found` |
 | DELETE | `/api/v1/storages/unlocks/` | 忘掉这个浏览器输过的目录密码（「清理密码文件夹缓存」） |
 

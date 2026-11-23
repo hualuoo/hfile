@@ -23,6 +23,7 @@
     link_lifetime: gettext('Download link lifetime'), ids: gettext('Order'), expression: gettext('Expression'), description: gettext('Description'), mode: gettext('Mode'), text: gettext('Document'),
     path_mode: gettext('Path mode'), display: gettext('Shown'), root_path: gettext('Root folder'), permissions: gettext('Permissions'), storage: gettext('Storage source'), path: gettext('Path'),
     clear_secrets: gettext('Keys to clear'), rules: gettext('Rules'), kind: gettext('Rule type'), root: gettext("User's root folder"),
+    icon: gettext('Icon'), show_in_nav: gettext('Show in the sidebar'),
   });
 
   const API = '/api/v1/manage/storages/';
@@ -88,6 +89,28 @@
         h('label', { class: 'switch-line', for: id }, h('span', { text: label }), input),
         hint ? h('p', { class: 'hint' }, ...linkified(hint)) : null),
     };
+  }
+
+  // A storage's icon: one of storage-types/'s icons, radio buttons drawn as icons; the chosen one filled
+  // (as in the sidebar). value() is the chosen name.
+  function iconPicker({ id, icons, value }) {
+    const inputs = icons.map((item) => {
+      const input = h('input', { type: 'radio', name: id, value: item.name });
+      input.checked = item.name === value;
+      return input;
+    });
+    if (inputs.length && !inputs.some((input) => input.checked)) inputs[0].checked = true;
+    const el = h('fieldset', { class: 'icon-picker', dataset: { field: id } },
+      h('legend', { text: gettext('Icon') }),
+      h('div', { class: 'icon-choices' }, icons.map((item, index) => h('label', { class: 'icon-choice', dataset: { tooltip: item.label } },
+        inputs[index], icon(item.name, 'off'), icon(`${item.name}-fill`, 'on'), h('span', { class: 'sr-only', text: item.label })))),
+      h('p', { class: 'hint', text: gettext('Shown in the sidebar, the storage source menu and the list of storage sources on the home page.') }));
+    return { el, value: () => (inputs.find((input) => input.checked) || { value: 'storage' }).value };
+  }
+
+  function navSwitch(id, checked) {
+    return switchLine({ id, label: gettext('Show in the sidebar'), checked,
+      hint: gettext("A link to it in the sidebar on the left, for those who may use it. Not on phones: there it stays in the storage source menu at the top.") });
   }
 
   function select(options, value) {
@@ -240,7 +263,7 @@
     if (!types) {
       const data = await api('GET', '/api/v1/manage/storage-types/');
       types = { list: data.types, byType: Object.fromEntries(data.types.map((t) => [t.type, t])), redirect: data.oauth_redirect_uri,
-        superuser: Boolean(data.superuser) };
+        superuser: Boolean(data.superuser), icons: data.icons || [] };
     }
     return types;
   }
@@ -344,7 +367,7 @@
       search: [item.name, item.key, item.type, item.type_label, item.remark].join(' ').toLowerCase() } },
       dragHandle(interpolate(gettext('Drag "%(name)s" to sort'), { name: item.name }, true)),
       h('a', { class: 'storage-main', href: `#storages/${item.id}` },
-        h('span', { class: 'list-leading' }, icon(typeIcon(item.type))),
+        h('span', { class: 'list-leading' }, icon(item.icon && item.icon !== 'storage' ? item.icon : typeIcon(item.type))),
         h('span', { class: 'list-text' }, h('span', { class: 'list-headline' }, h('span', { text: item.name }), badges), ...lines)),
       h('span', { class: 'list-trailing' }, h('div', { class: 'menu-wrap' }, button, menuList)));
     return { li, button };
@@ -491,8 +514,11 @@
       hint: gettext("Disabled storage sources aren't shown on the site and can't be opened. Enabling checks the connection first.") });
     const gallery = switchLine({ id: uid('sf-gallery'), label: gettext('Open in gallery view'), checked: storage && storage.gallery_default,
       hint: gettext('Opens gallery view whenever you switch to this storage source; good for storage sources of pictures.') });
+    const nav = navSwitch(uid('sf-nav'), storage && storage.show_in_nav);
     b.enabled = enabled.input;
     b.gallery_default = gallery.input;
+    b.icon = iconPicker({ id: uid('sf-icon'), icons: state.kinds.icons, value: storage ? storage.icon : 'storage' });
+    b.show_in_nav = nav.input;
     const keyHint = h('span', { text: gettext('The name in addresses: /alias/folder/file. Lowercase letters, digits, - and _ only.') });
     const basic = h('section', { class: 'form-section' },
       h('h3', { text: gettext('Basic info') }),
@@ -503,8 +529,9 @@
           hint: storage ? gettext("Can't change once created: settings and paths mean nothing for another type.")
             : reserved.length ? interpolate(gettext('%(kinds)s can only be created by superusers: it can read and write any folder the program can reach on the server.'), { kinds: reserved.map((t) => t.label).join(gettext(', ')) }, true) : '' }),
         field({ id: uid('sf-remark'), label: gettext('Remark'), input: b.remark, hint: gettext('Only admins can see it.') })),
-      enabled.el, gallery.el);
-    state.fieldOf = { name: b.name, key: b.key, type: b.type, remark: b.remark, enabled: b.enabled, gallery_default: b.gallery_default };
+      enabled.el, gallery.el, b.icon.el, nav.el);
+    state.fieldOf = { name: b.name, key: b.key, type: b.type, remark: b.remark, enabled: b.enabled, gallery_default: b.gallery_default,
+      show_in_nav: b.show_in_nav };
 
     let keyTimer = null;
     b.key.addEventListener('input', () => {
@@ -801,6 +828,7 @@
     const body = {
       name: state.base.name.value, key: state.base.key.value, remark: state.base.remark.value,
       enabled: state.base.enabled.checked, gallery_default: state.base.gallery_default.checked,
+      icon: state.base.icon.value(), show_in_nav: state.base.show_in_nav.checked,
       link_lifetime: t.link_lifetime.value, permanent_links: t.permanent_links.checked, force_download: t.force_download.checked,
       config: formConfig(state), clear_secrets: [...state.clear], draft: state.draft,
     };
@@ -1534,6 +1562,11 @@
       state.base.gallery_default = gallery.input;
       state.fieldOf.gallery_default = gallery.input;
       state.galleryLine = gallery.el;
+      state.base.icon = iconPicker({ id: uid('sw-icon'), icons: state.kinds.icons, value: state.storage.icon });
+      const nav = navSwitch(uid('sw-nav'), state.storage.show_in_nav);
+      state.base.show_in_nav = nav.input;
+      state.fieldOf.show_in_nav = nav.input;
+      state.navLine = nav.el;
     }
     state.testResult = h('div', { class: 'form-test-result', 'aria-live': 'polite' });
     const empty = rest.filter((p) => p.required && !p.secret && [null, undefined, ''].includes(p.default));
@@ -1546,7 +1579,7 @@
       ...helperRow(state, 3),
       state.moreAdvanced.length ? h('details', { class: 'more-settings' }, h('summary', {}, icon('expand_more'), gettext('More settings')),
         h('div', { class: 'form-grid' }, state.moreAdvanced)) : null,
-      state.transfersSection, state.galleryLine, state.testResult,
+      state.transfersSection, state.galleryLine, state.base.icon.el, state.navLine, state.testResult,
       wizardActions(state, { nextText: gettext('Done'), nextIcon: 'check' }));
     state.required = rest.filter((p) => p.required && !p.secret).map((p) => [state.inputs[p.key], p.label]);
     state.next = () => busyWith(state, state.nextButton, () => finishSetup(state, rest));
@@ -1557,6 +1590,7 @@
     const t = state.transfer;
     const body = {
       config: paramValues(state, rest), clear_secrets: [...state.clear], gallery_default: state.base.gallery_default.checked,
+      icon: state.base.icon.value(), show_in_nav: state.base.show_in_nav.checked,
       link_lifetime: t.link_lifetime.value, permanent_links: t.permanent_links.checked, force_download: t.force_download.checked,
     };
     if (t.download_domain) body.download_domain = t.download_domain.value;

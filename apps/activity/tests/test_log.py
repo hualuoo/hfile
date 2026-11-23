@@ -114,6 +114,8 @@ class DescribeTests(TestCase):
             (Kind.UPDATE_STORAGE, {"type": "local", "name": ["a", "b"], "fields": ["proxy_download"], "params": ["root", "gone"]}, {},
              "Name: a → b; Changed: Download through the site, settings (Folder, gone)",
              "名称：a → b；改了：代理下载、参数（文件夹、gone）"),
+            (Kind.UPDATE_STORAGE, {"type": "local", "fields": ["icon", "show_in_nav"]}, {},
+             "Changed: Icon, Show in the sidebar", "改了：图标、显示在左侧栏"),
             (Kind.CREATE_STORAGE, {"type": "no-such-type"}, {}, "no-such-type", "no-such-type"),
             (Kind.UPDATE_FILTERS, {"added": 1, "changed": 0, "removed": 2}, {}, "1 added, 2 removed", "加了 1 条、删了 2 条"),
             (Kind.UPDATE_SETTINGS, {"group": "site", "fields": ["site_name", "favicon"]}, {}, "Site name, Site icon", "站点名称、网站图标"),

@@ -37,6 +37,7 @@ LINK_LIFETIME_DEFAULT = 1800
 PROXY_CONNECTIONS_MIN = 1
 PROXY_CONNECTIONS_MAX = 1000
 PROXY_CONNECTIONS_DEFAULT = 16
+ICON_MAX = 40
 
 
 def new_link_secret() -> str:
@@ -93,6 +94,10 @@ class StorageSource(models.Model):
     gallery_default = models.BooleanField(gettext_lazy("Open in gallery view"), default=False)
     # Readme rules give way to a README.md in the folder itself.
     readme_from_file = models.BooleanField(gettext_lazy("Read README.md in folders"), default=False)
+    # A name of apps/storages/icons.py, and whether the storage is a destination of the navigation rail
+    # (wider screens; phones keep it in the file browser's storage menu).
+    icon = models.CharField(gettext_lazy("Icon"), max_length=ICON_MAX, default="storage")
+    show_in_nav = models.BooleanField(gettext_lazy("Show in the sidebar"), default=False)
 
     created_at = models.DateTimeField(gettext_lazy("Created at"), auto_now_add=True)
     updated_at = models.DateTimeField(gettext_lazy("Modified"), auto_now=True)
@@ -114,6 +119,13 @@ class StorageSource(models.Model):
             return str(driver_class(self.type).label)  # made now, in the request's language
         except Exception:  # noqa: BLE001 - a driver whose library is missing still has a name
             return self.type
+
+    @property
+    def shown_icon(self) -> str:
+        """The icon to show: the default for a name that isn't offered (any more)."""
+        from .icons import shown
+
+        return shown(self.icon)
 
     def link_salt(self) -> str:
         """The salt of this storage's signed links (django.core.signing, keyed by secret_key)."""

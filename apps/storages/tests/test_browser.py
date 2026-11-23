@@ -2,6 +2,7 @@
 browser tests' base: apps/web/test_browser.py."""
 
 import io
+import re
 import shutil
 import tempfile
 from pathlib import Path
@@ -37,13 +38,66 @@ class StorageWizardTests(BrowserTestCase):
         wizard.get_by_role("button", name="保存").click()
         expect(wizard.locator(".form-test-result")).to_have_text("连接正常。")
         wizard.get_by_role("button", name="下一步").click()
+        wizard.get_by_role("radio", name="照片", exact=True).check()  # 其他设置: the icon and the sidebar too
+        wizard.get_by_role("switch", name="显示在左侧栏").check()
         wizard.get_by_role("button", name="完成").click()
         expect(wizard.get_by_role("heading", name="「Photos」添加好了")).to_be_visible()
         storage = StorageSource.objects.get(key="photos")
         self.assertEqual((storage.name, storage.type, storage.enabled), ("Photos", "local", True))
+        self.assertEqual((storage.icon, storage.show_in_nav), ("photo_library", True))
         self.assertClean(page)
         page.goto(f"{self.live_server_url}/photos/")
         expect(self.row(page, "hello.txt")).to_be_visible()  # a new storage is granted by default permissions (ADMIN_DEFAULTS)
+        self.assertClean(page)
+
+
+class IconAndSidebarTests(BrowserTestCase):
+    def test_chosen_in_the_form_shown_in_the_sidebar(self):
+        admin = User.objects.create_superuser("boss", password="pw-boss-2026")
+        self.local_storage({"a.txt": b"a"}, users=[admin])
+        storage = StorageSource.objects.get()
+        context = self.new_context(user=admin)
+        page = self.open(context, f"/manage/#storages/{storage.pk}")
+        picker = page.locator("fieldset.icon-picker")
+        expect(picker.get_by_role("radio", name="存储", exact=True)).to_be_checked()  # the default
+        picker.get_by_role("radio", name="照片", exact=True).check()
+        page.get_by_role("switch", name="显示在左侧栏").check()
+        page.get_by_role("button", name="保存").click()
+        expect(page.locator(".storage-row", has_text="Disk").locator(".list-leading use")).to_have_attribute("href", re.compile(r"#i-photo_library$"))
+        storage.refresh_from_db()
+        self.assertEqual((storage.icon, storage.show_in_nav), ("photo_library", True))
+        self.assertClean(page)
+        # In the sidebar on every page; in the storage it is the current destination, its icon filled.
+        link = page.locator(".nav-storages").get_by_role("link", name="Disk")
+        page.goto(f"{self.live_server_url}/shares/")
+        expect(link).to_be_visible()
+        link.click()
+        expect(self.row(page, "a.txt")).to_be_visible()
+        expect(link).to_have_attribute("aria-current", "page")
+        expect(link.locator("svg.on use")).to_have_attribute("href", re.compile(r"#i-photo_library-fill$"))
+        expect(page.locator(".nav > .nav-link[aria-current]")).to_have_count(0)  # not 首页
+        expect(page.locator("#files-storage-button use").first).to_have_attribute("href", re.compile(r"#i-photo_library$"))
+        self.assertClean(page)
+
+    def test_not_on_phones(self):
+        admin = User.objects.create_superuser("boss", password="pw-boss-2026")
+        self.local_storage({"a.txt": b"a"}, users=[admin])
+        StorageSource.objects.update(show_in_nav=True)
+        page = self.open(self.new_context(user=admin, width=390, height=800), "/disk/")
+        expect(self.row(page, "a.txt")).to_be_visible()
+        expect(page.locator(".nav > .nav-link").first).to_be_visible()  # the bar at the bottom, without the storage
+        expect(page.locator(".nav-storages")).to_be_hidden()
+        home = page.locator('.nav > .nav-link[href="/"]')  # in it, 首页 looks current, as in any storage
+        expect(home.locator(".icon.on")).to_be_visible()
+        expect(home.locator(".icon.off")).to_be_hidden()
+        self.assertClean(page)
+        # A visitor with only 首页 has no bar, a storage of the sidebar or not.
+        Grant.objects.update_or_create(user=User.objects.guest(), storage=StorageSource.objects.get(),
+                                       defaults={"permissions": ["download"], "root_path": "/", "enabled": True})
+        page = self.open(self.new_context(width=390, height=800), "/disk/")
+        expect(self.row(page, "a.txt")).to_be_visible()
+        expect(page.locator(".nav > .nav-link")).to_be_hidden()
+        expect(page.locator(".nav-storages")).to_be_hidden()
         self.assertClean(page)
 
 

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HFile\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-22 16:21+0800\n"
+"POT-Creation-Date: 2026-11-23 19:51+0800\n"
 "Language: zh_Hans\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -6732,7 +6732,7 @@ msgid "The name shown when hovering over the login button."
 msgstr "登录按钮上悬停时显示的名字。"
 
 #: apps/sso/models.py apps/sso/serializers.py
-#: apps/sso/templates/sso/manage/providers.html
+#: apps/sso/templates/sso/manage/providers.html apps/storages/models.py
 msgid "Icon"
 msgstr "图标"
 
@@ -14810,6 +14810,171 @@ msgid_plural ""
 "The root folder is at most %(limit)s characters (counting the leading /)."
 msgstr[0] "根目录最多 %(limit)s 个字符（算上开头的 /）。"
 
+#: apps/storages/icons.py
+msgctxt "storage icon"
+msgid "Storage"
+msgstr "存储"
+
+#: apps/storages/icons.py
+msgctxt "storage icon"
+msgid "Cloud"
+msgstr "云"
+
+#: apps/storages/icons.py
+msgctxt "storage icon"
+msgid "Hard drive"
+msgstr "硬盘"
+
+#: apps/storages/icons.py
+msgctxt "storage icon"
+msgid "Server"
+msgstr "服务器"
+
+#: apps/storages/icons.py
+msgctxt "storage icon"
+msgid "Database"
+msgstr "数据库"
+
+#: apps/storages/icons.py
+msgctxt "storage icon"
+msgid "Folder"
+msgstr "文件夹"
+
+#: apps/storages/icons.py
+msgctxt "storage icon"
+msgid "Shared folder"
+msgstr "共享文件夹"
+
+#: apps/storages/icons.py
+msgctxt "storage icon"
+msgid "Backup"
+msgstr "备份"
+
+#: apps/storages/icons.py
+msgctxt "storage icon"
+msgid "Archive"
+msgstr "归档"
+
+#: apps/storages/icons.py
+msgctxt "storage icon"
+msgid "Photos"
+msgstr "照片"
+
+#: apps/storages/icons.py
+msgctxt "storage icon"
+msgid "Camera"
+msgstr "相机"
+
+#: apps/storages/icons.py
+msgctxt "storage icon"
+msgid "Videos"
+msgstr "视频"
+
+#: apps/storages/icons.py
+msgctxt "storage icon"
+msgid "Movies"
+msgstr "电影"
+
+#: apps/storages/icons.py
+msgctxt "storage icon"
+msgid "Music"
+msgstr "音乐"
+
+#: apps/storages/icons.py
+msgctxt "storage icon"
+msgid "Documents"
+msgstr "文档"
+
+#: apps/storages/icons.py
+msgctxt "storage icon"
+msgid "Books"
+msgstr "书"
+
+#: apps/storages/icons.py
+msgctxt "storage icon"
+msgid "Study"
+msgstr "学习"
+
+#: apps/storages/icons.py
+msgctxt "storage icon"
+msgid "Work"
+msgstr "工作"
+
+#: apps/storages/icons.py
+msgctxt "storage icon"
+msgid "Code"
+msgstr "代码"
+
+#: apps/storages/icons.py
+msgctxt "storage icon"
+msgid "Terminal"
+msgstr "终端"
+
+#: apps/storages/icons.py
+msgctxt "storage icon"
+msgid "Science"
+msgstr "科学"
+
+#: apps/storages/icons.py
+msgctxt "storage icon"
+msgid "Games"
+msgstr "游戏"
+
+#: apps/storages/icons.py
+msgctxt "storage icon"
+msgid "Downloads"
+msgstr "下载"
+
+#: apps/storages/icons.py
+msgctxt "storage icon"
+msgid "Sharing"
+msgstr "分享"
+
+#: apps/storages/icons.py
+msgctxt "storage icon"
+msgid "Public"
+msgstr "公开"
+
+#: apps/storages/icons.py
+msgctxt "storage icon"
+msgid "Private"
+msgstr "私密"
+
+#: apps/storages/icons.py
+msgctxt "storage icon"
+msgid "Star"
+msgstr "星标"
+
+#: apps/storages/icons.py
+msgctxt "storage icon"
+msgid "Favorite"
+msgstr "喜欢"
+
+#: apps/storages/icons.py
+msgctxt "storage icon"
+msgid "Bookmark"
+msgstr "书签"
+
+#: apps/storages/icons.py
+msgctxt "storage icon"
+msgid "Rocket"
+msgstr "火箭"
+
+#: apps/storages/icons.py
+msgctxt "storage icon"
+msgid "Pets"
+msgstr "宠物"
+
+#: apps/storages/icons.py
+msgctxt "storage icon"
+msgid "Company"
+msgstr "公司"
+
+#: apps/storages/icons.py
+msgctxt "storage icon"
+msgid "Family"
+msgstr "家庭"
+
 #: apps/storages/instances.py apps/storages/service.py
 msgid "This storage source no longer exists."
 msgstr "这个存储源不存在了。"
@@ -14899,6 +15064,10 @@ msgstr "默认打开画廊模式"
 #: apps/storages/models.py
 msgid "Read README.md in folders"
 msgstr "读取文件夹里的 README.md"
+
+#: apps/storages/models.py
+msgid "Show in the sidebar"
+msgstr "显示在左侧栏"
 
 #: apps/storages/models.py
 #, python-format
@@ -15075,6 +15244,10 @@ msgstr "最长 7 天（604800 秒）。"
 #: apps/storages/serializers.py
 msgid "Please enter an integer (seconds)."
 msgstr "请填一个整数（秒）。"
+
+#: apps/storages/serializers.py
+msgid "Please choose one of the icons."
+msgstr "请从这些图标里选一个。"
 
 #: apps/storages/serializers.py
 msgid "Please fill in the name."
@@ -16700,6 +16873,10 @@ msgstr "退出"
 #: apps/web/templates/web/base.html
 msgid "Main navigation"
 msgstr "主导航"
+
+#: apps/web/templates/web/base.html
+msgid "Storage sources"
+msgstr "存储源"
 
 #: apps/web/templates/web/dialogs/password.html
 msgid "Current password"
