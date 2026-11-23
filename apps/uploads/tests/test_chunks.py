@@ -389,6 +389,10 @@ class RenewerTests(UploadTestCase):
             self.assertEqual(lease.calls, 3)
             steady = FakeLease([])
             with service._Renewer(steady) as renewer:
-                time.sleep(0.1)
+                # Until three renewals, not for a fixed time: on a busy machine (GitHub's Intel Mac) the thread
+                # can wake late and renew only twice in 0.1 s.
+                deadline = time.monotonic() + 5
+                while steady.calls < 3 and time.monotonic() < deadline:
+                    time.sleep(0.01)
             self.assertFalse(renewer.lost)
             self.assertGreater(steady.calls, 2)
