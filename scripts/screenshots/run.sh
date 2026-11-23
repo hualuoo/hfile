@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 # Takes the README's screenshots again: docs/images/NAME.png in Chinese (README.md), NAME.en.png in English
 # (docs/README.en.md). They come from a demo site made for them, anew each time: the files of make_content.py
-# on a local storage source "demo" (its README.md shown under the list), an admin who may do everything with
-# it, the site on 127.0.0.1, and the system's Chrome driven by Playwright (shots.py).
+# on a local storage source "demo" (its README.md shown under the list), its photos and software folders on
+# two more, all three in the sidebar with icons of their own, an admin who may do everything with them, the
+# site on 127.0.0.1, and the system's Chrome driven by Playwright (shots.py).
 #
 #   scripts/screenshots/run.sh [输出文件夹]      默认是项目里的 docs/images/
 #
@@ -34,8 +35,8 @@ if [ -z "${PLAYWRIGHT_PYTHON:-}" ]; then
   fi
 fi
 
-# The demo files, then the site on SQLite: the admin (a random password, in a file only this user can read),
-# the storage source and the admin's rights on it. install() makes the tables too.
+# The demo files, then the site on SQLite and its admin (a random password, in a file only this user can
+# read); install() makes the tables too. The storage sources come with each language, below.
 "$PYTHON" "$HERE/make_content.py" "$WORK" >/dev/null
 rm -rf "$SITE"
 mkdir -p "$SITE"
@@ -50,18 +51,10 @@ configfile.create(sys.argv[1])
 configfile.update(sys.argv[1], {"server": {"host": "127.0.0.1", "port": int(sys.argv[2])},
                                 "site": {"secret_key": secrets.token_urlsafe(50)}})
 PY
-PASSWORD_FILE="$SITE/admin-password" DEMO_ROOT="$WORK/content-zh" "$PYTHON" manage.py shell -v 0 -c '
+PASSWORD_FILE="$SITE/admin-password" "$PYTHON" manage.py shell -v 0 -c '
 import os
-from apps.accounts.permissions import ALL
 from apps.installer.service import install
-from apps.storages import config, drivers
-from apps.storages.models import Grant, StorageSource
-admin = install(username="admin", password=open(os.environ["PASSWORD_FILE"]).read().strip(), site_name="HFile")
-storage = StorageSource.objects.create(
-    key="demo", name="演示存储", type="local", readme_from_file=True,
-    config=config.encode(drivers.driver_class("local"), {"root": os.environ["DEMO_ROOT"]}))
-Grant.objects.update_or_create(user=admin, storage=storage, defaults={
-    "permissions": [code for code in ALL if not code.startswith("ignore_")], "root_path": "/", "enabled": True})
+install(username="admin", password=open(os.environ["PASSWORD_FILE"]).read().strip(), site_name="HFile")
 '
 
 server=""
@@ -74,19 +67,28 @@ stop() {
 }
 trap stop EXIT
 
-# One language at a time: the storage source shows that language's files, under that language's name. The
-# site starts again for each: it keeps a storage's driver, and so its folder, while it runs. Its time zone is
-# the one the demo files' times are written in.
+# One language at a time: the storage sources show that language's files, under that language's names (the
+# photos and software storages' names are their folders' names). The site starts again for each: it keeps a
+# storage's driver, and so its folder, while it runs. Its time zone is the one the demo files' times are
+# written in.
 for lang in zh en; do
-  if [ "$lang" = zh ]; then name="演示存储"; else name="Demo storage"; fi
-  DEMO_ROOT="$WORK/content-$lang" DEMO_NAME="$name" "$PYTHON" manage.py shell -v 0 -c '
+  DEMO_ROOT="$WORK/content-$lang" DEMO_LANG="$lang" "$PYTHON" manage.py shell -v 0 -c '
 import os
+from apps.accounts.models import User
+from apps.accounts.permissions import ALL
 from apps.storages import config, drivers
-from apps.storages.models import StorageSource
-storage = StorageSource.objects.get(key="demo")
-storage.name = os.environ["DEMO_NAME"]
-storage.config = config.encode(drivers.driver_class("local"), {"root": os.environ["DEMO_ROOT"]})
-storage.save()
+from apps.storages.models import Grant, StorageSource
+zh = os.environ["DEMO_LANG"] == "zh"
+admin = User.objects.get(username="admin")
+for key, name, icon in [("demo", "演示存储" if zh else "Demo storage", "folder_shared"),
+                        ("photos", "照片" if zh else "Photos", "photo_library"),
+                        ("software", "软件" if zh else "Software", "download")]:
+    root = os.environ["DEMO_ROOT"] if key == "demo" else os.path.join(os.environ["DEMO_ROOT"], name)
+    storage, _ = StorageSource.objects.update_or_create(key=key, defaults={
+        "name": name, "type": "local", "readme_from_file": key == "demo", "icon": icon, "show_in_nav": True,
+        "config": config.encode(drivers.driver_class("local"), {"root": root})})
+    Grant.objects.update_or_create(user=admin, storage=storage, defaults={
+        "permissions": [code for code in ALL if not code.startswith("ignore_")], "root_path": "/", "enabled": True})
 '
   TZ=Asia/Shanghai "$PYTHON" hfile.py --config "$HFILE_CONFIG" >"$SITE/server-$lang.log" 2>&1 &
   server=$!

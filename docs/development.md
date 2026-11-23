@@ -323,4 +323,4 @@ conda activate hfile
 scripts/screenshots/run.sh            # 写进 docs/images/，也可以给一个别的文件夹
 ```
 
-它每次新建一个演示站点：`make_content.py` 生成的演示文件（图片是画出来的，修改时间是固定的）放在一个本地存储源里，管理员登录，再用 Playwright 驱动系统的 Chrome（`$CHROME`，默认 `/usr/bin/google-chrome`），中文、英文界面各截五张。Playwright 装在工作文件夹的 venv 里（venv 里没有 `run.sh` 写的那个版本时，比如第一次运行、上次没装完，就重建 venv 再 `pip install`；也可以用 `PLAYWRIGHT_PYTHON` 指定一个装好了它的 Python），工作文件夹默认是 `$TMPDIR/hfile-screenshots`。演示站点用的是工作区里的代码。在同一台机器上重拍，界面没变时截图也不变，只有画廊里图片缩放的细微差别（肉眼看不出），所以 git 里看到的变化就是界面的变化。
+它每次新建一个演示站点：`make_content.py` 生成的演示文件（图片是画出来的，修改时间是固定的）放在一个本地存储源里，其中的照片、软件两个文件夹另外各是一个存储源，三个都显示在左侧栏里，各有图标；管理员登录，再用 Playwright 驱动系统的 Chrome（`$CHROME`，默认 `/usr/bin/google-chrome`），中文、英文界面各截五张。Playwright 装在工作文件夹的 venv 里（venv 里没有 `run.sh` 写的那个版本时，比如第一次运行、上次没装完，就重建 venv 再 `pip install`；也可以用 `PLAYWRIGHT_PYTHON` 指定一个装好了它的 Python），工作文件夹默认是 `$TMPDIR/hfile-screenshots`。演示站点用的是工作区里的代码。在同一台机器上重拍，界面没变时截图也不变，只有画廊里图片缩放的细微差别（肉眼看不出），所以 git 里看到的变化就是界面的变化。

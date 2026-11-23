@@ -19,7 +19,7 @@ A self-hosted file listing website: mount local folders, FTP/SFTP, WebDAV, SMB, 
 
 > **Language:** HFile's interface is in Simplified Chinese and English. The detailed documentation in [`docs/`](README.md) is in Chinese only; this README covers installing, deploying and running HFile in English.
 
-![HFile's file list: folders, files, and the folder's README.md shown below them](images/files.en.png)
+![HFile's file list: storage sources in the sidebar, folders, files, and the folder's README.md shown below them](images/files.en.png)
 
 ## Introduction
 
@@ -41,6 +41,7 @@ HFile is built with Django:
   - self-hosted services: OpenList / AList, Seafile, KodBox, Cloudreve (v3 and v4), Teldrive, Misskey, CloudFlare ImgBed, IPFS, Emby / Jellyfin;
   - read-only share links and release pages: GitHub Releases, CNB Releases, web server directory listings, URL trees, 123 Cloud Drive direct links, OpenList shares, Lenovo NAS shares, OneDrive share links.
   - A four-step wizard adds new storage sources; cloud drives are authorized in the browser or by scanning a QR code.
+  - Admins can give a storage source an icon and put it in the sidebar, one click away.
 - **File management**: list, icon and gallery views; new folder, rename, move, copy, delete; context menu, multi-select and keyboard control.
 - **Copying between storage sources**: admins make copy tasks on the Manage page that copy a folder of one storage source into another one, streaming the files without storing them on the server's disk; with a number of threads, a total speed limit, skipping or overwriting files of the same name, and retries. Each file's progress and speed show, and a detailed log records every file copied, skipped, retried or failed; a task can be stopped at any time, and one that failed or was stopped can be resumed.
 - **Uploads**:
