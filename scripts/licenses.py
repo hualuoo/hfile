@@ -8,16 +8,26 @@ also those of what it carries along (the jQuery in Django's admin). What went in
 files PyInstaller leaves in its work folder, which list every module, extension and data file with the
 path it was taken from. The native libraries of the system or of conda (OpenSSL, SQLite, the MySQL client
 library, Pillow's image libraries) belong to no Python distribution: they are named at the end.
+
+A release has one license file for all its programs (.github/workflows/release.yml):
+
+    python scripts/licenses.py merge <file to write> <program>-licenses.txt...
+
+A part that is the same in every program (HFile, most libraries) is written once. One that is only in some,
+or reads differently in some (Python's own license, a library from PyPI on one system and from conda on
+another, the native libraries), is written once for each text, saying which programs have it.
 """
 
 import ast
 import importlib.metadata
+import re
 import sys
 import sysconfig
 from pathlib import Path
 
 LICENSE_NAMES = ("LICENSE", "LICENCE", "COPYING", "NOTICE")
 LINE = "=" * 78
+TITLE = re.compile(rf"^{LINE}\n(.+)\n{LINE}\n", re.MULTILINE)  # how section() begins a part
 
 
 def taken(work):
@@ -100,5 +110,53 @@ def main(work, source, out):
         print(f"注意：这些库的发行包里没有许可证文件，只写了元数据里的许可证：{'、'.join(without)}")
 
 
+def parts(path):
+    """{title: the rest of its part} of a file main() wrote, in its order; the line before them is left out."""
+    text = Path(path).read_text(encoding="utf-8")
+    starts = list(TITLE.finditer(text))
+    if not starts:
+        sys.exit(f"{path}：不是 scripts/licenses.py 写的许可证文件")
+    found = {}
+    for here, after in zip(starts, starts[1:] + [None]):
+        title = here.group(1)
+        if title in found:  # a license text that looks like a title in between: rather stop than lose a part
+            sys.exit(f"{path}：「{title}」出现了两次，分不清各个部分")
+        found[title] = text[here.end():after.start() if after else len(text)]
+    return found
+
+
+def merge(out, *files):
+    """The license files of a release's programs as one."""
+    programs = {Path(file).name.removesuffix("-licenses.txt"): parts(file) for file in files}
+    order = []  # every title once, each file's in their order there
+    for found in programs.values():
+        at = 0
+        for title in found:
+            if title in order:
+                at = order.index(title) + 1
+            else:
+                order.insert(at, title)
+                at += 1
+    written = [f"HFile 单文件程序里的软件和它们的许可证（发布时由 scripts/licenses.py 把这些程序的合在一起，名字不带 .exe："
+               f"{'、'.join(programs)}）。标着「用在」的只在那几个程序里，没有标的每个程序里都有。\n\n"]
+    marked = 0
+    for title in order:
+        texts = {}
+        for program, found in programs.items():
+            if title in found:
+                texts.setdefault(found[title], []).append(program)
+        for text, having in texts.items():
+            used = ""
+            if len(having) < len(programs):
+                used = f"用在：{'、'.join(having)}\n"
+                marked += 1
+            written.append(f"{LINE}\n{title}\n{LINE}\n{used}{text}")
+    Path(out).write_text("".join(written), encoding="utf-8")
+    print(f"许可证：{len(programs)} 个程序的合成一个，{len(order)} 个部分，{marked} 处标了用在哪些程序里，写在 {out}。")
+
+
 if __name__ == "__main__":
-    main(*sys.argv[1:])
+    if sys.argv[1:2] == ["merge"]:
+        merge(*sys.argv[2:])
+    else:
+        main(*sys.argv[1:])
