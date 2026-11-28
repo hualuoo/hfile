@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HFile\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-23 19:51+0800\n"
+"POT-Creation-Date: 2026-11-28 09:43+0800\n"
 "Language: zh_Hans\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -4280,8 +4280,9 @@ msgstr "用在左侧栏、「切换存储源」菜单和首页的存储源列表
 #: apps/storages/static/storages/js/manage_storages.js
 msgid ""
 "A link to it in the sidebar on the left, for those who may use it. Not on "
-"phones: there it stays in the storage source menu at the top."
-msgstr "在左边的侧栏里放一个它的入口，能用它的人才看得到。手机上不显示，照旧在顶栏的「切换存储源」菜单里。"
+"phones, whose bar has no room for it: there it stays on the home page's list "
+"and in ⋮ → Preferences."
+msgstr "在左边的侧栏里放一个它的入口，能用它的人才看得到。手机上底部栏放不下，不显示：照旧在首页的列表和 ⋮ →「个人设置」里。"
 
 #: apps/storages/static/storages/js/manage_storages.js
 msgid "Back to the storage sources"

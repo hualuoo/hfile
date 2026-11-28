@@ -95,7 +95,8 @@ class StorageSource(models.Model):
     # Readme rules give way to a README.md in the folder itself.
     readme_from_file = models.BooleanField(gettext_lazy("Read README.md in folders"), default=False)
     # A name of apps/storages/icons.py, and whether the storage is a destination of the navigation rail
-    # (wider screens; phones keep it in the file browser's storage menu).
+    # (wider screens; phones, whose bar has no room for it, switch storages on the home page's list or in
+    # the file browser's 个人设置: their top app bar has no storage menu).
     icon = models.CharField(gettext_lazy("Icon"), max_length=ICON_MAX, default="storage")
     show_in_nav = models.BooleanField(gettext_lazy("Show in the sidebar"), default=False)
 

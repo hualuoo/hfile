@@ -110,7 +110,7 @@
 
   function navSwitch(id, checked) {
     return switchLine({ id, label: gettext('Show in the sidebar'), checked,
-      hint: gettext("A link to it in the sidebar on the left, for those who may use it. Not on phones: there it stays in the storage source menu at the top.") });
+      hint: gettext("A link to it in the sidebar on the left, for those who may use it. Not on phones, whose bar has no room for it: there it stays on the home page's list and in ⋮ → Preferences.") });
   }
 
   function select(options, value) {

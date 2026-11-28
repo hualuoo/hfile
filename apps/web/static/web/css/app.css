@@ -951,9 +951,9 @@ a.list-item:hover { text-decoration: none; }
 }
 
 /* Phones: the rail becomes M3's navigation bar at the bottom, the FAB floats above it. With a single
-   destination (a visitor) there is no bar; the storages of the rail aren't in it (no room: they stay in
-   the file browser's storage menu), so only the destinations count. Dialogs take nearly the whole width;
-   .dialog-full ones the whole screen. */
+   destination (a visitor) there is no bar; the storages of the rail aren't in it (no room: phones switch
+   storages on the home page's list or in the file browser's 个人设置), so only the destinations count.
+   Dialogs take nearly the whole width; .dialog-full ones the whole screen. */
 @media (max-width: 640px) {
   /* The bar's height is there by default, so a browser without :has() (an old in-app browser) still
      shows a whole bar; with :has(), a single destination takes it away. */

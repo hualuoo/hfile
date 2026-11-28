@@ -8,7 +8,7 @@
 
 存储源可以设图标，也可以显示在左侧栏；发布里的许可证文件合成了一个。数据库有变化：停掉旧的程序，换上新的文件，再启动，单文件程序会先把整个数据库备份到 `backups/`（文件名以 `-before-1.2.2.sql.gz` 结尾），再自动升级；从源码运行的，拉了新代码以后运行 `python -B manage.py upgrade`（依赖没有变化）。升级以后要退回 1.2.1，得用这份备份恢复数据库，只换回旧的程序它不会启动（见[升级](https://github.com/hualuoo/hfile/blob/v1.2.2/docs/upgrade.md)）。
 
-- 存储源的图标和「显示在左侧栏」：管理员在存储源编辑页的「基本信息」里，或者添加向导的第 4 步，从 33 个内置的图标里选一个，左侧栏、「切换存储源」菜单和首页的存储源列表里都用它。打开了「显示在左侧栏」的存储源排在左侧栏的首页、我的分享这几项下面，显示名称和图标，点一下就打开，正在看的那个是选中的一项；每个人只看到自己能用的。手机上底部导航栏放不下，存储源照旧在顶栏的「切换存储源」菜单里。升级以后，已有的存储源还是存储的图标，也不显示在左侧栏，要的话在编辑页里改。接口里的存储源多了 `icon` 和 `show_in_nav`（在 `/api/v1/manage/storages/` 里改），`/api/v1/manage/storage-types/` 多了能选的图标 `icons`。详见[功能说明](https://github.com/hualuoo/hfile/blob/v1.2.2/docs/features.md#文件)和[接口](https://github.com/hualuoo/hfile/blob/v1.2.2/docs/api.md)。
+- 存储源的图标和「显示在左侧栏」：管理员在存储源编辑页的「基本信息」里，或者添加向导的第 4 步，从 33 个内置的图标里选一个，左侧栏、「切换存储源」菜单和首页的存储源列表里都用它。打开了「显示在左侧栏」的存储源排在左侧栏的首页、我的分享这几项下面，显示名称和图标，点一下就打开，正在看的那个是选中的一项；每个人只看到自己能用的。手机上底部导航栏放不下，存储源不在里面：照旧从首页的存储源列表，或者顶栏的 ⋮ →「个人设置」→「存储源」切换。升级以后，已有的存储源还是存储的图标，也不显示在左侧栏，要的话在编辑页里改。接口里的存储源多了 `icon` 和 `show_in_nav`（在 `/api/v1/manage/storages/` 里改），`/api/v1/manage/storage-types/` 多了能选的图标 `icons`。详见[功能说明](https://github.com/hualuoo/hfile/blob/v1.2.2/docs/features.md#文件)和[接口](https://github.com/hualuoo/hfile/blob/v1.2.2/docs/api.md)。
 - 发布里只有一个许可证文件 `hfile-licenses.txt`，是六个程序的许可证文件合在一起：每个程序里都一样的部分只写一次，只在某些程序里有的、或者在某些程序里不一样的，标出用在哪些程序里。每个程序各一个的 `…-licenses.txt` 没有了，`SHA256SUMS` 里是六个程序和 `hfile-licenses.txt`。自己打包时，`scripts/build.sh` 照旧在 `dist/` 里生成这个程序的 `hfile-licenses.txt`。
 
 ## 1.2.1
