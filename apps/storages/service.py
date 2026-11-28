@@ -412,13 +412,9 @@ def copy(storage: StorageSource, *, key: str, name: str) -> StorageSource:
             config[param] = ""
         row = StorageSource.objects.create(
             key=serializer.validated_data["key"], name=serializer.validated_data["name"], type=source.type,
-            enabled=source.enabled and not unshared, position=position, remark=source.remark, config=config,
-            download_domain=source.download_domain, proxy_download=source.proxy_download,
-            proxy_connections=source.proxy_connections, proxy_when_full=source.proxy_when_full,
-            proxy_upload=source.proxy_upload, force_download=source.force_download,
-            link_lifetime=source.link_lifetime, permanent_links=source.permanent_links,
-            link_secret=new_link_secret(), gallery_default=source.gallery_default,
-            readme_from_file=source.readme_from_file, icon=source.icon, show_in_nav=source.show_in_nav,
+            enabled=source.enabled and not unshared, position=position, config=config, link_secret=new_link_secret(),
+            # the rest of the admin's options, as the source has them
+            **{name: getattr(source, name) for name in SITE_FIELDS if name not in ("key", "name", "enabled")},
         )
         FilterRule.objects.bulk_create([
             FilterRule(storage=row, position=rule.position, expression=rule.expression,

@@ -557,6 +557,22 @@ class EditTests(ApiTestCase):
         response = self.client.post(f"{self.url}copy/", {"key": "copy-1", "name": "副本"}, format="json")
         self.assertIn("已经有存储源", response.json()["key"][0])
 
+    def test_a_copy_has_every_option(self):
+        from apps.storages.service import SITE_FIELDS
+
+        options = {"remark": "备注", "download_domain": "https://dl.example", "proxy_download": True, "proxy_connections": 3,
+                   "proxy_when_full": "link", "proxy_upload": True, "force_download": False, "link_lifetime": 7,
+                   "permanent_links": True, "gallery_default": True, "readme_from_file": True, "icon": "photo_library",
+                   "show_in_nav": True}
+        self.assertEqual(set(options), set(SITE_FIELDS) - {"key", "name", "enabled"})  # a new option: add it here
+        for name, value in options.items():
+            self.assertNotEqual(StorageSource._meta.get_field(name).get_default(), value, name)
+        StorageSource.objects.filter(pk=self.storage.pk).update(**options)
+        response = self.client.post(f"{self.url}copy/", {"key": "copy-1", "name": "副本"}, format="json")
+        self.assertEqual(response.status_code, 201, response.json())
+        copy = StorageSource.objects.get(key="copy-1")
+        self.assertEqual({name: getattr(copy, name) for name in options}, options)
+
     def test_a_115_copy_does_not_share_the_tokens(self):
         from apps.storages.drivers import driver_class
 
