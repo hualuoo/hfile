@@ -44,7 +44,10 @@ class FileBrowserTests(BrowserTestCase):
         expect(self.row(page, "new")).to_be_visible()
         self.file_action(page, "top.txt", "重命名")
         dialog = page.get_by_role("dialog", name="重命名")
-        dialog.get_by_label("新名称").fill("renamed.txt")
+        name = dialog.get_by_label("新名称")
+        # It selects "top" a frame after opening; typed before that, "renamed.txt" would take only "top"'s place.
+        expect(name).to_have_js_property("selectionEnd", 3)
+        name.fill("renamed.txt")
         dialog.get_by_role("button", name="重命名").click()
         expect(self.row(page, "renamed.txt")).to_be_visible()
         self.file_action(page, "renamed.txt", "移动")
