@@ -295,6 +295,7 @@
   async function listPage(page) {
     const items = await api('GET', API);
     if (stale(page)) return;
+    App.refreshRail();  // the changes made here, which show the list again
     setTitle(gettext('Storage sources · Manage'));
     const add = h('a', { class: 'btn btn-filled', href: '#storages/new' }, icon('add'), gettext('New storage source'));
     const head = h('div', { class: 'section-title-row' }, h('h2', { text: pgettext('manage menu', 'Storage sources') }), add);
@@ -946,6 +947,7 @@
       const body = formBody(state);
       const data = state.id ? await api('PATCH', `${API}${state.id}/`, body) : await api('POST', API, body);
       unsaved = false;
+      App.refreshRail();
       if (state.id) {
         toast(interpolate(gettext('Saved "%(name)s"'), { name: data.name }, true));
         location.hash = '#storages';
@@ -1623,6 +1625,7 @@
 
   function wizardDone(state) {
     unsaved = false;
+    App.refreshRail();
     const s = state.storage;
     const grants = state.grants;
     const who = !grants ? '' : grants.enabled

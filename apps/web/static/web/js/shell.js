@@ -24,7 +24,7 @@
  * (null: the page reloads), for the single sign-on buttons under it. */
 (function () {
   'use strict';
-  const { api, ApiError, h, iconHref, toast, flash, safeNext, openDialog, formError, theme, loggedIn } = window.App;
+  const { api, ApiError, h, icon, iconHref, toast, flash, safeNext, openDialog, formError, theme, loggedIn } = window.App;
 
   // 跳到正文 moves the focus to <main> without changing the address: /manage/ reads its section from
   // the hash, and #main would switch it to the first one.
@@ -64,6 +64,30 @@
   });
   markPhoneCurrent();
   phoneBar.addEventListener('change', markPhoneCurrent);
+
+  // App.refreshRail(): the rail's storages as they are now (the ones this user may use that are in it, GET
+  // /api/v1/storages/), for /manage/, which changes them without loading the page again; none is current there.
+  window.App.refreshRail = async () => {
+    const nav = document.querySelector('nav.nav');
+    if (!nav) return;
+    let storages;
+    try {
+      storages = (await api('GET', '/api/v1/storages/')).filter((s) => s.show_in_nav);
+    } catch (err) {
+      return;  // as the page had them
+    }
+    let group = nav.querySelector('.nav-storages');
+    if (!storages.length) {
+      if (group) group.remove();
+      return;
+    }
+    if (!group) {
+      group = h('div', { class: 'nav-storages', role: 'group', 'aria-label': pgettext('list of them', 'Storage sources') });
+      nav.append(group);
+    }
+    group.replaceChildren(...storages.map((s) => h('a', { class: 'nav-link', href: `/${encodeURIComponent(s.key)}/`, dataset: { tooltip: s.name } },
+      h('span', { class: 'nav-indicator' }, icon(s.icon, 'off'), icon(`${s.icon}-fill`, 'on')), h('span', { class: 'nav-label', text: s.name }))));
+  };
 
   // ------------------------------------------------------------ top app bar
 

@@ -247,6 +247,7 @@
         status.textContent = gettext('Saved');
         toast(gettext('Storage source permissions saved'));
         draw();
+        if (String(userId) === document.body.dataset.user) App.refreshRail();  // one's own: the sidebar's storages
         // Root folders that changed: are they there? (only a warning; a remote storage may be slow)
         for (const row of rows) {
           if (!row.granted || row.root_path === '/' || before.get(row.storage.id) === row.root_path || !row.storage.enabled) continue;

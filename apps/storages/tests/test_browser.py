@@ -42,6 +42,7 @@ class StorageWizardTests(BrowserTestCase):
         wizard.get_by_role("switch", name="显示在左侧栏").check()
         wizard.get_by_role("button", name="完成").click()
         expect(wizard.get_by_role("heading", name="「Photos」添加好了")).to_be_visible()
+        expect(page.locator(".nav-storages").get_by_role("link", name="Photos")).to_be_visible()  # in the sidebar already
         storage = StorageSource.objects.get(key="photos")
         self.assertEqual((storage.name, storage.type, storage.enabled), ("Photos", "local", True))
         self.assertEqual((storage.icon, storage.show_in_nav), ("photo_library", True))
@@ -77,6 +78,37 @@ class IconAndSidebarTests(BrowserTestCase):
         expect(link.locator("svg.on use")).to_have_attribute("href", re.compile(r"#i-photo_library-fill$"))
         expect(page.locator(".nav > .nav-link[aria-current]")).to_have_count(0)  # not 首页
         expect(page.locator("#files-storage-button use").first).to_have_attribute("href", re.compile(r"#i-photo_library$"))
+        self.assertClean(page)
+
+    def test_the_manage_page_keeps_it_up_to_date(self):
+        # /manage/ doesn't load again after a change there: its sidebar follows the storages all the same, and
+        # one's own permissions on them.
+        admin = User.objects.create_superuser("boss", password="pw-boss-2026")
+        self.local_storage({"a.txt": b"a"}, users=[admin])
+        self.local_storage({"b.txt": b"b"}, users=[admin], key="photos")
+        page = self.open(self.new_context(user=admin), "/manage/#storages")
+        nav = page.locator("nav.nav")
+        expect(nav.locator(".nav-storages")).to_have_count(0)
+        page.locator(".storage-row", has_text="Photos").locator("a.storage-main").click()
+        page.get_by_role("switch", name="显示在左侧栏").check()
+        page.get_by_role("button", name="保存").click()
+        expect(nav.get_by_role("link", name="Photos")).to_be_visible()
+        page.get_by_role("button", name="更多操作：Photos").click()
+        page.get_by_role("menuitem", name="停用").click()
+        page.get_by_role("alertdialog").get_by_role("button", name="停用").click()
+        expect(nav.locator(".nav-storages")).to_have_count(0)
+        self.assertClean(page)
+        StorageSource.objects.update(enabled=True)
+        page.goto(f"{self.live_server_url}/manage/#users")
+        page.reload()  # only the hash changed: load the page again, its sidebar with Photos
+        expect(nav.get_by_role("link", name="Photos")).to_be_visible()
+        page.locator("tr", has_text="boss").get_by_role("button", name="编辑").click()
+        dialog = page.locator("#user-dialog")
+        dialog.get_by_role("tab", name="存储源权限").click()
+        dialog.get_by_role("switch", name="允许使用「Photos」").uncheck()
+        dialog.get_by_role("button", name="保存").click()
+        expect(page.locator("#snackbar .snackbar-text")).to_have_text("存储源权限已保存")
+        expect(nav.locator(".nav-storages")).to_have_count(0)
         self.assertClean(page)
 
     def test_more_than_the_rail_holds(self):
