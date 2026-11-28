@@ -722,7 +722,7 @@
   });
   document.addEventListener('focusin', (e) => {
     const target = e.target.closest && e.target.closest('[data-tooltip]');
-    if (target && target.matches(':focus-visible')) showTip(target);
+    if (target && e.target.matches(':focus-visible')) showTip(target);  // or a control in it: an icon picker's radio
   });
   document.addEventListener('focusout', hideTip);
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') hideTip(); });
@@ -735,7 +735,7 @@
   // and fades once it is let go (.ripple in app.css). Hover and focus are the CSS state layers.
   const RIPPLE_HOSTS = [
     '.btn', '.icon-button', '.fab', '.nav-link', '.menu-item', '.tab-button', '.segment', '.chip', '.chip-remove',
-    '.list-item.interactive', '.manage-link', '.breadcrumb', '.user-button', '.card.interactive',
+    '.list-item.interactive', '.manage-link', '.breadcrumb', '.user-button', '.card.interactive', '.icon-choice',
   ].join(', ');
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   document.addEventListener('pointerdown', (e) => {
@@ -743,6 +743,7 @@
     let host = e.target.closest(RIPPLE_HOSTS);
     if (!host || host.disabled || host.getAttribute('aria-disabled') === 'true' || host.getAttribute('aria-current') === 'page' && host.classList.contains('breadcrumb')) return;
     if (host.classList.contains('nav-link')) host = host.querySelector('.nav-indicator') || host;
+    if (host.classList.contains('icon-choice')) host = host.querySelector('.icon-button') || host;  // its radio takes the press
     const rect = host.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;

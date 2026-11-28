@@ -10,6 +10,8 @@ from pathlib import Path
 from PIL import Image
 
 from apps.accounts.models import User
+from apps.activity.log import Kind
+from apps.activity.models import ActivityLog
 from apps.files.tests.helpers import EVERYTHING
 from apps.web.test_browser import BrowserTestCase, expect
 
@@ -78,6 +80,37 @@ class IconAndSidebarTests(BrowserTestCase):
         expect(link.locator("svg.on use")).to_have_attribute("href", re.compile(r"#i-photo_library-fill$"))
         expect(page.locator(".nav > .nav-link[aria-current]")).to_have_count(0)  # not 首页
         expect(page.locator("#files-storage-button use").first).to_have_attribute("href", re.compile(r"#i-photo_library$"))
+        self.assertClean(page)
+
+    def test_the_picker(self):
+        # The chosen icon is filled; the arrow keys move and choose, the icon's name in the tooltip. A stored icon
+        # this program doesn't offer (a later version's) shows as storage, and saving leaves it as it is.
+        admin = User.objects.create_superuser("boss", password="pw-boss-2026")
+        self.local_storage({"a.txt": b"a"}, users=[admin])
+        storage = StorageSource.objects.get()
+        page = self.open(self.new_context(user=admin), f"/manage/#storages/{storage.pk}")
+        picker = page.locator("fieldset.icon-picker")
+        default = picker.locator(".icon-choice").first
+        expect(default.get_by_role("radio", name="存储", exact=True)).to_be_checked()
+        expect(default.locator(".icon.on")).to_be_visible()
+        expect(default.locator(".icon.off")).to_be_hidden()
+        default.get_by_role("radio").press("ArrowRight")
+        cloud = picker.get_by_role("radio", name="云", exact=True)
+        expect(cloud).to_be_checked()
+        expect(cloud).to_be_focused()
+        expect(page.locator("#tooltip")).to_be_visible()
+        expect(page.locator("#tooltip")).to_have_text("云")
+        expect(default.locator(".icon.off")).to_be_visible()
+        self.assertClean(page)
+        StorageSource.objects.filter(pk=storage.pk).update(icon="gone")
+        page.reload()
+        expect(default.get_by_role("radio")).to_be_checked()
+        page.get_by_role("textbox", name="备注").fill("改了备注")
+        page.get_by_role("button", name="保存").click()
+        expect(page.locator(".storage-row", has_text="Disk")).to_be_visible()
+        storage.refresh_from_db()
+        self.assertEqual((storage.icon, storage.remark), ("gone", "改了备注"))
+        self.assertEqual(ActivityLog.objects.filter(kind=Kind.UPDATE_STORAGE).latest("id").detail["fields"], ["remark"])
         self.assertClean(page)
 
     def test_the_manage_page_keeps_it_up_to_date(self):

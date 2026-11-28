@@ -91,21 +91,23 @@
     };
   }
 
-  // A storage's icon: one of storage-types/'s icons, radio buttons drawn as icons; the chosen one filled
-  // (as in the sidebar). value() is the chosen name.
+  // A storage's icon: one of storage-types/'s icons, radio buttons drawn as icon buttons; the chosen one filled
+  // (as in the sidebar). value() is the chosen name; changed(): not the one it showed at first. Only a changed
+  // one is saved: a stored icon this program doesn't offer (a later version's) shows as storage, and stays.
   function iconPicker({ id, icons, value }) {
     const inputs = icons.map((item) => {
       const input = h('input', { type: 'radio', name: id, value: item.name });
       input.checked = item.name === value;
       return input;
     });
-    if (inputs.length && !inputs.some((input) => input.checked)) inputs[0].checked = true;
     const el = h('fieldset', { class: 'icon-picker', dataset: { field: id } },
       h('legend', { text: gettext('Icon') }),
       h('div', { class: 'icon-choices' }, icons.map((item, index) => h('label', { class: 'icon-choice', dataset: { tooltip: item.label } },
-        inputs[index], icon(item.name, 'off'), icon(`${item.name}-fill`, 'on'), h('span', { class: 'sr-only', text: item.label })))),
+        inputs[index], h('span', { class: 'icon-button' }, icon(item.name, 'off'), icon(`${item.name}-fill`, 'on')),
+        h('span', { class: 'sr-only', text: item.label })))),
       h('p', { class: 'hint', text: gettext('Shown in the sidebar, the storage source menu and the list of storage sources on the home page.') }));
-    return { el, value: () => (inputs.find((input) => input.checked) || { value: 'storage' }).value };
+    const chosen = () => inputs.find((input) => input.checked).value;
+    return { el, value: chosen, changed: () => chosen() !== value };
   }
 
   function navSwitch(id, checked) {
@@ -828,11 +830,11 @@
     const t = state.transfer;
     const body = {
       name: state.base.name.value, key: state.base.key.value, remark: state.base.remark.value,
-      enabled: state.base.enabled.checked, gallery_default: state.base.gallery_default.checked,
-      icon: state.base.icon.value(), show_in_nav: state.base.show_in_nav.checked,
+      enabled: state.base.enabled.checked, gallery_default: state.base.gallery_default.checked, show_in_nav: state.base.show_in_nav.checked,
       link_lifetime: t.link_lifetime.value, permanent_links: t.permanent_links.checked, force_download: t.force_download.checked,
       config: formConfig(state), clear_secrets: [...state.clear], draft: state.draft,
     };
+    if (!state.id || state.base.icon.changed()) body.icon = state.base.icon.value();
     if (t.download_domain) body.download_domain = t.download_domain.value;
     if (t.proxy_download) body.proxy_download = t.proxy_download.checked;
     Object.assign(body, proxyLimits(t));
@@ -1592,9 +1594,10 @@
     const t = state.transfer;
     const body = {
       config: paramValues(state, rest), clear_secrets: [...state.clear], gallery_default: state.base.gallery_default.checked,
-      icon: state.base.icon.value(), show_in_nav: state.base.show_in_nav.checked,
+      show_in_nav: state.base.show_in_nav.checked,
       link_lifetime: t.link_lifetime.value, permanent_links: t.permanent_links.checked, force_download: t.force_download.checked,
     };
+    if (state.base.icon.changed()) body.icon = state.base.icon.value();
     if (t.download_domain) body.download_domain = t.download_domain.value;
     if (t.proxy_download) body.proxy_download = t.proxy_download.checked;
     Object.assign(body, proxyLimits(t));

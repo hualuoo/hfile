@@ -261,6 +261,16 @@ class StylesheetTests(SimpleTestCase):
         self.assertIsNotNone(rule)
         self.assertIn("outline: 3px solid var(--md-sys-color-secondary)", rule.group(1))
 
+    def test_the_icon_picker_without_has(self):
+        # Its chosen icon, focus ring and state layers come from the radio buttons' own states (input:checked +,
+        # input:focus-visible +): a browser without :has() drops every rule that has it, and would show none.
+        css = (Path(settings.BASE_DIR) / "apps/web/static/web/css/app.css").read_text(encoding="utf-8")
+        css = re.sub(r"/\*.*?\*/", "", css, flags=re.S)
+        selectors = [selector for selector in re.findall(r"([^{}]+)\{", css) if "icon-choice" in selector]
+        self.assertGreater(len(selectors), 3)
+        for selector in selectors:
+            self.assertNotIn(":has(", selector)
+
     def test_checkboxes_show_the_mixed_state(self):
         # 全选 over some of the rows only (indeterminate): drawn boxes (appearance: none) need a look of their
         # own, or they look unticked.

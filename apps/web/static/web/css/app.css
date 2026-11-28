@@ -385,27 +385,22 @@ input.switch:disabled { cursor: not-allowed; opacity: .38; }
 .check-line:has(input:disabled) { cursor: not-allowed; color: color-mix(in srgb, var(--md-sys-color-on-surface) 38%, transparent); }
 .check-line + .hint { margin: -4px 0 12px 30px; }
 .switch-line { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 48px; cursor: pointer; }
-/* An icon picker (a storage's icon): radio buttons drawn as icon buttons; the chosen one is the filled form on
-   the secondary container, as the navigation rail's current destination. The input, invisible, covers it
-   and takes the click; it is there for the keyboard (arrow keys) and screen readers, with the icon's name. */
+/* An icon picker (a storage's icon): each choice a radio button and an icon button after it; the chosen one
+   is the filled form on the secondary container, as the navigation rail's current destination. The input,
+   invisible, covers the button and takes the click; it is there for the keyboard (arrow keys) and screen
+   readers, with the icon's name. Its states draw the button's (no :has(): older browsers show them too). */
 .icon-picker { min-width: 0; max-width: 640px; margin: 0 0 16px; padding: 0; border: 0; }
 .icon-picker > legend { margin: 0 0 8px; padding: 0; }
 .icon-choices { display: flex; flex-wrap: wrap; gap: 4px; }
-.icon-choice {
-  position: relative; display: inline-grid; place-items: center; width: 40px; height: 40px;
-  border-radius: var(--md-sys-shape-corner-full); color: var(--md-sys-color-on-surface-variant); cursor: pointer;
-}
-.icon-choice::before {
-  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
-  background: currentColor; opacity: 0; transition: opacity var(--md-sys-motion-duration-short2) linear;
-}
-.icon-choice:hover::before { opacity: var(--md-sys-state-hover-state-layer-opacity); }
-.icon-choice:has(:focus-visible) { outline: 3px solid var(--md-sys-color-secondary); outline-offset: 2px; }
+.icon-choice { position: relative; display: inline-grid; border-radius: var(--md-sys-shape-corner-full); }
 .icon-choice > input { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
-.icon-choice > .icon { grid-area: 1 / 1; width: 24px; height: 24px; }
-.icon-choice > .icon.on, .icon-choice:has(:checked) > .icon.off { display: none; }
-.icon-choice:has(:checked) > .icon.on { display: block; }
-.icon-choice:has(:checked) { background: var(--md-sys-color-secondary-container); color: var(--md-sys-color-on-secondary-container); }
+.icon-choice .icon-button .icon { grid-area: 1 / 1; }
+.icon-choice .icon-button .icon.on, .icon-choice > input:checked + .icon-button .icon.off { display: none; }
+.icon-choice > input:checked + .icon-button .icon.on { display: block; }
+.icon-choice > input:checked + .icon-button { background: var(--md-sys-color-secondary-container); color: var(--md-sys-color-on-secondary-container); }
+.icon-choice:hover > .icon-button::before { opacity: var(--md-sys-state-hover-state-layer-opacity); }
+.icon-choice:active > .icon-button::before, .icon-choice > input:focus-visible + .icon-button::before { opacity: var(--md-sys-state-pressed-state-layer-opacity); }
+.icon-choice > input:focus-visible + .icon-button { outline: 3px solid var(--md-sys-color-secondary); outline-offset: 2px; }
 
 /* ---------- the frame: top app bar, navigation rail (a bar at the bottom on phones) and the page */
 body.shell {
