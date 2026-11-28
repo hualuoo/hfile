@@ -493,14 +493,15 @@ body.shell {
 .menu hr, .menu-divider { border: 0; border-top: 1px solid var(--md-sys-color-outline-variant); margin: 8px 0; }
 
 /* the navigation rail: a FAB on top (when the page has one), then the destinations, each an icon in a
-   pill with its label under it; the current one's icon is the filled form */
+   pill with its label under it; the current one's icon is the filled form. Taller than the window (the
+   storages put in it), it scrolls, and its thin scrollbar shows there is more below. */
 .nav {
   grid-column: 1; grid-row: 2; position: sticky; top: var(--topbar-height); z-index: 15; align-self: start;
   display: flex; flex-direction: column; align-items: center; gap: 12px;
-  height: calc(100dvh - var(--topbar-height)); padding: 4px 0 24px; overflow-y: auto; scrollbar-width: none;
+  height: calc(100dvh - var(--topbar-height)); padding: 4px 0 24px; overflow-y: auto;
+  scrollbar-width: thin; scrollbar-color: var(--md-sys-color-outline-variant) transparent;
   background: var(--md-sys-color-surface);
 }
-.nav::-webkit-scrollbar { display: none; }
 .nav > .fab { margin-bottom: 16px; box-shadow: none; }
 .nav > .fab:hover { box-shadow: var(--md-sys-elevation-level1); }
 .nav-link {

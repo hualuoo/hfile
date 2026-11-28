@@ -455,12 +455,15 @@ def open_storage(request, storage, *, actor: Actor | None = None) -> Access:
     return Access(request, storage, actor, grant, root)
 
 
-def visible_storages(actor: Actor):
-    """The storages the actor may use, in order: [(storage, grant)] (checks 1 to 3)."""
+def visible_storages(actor: Actor, *, in_nav: bool = False):
+    """The storages the actor may use, in order: [(storage, grant)] (checks 1 to 3). in_nav: only those the
+    admin put in the sidebar (show_in_nav)."""
     if not actor.user.is_active:
         return []
-    grants = (Grant.objects.filter(user=actor.user, enabled=True, storage__enabled=True)
-              .select_related("storage").order_by("storage__position", "storage__id"))
+    grants = Grant.objects.filter(user=actor.user, enabled=True, storage__enabled=True)
+    if in_nav:
+        grants = grants.filter(storage__show_in_nav=True)
+    grants = grants.select_related("storage").order_by("storage__position", "storage__id")
     return [(grant.storage, grant) for grant in grants if paths.is_clean(grant.root_path)]
 
 

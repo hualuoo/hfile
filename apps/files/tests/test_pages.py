@@ -7,14 +7,15 @@ import os
 import re
 import unittest
 from pathlib import Path
+from unittest import mock
 
 from django.conf import settings
 from django.test import Client
 from django.urls import reverse
 
 from apps.files import transfer
-from apps.siteconf.models import SiteSettings
-from apps.storages import config
+from apps.siteconf.models import GuestHome, SiteSettings
+from apps.storages import access, config
 from apps.storages.drivers.autoindex import AutoIndexDriver
 from apps.storages.drivers.cf_imgbed import ImgBedDriver
 from apps.storages.drivers.s3 import S3Driver
@@ -84,6 +85,48 @@ class SidebarTests(FilesTestCase):
         self.assertIn('href="/" aria-current="page"', nav)
         self.assertNotIn("aria-current", storages)
         self.assertNotIn("data-phone-current", nav)
+
+    def change(self, **fields):
+        site = SiteSettings.load()
+        for name, value in fields.items():
+            setattr(site, name, value)
+        site.save()
+
+    def test_the_storage_home_opens_is_home(self):
+        # The root doesn't list the storages (显示设置): 首页 opens the first one itself, which is 首页 then, in the
+        # rail as in the path above the list. The others are their own destinations.
+        StorageSource.objects.filter(key="disk").update(show_in_nav=True)
+        self.change(root_show_storage=False)
+        self.browser.force_login(self.alice)
+        self.assertRedirects(self.browser.get("/"), "/disk/", fetch_redirect_response=False)
+        nav, storages = self.rail("/disk/docs/")
+        self.assertIn('href="/" aria-current="page"', nav)
+        self.assertNotIn("aria-current", storages)
+        self.assertNotIn("data-phone-current", nav)
+        nav, storages = self.rail("/photos/")
+        self.assertIn('href="/photos/" aria-current="page"', storages)
+        self.assertIn('href="/" data-phone-current>', nav)
+
+    def test_none_for_visitors_the_file_browser_keeps_out(self):
+        # 匿名用户首页 跳转到登录页 or 自定义页面: every page of the file browser gives visitors that page instead, so
+        # the rail has no links for them, whatever the guest may use (its direct links and shares still work).
+        self.grant(self.guest, ["download"], storage=self.photos)
+        self.assertIn('href="/photos/"', self.rail("/login/")[1])  # 正常显示
+        for home in (GuestHome.LOGIN, GuestHome.CUSTOM):
+            with self.subTest(home=home):
+                self.change(guest_home=home, guest_home_html="<p>欢迎</p>")
+                self.assertEqual(self.rail("/login/")[1], "")
+        self.browser.force_login(self.alice)
+        self.assertIn('href="/photos/"', self.rail(reverse("shares:my-shares"))[1])
+
+    def test_asked_for_once(self):
+        # The file browser hands the rail the storages it found; other pages ask for the rail's own (show_in_nav,
+        # in the query: no rows on a site that put none in the rail).
+        self.browser.force_login(self.alice)
+        for path, asked in (("/", [{}]), ("/photos/", [{}]), (reverse("shares:my-shares"), [{"in_nav": True}])):
+            with self.subTest(path=path), mock.patch.object(access, "visible_storages", wraps=access.visible_storages) as visible:
+                self.assertIn('href="/photos/"', self.rail(path)[1])
+                self.assertEqual([call.kwargs for call in visible.call_args_list], asked)
 
     def test_the_file_browser_shows_the_icon(self):
         self.browser.force_login(self.alice)

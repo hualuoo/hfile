@@ -79,6 +79,21 @@ class IconAndSidebarTests(BrowserTestCase):
         expect(page.locator("#files-storage-button use").first).to_have_attribute("href", re.compile(r"#i-photo_library$"))
         self.assertClean(page)
 
+    def test_more_than_the_rail_holds(self):
+        # Taller than the window, the rail scrolls, and shows it does: its scrollbar isn't hidden.
+        admin = User.objects.create_superuser("boss", password="pw-boss-2026")
+        for n in range(8):
+            self.local_storage({"a.txt": b"a"}, users=[admin], key=f"disk{n}")
+        StorageSource.objects.update(show_in_nav=True)
+        page = self.open(self.new_context(user=admin, height=600), "/shares/")
+        nav = page.locator("nav.nav")
+        self.assertGreater(nav.evaluate("(el) => el.scrollHeight - el.clientHeight"), 0)
+        self.assertEqual(nav.evaluate("(el) => getComputedStyle(el).scrollbarWidth"), "thin")
+        last = page.locator(".nav-storages").get_by_role("link", name="Disk7")
+        last.scroll_into_view_if_needed()
+        expect(last).to_be_in_viewport()
+        self.assertClean(page)
+
     def test_not_on_phones(self):
         admin = User.objects.create_superuser("boss", password="pw-boss-2026")
         self.local_storage({"a.txt": b"a"}, users=[admin])
@@ -87,9 +102,14 @@ class IconAndSidebarTests(BrowserTestCase):
         expect(self.row(page, "a.txt")).to_be_visible()
         expect(page.locator(".nav > .nav-link").first).to_be_visible()  # the bar at the bottom, without the storage
         expect(page.locator(".nav-storages")).to_be_hidden()
-        home = page.locator('.nav > .nav-link[href="/"]')  # in it, 首页 looks current, as in any storage
+        home = page.locator('.nav > .nav-link[href="/"]')  # in it, 首页 is current, as in any storage
         expect(home.locator(".icon.on")).to_be_visible()
         expect(home.locator(".icon.off")).to_be_hidden()
+        expect(home).to_have_attribute("aria-current", "page")  # for screen readers too
+        page.set_viewport_size({"width": 1280, "height": 800})  # wider: the storage is, 首页 isn't
+        expect(page.locator(".nav-storages").get_by_role("link", name="Disk")).to_have_attribute("aria-current", "page")
+        expect(home).not_to_have_attribute("aria-current", "page")
+        expect(home.locator(".icon.off")).to_be_visible()
         self.assertClean(page)
         # A visitor with only 首页 has no bar, a storage of the sidebar or not.
         Grant.objects.update_or_create(user=User.objects.guest(), storage=StorageSource.objects.get(),

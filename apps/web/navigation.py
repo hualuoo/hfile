@@ -34,6 +34,13 @@ class NavItem:
     also_on: tuple = field(default=())  # more url names it is the current one on
 
 
+def in_file_browser(request, storages, current) -> None:
+    """The file browser's page tells the rail (context_processors.shell) what it found: the storages the
+    caller may use, in order (the rail shows those of them that are in it, without asking again), and the
+    one that is the page's destination there (None: 首页)."""
+    request.nav_file_browser = (storages, current)
+
+
 NAV = [
     NavItem("index", gettext_lazy("Home"), "home", "web:index", also_on=("browse",)),  # the file browser's folders too
     NavItem("my-shares", gettext_lazy("My shares"), "share", "shares:my-shares", visible=member),  # apps/shares/pages.py

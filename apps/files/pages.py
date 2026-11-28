@@ -37,6 +37,7 @@ from apps.storages import access as policy
 from apps.storages.access import AccessDenied
 from apps.storages.drivers import paths
 from apps.uploads.csp import allow_direct_uploads
+from apps.web import navigation
 from apps.web.errors import error_page
 
 from . import readme, transfer
@@ -136,9 +137,13 @@ class BrowserPage(PublicPageMixin, TemplateView):
         actor = policy.actor_for(request)
         storages = [storage for storage, _grant in policy.visible_storages(actor)]
         site = SiteSettings.load()
+        # 首页 opens the first storage itself when the root doesn't list them (显示设置): that one is 首页 then,
+        # in the rail too, as the path above the list says.
+        home = storages[0] if storages and not site.root_show_storage else None
         if key is None:
-            if storages and not site.root_show_storage:
-                return HttpResponseRedirect(readme.browse_url(storages[0], "/"))
+            if home is not None:
+                return HttpResponseRedirect(readme.browse_url(home, "/"))
+            navigation.in_file_browser(request, storages, None)
             return self.page(request, storage=None, path="/", storages=storages, title=_("Home"))
         try:
             access = policy.open_storage(request, key)
@@ -149,6 +154,7 @@ class BrowserPage(PublicPageMixin, TemplateView):
             return error_page(request, error.status_code, message, code=error.code)
         client = access.relative(storage_path)
         title = paths.name(client) or access.storage.name
+        navigation.in_file_browser(request, storages, None if access.storage == home else access.storage)
         response = self.page(request, storage=access.storage, path=client, storages=storages, title=title)
         try:
             sources = transfer.media_sources(access.storage)

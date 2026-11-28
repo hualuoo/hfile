@@ -72,6 +72,12 @@ class PublicPageMixin:
 LOGIN_PAGE = "/login/"  # accounts' login page while no secure login entry is set (apps/accounts/entry.py)
 
 
+def browser_for_visitors() -> bool:
+    """Whether visitors who aren't logged in get the file browser (匿名用户首页: 正常显示); else every page of
+    it gives them guest_landing()'s page."""
+    return SiteSettings.load().guest_home == GuestHome.NORMAL
+
+
 def guest_landing(request):
     """What a visitor who isn't logged in gets instead of the file browser, or None (normal; or a
     logged-in user). The choices of 安全设置 → 匿名用户首页:
@@ -85,11 +91,9 @@ def guest_landing(request):
 
     Only the browser's pages: shares, direct and short links work for visitors as before, and the
     API answers them by the guest user's grants (accounts, storages)."""
-    if request.user.is_authenticated:
+    if request.user.is_authenticated or browser_for_visitors():
         return None
     site = SiteSettings.load()
-    if site.guest_home == GuestHome.NORMAL:
-        return None
     asked_to_log_in = not custom_code_allowed(request)  # /?auth=login
     if site.guest_home == GuestHome.CUSTOM and not asked_to_log_in and site.guest_home_html.strip():
         return custom_page(request, site)

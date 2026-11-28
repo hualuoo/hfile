@@ -53,6 +53,18 @@
     location.reload();
   });
 
+  // ------------------------------------------------------------ navigation rail
+
+  // Phones leave the rail's storages out of the bar at the bottom (app.css, up to 640px): in one of them
+  // 首页 is the current destination there (data-phone-current), for screen readers too.
+  const phoneBar = window.matchMedia('(max-width: 640px)');
+  const markPhoneCurrent = () => document.querySelectorAll('.nav-link[data-phone-current]').forEach((link) => {
+    if (phoneBar.matches) link.setAttribute('aria-current', 'page');
+    else link.removeAttribute('aria-current');
+  });
+  markPhoneCurrent();
+  phoneBar.addEventListener('change', markPhoneCurrent);
+
   // ------------------------------------------------------------ top app bar
 
   // M3: the app bar takes the container color once the page scrolls under it.
