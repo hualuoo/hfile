@@ -6,6 +6,7 @@ import re
 import shutil
 import tempfile
 from pathlib import Path
+from urllib.parse import parse_qs, urlparse
 
 from PIL import Image
 
@@ -19,6 +20,7 @@ from .. import config, instances
 from ..drivers import driver_class
 from ..models import Grant, StorageSource
 from .fake_cf_imgbed import FakeImgBed
+from .fakes import FakeDriver, FakeTypeMixin
 
 
 class StorageWizardTests(BrowserTestCase):
@@ -183,6 +185,40 @@ class IconAndSidebarTests(BrowserTestCase):
         expect(self.row(page, "a.txt")).to_be_visible()
         expect(page.locator(".nav > .nav-link")).to_be_hidden()
         expect(page.locator(".nav-storages")).to_be_hidden()
+        self.assertClean(page)
+
+
+class AuthorizationTests(FakeTypeMixin, BrowserTestCase):
+    def test_back_in_the_same_tab(self):
+        # A blocked popup: 授权 takes this page to the provider and back (the callback page's link). What the form
+        # had and wasn't saved yet comes back with the token: the icon, the sidebar switch, the remark.
+        admin = User.objects.create_superuser("boss", password="pw-boss-2026")
+        storage = StorageSource.objects.create(key="od", name="OD", type="fake", config=config.encode(
+            FakeDriver, {"endpoint": "https://fake.example", "port": 21, "passive": True, "mode": "a"}))
+        Grant.objects.create(user=admin, storage=storage, permissions=EVERYTHING, root_path="/", enabled=True)
+        context = self.new_context(user=admin)
+        context.add_init_script("window.open = () => null;")
+
+        def provider(route):  # the consent page, agreed to at once
+            state = parse_qs(urlparse(route.request.url).query)["state"][0]
+            route.fulfill(status=302, headers={"Location": f"{self.live_server_url}/storages/oauth/callback/?code=good-code&state={state}"})
+
+        context.route("https://login.fake.example/**", provider)
+        page = self.open(context, f"/manage/#storages/{storage.pk}")
+        page.locator("fieldset.icon-picker").get_by_role("radio", name="照片", exact=True).check()
+        page.get_by_role("switch", name="显示在左侧栏").check()
+        page.get_by_role("textbox", name="备注").fill("授权前写的")
+        page.get_by_role("button", name="授权").click()
+        page.get_by_role("link", name="回到存储源设置").click()
+        expect(page.locator(".notice", has_text="授权的结果已经填进表单")).to_be_visible()
+        expect(page.locator("fieldset.icon-picker").get_by_role("radio", name="照片", exact=True)).to_be_checked()
+        expect(page.get_by_role("switch", name="显示在左侧栏")).to_be_checked()
+        expect(page.get_by_role("textbox", name="备注")).to_have_value("授权前写的")
+        page.get_by_role("button", name="保存").click()
+        expect(page.locator(".storage-row", has_text="OD")).to_be_visible()
+        storage.refresh_from_db()
+        self.assertEqual((storage.icon, storage.show_in_nav, storage.remark), ("photo_library", True, "授权前写的"))
+        self.assertEqual(config.decode(FakeDriver, storage.config)[0]["refresh_token"], "oauth-refresh-for-https://fake.example")
         self.assertClean(page)
 
 

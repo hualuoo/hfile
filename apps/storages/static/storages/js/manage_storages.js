@@ -107,7 +107,11 @@
         h('span', { class: 'sr-only', text: item.label })))),
       h('p', { class: 'hint', text: gettext('Shown in the sidebar, the storage source menu and the list of storage sources on the home page.') }));
     const chosen = () => inputs.find((input) => input.checked).value;
-    return { el, value: chosen, changed: () => chosen() !== value };
+    const set = (name) => {
+      const input = inputs.find((item) => item.value === name);
+      if (input) input.checked = true;
+    };
+    return { el, value: chosen, changed: () => chosen() !== value, set };
   }
 
   function navSwitch(id, checked) {
@@ -819,11 +823,12 @@
     return config;
   }
 
-  // What may be kept on the server while the browser is with the provider (no secrets).
+  // What may be kept on the server while the browser is with the provider: the form as it is (what saving it
+  // would send), without the secrets.
   function formSnapshot(state) {
-    const config = formConfig(state);
-    for (const param of state.type.params) if (param.secret) delete config[param.key];
-    return { name: state.base.name.value, key: state.base.key.value, remark: state.base.remark.value, config };
+    const { clear_secrets: _cleared, draft: _draft, ...form } = formBody(state);
+    for (const param of state.type.params) if (param.secret) delete form.config[param.key];
+    return form;
   }
 
   function formBody(state) {
@@ -908,12 +913,18 @@
         drawParams(state);
         drawTransfers(state);
       }
+      // The form as the browser left it for the provider (formSnapshot()), not saved yet.
       const form = draft.form || {};
-      if (!state.id) {
-        if (form.name) state.base.name.value = form.name;
-        if (form.key) state.base.key.value = form.key;
-        if (form.remark) state.base.remark.value = form.remark;
+      const b = state.base;
+      const fields = { name: b.name, key: b.key, remark: b.remark, enabled: b.enabled, gallery_default: b.gallery_default,
+        show_in_nav: b.show_in_nav, ...state.transfer };
+      for (const [name, input] of Object.entries(fields)) {
+        if (!(name in form)) continue;
+        if (input.type === 'checkbox') input.checked = Boolean(form[name]);
+        else input.value = String(form[name]);
+        input.dispatchEvent(new Event('change'));  // what hangs on it: the limits under 经过本站下载
       }
+      if (form.icon) b.icon.set(form.icon);
       applyChanges(state, { changes: { ...(form.config || {}), ...(draft.changes || {}) }, secrets: draft.secrets, draft: draft.id });
       if ((draft.secrets || []).length) {
         state.helperResult.replaceChildren(notice('ok', gettext('The authorization result is filled into the form; click "Save" to apply it.')));
